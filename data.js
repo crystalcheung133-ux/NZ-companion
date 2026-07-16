@@ -35,7 +35,7 @@ const TRIP_BRAND = {
     background: "#E8F4F8"
   },
   storageNamespace: "nz-family-2026",
-  version: "0.6 RC8",
+  version: "0.6 RC9",
   buildLabel: "Compact Road Trip Release Candidate"
 };
 
