@@ -2599,3 +2599,45 @@ body.home-bg .home-day-button{min-height:38px;margin:0;padding:8px 22px;border-r
  .personal-paid-for-line{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:5px}
  .personal-paid-for-line>span{font-size:.72rem}
 }
+
+
+/* NZ 0.6 RC11A — Safari browser stability + compact expense controls */
+/* Expense modal must not jump after save; inputs remain readable at all family-name lengths. */
+#expenseModal .expense-form input,
+#expenseModal .expense-form select{scroll-margin-top:88px;scroll-margin-bottom:170px;}
+.expense-total-field{display:block!important;}
+.expense-total-field>input{width:100%!important;min-width:0!important;font-size:1.18rem!important;}
+
+/* Paid-by and split-party controls: compact, single-row family choices on mobile. */
+#sharedPaidByBlock>label{margin-bottom:5px!important;}
+#expenseModal #expensePaidBy{min-height:42px!important;height:42px!important;padding:7px 34px 7px 11px!important;font-size:15px!important;border-radius:12px!important;}
+.expense-party-list{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;margin:6px 0 10px!important;}
+.expense-party-list label{min-width:0!important;min-height:40px!important;padding:6px 7px!important;justify-content:center!important;gap:4px!important;font-size:13px!important;line-height:1.1!important;white-space:nowrap!important;overflow:hidden!important;}
+.expense-party-list input{flex:0 0 auto!important;width:17px!important;height:17px!important;min-height:17px!important;padding:0!important;margin:0!important;}
+.expense-split-tools{display:flex!important;gap:6px!important;margin-bottom:5px!important;}
+.expense-split-tools .mini-btn{min-height:32px!important;padding:5px 10px!important;font-size:12px!important;}
+
+/* Every custom row uses the same fixed name column and the same large amount field. */
+.custom-split-panel{gap:10px!important;padding:12px!important;}
+.custom-split-row{display:grid!important;grid-template-columns:92px minmax(0,1fr)!important;align-items:center!important;gap:9px!important;width:100%!important;}
+.custom-split-row>span{min-width:0!important;font-size:15px!important;line-height:1.15!important;}
+.custom-split-row .expense-money-field{display:grid!important;grid-template-columns:minmax(110px,1fr) 42px!important;gap:7px!important;width:100%!important;min-width:0!important;}
+.custom-split-row input{box-sizing:border-box!important;width:100%!important;min-width:110px!important;height:46px!important;min-height:46px!important;padding:9px 10px!important;font-size:17px!important;line-height:1!important;text-align:right!important;font-variant-numeric:tabular-nums!important;}
+.custom-split-row .remainder-btn{width:42px!important;height:42px!important;min-width:42px!important;flex-basis:42px!important;padding:9px!important;}
+
+/* Browser-tab mode: use content height instead of a locked viewport and paint beneath the nav. */
+@media (display-mode:browser) and (max-width:720px){
+  html:has(body.home-bg),body.home-bg{height:auto!important;min-height:100dvh!important;overflow-x:hidden!important;overflow-y:auto!important;}
+  body.home-bg main.dashboard.home-premium.home-v37,
+  body.home-bg main.dashboard.home-v37{height:auto!important;max-height:none!important;min-height:0!important;overflow:visible!important;align-items:flex-start!important;justify-content:flex-start!important;padding:8px 10px calc(104px + env(safe-area-inset-bottom))!important;}
+  body.home-bg section.home-brand-card.v37-dashboard-home{transform:none!important;margin:0 auto!important;}
+  .app-nav{bottom:0!important;}
+  .app-nav::after{content:"";position:absolute;z-index:-1;left:-1px;right:-1px;top:calc(100% - 18px);height:calc(30px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(39,34,29,.98),rgba(39,34,29,1));}
+}
+@media(max-width:380px){
+  .expense-party-list label{font-size:12px!important;padding-inline:4px!important;}
+  .custom-split-row{grid-template-columns:82px minmax(0,1fr)!important;gap:7px!important;}
+  .custom-split-row .expense-money-field{grid-template-columns:minmax(104px,1fr) 40px!important;gap:6px!important;}
+  .custom-split-row input{min-width:104px!important;font-size:16px!important;}
+  .custom-split-row .remainder-btn{width:40px!important;min-width:40px!important;}
+}

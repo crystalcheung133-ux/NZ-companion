@@ -1180,7 +1180,6 @@ function getBookingStatusLabel(status){
     const modal=document.getElementById('expenseModal');
     if(modal) modal.classList.add('show');
     try{if(typeof renderLatestExpenseMini==='function') renderLatestExpenseMini();}catch(e){}
-    const first=document.getElementById('expenseTotal'); if(first) setTimeout(()=>first.focus(),60);
   };
 
   window.saveExpense=function(){
@@ -1221,7 +1220,6 @@ function getBookingStatusLabel(status){
     window.renderExpenses();
     resetExpenseForm();
     showExpenseSavedNote();
-    const first=document.getElementById('expenseItem'); if(first) setTimeout(()=>first.focus(),60);
     // Intentional: keep modal open for quick multiple expense entry.
   };
 
