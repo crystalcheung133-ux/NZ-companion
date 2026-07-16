@@ -86,7 +86,7 @@ function openGuideGroupFromDay(keys,itemId){
   const first=PLACES[clean[0]]||{};
   const sourceUrl=`${location.pathname}${location.search}${itemId?`#${encodeURIComponent(itemId)}`:''}`;
   saveGuideNavigationContext(first.cat||'GUIDE',{sourceUrl,sourceType:'day'});
-  // RC11J1: confirmed single destinations open immediately. Only genuine alternatives show a choice page.
+  // RC11K: confirmed single destinations open immediately. Only genuine alternatives show a choice page.
   window.location.href=clean.length===1 ? placeHref(clean[0]) : `place.html?ids=${encodeURIComponent(clean.join(','))}`;
 }
 function readGuideNavigationContext(){
@@ -296,7 +296,7 @@ function openTripCard(key) {
   const content = document.getElementById('tripModalContent');
   const modal = document.getElementById('tripModal');
   if (!content || !modal) return;
-  content.innerHTML = `<div class="trip-onepage"><p class="kicker">Trip</p><h2>${t.title}</h2>${t.body}<div class="guide-next-row"><button class="pill" onclick="openTripCard('${prev}')">‹ Previous</button><button class="pill" onclick="openTripCard('${next}')">Next ›</button></div><p class="timestamp">Build · Version ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.version)||'0.6 RC11J1'} · ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.buildLabel)||'Phase 1 Release Candidate'}</p></div>`;
+  content.innerHTML = `<div class="trip-onepage"><p class="kicker">Trip</p><h2>${t.title}</h2>${t.body}<div class="guide-next-row"><button class="pill" onclick="openTripCard('${prev}')">‹ Previous</button><button class="pill" onclick="openTripCard('${next}')">Next ›</button></div><p class="timestamp">Build · Version ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.version)||'0.6 RC11K'} · ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.buildLabel)||'Phase 1 Release Candidate'}</p></div>`;
   modal.classList.add('show');
   const sheet=document.querySelector('#tripModal .trip-sheet');
   if(sheet) sheet.scrollTop=0;
@@ -1470,7 +1470,7 @@ function getBookingStatusLabel(status){
 })();
 
 
-/* NZ 0.6 RC11J1 — dashboard currency exchange */
+/* NZ 0.6 RC11K — dashboard currency exchange */
 (function(){
   const STORAGE_KEY='nz_companion_fx_nzd_aud_v1';
   const API_URL='https://api.frankfurter.dev/v1/latest?base=NZD&symbols=AUD';
