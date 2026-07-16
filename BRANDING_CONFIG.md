@@ -6,7 +6,6 @@ Reusable fields:
 - `appName`, `shortName`, `navLabel`, `browserTitleSuffix`
 - `familyLabel`, `heroLine1`, `heroEmphasis`, `tagline`
 - `splashSlogan`, `splashDestination`
-- `logo.splash`, `logo.header`, `logo.watermark`, `logo.icon192`, `logo.icon512`
 - `storageNamespace`
 
 The New Zealand validation dataset uses a neutral NZ destination mark rather than the CCMV four-friend monogram. UI structure, spacing, animation and navigation are unchanged.

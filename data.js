@@ -22,7 +22,6 @@ const TRIP_BRAND = {
   logo: {
     splash: "nz-adventure-logo.png",
     header: "nz-adventure-mark.png",
-    watermark: "nz-adventure-watermark.png",
     icon192: "icon-192.png",
     icon512: "icon-512.png"
   },
@@ -36,7 +35,7 @@ const TRIP_BRAND = {
     background: "#E8F4F8"
   },
   storageNamespace: "nz-family-2026",
-  version: "0.6 RC5",
+  version: "0.6 RC6",
   buildLabel: "Compact Road Trip Release Candidate"
 };
 

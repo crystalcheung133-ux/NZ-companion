@@ -5,7 +5,6 @@ This build separates visual identity from itinerary content.
 ## Identity assets
 - `nz-adventure-logo.png` — splash / primary badge
 - `nz-adventure-mark.png` — compact header mark
-- `nz-adventure-watermark.png` — low-emphasis surface watermark
 - `icon-192.png`, `icon-512.png` — PWA icons
 
 ## Palette
@@ -31,7 +30,6 @@ The trip-level selector represents the three travelling families: Lee Family, Fo
 - Outdoor action hierarchy: blue primary, green expense/secondary, orange highlight.
 - Moments no longer inherits blush/pink styling.
 - Top navigation uses neutral snow-white surface.
-- Watermarks are monochrome graphite emboss assets only.
 - Splash badge is padded and rendered with object-fit contain to protect the complete circular rim.
 
 

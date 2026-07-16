@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>Home · New Zealand Family Companion</title><link href="manifest.json" rel="manifest"/><meta content="#087F8C" name="theme-color"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="New Zealand" name="apple-mobile-web-app-title"/><link href="icon-192.png" rel="apple-touch-icon"/><link href="styles.css?v=nz0.6rc5" rel="stylesheet"/></head><body class="home-bg"><div aria-hidden="true" id="ccmvSplash" role="presentation"><div class="splash-paper"></div><div class="splash-glow"></div><div class="splash-content"><img alt="" class="splash-logo" data-brand-logo="splash" src="nz-adventure-logo.png"/><h1 class="splash-line" data-brand-text="splashSlogan">ADVENTURE AWAITS</h1><div class="splash-destination" data-brand-text="splashDestination">NEW ZEALAND 2026</div></div><div class="splash-fadeout"></div></div><script>(function(){
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>Home · New Zealand Family Companion</title><link href="manifest.json" rel="manifest"/><meta content="#087F8C" name="theme-color"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="New Zealand" name="apple-mobile-web-app-title"/><link href="icon-192.png" rel="apple-touch-icon"/><link href="styles.css?v=nz0.6rc6" rel="stylesheet"/></head><body class="home-bg"><div aria-hidden="true" id="ccmvSplash" role="presentation"><div class="splash-paper"></div><div class="splash-glow"></div><div class="splash-content"><img alt="" class="splash-logo" data-brand-logo="splash" src="nz-adventure-logo.png"/><h1 class="splash-line" data-brand-text="splashSlogan">ADVENTURE AWAITS</h1><div class="splash-destination" data-brand-text="splashDestination">NEW ZEALAND 2026</div></div><div class="splash-fadeout"></div></div><script>(function(){
   var splash=document.getElementById('ccmvSplash');
   if(!splash) return;
 
@@ -63,7 +63,7 @@
 <a class="summary-link" href="moments.html"><span>✨</span><small>Moments</small></a>
 <a class="summary-link" href="expenses.html"><span>💸</span><small>Expenses</small></a>
 </nav>
-<script src="data.js"></script><script src="script.js?v=nz0.6rc4"></script><script>(function(){
+<script src="data.js"></script><script src="script.js?v=nz0.6rc6"></script><script>(function(){
   const availableDays=(typeof ITINERARY_DATA!=='undefined')
     ? Object.keys(ITINERARY_DATA).map(Number).filter(Number.isFinite).sort((a,b)=>a-b)
     : [1];
@@ -84,7 +84,7 @@
     button.href=`day.html?day=${day}`;
     button.textContent=isWithin?`Let's go · Day ${day}`:(isBefore?`Let's go · Day 1`:`Open Day ${day}`);
   }
-})();</script><script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=nz0.6rc4').catch(()=>{}));}</script>
+})();</script><script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=nz0.6rc6').catch(()=>{}));}</script>
 <div class="trip-modal" id="tripModal"><div class="trip-sheet"><button class="trip-close" onclick="closeTripModal()" type="button">×</button><div id="tripModalContent"></div></div></div>
 <div class="guide-modal" id="guideModal"><div class="guide-sheet"><button class="guide-close" onclick="closeGuideModal()" type="button">×</button><div id="guideModalContent"></div></div></div>
 <div class="moments-modal" id="momentsModal"><div class="moments-sheet"><button class="moments-close" onclick="closeMomentsModal()" type="button">×</button><p class="kicker">MEMORY BOOK</p><h2 id="momentsTitle">Moment</h2><p class="lead modal-intro" id="momentsIntro">Add a rating, a short note and a photo at any stop. After the trip, this becomes the three families’ shared memory book.</p><p><span class="status-badge" id="momentsFriend">Friend</span> <button class="mini-btn" onclick="openFriendModal()">Change Family</button></p><div class="moments-form"><input id="momentsRating" type="hidden" value="0"/><div class="star-row"><span class="star" onclick="setStars(1)">⭐</span><span class="star" onclick="setStars(2)">⭐</span><span class="star" onclick="setStars(3)">⭐</span><span class="star" onclick="setStars(4)">⭐</span><span class="star" onclick="setStars(5)">⭐</span></div><p class="mood-help">Choose up to 2 moods</p><div class="mood-grid" id="moodGrid"></div><textarea id="momentsText" placeholder="Something to say..."></textarea><div class="photo-input">📷 Add Photo (Camera / Photo Library)</div><button class="btn" onclick="saveMoments()">Save</button></div></div></div>

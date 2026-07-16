@@ -42,7 +42,6 @@ This is the maintained architecture map for the reusable Travel Engine master. E
 | File | Active use |
 |---|---|
 | `ccmv-logo-calibrated.png` | Splash/loading logo |
-| `logo-watermark-monogram.png` | Home header and selected watermark treatments |
 | `logo-monogram-transparent.png` | Internal-page header logo |
 | `icon-192.png`, `icon-512.png` | PWA icons |
 
