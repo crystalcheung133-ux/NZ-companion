@@ -1,3 +1,3 @@
 New Zealand Family Companion
-Version 0.6 RC11E
+Version 0.6 RC11F
 Deferred custom remainder autofill and clear controls

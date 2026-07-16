@@ -287,7 +287,7 @@ function openTripCard(key) {
   const content = document.getElementById('tripModalContent');
   const modal = document.getElementById('tripModal');
   if (!content || !modal) return;
-  content.innerHTML = `<div class="trip-onepage"><p class="kicker">Trip</p><h2>${t.title}</h2>${t.body}<div class="guide-next-row"><button class="pill" onclick="openTripCard('${prev}')">‹ Previous</button><button class="pill" onclick="openTripCard('${next}')">Next ›</button></div><p class="timestamp">Build · Version ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.version)||'0.6 RC11E'} · ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.buildLabel)||'Phase 1 Release Candidate'}</p></div>`;
+  content.innerHTML = `<div class="trip-onepage"><p class="kicker">Trip</p><h2>${t.title}</h2>${t.body}<div class="guide-next-row"><button class="pill" onclick="openTripCard('${prev}')">‹ Previous</button><button class="pill" onclick="openTripCard('${next}')">Next ›</button></div><p class="timestamp">Build · Version ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.version)||'0.6 RC11F'} · ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.buildLabel)||'Phase 1 Release Candidate'}</p></div>`;
   modal.classList.add('show');
   const sheet=document.querySelector('#tripModal .trip-sheet');
   if(sheet) sheet.scrollTop=0;
@@ -1432,5 +1432,103 @@ function getBookingStatusLabel(status){
     setExportVisibility();
     window.updateSplitUI();
     window.renderExpenses();
+  });
+})();
+
+
+/* NZ 0.6 RC11F — dashboard currency exchange */
+(function(){
+  const STORAGE_KEY='nz_companion_fx_nzd_aud_v1';
+  const API_URL='https://api.frankfurter.dev/v1/latest?base=NZD&symbols=AUD';
+  const state={base:'NZD',quote:'AUD',rate:null,date:'',source:'',loaded:false};
+
+  function parseAmount(value){
+    const cleaned=String(value||'').replace(/[^0-9.]/g,'');
+    const n=Number(cleaned);
+    return Number.isFinite(n)?n:0;
+  }
+  function formatMoney(value){
+    if(!Number.isFinite(value)) return '--';
+    return new Intl.NumberFormat('en-AU',{minimumFractionDigits:2,maximumFractionDigits:2}).format(value);
+  }
+  function readCachedRate(){
+    try{
+      const cached=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');
+      if(cached&&Number(cached.rate)>0){
+        state.rate=Number(cached.rate); state.date=cached.date||''; state.source='cached';
+        return true;
+      }
+    }catch(e){}
+    return false;
+  }
+  function saveCachedRate(){
+    try{localStorage.setItem(STORAGE_KEY,JSON.stringify({rate:state.rate,date:state.date,savedAt:new Date().toISOString()}));}catch(e){}
+  }
+  function displayRateForDirection(){
+    if(!state.rate) return null;
+    return state.base==='NZD'?state.rate:(1/state.rate);
+  }
+  function updateCurrencyUI(){
+    const rate=displayRateForDirection();
+    const amountInput=document.getElementById('currencyAmount');
+    const amount=parseAmount(amountInput&&amountInput.value);
+    const result=rate?amount*rate:null;
+    const card=document.getElementById('currencyCardValue');
+    const meta=document.getElementById('currencyCardMeta');
+    const inputCode=document.getElementById('currencyInputCode');
+    const inputLabel=document.getElementById('currencyInputLabel');
+    const outputLabel=document.getElementById('currencyOutputLabel');
+    const resultEl=document.getElementById('currencyResult');
+    const status=document.getElementById('currencyStatus');
+    if(card) card.textContent=state.rate?`NZD 100 ≈ AUD ${formatMoney(100*state.rate)}`:'NZD 100 ≈ AUD --';
+    if(meta) meta.textContent=state.rate?(state.source==='live'?`Rate date · ${state.date}`:`Last saved · ${state.date||'offline'}`):'Rate unavailable';
+    if(inputCode) inputCode.textContent=state.base;
+    if(inputLabel) inputLabel.textContent=state.base==='NZD'?'New Zealand dollar':'Australian dollar';
+    if(outputLabel) outputLabel.textContent=state.quote==='AUD'?'Australian dollar':'New Zealand dollar';
+    if(resultEl) resultEl.textContent=`${state.quote} ${result===null?'--':formatMoney(result)}`;
+    if(status){
+      if(state.rate) status.textContent=state.source==='live'?`Latest daily reference rate · ${state.date}`:`Offline rate saved from ${state.date||'the last update'}`;
+      else status.textContent='Connect to the internet to load the exchange rate.';
+    }
+  }
+  async function loadCurrencyRate(){
+    readCachedRate(); updateCurrencyUI();
+    try{
+      const response=await fetch(API_URL,{cache:'no-store'});
+      if(!response.ok) throw new Error('rate request failed');
+      const data=await response.json();
+      const rate=data&&data.rates&&Number(data.rates.AUD);
+      if(!rate) throw new Error('invalid rate');
+      state.rate=rate; state.date=data.date||new Date().toISOString().slice(0,10); state.source='live'; state.loaded=true;
+      saveCachedRate(); updateCurrencyUI();
+    }catch(e){
+      state.loaded=true;
+      if(!state.rate) readCachedRate();
+      updateCurrencyUI();
+    }
+  }
+  window.openCurrencyModal=function(){
+    const modal=document.getElementById('currencyModal');
+    if(!modal) return;
+    modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
+    document.body.classList.add('currency-modal-open');
+    updateCurrencyUI();
+    setTimeout(()=>{const input=document.getElementById('currencyAmount'); if(input) input.focus({preventScroll:true});},80);
+  };
+  window.closeCurrencyModal=function(){
+    const modal=document.getElementById('currencyModal');
+    if(!modal) return;
+    modal.classList.remove('open'); modal.setAttribute('aria-hidden','true');
+    document.body.classList.remove('currency-modal-open');
+  };
+  window.swapCurrencyDirection=function(){
+    const old=state.base; state.base=state.quote; state.quote=old; updateCurrencyUI();
+  };
+  document.addEventListener('DOMContentLoaded',function(){
+    const input=document.getElementById('currencyAmount');
+    if(input) input.addEventListener('input',updateCurrencyUI);
+    const modal=document.getElementById('currencyModal');
+    if(modal) modal.addEventListener('click',function(e){if(e.target===modal) window.closeCurrencyModal();});
+    loadCurrencyRate();
   });
 })();
