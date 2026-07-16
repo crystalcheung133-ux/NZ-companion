@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
-<html lang="zh-Hant"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>Day · New Zealand Companion</title><link href="manifest.json" rel="manifest"/><meta content="#087F8C" name="theme-color"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="New Zealand" name="apple-mobile-web-app-title"/><link href="icon-192.png" rel="apple-touch-icon"/><link href="styles.css?v=nz0.3c" rel="stylesheet"/></head><body><nav class="site-nav"><a class="brand" href="index.html"><span class="brand-mark"><img alt="" data-brand-logo="header" src="nz-adventure-mark.png"/></span><span data-brand-text="navLabel">New Zealand Companion</span></a><button class="friend-pill" onclick="openFriendModal()"><span data-friend-label="">Lee</span></button></nav><main class="content-page" id="dynamicDayRoot" aria-live="polite"></main>
-<script src="data.js"></script><script src="script.js?v=nz0.3c"></script>
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>Day · New Zealand Companion</title><link href="manifest.json" rel="manifest"/><meta content="#087F8C" name="theme-color"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="New Zealand" name="apple-mobile-web-app-title"/><link href="icon-192.png" rel="apple-touch-icon"/><link href="styles.css?v=nz0.4a" rel="stylesheet"/></head><body><nav class="site-nav"><a class="brand" href="index.html"><span class="brand-mark"><img alt="" data-brand-logo="header" src="nz-adventure-mark.png"/></span><span data-brand-text="navLabel">New Zealand Companion</span></a><button class="friend-pill" onclick="openFriendModal()"><span data-friend-label="">Lee</span></button></nav><main class="content-page" id="dynamicDayRoot" aria-live="polite"></main>
+<script src="data.js"></script><script src="script.js?v=nz0.4a"></script>
 <script>
 (function(){
   const DAY_RENDER_DATA = ITINERARY_DATA; // Stage 3E: canonical data now lives in data.js
@@ -39,9 +39,24 @@
     return `<a class="day-route-action" href="${esc(href)}" target="_blank" rel="noopener"><span>View Today’s Route</span><b aria-hidden="true">›</b></a>`;
   }
   const todayRoute = buildTodayRoute(data);
+  function buildDriveBriefing(dayData){
+    const d=dayData.drive;
+    if(!d) return '';
+    const stops=(d.stops||[]).map(stop=>`<span>${esc(stop)}</span>`).join('');
+    const primary=d.primaryMap ? `<a class="drive-briefing-action" href="${esc(d.primaryMap)}" target="_blank" rel="noopener">Open planned route</a>` : '';
+    const backup=d.backupMap ? `<a class="drive-briefing-action drive-briefing-action--secondary" href="${esc(d.backupMap)}" target="_blank" rel="noopener">Open backup route</a>` : '';
+    return `<section class="drive-briefing" aria-label="Today’s drive">
+      <div class="drive-briefing-head"><div><p class="kicker">Today’s drive</p><h2>${esc(d.route)}</h2></div><span class="drive-briefing-icon">🚙</span></div>
+      <div class="drive-briefing-stats"><div><small>Distance</small><strong>${esc(d.distance)}</strong></div><div><small>Wheel time</small><strong>${esc(d.drivingTime)}</strong></div><div><small>Road</small><strong>${esc(d.road)}</strong></div></div>
+      ${stops ? `<div class="drive-briefing-stops"><small>Planned stops</small><div>${stops}</div></div>` : ''}
+      ${d.note ? `<p class="drive-briefing-note">${esc(d.note)}</p>` : ''}
+      <div class="drive-briefing-actions">${primary}${backup}</div>
+    </section>`;
+  }
+  const driveBriefing=buildDriveBriefing(data);
   const items = data.items.map(item => {
     const detailHtml = (item.details || []).map(text => `<p>${esc(text)}</p>`).join('');
-    const routeHtml = item.route ? `<div class="route-hint"><strong>🚕 To next stop</strong><br/>${esc(item.route)}</div>` : '';
+    const routeHtml = item.route ? `<div class="route-hint"><strong>Next leg</strong><br/>${esc(item.route)}</div>` : '';
     const mapHtml = item.map ? `<a class="timeline-action timeline-action--map" href="${esc(item.map)}" target="_blank" rel="noopener">Navigate</a>` : '';
     const guideIds = Array.isArray(item.guideIds) && item.guideIds.length ? item.guideIds : [item.placeId || item.id];
     const directoryHtml = item.showShoppingDirectory
@@ -68,7 +83,7 @@
       </div>
     </div>`;
   }).join('');
-  root.innerHTML = `<div class="page-hero day-page-hero"><p class="kicker">${esc(data.kicker)}</p><h1>${esc(data.heading)}</h1>${todayRoute}</div><section class="timeline">${items}</section>`;
+  root.innerHTML = `<div class="page-hero day-page-hero"><p class="kicker">${esc(data.kicker)}</p><h1>${esc(data.heading)}</h1>${todayRoute}</div>${driveBriefing}<section class="timeline">${items}</section>`;
 
   // Stage 4F-L: native hash scrolling can run before dynamic cards exist.
   // Re-resolve the requested card after render and offset the sticky top bar.
@@ -114,7 +129,7 @@
 <a class="summary-link" href="moments.html"><span>✨</span><small>Moments</small></a>
 <a class="summary-link" href="expenses.html"><span>💸</span><small>Expenses</small></a>
 </nav>
-<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=nz0.3c').catch(()=>{}));}</script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=nz0.4a').catch(()=>{}));}</script>
 <div class="trip-modal" id="tripModal"><div class="trip-sheet"><button class="trip-close" onclick="closeTripModal()" type="button">×</button><div id="tripModalContent"></div></div></div>
 <div class="guide-modal" id="guideModal"><div class="guide-sheet"><button class="guide-close" onclick="closeGuideModal()" type="button">×</button><div id="guideModalContent"></div></div></div>
 <div class="moments-modal" id="momentsModal"><div class="moments-sheet"><button class="moments-close" onclick="closeMomentsModal()" type="button">×</button><p class="kicker">MEMORY BOOK</p><h2 id="momentsTitle">Moment</h2><p class="lead modal-intro" id="momentsIntro">每一個地方都可以留底 rating、something to say 同相片。旅行完之後，呢度就係三個家庭嘅 shared memory book。</p><p><span class="status-badge" id="momentsFriend">Friend</span> <button class="mini-btn" onclick="openFriendModal()">Change Family</button></p><div class="moments-form"><input id="momentsRating" type="hidden" value="0"/><div class="star-row"><span class="star" onclick="setStars(1)">⭐</span><span class="star" onclick="setStars(2)">⭐</span><span class="star" onclick="setStars(3)">⭐</span><span class="star" onclick="setStars(4)">⭐</span><span class="star" onclick="setStars(5)">⭐</span></div><p class="mood-help">Choose up to 2 moods</p><div class="mood-grid" id="moodGrid"></div><textarea id="momentsText" placeholder="Something to say..."></textarea><div class="photo-input">📷 Add Photo（Camera / Photo Library）</div><button class="btn" onclick="saveMoments()">Save</button></div></div></div>

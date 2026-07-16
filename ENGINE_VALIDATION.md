@@ -41,3 +41,10 @@ Deployable without UI redesign. Core timeline/place/booking model is reusable, b
 - Home and Moments use a stronger alpine blue / forest green / orange identity.
 - User labels simplified to Lee, Fowlers and Yau.
 - Confirmed flight numbers, terminals, duration, aircraft, references and return seats loaded.
+
+## Validation 0.4A — Road-trip experience
+- Added static daily drive briefing cards for 22–25 September.
+- Added distance, wheel time, road type, planned stops, route notes and one-tap Google Maps routes.
+- Added Crown Range backup route via Cromwell.
+- No GPS tracking, background location, arrival detection or real-time alerts.
+- The Companion remains a pre-drive and between-stop guide; Google Maps remains the navigation tool.
