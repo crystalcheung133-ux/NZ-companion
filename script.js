@@ -271,7 +271,7 @@ function markConsumedManual(){
    Active Expenses API lives in the Stage 4F-Q single canonical module
    near the end of this file. Keep closeExpenseModal as a simple modal
    utility because HTML buttons call it directly. */
-function closeExpenseModal(){const m=$('expenseModal'); if(m) m.classList.remove('show'); unlockExpensePage();}
+function closeExpenseModal(){const m=$('expenseModal'); if(m) m.classList.remove('show'); if(typeof window.unlockExpensePage==='function') window.unlockExpensePage();}
 
 function saveChecklist(){const checks=[...document.querySelectorAll('[data-check]')].map(c=>c.checked);localStorage.setItem('checklist',JSON.stringify(checks));const ready=$('readyBox');if(ready)ready.classList.toggle('show',checks.length>0&&checks.every(Boolean)); renderDashboard();}
 function loadChecklist(){const stored=JSON.parse(localStorage.getItem('checklist')||'[]');document.querySelectorAll('[data-check]').forEach((c,i)=>c.checked=!!stored[i]);saveChecklist();}
@@ -287,7 +287,7 @@ function openTripCard(key) {
   const content = document.getElementById('tripModalContent');
   const modal = document.getElementById('tripModal');
   if (!content || !modal) return;
-  content.innerHTML = `<div class="trip-onepage"><p class="kicker">Trip</p><h2>${t.title}</h2>${t.body}<div class="guide-next-row"><button class="pill" onclick="openTripCard('${prev}')">‹ Previous</button><button class="pill" onclick="openTripCard('${next}')">Next ›</button></div><p class="timestamp">Build · Version ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.version)||'0.6 RC11C'} · ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.buildLabel)||'Phase 1 Release Candidate'}</p></div>`;
+  content.innerHTML = `<div class="trip-onepage"><p class="kicker">Trip</p><h2>${t.title}</h2>${t.body}<div class="guide-next-row"><button class="pill" onclick="openTripCard('${prev}')">‹ Previous</button><button class="pill" onclick="openTripCard('${next}')">Next ›</button></div><p class="timestamp">Build · Version ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.version)||'0.6 RC11D'} · ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.buildLabel)||'Phase 1 Release Candidate'}</p></div>`;
   modal.classList.add('show');
   const sheet=document.querySelector('#tripModal .trip-sheet');
   if(sheet) sheet.scrollTop=0;
@@ -1067,6 +1067,15 @@ function getBookingStatusLabel(status){
     if(!panel || expenseSplitMode!=='custom') return;
     const inputs=[...panel.querySelectorAll('input[data-custom-party]')];
     const total=expenseTotalValue();
+    const blanks=inputs.filter(i=>String(i.value||'').trim()==='');
+    const filled=inputs.filter(i=>String(i.value||'').trim()!=='');
+    if(total>0 && inputs.length>1 && blanks.length===1 && filled.length===inputs.length-1){
+      const used=filled.reduce((sum,i)=>sum+(Number(i.value)||0),0);
+      const remainder=total-used;
+      if(remainder>=0){
+        blanks[0].value=remainder.toFixed(2);
+      }
+    }
     const allocated=inputs.reduce((sum,i)=>sum+(Number(i.value)||0),0);
     const difference=total-allocated;
     const status=document.getElementById('customSplitStatus');
@@ -1188,6 +1197,7 @@ function getBookingStatusLabel(status){
     document.body.style.top='';
     window.scrollTo(0,expensePageScrollY);
   }
+  window.unlockExpensePage=unlockExpensePage;
   let expenseSheetFocusScroll=0;
   document.addEventListener('focusin',event=>{
     if(!event.target.closest('#expenseModal')) return;
@@ -1246,14 +1256,14 @@ function getBookingStatusLabel(status){
     window.renderExpenses();
     resetExpenseForm();
     closeExpenseModal();
-    requestAnimationFrame(()=>{
+    setTimeout(()=>{
       const latest=document.getElementById('latestExpenseCard');
       if(latest){
-        latest.scrollIntoView({behavior:'smooth',block:'center'});
+        latest.scrollIntoView({behavior:'auto',block:'center'});
         latest.classList.add('expense-card--new');
         setTimeout(()=>latest.classList.remove('expense-card--new'),1800);
       }
-    });
+    },120);
   };
 
   window.renderToolTransactionHistory=function(){
