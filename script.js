@@ -122,7 +122,7 @@ function setFriend(k){
   if(document.getElementById('expenseModal')?.classList.contains('show')&&typeof window.resetExpenseForm==='function')window.resetExpenseForm();
   if(document.getElementById('momentsModal')?.classList.contains('show')&&typeof window.simplifyMomentsAuthor==='function')window.simplifyMomentsAuthor();
 }
-function updateFriendLabels(){const label=FRIENDS[getFriend()]||'🏔️ Lee Family';document.querySelectorAll('[data-friend-label]').forEach(e=>e.textContent=label);}
+function updateFriendLabels(){const label=FRIENDS[getFriend()]||'🦘 Lee';document.querySelectorAll('[data-friend-label]').forEach(e=>e.textContent=label);}
 function openFriendModal(){$('mamaModal').classList.add('show')} function closeFriendModal(){$('mamaModal').classList.remove('show')}
 
 
@@ -815,8 +815,8 @@ document.addEventListener('DOMContentLoaded',()=>{
     catch(e){ return DEFAULT_FRIEND; }
   }
   function friendLabel(k){
-    try { return (typeof FRIENDS !== 'undefined' && FRIENDS[k]) ? FRIENDS[k] : (FRIENDS?.[DEFAULT_FRIEND] || '🏔️ Lee Family'); }
-    catch(e){ return '🏔️ Lee Family'; }
+    try { return (typeof FRIENDS !== 'undefined' && FRIENDS[k]) ? FRIENDS[k] : (FRIENDS?.[DEFAULT_FRIEND] || '🦘 Lee'); }
+    catch(e){ return '🦘 Lee'; }
   }
   function simplifyMomentsAuthor(){
     const row=document.querySelector('#momentsModal p:has(#momentsFriend)');
@@ -891,7 +891,7 @@ function getBookingStatusLabel(status){
    ============================================================================ */
 (function(){
   const FRIEND_ORDER=['lee','fowlers','yau'];
-  const FRIEND_FALLBACK={lee:'🏔️ Lee Family',fowlers:'🦉 Fowlers',yau:'🥝 Yau'};
+  const FRIEND_FALLBACK={lee:'🦘 Lee',fowlers:'🌉 Fowlers',yau:'🌊 Yau'};
 
   function currentUser(){
     try{return (typeof getFriend==='function' ? getFriend() : localStorage.getItem('nz_friend')) || 'lee';}

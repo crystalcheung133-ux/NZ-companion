@@ -33,3 +33,10 @@ The trip-level selector represents the three travelling families: Lee Family, Fo
 - Top navigation uses neutral snow-white surface.
 - Watermarks are monochrome graphite emboss assets only.
 - Splash badge is padded and rendered with object-fit contain to protect the complete circular rim.
+
+
+## Build 0.3C
+- Splash badge renders without a tile.
+- Moments actions use blue and orange outdoor controls.
+- Primary Expenses action returns to universal blue.
+- Traveller groups use origin cues: 🦘 Lee, 🌉 Fowlers, 🌊 Yau.

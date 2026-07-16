@@ -2306,3 +2306,36 @@ body.expenses-page .primary-action{
   #ccmvSplash .splash-content{padding:20px 18px!important;width:96vw!important}
   #ccmvSplash .splash-logo{width:min(78vw,350px)!important;max-height:50vh!important;padding:10px!important}
 }
+
+
+/* =========================================================
+   NZ BUILD 0.3C — CANONICAL ACTIVE IDENTITY CORRECTIONS
+   Replaces the remaining blush capture controls and splash tile.
+   ========================================================= */
+#ccmvSplash .splash-logo{
+  background:transparent!important;
+  background-image:none!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  padding:14px!important;
+  overflow:visible!important;
+}
+body.moments-page .moments-capture-choices .btn.primary-action{
+  background:linear-gradient(135deg,var(--nz-blue),var(--nz-blue-deep))!important;
+  border-color:var(--nz-blue-deep)!important;
+  color:#fff!important;
+  box-shadow:0 10px 24px rgba(7,91,115,.18)!important;
+}
+body.moments-page .moments-capture-choices .btn.moments-planned-entry{
+  background:linear-gradient(135deg,var(--nz-orange),#E67E00)!important;
+  border-color:var(--nz-orange-deep)!important;
+  color:#fff!important;
+  box-shadow:0 10px 24px rgba(201,109,0,.18)!important;
+}
+body.moments-page .moments-capture-choices .btn *{color:inherit!important}
+body.expenses-page .primary-action{
+  background:linear-gradient(135deg,var(--nz-blue),var(--nz-blue-deep))!important;
+  border-color:var(--nz-blue-deep)!important;
+  color:#fff!important;
+}
