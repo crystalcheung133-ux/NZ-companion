@@ -287,7 +287,7 @@ function openTripCard(key) {
   const content = document.getElementById('tripModalContent');
   const modal = document.getElementById('tripModal');
   if (!content || !modal) return;
-  content.innerHTML = `<div class="trip-onepage"><p class="kicker">Trip</p><h2>${t.title}</h2>${t.body}<div class="guide-next-row"><button class="pill" onclick="openTripCard('${prev}')">‹ Previous</button><button class="pill" onclick="openTripCard('${next}')">Next ›</button></div><p class="timestamp">Build · Version ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.version)||'0.6 RC10'} · ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.buildLabel)||'Phase 1 Release Candidate'}</p></div>`;
+  content.innerHTML = `<div class="trip-onepage"><p class="kicker">Trip</p><h2>${t.title}</h2>${t.body}<div class="guide-next-row"><button class="pill" onclick="openTripCard('${prev}')">‹ Previous</button><button class="pill" onclick="openTripCard('${next}')">Next ›</button></div><p class="timestamp">Build · Version ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.version)||'0.6 RC11C'} · ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.buildLabel)||'Phase 1 Release Candidate'}</p></div>`;
   modal.classList.add('show');
   const sheet=document.querySelector('#tripModal .trip-sheet');
   if(sheet) sheet.scrollTop=0;
@@ -843,7 +843,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         el.textContent='💰 What did we spend?';
       }
     });
-    const title=document.getElementById('expenseModalTitle'); if(title) title.textContent='💰 What did we spend?';
+    const title=document.getElementById('expenseModalTitle'); if(title) title.textContent='Add expense';
     const intro=document.getElementById('expenseIntro'); if(intro) intro.textContent='Record each shared or personal expense. Personal Spend and Settlement update automatically.';
     const save=document.getElementById('expenseSaveButton'); if(save) save.textContent='Save';
   }
@@ -1151,7 +1151,7 @@ function getBookingStatusLabel(status){
     expenseSplitMode='equal';
     try{updateExpenseMode();}catch(e){}
     window.updateSplitUI();
-    const title=document.getElementById('expenseModalTitle'); if(title) title.textContent='💰 What did we spend?';
+    const title=document.getElementById('expenseModalTitle'); if(title) title.textContent='Add expense';
     const save=document.getElementById('expenseSaveButton'); if(save) save.textContent='Save';
     ensurePaidByUI();
     updatePaidByDisplay();
@@ -1161,7 +1161,8 @@ function getBookingStatusLabel(status){
     const split=e.split||[];
     const consumer=e.consumedBy || split[0] || e.paidBy;
     const who=personal ? `Consumed by ${labelFor(consumer)}` : `${e.splitMode==='custom'?'Custom':'Equal'} split: ${split.map(labelFor).join(' · ')}`;
-    return `<div class="expense-card"><strong>${escapeHTML(e.item||'')}</strong><p class="timestamp">${timeLabel(e.createdAt)}${e.editedAt?` · Edited ${timeLabel(e.editedAt)}`:''}</p><p>${Number(e.total||0).toLocaleString()} NZD · Paid by ${labelFor(e.paidBy)}</p><p>${personal?'Personal Expense':'Shared Expense'} · ${who}</p><div class="entry-actions"><button class="mini-btn" onclick="editExpense(${e._idx})">✏️ Edit</button><button class="mini-btn" onclick="deleteExpense(${e._idx})">🗑 Delete</button></div></div>`;
+    const latestId=e._latest?' id="latestExpenseCard"':'';
+    return `<div class="expense-card"${latestId}><strong>${escapeHTML(e.item||'')}</strong><p class="timestamp">${timeLabel(e.createdAt)}${e.editedAt?` · Edited ${timeLabel(e.editedAt)}`:''}</p><p>${Number(e.total||0).toLocaleString()} NZD · Paid by ${labelFor(e.paidBy)}</p><p>${personal?'Personal Expense':'Shared Expense'} · ${who}</p><div class="entry-actions"><button class="mini-btn" onclick="editExpense(${e._idx})">✏️ Edit</button><button class="mini-btn" onclick="deleteExpense(${e._idx})">🗑 Delete</button></div></div>`;
   }
   function ensureToolHistory(){
     const sheet=document.querySelector('#expenseModal .tools-sheet');
@@ -1205,7 +1206,6 @@ function getBookingStatusLabel(status){
     lockExpensePage();
     const modal=document.getElementById('expenseModal');
     if(modal) modal.classList.add('show');
-    try{if(typeof renderLatestExpenseMini==='function') renderLatestExpenseMini();}catch(e){}
   };
 
   window.saveExpense=function(){
@@ -1245,8 +1245,15 @@ function getBookingStatusLabel(status){
     writeExpenses(arr);
     window.renderExpenses();
     resetExpenseForm();
-    showExpenseSavedNote();
-    // Intentional: keep modal open for quick multiple expense entry.
+    closeExpenseModal();
+    requestAnimationFrame(()=>{
+      const latest=document.getElementById('latestExpenseCard');
+      if(latest){
+        latest.scrollIntoView({behavior:'smooth',block:'center'});
+        latest.classList.add('expense-card--new');
+        setTimeout(()=>latest.classList.remove('expense-card--new'),1800);
+      }
+    });
   };
 
   window.renderToolTransactionHistory=function(){
@@ -1259,7 +1266,7 @@ function getBookingStatusLabel(status){
   window.renderExpenses=function(){
     const pageBox=document.getElementById('expensePageList');
     const arr=readExpenses();
-    const sorted=arr.map((e,i)=>({...e,_idx:i})).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
+    const sorted=arr.map((e,i)=>({...e,_idx:i})).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||''))).map((e,i)=>({...e,_latest:i===0}));
     if(pageBox){
       const total=arr.reduce((sum,e)=>sum+Number(e.total||0),0);
       const personalSpend={lee:0,fowlers:0,yau:0};
@@ -1283,8 +1290,6 @@ function getBookingStatusLabel(status){
       const balanceHtml=FRIEND_ORDER.map(k=>{const v=balance[k]||0;return `<p>${labelFor(k)}<br><strong>${v>=0?'Receive':'Owes'} ${Math.abs(Math.round(v)).toLocaleString()} NZD</strong></p>`;}).join('');
       pageBox.innerHTML=`<div class="expense-dashboard-v33"><div class="expense-total-card"><span>Trip Total</span><strong>${total.toLocaleString()} NZD</strong><small>Shared + personal expenses</small></div><div class="expense-focus-grid"><div class="expense-focus-card"><h3>Personal Spend</h3>${spendHtml}</div><div class="expense-focus-card"><h3>Settlement</h3>${balanceHtml}</div></div></div><div class="expense-history-block"><h3>Transaction History</h3><p class="timestamp">Newest transactions appear first.</p><div class="transaction-scroll">${sorted.length?sorted.map(expenseCard).join(''):'<p>No transactions yet.</p>'}</div></div>`;
     }
-    ensureToolHistory();
-    window.renderToolTransactionHistory();
   };
 
   window.exportExpenseData=function(){
