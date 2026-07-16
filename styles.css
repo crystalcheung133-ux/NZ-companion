@@ -2665,7 +2665,7 @@ body.expense-modal-open{position:fixed!important;left:0!important;right:0!import
 }
 
 
-/* NZ 0.6 RC11D — expense save unlock, compact categories and custom autofill */
+/* NZ 0.6 RC11E — expense save unlock, compact categories and custom autofill */
 #expenseModal .tools-sheet{max-height:min(88dvh,760px)!important;padding:22px 20px 18px!important;}
 #expenseModal .kicker{margin-bottom:3px!important;}
 #expenseModal #expenseModalTitle{margin:0 42px 12px 0!important;font-size:clamp(1.7rem,7vw,2.15rem)!important;line-height:1.05!important;}
@@ -2703,3 +2703,12 @@ body.expense-modal-open{position:fixed!important;left:0!important;right:0!import
  .custom-split-row{grid-template-columns:80px minmax(0,1fr)!important;}
  .custom-split-row>span{width:80px!important;max-width:80px!important;}
 }
+
+/* NZ 0.6 RC11E — deferred custom remainder and clear controls */
+.field-clear-btn{border:1px solid rgba(31,74,92,.22);background:#fff;color:#31556a;border-radius:12px;height:42px;min-width:46px;padding:0 8px;font:800 11px/1 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer}
+.field-clear-btn:active{transform:translateY(1px)}
+.expense-total-field{display:grid!important;grid-template-columns:minmax(0,1fr) 48px 46px!important;gap:7px!important}
+.expense-total-field>input{min-width:0!important;width:100%!important}
+.custom-split-row .expense-money-field{grid-template-columns:minmax(0,1fr) 48px 40px!important}
+.custom-split-row .field-clear-btn{width:48px!important;min-width:48px!important;height:40px!important;padding:0 5px!important;font-size:10px!important}
+@media(max-width:390px){.custom-split-row{grid-template-columns:76px minmax(0,1fr)!important}.custom-split-row>span{width:76px!important;max-width:76px!important}.custom-split-row .expense-money-field{grid-template-columns:minmax(82px,1fr) 44px 38px!important;gap:5px!important}.custom-split-row .field-clear-btn{width:44px!important;min-width:44px!important}.custom-split-row .remainder-btn{width:38px!important;min-width:38px!important}.expense-total-field{grid-template-columns:minmax(0,1fr) 46px 44px!important;gap:6px!important}}

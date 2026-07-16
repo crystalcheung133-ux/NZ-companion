@@ -287,7 +287,7 @@ function openTripCard(key) {
   const content = document.getElementById('tripModalContent');
   const modal = document.getElementById('tripModal');
   if (!content || !modal) return;
-  content.innerHTML = `<div class="trip-onepage"><p class="kicker">Trip</p><h2>${t.title}</h2>${t.body}<div class="guide-next-row"><button class="pill" onclick="openTripCard('${prev}')">‹ Previous</button><button class="pill" onclick="openTripCard('${next}')">Next ›</button></div><p class="timestamp">Build · Version ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.version)||'0.6 RC11D'} · ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.buildLabel)||'Phase 1 Release Candidate'}</p></div>`;
+  content.innerHTML = `<div class="trip-onepage"><p class="kicker">Trip</p><h2>${t.title}</h2>${t.body}<div class="guide-next-row"><button class="pill" onclick="openTripCard('${prev}')">‹ Previous</button><button class="pill" onclick="openTripCard('${next}')">Next ›</button></div><p class="timestamp">Build · Version ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.version)||'0.6 RC11E'} · ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.buildLabel)||'Phase 1 Release Candidate'}</p></div>`;
   modal.classList.add('show');
   const sheet=document.querySelector('#tripModal .trip-sheet');
   if(sheet) sheet.scrollTop=0;
@@ -1042,7 +1042,7 @@ function getBookingStatusLabel(status){
     if(!parties.length){panel.innerHTML='<p class="split-helper">Choose at least one party.</p>';return;}
     const previous={};
     panel.querySelectorAll('input[data-custom-party]').forEach(i=>previous[i.dataset.customParty]=i.value);
-    panel.innerHTML=parties.map(k=>`<label class="custom-split-row"><span>${labelFor(k)}</span><div class="expense-money-field"><input id="customShare_${k}" data-custom-party="${k}" inputmode="decimal" type="text" value="${previous[k]??''}" placeholder="0.00" oninput="recalculateCustomSplit()"/><button class="calc-open-btn remainder-btn" type="button" onclick="calculateCustomRemainder('${k}')" aria-label="Calculate remainder for ${labelFor(k)}">${calculatorIcon()}</button></div></label>`).join('')+`<p class="split-helper" id="customSplitStatus">Fill the other amounts, then tap the calculator beside any party to assign the remainder.</p>`;
+    panel.innerHTML=parties.map(k=>`<label class="custom-split-row"><span>${labelFor(k)}</span><div class="expense-money-field"><input id="customShare_${k}" data-custom-party="${k}" inputmode="decimal" type="text" value="${previous[k]??''}" placeholder="0.00" oninput="recalculateCustomSplit()" onblur="autofillCustomRemainderOnExit('${k}')"/><button class="field-clear-btn" type="button" onclick="clearExpenseField('customShare_${k}')" aria-label="Clear ${labelFor(k)} amount">Clear</button><button class="calc-open-btn remainder-btn" type="button" onclick="calculateCustomRemainder('${k}')" aria-label="Calculate remainder for ${labelFor(k)}">${calculatorIcon()}</button></div></label>`).join('')+`<p class="split-helper" id="customSplitStatus">Enter two amounts, then move to the remaining field to fill the balance automatically.</p>`;
     window.recalculateCustomSplit();
   }
   window.calculateCustomRemainder=function(targetParty){
@@ -1062,7 +1062,7 @@ function getBookingStatusLabel(status){
     const input=document.getElementById(`customShare_${targetParty}`);
     if(input){input.value=remainder.toFixed(2);input.dispatchEvent(new Event('input',{bubbles:true}));}
   };
-  window.recalculateCustomSplit=function(){
+  window.autofillCustomRemainderOnExit=function(sourceParty){
     const panel=document.getElementById('customSplitPanel');
     if(!panel || expenseSplitMode!=='custom') return;
     const inputs=[...panel.querySelectorAll('input[data-custom-party]')];
@@ -1072,10 +1072,22 @@ function getBookingStatusLabel(status){
     if(total>0 && inputs.length>1 && blanks.length===1 && filled.length===inputs.length-1){
       const used=filled.reduce((sum,i)=>sum+(Number(i.value)||0),0);
       const remainder=total-used;
-      if(remainder>=0){
-        blanks[0].value=remainder.toFixed(2);
-      }
+      if(remainder>=0) blanks[0].value=remainder.toFixed(2);
     }
+    window.recalculateCustomSplit();
+  };
+  window.clearExpenseField=function(id){
+    const input=document.getElementById(id);
+    if(!input) return;
+    input.value='';
+    input.dispatchEvent(new Event('input',{bubbles:true}));
+    input.focus({preventScroll:true});
+  };
+  window.recalculateCustomSplit=function(){
+    const panel=document.getElementById('customSplitPanel');
+    if(!panel || expenseSplitMode!=='custom') return;
+    const inputs=[...panel.querySelectorAll('input[data-custom-party]')];
+    const total=expenseTotalValue();
     const allocated=inputs.reduce((sum,i)=>sum+(Number(i.value)||0),0);
     const difference=total-allocated;
     const status=document.getElementById('customSplitStatus');
