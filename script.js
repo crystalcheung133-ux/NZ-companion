@@ -271,7 +271,7 @@ function markConsumedManual(){
    Active Expenses API lives in the Stage 4F-Q single canonical module
    near the end of this file. Keep closeExpenseModal as a simple modal
    utility because HTML buttons call it directly. */
-function closeExpenseModal(){const m=$('expenseModal'); if(m) m.classList.remove('show')}
+function closeExpenseModal(){const m=$('expenseModal'); if(m) m.classList.remove('show'); unlockExpensePage();}
 
 function saveChecklist(){const checks=[...document.querySelectorAll('[data-check]')].map(c=>c.checked);localStorage.setItem('checklist',JSON.stringify(checks));const ready=$('readyBox');if(ready)ready.classList.toggle('show',checks.length>0&&checks.every(Boolean)); renderDashboard();}
 function loadChecklist(){const stored=JSON.parse(localStorage.getItem('checklist')||'[]');document.querySelectorAll('[data-check]').forEach((c,i)=>c.checked=!!stored[i]);saveChecklist();}
@@ -1174,9 +1174,35 @@ function getBookingStatusLabel(status){
     else sheet.appendChild(holder);
   }
 
+  let expensePageScrollY=0;
+  function lockExpensePage(){
+    if(document.body.classList.contains('expense-modal-open')) return;
+    expensePageScrollY=window.scrollY||0;
+    document.body.style.top=`-${expensePageScrollY}px`;
+    document.body.classList.add('expense-modal-open');
+  }
+  function unlockExpensePage(){
+    if(!document.body.classList.contains('expense-modal-open')) return;
+    document.body.classList.remove('expense-modal-open');
+    document.body.style.top='';
+    window.scrollTo(0,expensePageScrollY);
+  }
+  let expenseSheetFocusScroll=0;
+  document.addEventListener('focusin',event=>{
+    if(!event.target.closest('#expenseModal')) return;
+    const sheet=document.querySelector('#expenseModal .tools-sheet');
+    if(sheet) expenseSheetFocusScroll=sheet.scrollTop;
+  });
+  document.addEventListener('focusout',event=>{
+    if(!event.target.closest('#expenseModal')) return;
+    const sheet=document.querySelector('#expenseModal .tools-sheet');
+    if(sheet) setTimeout(()=>{ if(!document.activeElement?.closest('#expenseModal input, #expenseModal textarea, #expenseModal select')) sheet.scrollTop=expenseSheetFocusScroll; },80);
+  });
+
   window.openExpenseModal=function(){
     ensurePaidByUI();
     resetExpenseForm();
+    lockExpensePage();
     const modal=document.getElementById('expenseModal');
     if(modal) modal.classList.add('show');
     try{if(typeof renderLatestExpenseMini==='function') renderLatestExpenseMini();}catch(e){}
@@ -1226,8 +1252,8 @@ function getBookingStatusLabel(status){
   window.renderToolTransactionHistory=function(){
     const box=document.getElementById('toolTransactionHistory');
     if(!box) return;
-    const latest=readExpenses().map((e,i)=>({...e,_idx:i})).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||''))).slice(0,5);
-    box.innerHTML=`<h3>Transaction History</h3>${latest.length?latest.map(expenseCard).join(''):'<p class="timestamp">No transactions yet.</p>'}`;
+    const latest=readExpenses().map((e,i)=>({...e,_idx:i})).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||''))).slice(0,1);
+    box.innerHTML=`<h3>Latest Transaction</h3>${latest.length?latest.map(expenseCard).join(''):'<p class="timestamp">No transactions yet.</p>'}`;
   };
 
   window.renderExpenses=function(){
