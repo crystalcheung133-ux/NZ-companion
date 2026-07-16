@@ -25,3 +25,11 @@ The trip-level selector represents the three travelling families: Lee Family, Fo
 - Home and Moments use a stronger alpine blue / forest green / orange identity.
 - User labels simplified to Lee, Fowlers and Yau.
 - Confirmed flight numbers, terminals, duration, aircraft, references and return seats loaded.
+
+## Build 0.3B — Unified Light Adventure Palette
+- One light Sky / Lake / Meadow hero gradient across pages.
+- Outdoor action hierarchy: blue primary, green expense/secondary, orange highlight.
+- Moments no longer inherits blush/pink styling.
+- Top navigation uses neutral snow-white surface.
+- Watermarks are monochrome graphite emboss assets only.
+- Splash badge is padded and rendered with object-fit contain to protect the complete circular rim.

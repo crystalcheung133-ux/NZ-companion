@@ -2113,3 +2113,196 @@ body.moments-page button.primary-action,
   #ccmvSplash .splash-logo{width:min(82vw,380px)!important;max-height:54vh!important}
   #ccmvSplash .splash-line{font-size:clamp(20px,6vw,28px)!important}
 }
+
+/* ========================================================================== 
+   NZ Validation Build 0.3B — Unified Light Adventure Palette
+   Identity-only refinement. No layout or feature changes.
+   ========================================================================== */
+:root{
+  --nz-sky:#DDF4FA!important;
+  --nz-lake:#BFE8F1!important;
+  --nz-mint:#DFF3E4!important;
+  --nz-snow:#F8FCFD!important;
+  --nz-blue:#087F9C!important;
+  --nz-blue-deep:#075B73!important;
+  --nz-green:#3D7F55!important;
+  --nz-orange:#F49A24!important;
+  --nz-orange-deep:#C96D00!important;
+  --nz-ink:#15324B!important;
+  --nz-muted:#557086!important;
+  --nz-neutral-line:rgba(21,50,75,.16)!important;
+  --nz-hero:linear-gradient(135deg,#DDF4FA 0%,#E8F7EF 58%,#FFF2D6 100%)!important;
+  --ink:var(--nz-ink)!important;
+  --muted:var(--nz-muted)!important;
+  --line:var(--nz-neutral-line)!important;
+  --card:#FFFFFF!important;
+  --bg:#EEF8FA!important;
+  --accent:var(--nz-orange)!important;
+  --gold-deep:var(--nz-blue)!important;
+}
+
+/* Airy, consistent site background and neutral embossed watermark. */
+body,
+body.home-bg,
+body.moments-page,
+body.expenses-page{
+  background-color:#EEF8FA!important;
+  background-image:linear-gradient(rgba(238,248,250,.965),rgba(238,248,250,.965)),url("nz-adventure-watermark-mono.png")!important;
+  background-size:auto,170px 170px!important;
+  color:var(--nz-ink)!important;
+}
+
+/* Remove remaining Vietnam/blush language from every top bar. */
+.site-nav,
+body.home-bg .site-nav{
+  background:rgba(255,255,255,.95)!important;
+  border-bottom:1px solid rgba(8,127,156,.20)!important;
+  box-shadow:0 3px 15px rgba(21,50,75,.045)!important;
+  backdrop-filter:blur(16px)!important;
+  -webkit-backdrop-filter:blur(16px)!important;
+}
+.site-nav .brand,
+body.home-bg .site-nav .brand{color:var(--nz-ink)!important}
+
+/* All page heroes use the same light sky → lake → meadow direction. */
+.page-hero,
+.module-hero,
+body.moments-page .page-hero,
+body.moments-page .module-hero,
+body.expenses-page .page-hero,
+body.expenses-page .module-hero{
+  background:var(--nz-hero)!important;
+  background-image:var(--nz-hero)!important;
+  border-color:rgba(8,127,156,.20)!important;
+  box-shadow:0 16px 38px rgba(21,50,75,.09)!important;
+}
+.page-hero h1,.module-hero h1,
+.page-hero .lead,.module-hero .lead,
+body.moments-page .page-hero h1,
+body.moments-page .module-hero h1,
+body.moments-page .page-hero .lead,
+body.moments-page .module-hero .lead{color:var(--nz-ink)!important;text-shadow:none!important}
+.page-hero .kicker,.module-hero .kicker,
+body.moments-page .page-hero .kicker,
+body.moments-page .module-hero .kicker,
+body.expenses-page .page-hero .kicker,
+body.expenses-page .module-hero .kicker{color:var(--nz-blue)!important}
+
+/* Outdoor action hierarchy: blue primary, green secondary, orange highlight. */
+.btn,
+.primary-action,
+.page-action-row .primary-action,
+button.primary-action,
+.home-day-button{
+  background:linear-gradient(135deg,var(--nz-blue),var(--nz-blue-deep))!important;
+  border-color:var(--nz-blue-deep)!important;
+  color:#FFFFFF!important;
+  box-shadow:0 10px 24px rgba(7,91,115,.18)!important;
+}
+.btn:hover,.primary-action:hover,.home-day-button:hover{filter:brightness(1.035)!important}
+.mini-btn,.pill,.friend-pill,.timeline-actions button,.timeline-actions a,.category-pop-list button{
+  background:#FFFFFF!important;
+  border-color:rgba(8,127,156,.24)!important;
+  color:var(--nz-ink)!important;
+}
+.expense-export-action,.expense-export-action--compact{
+  background:#F4FBF6!important;
+  border-color:rgba(61,127,85,.32)!important;
+  color:#285E3C!important;
+}
+.route-hint{
+  background:#FFF4DD!important;
+  border-color:rgba(244,154,36,.42)!important;
+  color:#70420A!important;
+}
+
+/* Home retains energy without becoming dark or feminine. */
+body.home-bg{
+  --home-ivory:#EEF8FA;
+  --home-cream:#FFFFFF;
+  --home-paper:#FFFFFF;
+  --home-ink:var(--nz-ink);
+  --home-muted:var(--nz-muted);
+  --home-gold:var(--nz-orange);
+  --home-gold-soft:#FFD27A;
+}
+body.home-bg section.home-brand-card.v37-dashboard-home{
+  background:linear-gradient(135deg,#CFEFF7 0%,#DFF4E5 55%,#FFE6B8 100%)!important;
+  border-color:rgba(8,127,156,.22)!important;
+  box-shadow:0 22px 54px rgba(21,50,75,.14)!important;
+}
+body.home-bg .home-brand-card.v37-dashboard-home .home-since{color:var(--nz-blue)!important}
+body.home-bg .home-brand-card.v37-dashboard-home h1,
+body.home-bg .home-brand-card.v37-dashboard-home h1 em{color:var(--nz-ink)!important;text-shadow:none!important}
+body.home-bg .home-brand-card.v37-dashboard-home .home-tagline{color:#285E3C!important}
+body.home-bg .home-brand-card.v37-dashboard-home .home-trip-line span{
+  background:rgba(255,255,255,.68)!important;
+  border-color:rgba(8,127,156,.21)!important;
+  color:var(--nz-ink)!important;
+}
+body.home-bg .home-day-button{
+  background:linear-gradient(135deg,var(--nz-orange),#E67E00)!important;
+  border-color:var(--nz-orange-deep)!important;
+  box-shadow:0 12px 26px rgba(201,109,0,.20)!important;
+}
+
+/* Moments now follows Days' light gradient. No blush/pink controls. */
+body.moments-page .moments-capture-choices .primary-action,
+body.moments-page .primary-action,
+body.moments-page .page-action-row .primary-action,
+body.moments-page button.primary-action{
+  background:linear-gradient(135deg,var(--nz-blue),var(--nz-blue-deep))!important;
+  border-color:var(--nz-blue-deep)!important;
+  color:#FFFFFF!important;
+}
+body.moments-page .moments-capture-choices .primary-action + .primary-action{
+  background:linear-gradient(135deg,var(--nz-green),#2F6844)!important;
+  border-color:#2F6844!important;
+}
+#momentsModal .photo-capture-zone{background:#F0FAFC!important;border-color:rgba(8,127,156,.22)!important}
+#momentsModal .photo-capture-btn{background:#FFFFFF!important;border-color:rgba(8,127,156,.28)!important;color:var(--nz-blue-deep)!important}
+#momentsModal .photo-capture-btn--camera{background:linear-gradient(135deg,var(--nz-orange),#E67E00)!important;border-color:var(--nz-orange-deep)!important;color:#fff!important}
+.mood-btn{background:#F7FCFD!important;border-color:rgba(8,127,156,.20)!important;color:var(--nz-ink)!important}
+.moment-photo-note{background:#E7F6F8!important;color:var(--nz-blue-deep)!important}
+
+/* Expenses keeps its calm hierarchy, gently translated into NZ greens. */
+body.expenses-page .primary-action{
+  background:linear-gradient(135deg,var(--nz-green),#2F6844)!important;
+  border-color:#2F6844!important;
+  color:#FFFFFF!important;
+}
+.expense-dashboard-v33 .expense-total-card{
+  background:linear-gradient(145deg,#F2FBFC 0%,#ECF8EF 100%)!important;
+  border-color:rgba(8,127,156,.18)!important;
+}
+.expense-dashboard-v33 .expense-focus-card{
+  background:#FFFFFF!important;
+  border-color:rgba(61,127,85,.18)!important;
+}
+.expense-dashboard-v33 .expense-total-card::after{
+  background-image:url('nz-adventure-watermark-mono.png')!important;
+  opacity:.085!important;
+  mix-blend-mode:multiply!important;
+}
+
+/* Splash: preserve full circular badge and its white rim at every viewport. */
+#ccmvSplash{overflow:hidden!important;background:linear-gradient(180deg,#DDF4FA 0%,#DFF3E4 58%,#FFF2D6 100%)!important}
+#ccmvSplash .splash-content{overflow:visible!important;padding:24px 28px!important;width:min(94vw,620px)!important;box-sizing:border-box!important}
+#ccmvSplash .splash-logo{
+  width:min(66vw,420px)!important;
+  max-width:100%!important;
+  max-height:54vh!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  border-radius:0!important;
+  padding:8px!important;
+  box-sizing:border-box!important;
+  filter:drop-shadow(0 18px 32px rgba(21,50,75,.20))!important;
+}
+#ccmvSplash .splash-line{color:var(--nz-ink)!important;text-shadow:none!important}
+#ccmvSplash .splash-destination{color:var(--nz-orange-deep)!important;text-shadow:none!important}
+
+@media(max-width:600px){
+  #ccmvSplash .splash-content{padding:20px 18px!important;width:96vw!important}
+  #ccmvSplash .splash-logo{width:min(78vw,350px)!important;max-height:50vh!important;padding:10px!important}
+}
