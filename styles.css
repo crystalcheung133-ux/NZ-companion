@@ -2358,3 +2358,12 @@ body.expenses-page .primary-action{
 .drive-briefing-action{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:11px 15px;border-radius:14px;background:#087f8c;color:#fff!important;text-decoration:none;font-weight:820;font-size:14px}
 .drive-briefing-action--secondary{background:#2f6f4e}
 @media(max-width:620px){.drive-briefing{margin:14px 12px 18px;padding:16px}.drive-briefing-stats{grid-template-columns:1fr}.drive-briefing-head h2{font-size:19px}.drive-briefing-actions{display:grid;grid-template-columns:1fr}.drive-briefing-action{width:100%}}
+
+
+/* Stage 0.5B — visible road-trip worth rating on Day timeline */
+.timeline-title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.timeline-title-row h3{margin-right:auto}
+.timeline-worth{display:inline-flex;flex-direction:column;align-items:flex-end;flex:0 0 auto;max-width:145px;padding:5px 8px;border:1px solid rgba(8,127,140,.18);border-radius:12px;background:rgba(255,255,255,.76);line-height:1.1}
+.timeline-worth b{color:#E07A2F;font-size:.78rem;letter-spacing:-1px;white-space:nowrap}
+.timeline-worth small{margin-top:3px;color:var(--muted);font-size:.62rem;text-align:right;line-height:1.2}
+@media(max-width:520px){.timeline-title-row{gap:8px}.timeline-worth{max-width:112px;padding:4px 6px}.timeline-worth small{font-size:.58rem}}

@@ -47,14 +47,22 @@ function placeHref(key){
 }
 const GUIDE_NAV_CONTEXT_KEY='ccmv_guide_nav_context';
 const GUIDE_NAV_REOPEN_KEY='ccmv_guide_nav_reopen';
-function saveGuideNavigationContext(category){
+function saveGuideNavigationContext(category, options){
+  const opts=options||{};
   try{
     sessionStorage.setItem(GUIDE_NAV_CONTEXT_KEY,JSON.stringify({
       category,
-      sourceUrl:window.location.href,
+      sourceUrl:opts.sourceUrl||window.location.href,
+      sourceType:opts.sourceType||'guide',
       savedAt:Date.now()
     }));
   }catch(e){}
+}
+function openGuideFromDay(key,itemId){
+  const place=(typeof PLACES!=='undefined'&&PLACES[key])||{};
+  const sourceUrl=`${location.pathname}${location.search}${itemId?`#${encodeURIComponent(itemId)}`:''}`;
+  saveGuideNavigationContext(place.cat||'GUIDE',{sourceUrl,sourceType:'day'});
+  window.location.href=placeHref(key);
 }
 function readGuideNavigationContext(){
   try{return JSON.parse(sessionStorage.getItem(GUIDE_NAV_CONTEXT_KEY)||'null');}
@@ -72,7 +80,11 @@ function goPlace(key){
 function closePlaceDetail(){
   const context=readGuideNavigationContext();
   if(context?.category&&context?.sourceUrl){
-    try{sessionStorage.setItem(GUIDE_NAV_REOPEN_KEY,context.category);}catch(e){}
+    if(context.sourceType!=='day'){
+      try{sessionStorage.setItem(GUIDE_NAV_REOPEN_KEY,context.category);}catch(e){}
+    }else{
+      try{sessionStorage.removeItem(GUIDE_NAV_CONTEXT_KEY);}catch(e){}
+    }
     window.location.href=context.sourceUrl;
     return;
   }
