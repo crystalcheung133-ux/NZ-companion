@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+
+<html lang="zh-Hant"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>Day · New Zealand Companion</title><link href="manifest.json" rel="manifest"/><meta content="#8A4F2D" name="theme-color"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="New Zealand" name="apple-mobile-web-app-title"/><link href="icon-192.png" rel="apple-touch-icon"/><link href="styles.css?v=nz0.2" rel="stylesheet"/></head><body><nav class="site-nav"><a class="brand" href="index.html"><span class="brand-mark"><img alt="" data-brand-logo="header" src="nz-family-monogram.png"/></span><span data-brand-text="navLabel">New Zealand Companion</span></a><button class="friend-pill" onclick="openFriendModal()"><span data-friend-label="">👓 Crystal</span></button></nav><main class="content-page" id="dynamicDayRoot" aria-live="polite"></main>
+<script src="data.js"></script><script src="script.js?v=nz0.2"></script>
+<script>
+(function(){
+  const DAY_RENDER_DATA = ITINERARY_DATA; // Stage 3E: canonical data now lives in data.js
+  function esc(value){return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
+  const params = new URLSearchParams(location.search);
+  const day = params.get('day') || '1';
+  const data = DAY_RENDER_DATA[day];
+  const root = document.getElementById('dynamicDayRoot');
+  if(!data){
+    document.title = 'Day not found · New Zealand Companion';
+    root.innerHTML = '<div class="page-hero"><p class="kicker">Days</p><h1>Day not found</h1><p>Please choose a day from the Days menu.</p></div>';
+    return;
+  }
+  document.title = data.title;
+  function routeLocation(item){
+    if(!item || !item.map) return '';
+    try{
+      const url = new URL(item.map, location.href);
+      return url.searchParams.get('q') || url.searchParams.get('query') || '';
+    }catch(error){
+      return '';
+    }
+  }
+  function buildTodayRoute(dayData){
+    const stops = (dayData.items || []).map(routeLocation).filter(Boolean);
+    if(stops.length < 2) return '';
+    const params = new URLSearchParams({
+      api:'1',
+      origin:stops[0],
+      destination:stops[stops.length - 1],
+      travelmode:'driving'
+    });
+    if(stops.length > 2) params.set('waypoints', stops.slice(1,-1).join('|'));
+    const href = `https://www.google.com/maps/dir/?${params.toString()}`;
+    return `<a class="day-route-action" href="${esc(href)}" target="_blank" rel="noopener"><span>View Today’s Route</span><b aria-hidden="true">›</b></a>`;
+  }
+  const todayRoute = buildTodayRoute(data);
+  const items = data.items.map(item => {
+    const detailHtml = (item.details || []).map(text => `<p>${esc(text)}</p>`).join('');
+    const routeHtml = item.route ? `<div class="route-hint"><strong>🚕 To next stop</strong><br/>${esc(item.route)}</div>` : '';
+    const mapHtml = item.map ? `<a class="timeline-action timeline-action--map" href="${esc(item.map)}" target="_blank" rel="noopener">Navigate</a>` : '';
+    const guideIds = Array.isArray(item.guideIds) && item.guideIds.length ? item.guideIds : [item.placeId || item.id];
+    const directoryHtml = item.showShoppingDirectory
+      ? `<button class="timeline-action timeline-action--directory" onclick="location.href='guide.html#shopping-directory'">Shopping List</button>`
+      : '';
+    const guideHtml = guideIds.map(key => {
+      const place = (typeof PLACES !== 'undefined' && PLACES[key]) || {};
+      const label = place.title ? `${place.title} Guide` : 'Guide';
+      return `<button class="timeline-action timeline-action--guide" onclick="location.href='place.html?id=${esc(key)}'">${esc(label)}</button>`;
+    }).join('');
+    const actionCount = guideIds.length + (item.showShoppingDirectory ? 1 : 0) + (item.map ? 1 : 0) + 1;
+    const actionClass = actionCount > 3 ? 'timeline-actions timeline-actions--multi' : 'timeline-actions';
+    return `
+    <div class="timeline-item" id="${esc(item.id)}">
+      <div class="timeline-time">${esc(item.time)}</div>
+      <div class="timeline-main">
+        <h3>${esc(item.title)}</h3>
+        ${detailHtml}
+        ${routeHtml}
+        <div class="${actionClass}">
+          ${mapHtml}${directoryHtml}${guideHtml}
+          <button class="timeline-action timeline-action--moment" onclick="openMomentsModal('${esc(item.id)}')">✨ Moment</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  root.innerHTML = `<div class="page-hero day-page-hero"><p class="kicker">${esc(data.kicker)}</p><h1>${esc(data.heading)}</h1>${todayRoute}</div><section class="timeline">${items}</section>`;
+
+  // Stage 4F-L: native hash scrolling can run before dynamic cards exist.
+  // Re-resolve the requested card after render and offset the sticky top bar.
+  function scrollToRequestedCard(){
+    if(!location.hash) return;
+    let targetId;
+    try{ targetId = decodeURIComponent(location.hash.slice(1)); }
+    catch(e){ targetId = location.hash.slice(1); }
+    const target = document.getElementById(targetId);
+    if(!target) return;
+    const nav = document.querySelector('.site-nav');
+    const navOffset = (nav ? nav.getBoundingClientRect().height : 0) + 12;
+    const top = target.getBoundingClientRect().top + window.scrollY - navOffset;
+    window.scrollTo({top:Math.max(0, top), behavior:'auto'});
+  }
+  requestAnimationFrame(()=>requestAnimationFrame(scrollToRequestedCard));
+  window.addEventListener('hashchange', scrollToRequestedCard);
+
+  // Stage 4E-1: restore swipe between dynamic day pages.
+  let touchStartX = 0;
+  let touchStartY = 0;
+  root.addEventListener('touchstart', function(e){
+    const t = e.changedTouches && e.changedTouches[0];
+    if(!t) return;
+    touchStartX = t.clientX;
+    touchStartY = t.clientY;
+  }, {passive:true});
+  root.addEventListener('touchend', function(e){
+    const t = e.changedTouches && e.changedTouches[0];
+    if(!t) return;
+    const dx = t.clientX - touchStartX;
+    const dy = t.clientY - touchStartY;
+    if(Math.abs(dx) < 64 || Math.abs(dx) < Math.abs(dy) * 1.25) return;
+    const current = Number(day);
+    if(dx < 0 && current < 5) location.href = `day.html?day=${current + 1}`;
+    if(dx > 0 && current > 1) location.href = `day.html?day=${current - 1}`;
+  }, {passive:true});
+})();
+</script><div class="mini-menu" id="guideMenu"><button onclick="openGuideCategory('ATTRACTIONS')"><span><span class="menu-title">🏔️ ATTRACTIONS</span></span><span>›</span></button><button onclick="openGuideCategory('ACTIVITIES')"><span><span class="menu-title">🥾 ACTIVITIES</span></span><span>›</span></button><button onclick="openGuideCategory('DINING')"><span><span class="menu-title">🍽 DINING</span></span><span>›</span></button><button onclick="openGuideCategory('STAY')"><span><span class="menu-title">🏨 STAY</span></span><span>›</span></button></div><div class="mini-menu" id="tripMenu"><a href="#" onclick="openTripCard('checklist');return false;"><span><span class="menu-title">✅ Checklist</span><span class="menu-sub">Before the Trip</span></span><span>›</span></a><a href="#" onclick="openTripCard('city');return false;"><span><span class="menu-title">🇳🇿 Trip</span><span class="menu-sub">South Island</span></span><span>›</span></a><a href="#" onclick="openTripCard('flights');return false;"><span><span class="menu-title">✈️ Flights</span><span class="menu-sub">MEL · CHC · ZQN</span></span><span>›</span></a><a href="#" onclick="openTripCard('vehicle');return false;"><span><span class="menu-title">🚙 Rental Car</span><span class="menu-sub">Thrifty X-Trail</span></span><span>›</span></a><a href="#" onclick="openTripCard('stay');return false;"><span><span class="menu-title">🏨 Stay</span><span class="menu-sub">Road-trip stays</span></span><span>›</span></a><a href="#" onclick="openTripCard('weather');return false;"><span><span class="menu-title">🌦 Weather</span><span class="menu-sub">Road conditions</span></span><span>›</span></a><a href="#" onclick="openTripCard('tips');return false;"><span><span class="menu-title">⚠️ Tips</span><span class="menu-sub">Driving notes</span></span><span>›</span></a><a href="#" onclick="openTripCard('emergency');return false;"><span><span class="menu-title">☎️ Emergency</span><span class="menu-sub">Useful numbers</span></span><span>›</span></a></div><div class="mini-menu" id="daysMenu"><a href="day.html?day=1"><span><span class="menu-title">✈️ Day 1</span><span class="menu-sub">Hello Christchurch<br/>22 Sep • Tuesday</span></span><span>›</span></a><a href="day.html?day=2"><span><span class="menu-title">🚙 Day 2</span><span class="menu-sub">Lake Tekapo<br/>23 Sep • Wednesday</span></span><span>›</span></a><a href="day.html?day=3"><span><span class="menu-title">🏔️ Day 3</span><span class="menu-sub">Mt Cook to Wānaka<br/>24 Sep • Thursday</span></span><span>›</span></a><a href="day.html?day=4"><span><span class="menu-title">🏡 Day 4</span><span class="menu-sub">Queenstown Meet-up<br/>25 Sep • Friday</span></span><span>›</span></a></div><nav class="app-nav">
+<button class="trip-trigger" onclick="toggleTripMenu()" type="button"><span>🧳</span><small>Trip</small></button>
+<button class="guide-trigger" onclick="toggleGuideMenu()" type="button"><span>📖</span><small>Guide</small></button>
+<button class="days-trigger" onclick="toggleDays()" type="button"><span>🗓</span><small>Days</small></button>
+<a class="summary-link" href="moments.html"><span>✨</span><small>Moments</small></a>
+<a class="summary-link" href="expenses.html"><span>💸</span><small>Expenses</small></a>
+</nav>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=nz0.2').catch(()=>{}));}</script>
+<div class="trip-modal" id="tripModal"><div class="trip-sheet"><button class="trip-close" onclick="closeTripModal()" type="button">×</button><div id="tripModalContent"></div></div></div>
+<div class="guide-modal" id="guideModal"><div class="guide-sheet"><button class="guide-close" onclick="closeGuideModal()" type="button">×</button><div id="guideModalContent"></div></div></div>
+<div class="moments-modal" id="momentsModal"><div class="moments-sheet"><button class="moments-close" onclick="closeMomentsModal()" type="button">×</button><p class="kicker">MEMORY BOOK</p><h2 id="momentsTitle">Moment</h2><p class="lead modal-intro" id="momentsIntro">每一個地方都可以留底 rating、something to say 同相片。旅行完之後，呢度就係一家四口嘅 memory book。</p><p><span class="status-badge" id="momentsFriend">Friend</span> <button class="mini-btn" onclick="openFriendModal()">Change Friend</button></p><div class="moments-form"><input id="momentsRating" type="hidden" value="0"/><div class="star-row"><span class="star" onclick="setStars(1)">⭐</span><span class="star" onclick="setStars(2)">⭐</span><span class="star" onclick="setStars(3)">⭐</span><span class="star" onclick="setStars(4)">⭐</span><span class="star" onclick="setStars(5)">⭐</span></div><p class="mood-help">Choose up to 2 moods</p><div class="mood-grid" id="moodGrid"></div><textarea id="momentsText" placeholder="Something to say..."></textarea><div class="photo-input">📷 Add Photo（Camera / Photo Library）</div><button class="btn" onclick="saveMoments()">Save</button></div></div></div>
+<div class="unexpected-modal" id="unexpectedModal"><div class="unexpected-sheet"><button class="unexpected-close" onclick="closeUnexpectedModal()" type="button">×</button><p class="kicker">Moments</p><h2>Leave a Moment</h2><p class="lead">每一個地方都可以留底 rating、something to say 同相片。旅行完之後，呢度就係一家四口嘅 memory book。</p><p><span class="status-badge" id="unexpectedFriend">Friend</span></p><textarea id="unexpectedText" placeholder="Capture this moment..." style="width:100%;min-height:120px;border:1px solid var(--line);border-radius:18px;background:#fffaf2;padding:14px;font:inherit;color:var(--ink)"></textarea><div class="photo-input">📷 Add Photo（Camera / Photo Library）</div><button class="btn" onclick="saveUnexpected()">Save</button></div></div>
+<div class="tools-modal" id="expenseModal"><div class="tools-sheet"><button class="tools-close" onclick="closeExpenseModal()" type="button">×</button><p class="kicker">TRIP EXPENSES</p><h2 id="expenseModalTitle">💰 What did we spend?</h2><p class="lead modal-intro" id="expenseIntro">記低每一筆公數或個人消費，系統會自動計 Personal Spend 同 Settlement。</p><div class="expense-form"><input id="expenseItem" placeholder="Item e.g. Family Dinner"/><input autocomplete="off" id="expenseTotal" inputmode="numeric" pattern="[0-9]*" placeholder="Total NZD" type="tel"/><label>Paid by</label><select class="btn" id="expensePaidBy" onchange="syncConsumedIfAuto()"><option value="alvin">🧑 Alvin</option><option selected="" value="crystal">👓 Crystal</option><option value="austin">🎹 Austin</option><option value="chelsea">🎨 Chelsea</option></select><label class="check-row"><input id="expensePersonal" onchange="updateExpenseMode()" type="checkbox"/> Personal Expense</label><div id="splitBetweenBlock"><p>Split between</p><div class="expense-split-tools"><button class="mini-btn" onclick="splitAll()" type="button">Split between all</button><button class="mini-btn" onclick="clearAllSplit()" type="button">Clear all</button></div><label><input checked="" data-split="" type="checkbox" value="alvin"/> 🧑 Alvin</label><br/><label><input checked="" data-split="" type="checkbox" value="crystal"/> 👓 Crystal</label><br/><label><input checked="" data-split="" type="checkbox" value="austin"/> 🎹 Austin</label><br/><label><input checked="" data-split="" type="checkbox" value="chelsea"/> 🎨 Chelsea</label></div><div id="consumedByBlock" style="display:none"><label>Consumed by <span class="timestamp">(same as paid by unless changed)</span></label><select class="btn" id="expenseConsumedBy" onchange="markConsumedManual()"><option value="alvin">🧑 Alvin</option><option selected="" value="crystal">👓 Crystal</option><option value="austin">🎹 Austin</option><option value="chelsea">🎨 Chelsea</option></select></div><br/><button class="btn" id="expenseSaveButton" onclick="saveExpense()">Save Expense</button></div><p class="timestamp">Save 完會留喺呢個視窗，可以連續輸入多筆；關閉後 Summary 會即時更新。</p></div></div><div class="mama-modal" id="mamaModal"><div class="guide-sheet"><button class="mama-close" onclick="closeFriendModal()" type="button">×</button><p class="kicker">Friend</p><h2>Choose Friend</h2><div class="category-pop-list friend-choice-list"><button onclick="setFriend('alvin')">🧑 Alvin</button><button onclick="setFriend('crystal')">👓 Crystal</button><button onclick="setFriend('austin')">🎹 Austin</button><button onclick="setFriend('chelsea')">🎨 Chelsea</button></div></div></div></body></html>
