@@ -2369,7 +2369,7 @@ body.expenses-page .primary-action{
 @media(max-width:520px){.timeline-title-row{gap:8px}.timeline-worth{max-width:112px;padding:4px 6px}.timeline-worth small{font-size:.58rem}}
 
 
-/* NZ 0.6 RC2 — canonical Today and stronger road briefing */
+/* NZ 0.6 RC3 — canonical Today and stronger road briefing */
 .drive-briefing{
   background:linear-gradient(145deg,#d9f1f5 0%,#e3f5ed 58%,#fff0d9 100%)!important;
   border-color:rgba(0,95,115,.38)!important;
@@ -2385,3 +2385,199 @@ body.expenses-page .primary-action{
 .home-today-summary strong{color:#102a43;font-size:16px;line-height:1.35}
 .home-today-summary span:not(.home-today-icon){color:#486581;font-size:13px;line-height:1.4}
 .home-today-icon{font-size:27px;line-height:1}
+
+
+/* =========================================================
+   NZ 0.6 RC3 — COMPACT ROAD-TRIP CANONICAL LAYOUT
+   Home fits one screen; Day prioritises the timeline.
+   ========================================================= */
+body.home-bg main.dashboard.home-v37{
+  min-height:calc(100dvh - 58px)!important;
+  padding:8px 10px calc(76px + env(safe-area-inset-bottom))!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+body.home-bg section.home-brand-card.v37-dashboard-home{
+  width:min(720px,calc(100vw - 20px))!important;
+  padding:14px 16px 14px!important;
+  border-radius:28px!important;
+  max-height:calc(100dvh - 148px)!important;
+  overflow:hidden!important;
+  justify-content:center!important;
+}
+body.home-bg .home-brand-card.v37-dashboard-home .home-since{
+  margin:0 0 2px!important;
+  font-size:11px!important;
+  line-height:1.1!important;
+}
+body.home-bg .home-brand-card.v37-dashboard-home h1{
+  margin:0 0 3px!important;
+  font-size:clamp(48px,8.2vh,70px)!important;
+  line-height:.82!important;
+}
+body.home-bg .home-brand-card.v37-dashboard-home .home-tagline{
+  margin:0 0 4px!important;
+  font-size:11px!important;
+}
+body.home-bg .home-brand-card.v37-dashboard-home .home-trip-line{
+  margin:0 0 6px!important;
+  gap:6px!important;
+}
+body.home-bg .home-brand-card.v37-dashboard-home .home-trip-line span{
+  padding:5px 9px!important;
+  font-size:11px!important;
+}
+body.home-bg .home-live-grid{
+  gap:6px!important;
+  margin:0 auto 7px!important;
+  max-width:500px!important;
+}
+body.home-bg .home-live-grid .live-card{
+  min-height:72px!important;
+  padding:9px 10px!important;
+  border-radius:16px!important;
+}
+body.home-bg .home-live-grid .live-icon{font-size:15px!important;margin-bottom:1px!important}
+body.home-bg .home-live-grid .live-card small{font-size:10px!important;line-height:1.05!important}
+body.home-bg .home-live-grid .live-card strong{font-size:14px!important;line-height:1.2!important}
+body.home-bg .home-live-grid .live-card em{font-size:10px!important;line-height:1.15!important}
+body.home-bg .home-day-button{
+  min-height:38px!important;
+  padding:8px 22px!important;
+  margin:0!important;
+  font-size:14px!important;
+  border-radius:14px!important;
+}
+.home-today-summary{display:none!important}
+
+/* Day header: less empty space before useful content. */
+body:has(#dynamicDayRoot) .site-nav{margin-bottom:0!important}
+#dynamicDayRoot.content-page{
+  padding-top:8px!important;
+}
+#dynamicDayRoot .page-hero.day-page-hero{
+  margin:4px auto 8px!important;
+  padding:12px 16px 11px!important;
+  border-radius:22px!important;
+  max-width:760px!important;
+}
+#dynamicDayRoot .page-hero.day-page-hero .kicker{
+  margin:0 0 3px!important;
+  font-size:11px!important;
+  line-height:1.1!important;
+}
+#dynamicDayRoot .page-hero.day-page-hero h1{
+  margin:0!important;
+  font-size:clamp(31px,8vw,48px)!important;
+  line-height:1!important;
+}
+
+/* Compact Today’s Drive. Timeline stops already show the detailed plan. */
+.drive-briefing{
+  max-width:760px!important;
+  margin:8px auto 10px!important;
+  padding:13px 14px!important;
+  border-radius:19px!important;
+  background:linear-gradient(145deg,#c6e9ef 0%,#d5eee2 58%,#fbe4bd 100%)!important;
+  border-color:rgba(0,83,104,.42)!important;
+  box-shadow:0 8px 20px rgba(16,42,67,.12)!important;
+}
+.drive-briefing-head{gap:10px!important;margin-bottom:9px!important}
+.drive-briefing-head .kicker{
+  margin:0 0 2px!important;
+  color:#005f73!important;
+  font-size:12px!important;
+  font-weight:950!important;
+  letter-spacing:.075em!important;
+}
+.drive-briefing-head h2{
+  font-size:17px!important;
+  line-height:1.22!important;
+  font-weight:900!important;
+  letter-spacing:-.015em!important;
+}
+.drive-briefing-icon{font-size:23px!important}
+.drive-briefing-stats{gap:6px!important;margin-bottom:8px!important}
+.drive-briefing-stats>div{
+  padding:8px 9px!important;
+  border-radius:12px!important;
+}
+.drive-briefing-stats small{font-size:9px!important;margin-bottom:2px!important}
+.drive-briefing-stats strong{font-size:12px!important;line-height:1.25!important}
+.drive-briefing-note{
+  margin:0 0 8px!important;
+  padding:7px 9px!important;
+  border-left-width:3px!important;
+  border-radius:8px!important;
+  font-size:12px!important;
+  line-height:1.35!important;
+}
+.drive-briefing-contingency{
+  margin:0 0 8px!important;
+  padding:8px 9px!important;
+  border-left-width:3px!important;
+  border-radius:8px!important;
+  font-size:12px!important;
+  line-height:1.35!important;
+}
+.drive-briefing-actions{gap:6px!important}
+.drive-briefing-action{
+  min-height:36px!important;
+  padding:7px 12px!important;
+  border-radius:11px!important;
+  font-size:12px!important;
+}
+.drive-briefing-stops{display:none!important}
+
+/* Smaller, clearer card actions on mobile. */
+.timeline-actions{
+  gap:6px!important;
+  margin-top:8px!important;
+  padding-top:8px!important;
+}
+.timeline-actions button,.timeline-actions a{
+  min-height:36px!important;
+  padding:7px 8px!important;
+  border-radius:11px!important;
+  font-size:12px!important;
+  line-height:1.1!important;
+}
+
+@media(max-width:620px){
+  body.home-bg main.dashboard.home-v37{padding-top:4px!important}
+  body.home-bg section.home-brand-card.v37-dashboard-home{
+    width:calc(100vw - 14px)!important;
+    padding:10px 11px 11px!important;
+    border-radius:24px!important;
+    max-height:calc(100dvh - 138px)!important;
+  }
+  body.home-bg .home-brand-card.v37-dashboard-home h1{
+    font-size:clamp(43px,7.6vh,60px)!important;
+  }
+  body.home-bg .home-live-grid .live-card{min-height:64px!important;padding:7px 8px!important}
+  body.home-bg .home-day-button{min-height:36px!important;padding:7px 20px!important}
+
+  #dynamicDayRoot.content-page{padding:4px 10px calc(88px + env(safe-area-inset-bottom))!important}
+  #dynamicDayRoot .page-hero.day-page-hero{margin:2px 0 6px!important;padding:9px 11px!important}
+  #dynamicDayRoot .page-hero.day-page-hero h1{font-size:29px!important}
+  .drive-briefing{margin:6px 0 8px!important;padding:10px 11px!important;border-radius:16px!important}
+  .drive-briefing-head{margin-bottom:7px!important}
+  .drive-briefing-head h2{font-size:15px!important}
+  .drive-briefing-stats{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:4px!important}
+  .drive-briefing-stats>div{padding:6px!important}
+  .drive-briefing-stats small{font-size:8px!important;letter-spacing:.025em!important}
+  .drive-briefing-stats strong{font-size:10px!important}
+  .drive-briefing-note{font-size:11px!important;padding:6px 8px!important}
+  .drive-briefing-actions{display:flex!important}
+  .drive-briefing-action{width:auto!important;flex:1 1 auto!important;min-height:34px!important;padding:6px 9px!important}
+  .timeline-actions,
+  .timeline-actions.timeline-actions--multi{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .timeline-actions button,.timeline-actions a{min-height:34px!important;padding:6px 5px!important;font-size:11px!important}
+}
+
+@media(max-height:720px) and (max-width:620px){
+  body.home-bg .home-brand-card.v37-dashboard-home .home-since{display:none!important}
+  body.home-bg .home-brand-card.v37-dashboard-home h1{font-size:42px!important}
+  body.home-bg .home-live-grid .live-card{min-height:58px!important}
+}
