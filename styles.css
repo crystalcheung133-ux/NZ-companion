@@ -2573,3 +2573,29 @@ body.home-bg .home-day-button{min-height:38px;margin:0;padding:8px 22px;border-r
  .expense-party-list label{padding:8px 10px}
  .custom-split-row{grid-template-columns:minmax(82px,.9fr) minmax(130px,1.2fr)}
 }
+
+/* NZ 0.6 RC11 — Expense UX simplification */
+.expense-type-toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 14px}
+.expense-type-btn,.expense-category-btn{min-height:46px;border:1px solid rgba(0,124,145,.24);border-radius:13px;background:#fff;color:#31556a;font:inherit;font-weight:800;cursor:pointer}
+.expense-type-btn.active,.expense-category-btn.active{background:#087f8c;color:#fff;border-color:#087f8c;box-shadow:0 5px 14px rgba(8,127,140,.18)}
+.expense-category-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:7px 0 14px}
+.expense-category-btn:last-child{grid-column:1/-1}
+.expense-total-field>input{min-width:0;width:100%;font-size:1.12rem;font-weight:800;letter-spacing:.01em}
+.calc-open-btn{display:inline-grid;place-items:center;flex:0 0 46px;width:46px;height:46px;padding:10px}
+.calc-open-btn svg{display:block;width:22px;height:22px;fill:currentColor}
+.custom-split-row{grid-template-columns:minmax(105px,.9fr) minmax(0,1.6fr)}
+.custom-split-row .expense-money-field{min-width:0}
+.custom-split-row input{min-width:0;width:100%;font-size:1rem;font-weight:800;text-align:right}
+.remainder-btn{flex-basis:44px;width:44px;height:44px}
+.split-helper.complete{color:#17724a;font-weight:800}
+.personal-paid-for-line{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:8px}
+.personal-paid-for-line>span{font-size:.8rem;font-weight:800;color:#667b86;white-space:nowrap}
+.personal-paid-for-line select.btn{width:100%;min-width:0;padding-left:10px;padding-right:28px}
+#personalPaidForBlock[hidden],#sharedPaidByBlock[hidden]{display:none!important}
+@media(max-width:520px){
+ .expense-category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .expense-category-btn{min-height:44px;padding:8px 6px;font-size:.9rem}
+ .custom-split-row{grid-template-columns:92px minmax(0,1fr);gap:7px}
+ .personal-paid-for-line{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:5px}
+ .personal-paid-for-line>span{font-size:.72rem}
+}

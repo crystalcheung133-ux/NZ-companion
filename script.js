@@ -227,19 +227,41 @@ function saveUnexpected(){const arr=JSON.parse(localStorage.getItem('moments_fre
 function renderUnexpected(){const box=$('unexpectedTimeline');if(!box)return;let arr=[];try{arr=JSON.parse(localStorage.getItem('moments_freeform')||'[]');if(!Array.isArray(arr))arr=[];}catch(e){arr=[];}box.innerHTML=arr.length?arr.map(e=>`<div class="moments-entry"><strong>✨ ${escapeHTML(e.page)}</strong><p>${escapeHTML(e.friendLabel)}</p><p>${escapeHTML(e.text)}</p></div>`).join(''):'<p>No Moments yet.</p>'}
 
 function updateExpenseMode(){
-  const personal = document.getElementById('expensePersonal')?.checked;
+  const personal = !!document.getElementById('expensePersonal')?.checked;
+  document.querySelectorAll('[data-expense-type]').forEach(btn=>btn.classList.toggle('active',btn.dataset.expenseType===(personal?'personal':'shared')));
   const splitBlock = document.getElementById('splitBetweenBlock');
-  const consumedBlock = document.getElementById('consumedByBlock');
+  const sharedPaid = document.getElementById('sharedPaidByBlock');
+  const personalPaid = document.getElementById('personalPaidForBlock');
   if(splitBlock) splitBlock.style.display = personal ? 'none' : 'block';
-  if(consumedBlock) consumedBlock.style.display = personal ? 'block' : 'none';
+  if(sharedPaid) sharedPaid.hidden = personal;
+  if(personalPaid) personalPaid.hidden = !personal;
   if(personal) syncConsumedIfAuto();
 }
+window.setExpenseType=function(type){
+  const personal=document.getElementById('expensePersonal');
+  if(personal) personal.checked=type==='personal';
+  updateExpenseMode();
+};
+window.setExpenseCategory=function(category){
+  const input=document.getElementById('expenseCategory');
+  if(input) input.value=category;
+  document.querySelectorAll('[data-category]').forEach(btn=>btn.classList.toggle('active',btn.dataset.category===category));
+};
 function syncConsumedIfAuto(){
-  const paid = document.getElementById('expensePaidBy');
+  const sharedPaid = document.getElementById('expensePaidBy');
+  const personalPaid = document.getElementById('expensePersonalPaidBy');
   const consumed = document.getElementById('expenseConsumedBy');
+  const personal=!!document.getElementById('expensePersonal')?.checked;
+  const paid=personal?personalPaid:sharedPaid;
   if(!paid || !consumed) return;
   if(consumed.dataset.manual !== 'true') consumed.value = paid.value;
 }
+window.syncPersonalPayer=function(){
+  const personalPaid=document.getElementById('expensePersonalPaidBy');
+  const sharedPaid=document.getElementById('expensePaidBy');
+  if(personalPaid&&sharedPaid) sharedPaid.value=personalPaid.value;
+  syncConsumedIfAuto();
+};
 function markConsumedManual(){
   const consumed = document.getElementById('expenseConsumedBy');
   if(consumed) consumed.dataset.manual = 'true';
@@ -1008,6 +1030,9 @@ function getBookingStatusLabel(status){
     const share=split.length?amount/split.length:amount;
     return Object.fromEntries(split.map(k=>[k,share]));
   }
+  function calculatorIcon(){
+    return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm0 2v4h12V4H6Zm2 7H6v2h2v-2Zm5 0h-2v2h2v-2Zm5 0h-2v2h2v-2ZM8 16H6v2h2v-2Zm5 0h-2v2h2v-2Zm5 0h-2v2h2v-2Z"/></svg>`;
+  }
   function renderCustomSplitPanel(){
     const panel=document.getElementById('customSplitPanel');
     if(!panel) return;
@@ -1015,52 +1040,43 @@ function getBookingStatusLabel(status){
     panel.hidden=expenseSplitMode!=='custom';
     if(panel.hidden){panel.innerHTML='';return;}
     if(!parties.length){panel.innerHTML='<p class="split-helper">Choose at least one party.</p>';return;}
-    const total=expenseTotalValue();
     const previous={};
     panel.querySelectorAll('input[data-custom-party]').forEach(i=>previous[i.dataset.customParty]=i.value);
-    const last=parties[parties.length-1];
-    let used=0;
-    const rows=parties.map((k,idx)=>{
-      const isLast=k===last;
-      let value='';
-      if(isLast){
-        value=Math.max(0,total-used).toFixed(2);
-      }else{
-        value=previous[k]??'';
-        used+=Number(value)||0;
-      }
-      const calcButton=isLast?'':`<button class="calc-open-btn" type="button" onclick="openExpenseCalculator('customShare_${k}')" aria-label="Open calculator">⌗</button>`;
-      return `<label class="custom-split-row"><span>${labelFor(k)}</span><div class="expense-money-field"><input id="customShare_${k}" data-custom-party="${k}" inputmode="decimal" type="text" value="${value}" ${isLast?'readonly aria-readonly="true"':''} oninput="recalculateCustomSplit()"/>${calcButton}</div>${isLast?'<small>Auto remainder</small>':''}</label>`;
-    }).join('');
-    panel.innerHTML=rows+`<p class="split-helper" id="customSplitStatus"></p>`;
-    const inputs=[...panel.querySelectorAll('input[data-custom-party]')];
-    let manual=0;
-    inputs.slice(0,-1).forEach(i=>manual+=Number(i.value)||0);
-    const remainder=total-manual;
-    const lastInput=inputs[inputs.length-1];
-    if(lastInput) lastInput.value=Math.max(0,remainder).toFixed(2);
-    const status=document.getElementById('customSplitStatus');
-    if(status){
-      status.textContent=remainder<0?`Over by ${Math.abs(remainder).toFixed(2)} NZD`:`Remaining ${Math.max(0,remainder).toFixed(2)} NZD assigned to ${labelFor(last)}.`;
-      status.classList.toggle('error',remainder<0);
-    }
+    panel.innerHTML=parties.map(k=>`<label class="custom-split-row"><span>${labelFor(k)}</span><div class="expense-money-field"><input id="customShare_${k}" data-custom-party="${k}" inputmode="decimal" type="text" value="${previous[k]??''}" placeholder="0.00" oninput="recalculateCustomSplit()"/><button class="calc-open-btn remainder-btn" type="button" onclick="calculateCustomRemainder('${k}')" aria-label="Calculate remainder for ${labelFor(k)}">${calculatorIcon()}</button></div></label>`).join('')+`<p class="split-helper" id="customSplitStatus">Fill the other amounts, then tap the calculator beside any party to assign the remainder.</p>`;
+    window.recalculateCustomSplit();
   }
+  window.calculateCustomRemainder=function(targetParty){
+    const total=expenseTotalValue();
+    const parties=selectedSplitParties();
+    if(!total) return alert('Enter the total amount first.');
+    if(!parties.includes(targetParty)) return;
+    let used=0;
+    for(const party of parties){
+      if(party===targetParty) continue;
+      const raw=document.getElementById(`customShare_${party}`)?.value;
+      if(raw==='' || raw==null) return alert('Fill the other selected amounts first.');
+      used+=Number(raw)||0;
+    }
+    const remainder=total-used;
+    if(remainder<0) return alert(`The other amounts exceed the total by ${Math.abs(remainder).toFixed(2)} NZD.`);
+    const input=document.getElementById(`customShare_${targetParty}`);
+    if(input){input.value=remainder.toFixed(2);input.dispatchEvent(new Event('input',{bubbles:true}));}
+  };
   window.recalculateCustomSplit=function(){
     const panel=document.getElementById('customSplitPanel');
     if(!panel || expenseSplitMode!=='custom') return;
     const inputs=[...panel.querySelectorAll('input[data-custom-party]')];
-    if(!inputs.length) return;
     const total=expenseTotalValue();
-    let manual=0;
-    inputs.slice(0,-1).forEach(i=>manual+=Number(i.value)||0);
-    const remainder=total-manual;
-    const lastInput=inputs[inputs.length-1];
-    if(lastInput) lastInput.value=Math.max(0,remainder).toFixed(2);
-    const last=lastInput?.dataset.customParty;
+    const allocated=inputs.reduce((sum,i)=>sum+(Number(i.value)||0),0);
+    const difference=total-allocated;
     const status=document.getElementById('customSplitStatus');
     if(status){
-      status.textContent=remainder<0?`Over by ${Math.abs(remainder).toFixed(2)} NZD`:`Remaining ${Math.max(0,remainder).toFixed(2)} NZD assigned to ${labelFor(last)}.`;
-      status.classList.toggle('error',remainder<0);
+      if(!total) status.textContent='Enter the total amount first.';
+      else if(Math.abs(difference)<=0.01) status.textContent='Custom split matches the total.';
+      else if(difference>0) status.textContent=`${difference.toFixed(2)} NZD remains unallocated.`;
+      else status.textContent=`Over by ${Math.abs(difference).toFixed(2)} NZD.`;
+      status.classList.toggle('error',difference<-.01);
+      status.classList.toggle('complete',Math.abs(difference)<=.01 && total>0);
     }
   };
   window.updateSplitUI=function(){
@@ -1123,8 +1139,10 @@ function getBookingStatusLabel(status){
     editingExpenseIndex=null;
     const user=currentUser();
     const item=document.getElementById('expenseItem'); if(item) item.value='';
+    window.setExpenseCategory('Meals');
     const total=document.getElementById('expenseTotal'); if(total) total.value='';
     setSelectValue('expensePaidBy',user);
+    setSelectValue('expensePersonalPaidBy',user);
     const personal=document.getElementById('expensePersonal'); if(personal) personal.checked=false;
     const consumed=document.getElementById('expenseConsumedBy');
     if(consumed){consumed.dataset.manual='false';setSelectValue('expenseConsumedBy',user);}
@@ -1162,15 +1180,17 @@ function getBookingStatusLabel(status){
     const modal=document.getElementById('expenseModal');
     if(modal) modal.classList.add('show');
     try{if(typeof renderLatestExpenseMini==='function') renderLatestExpenseMini();}catch(e){}
-    const first=document.getElementById('expenseItem'); if(first) setTimeout(()=>first.focus(),60);
+    const first=document.getElementById('expenseTotal'); if(first) setTimeout(()=>first.focus(),60);
   };
 
   window.saveExpense=function(){
     ensurePaidByUI();
-    const item=(document.getElementById('expenseItem')?.value||'').trim();
+    const details=(document.getElementById('expenseItem')?.value||'').trim();
+    const category=document.getElementById('expenseCategory')?.value || 'Other';
+    const item=details || category;
     const total=Number(String(document.getElementById('expenseTotal')?.value||'').replace(/[^0-9.]/g,''));
-    const paidBy=document.getElementById('expensePaidBy')?.value || currentUser();
     const personal=!!document.getElementById('expensePersonal')?.checked;
+    const paidBy=(personal?document.getElementById('expensePersonalPaidBy')?.value:document.getElementById('expensePaidBy')?.value) || currentUser();
     const split=selectedSplitParties();
     const splitMode=personal?'personal':expenseSplitMode;
     let shares=null;
@@ -1179,7 +1199,7 @@ function getBookingStatusLabel(status){
       split.forEach(k=>{shares[k]=Number(document.getElementById(`customShare_${k}`)?.value)||0;});
     }
     const consumedBy=document.getElementById('expenseConsumedBy')?.value || paidBy;
-    if(!item || !total) return alert('Please complete item and total.');
+    if(!total) return alert('Please enter the amount.');
     if(!personal && !split.length) return alert('Please choose who to split with.');
     if(!personal && splitMode==='custom'){
       const allocated=Object.values(shares||{}).reduce((a,b)=>a+Number(b||0),0);
@@ -1188,7 +1208,7 @@ function getBookingStatusLabel(status){
 
     const arr=readExpenses();
     const now=new Date().toISOString();
-    const data={item,total,paidBy,type:personal?'personal':'shared',split:personal?[consumedBy]:split,splitMode,shares:personal?null:shares,consumedBy:personal?consumedBy:null,createdAt:now};
+    const data={item,details,category,total,paidBy,type:personal?'personal':'shared',split:personal?[consumedBy]:split,splitMode,shares:personal?null:shares,consumedBy:personal?consumedBy:null,createdAt:now};
     if(editingExpenseIndex!==null && arr[editingExpenseIndex]){
       data.createdAt=arr[editingExpenseIndex].createdAt || now;
       data.editedAt=now;
@@ -1285,9 +1305,11 @@ function getBookingStatusLabel(status){
       }),
       [],
       ['TRANSACTION HISTORY'],
-      ['Created At','Item','Total NZD','Paid By','Type','Split Mode','Split Between','Custom Shares','Consumed By','Edited At'],
+      ['Created At','Category','Details','Item','Total NZD','Paid By','Type','Split Mode','Split Between','Custom Shares','Consumed By','Edited At'],
       ...arr.map(e=>[
         e.createdAt||'',
+        e.category||'',
+        e.details||'',
         e.item||'',
         Number(e.total||0),
         labelFor(e.paidBy),
@@ -1317,9 +1339,11 @@ function getBookingStatusLabel(status){
     const e=arr[i]; if(!e) return;
     editingExpenseIndex=i;
     ensurePaidByUI();
-    const item=document.getElementById('expenseItem'); if(item) item.value=e.item||'';
+    const item=document.getElementById('expenseItem'); if(item) item.value=e.details || (e.category ? '' : (e.item||''));
+    window.setExpenseCategory(e.category || 'Other');
     const total=document.getElementById('expenseTotal'); if(total) total.value=e.total||'';
     setSelectValue('expensePaidBy',e.paidBy||'lee');
+    setSelectValue('expensePersonalPaidBy',e.paidBy||'lee');
     const personal=(e.type==='personal');
     const personalBox=document.getElementById('expensePersonal'); if(personalBox) personalBox.checked=personal;
     const consumed=document.getElementById('expenseConsumedBy');
