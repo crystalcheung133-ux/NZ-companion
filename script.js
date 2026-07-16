@@ -80,6 +80,14 @@ function openGuideFromDay(key,itemId){
   saveGuideNavigationContext(place.cat||'GUIDE',{sourceUrl,sourceType:'day'});
   window.location.href=placeHref(key);
 }
+function openGuideGroupFromDay(keys,itemId){
+  const clean=(Array.isArray(keys)?keys:[]).filter(key=>key&&typeof PLACES!=='undefined'&&PLACES[key]);
+  if(!clean.length) return;
+  const first=PLACES[clean[0]]||{};
+  const sourceUrl=`${location.pathname}${location.search}${itemId?`#${encodeURIComponent(itemId)}`:''}`;
+  saveGuideNavigationContext(first.cat||'GUIDE',{sourceUrl,sourceType:'day'});
+  window.location.href=`place.html?ids=${encodeURIComponent(clean.join(','))}`;
+}
 function readGuideNavigationContext(){
   try{return JSON.parse(sessionStorage.getItem(GUIDE_NAV_CONTEXT_KEY)||'null');}
   catch(e){return null;}
@@ -287,7 +295,7 @@ function openTripCard(key) {
   const content = document.getElementById('tripModalContent');
   const modal = document.getElementById('tripModal');
   if (!content || !modal) return;
-  content.innerHTML = `<div class="trip-onepage"><p class="kicker">Trip</p><h2>${t.title}</h2>${t.body}<div class="guide-next-row"><button class="pill" onclick="openTripCard('${prev}')">‹ Previous</button><button class="pill" onclick="openTripCard('${next}')">Next ›</button></div><p class="timestamp">Build · Version ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.version)||'0.6 RC11G'} · ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.buildLabel)||'Phase 1 Release Candidate'}</p></div>`;
+  content.innerHTML = `<div class="trip-onepage"><p class="kicker">Trip</p><h2>${t.title}</h2>${t.body}<div class="guide-next-row"><button class="pill" onclick="openTripCard('${prev}')">‹ Previous</button><button class="pill" onclick="openTripCard('${next}')">Next ›</button></div><p class="timestamp">Build · Version ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.version)||'0.6 RC11H'} · ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.buildLabel)||'Phase 1 Release Candidate'}</p></div>`;
   modal.classList.add('show');
   const sheet=document.querySelector('#tripModal .trip-sheet');
   if(sheet) sheet.scrollTop=0;
@@ -394,6 +402,26 @@ function renderPlacePage(key){
 <section class="prose-block"><h2>Highlights</h2><ul>${sig}</ul></section>
 <section class="prose-block"><h2>Good to Know</h2><ul>${worth}</ul></section>`;
   document.title = `${g.title} · ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.browserTitleSuffix)||'New Zealand Family Companion'}`;
+}
+
+function renderPlaceGroupPage(keys){
+  const clean=(Array.isArray(keys)?keys:[]).filter(key=>key&&PLACES[key]);
+  const mount=document.getElementById('placeMain');
+  if(!clean.length||!mount) return;
+  const cards=clean.map((key,index)=>{
+    const g=PLACES[key];
+    const sig=(g.signature||g.highlights||[]).map(x=>`<li>${x}</li>`).join('');
+    const worth=(g.worth||g.tips||[]).map(x=>`<li>${x}</li>`).join('');
+    return `<article class="place-group-card" id="guide-${key}">
+      <div class="page-hero place-group-hero"><p class="kicker">Option ${index+1}</p><h1>${g.emoji} ${g.title}</h1><p class="lead">${g.sub||''}</p></div>
+      <section aria-label="Quick Info" class="quick-info-card">${quickInfoInnerHTML(g,key)}</section>
+      <section class="prose-block guide-overview"><h2>Overview</h2><p>${g.desc||''}</p></section>
+      <section class="prose-block"><h2>Highlights</h2><ul>${sig}</ul></section>
+      <section class="prose-block"><h2>Good to Know</h2><ul>${worth}</ul></section>
+    </article>`;
+  }).join('');
+  mount.innerHTML=`<button class="place-detail-close" type="button" aria-label="Close guide options" onclick="closePlaceDetail()">×</button><div class="page-hero"><p class="kicker">Guide</p><h1>Choose an option</h1><p class="lead">Compare the planned choices, then use Navigate inside the restaurant card you choose.</p></div>${cards}`;
+  document.title=`Guide options · ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.browserTitleSuffix)||'New Zealand Family Companion'}`;
 }
 
 function copyText(text){
@@ -1458,7 +1486,7 @@ function getBookingStatusLabel(status){
 })();
 
 
-/* NZ 0.6 RC11G — dashboard currency exchange */
+/* NZ 0.6 RC11H — dashboard currency exchange */
 (function(){
   const STORAGE_KEY='nz_companion_fx_nzd_aud_v1';
   const API_URL='https://api.frankfurter.dev/v1/latest?base=NZD&symbols=AUD';
