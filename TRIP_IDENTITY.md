@@ -18,3 +18,10 @@ This build separates visual identity from itinerary content.
 
 ## User model
 The trip-level selector represents the three travelling families: Lee Family, Fowlers and Yau. Crystal, Alvin, Austin and Chelsea share the Lee Family identity for Moments and Expenses.
+
+
+## Build 0.3A
+- Circular adventure badge now renders without a splash tile.
+- Home and Moments use a stronger alpine blue / forest green / orange identity.
+- User labels simplified to Lee, Fowlers and Yau.
+- Confirmed flight numbers, terminals, duration, aircraft, references and return seats loaded.

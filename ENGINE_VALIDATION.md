@@ -34,3 +34,10 @@ Deployable without UI redesign. Core timeline/place/booking model is reusable, b
 - PASS: A high-energy NZ palette can be applied through shared CSS variables and identity assets.
 - PASS: Moments and Expenses can use family-level identities (Lee Family / Fowlers / Yau).
 - BACKLOG: Rental car information is usable in Trip and Days, but a generic Transport Guide card remains a Version 1.1 item.
+
+
+## Build 0.3A
+- Circular adventure badge now renders without a splash tile.
+- Home and Moments use a stronger alpine blue / forest green / orange identity.
+- User labels simplified to Lee, Fowlers and Yau.
+- Confirmed flight numbers, terminals, duration, aircraft, references and return seats loaded.
