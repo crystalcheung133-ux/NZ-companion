@@ -2218,10 +2218,10 @@ body.expenses-page .primary-action{
 .drive-briefing-stops>div{display:flex;flex-wrap:wrap;gap:7px;}
 .drive-briefing-stops span{padding:7px 10px;border-radius:999px;background:#fff;border:1px solid rgba(8,127,140,.20);color:#243b53;font-size:13px;font-weight:760;}
 .drive-briefing-note{margin:0 0 14px!important;padding:12px 14px;border-left:4px solid #ff9f1c;border-radius:10px;background:#fff6e6;color:#4b3a20!important;font-size:15px!important;line-height:1.5!important;font-weight:650!important;}
-.drive-briefing-actions{display:flex;flex-wrap:wrap;gap:9px;}
-.drive-briefing-action{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:11px 15px;border-radius:14px;background:#087f8c;color:#fff!important;text-decoration:none;font-weight:820;font-size:14px;}
-.drive-briefing-action--secondary{background:#2f6f4e;}
-@media(max-width:620px){.drive-briefing{margin:14px 12px 18px;padding:16px;}.drive-briefing-stats{grid-template-columns:1fr;}.drive-briefing-head h2{font-size:19px;}.drive-briefing-actions{display:grid;grid-template-columns:1fr;}.drive-briefing-action{width:100%;}}
+
+
+
+@media(max-width:620px){.drive-briefing{margin:14px 12px 18px;padding:16px;}.drive-briefing-stats{grid-template-columns:1fr;}.drive-briefing-head h2{font-size:19px;}}
 
 
 /* Stage 0.5B — visible road-trip worth rating on Day timeline */
@@ -2354,13 +2354,8 @@ body:has(#dynamicDayRoot) .site-nav{margin-bottom:0!important;}
   font-size:12px!important;
   line-height:1.35!important;
 }
-.drive-briefing-actions{gap:6px!important;}
-.drive-briefing-action{
-  min-height:36px!important;
-  padding:7px 12px!important;
-  border-radius:11px!important;
-  font-size:12px!important;
-}
+
+
 .drive-briefing-stops{display:none!important;}
 
 /* Smaller, clearer card actions on mobile. */
@@ -2395,8 +2390,8 @@ body:has(#dynamicDayRoot) .site-nav{margin-bottom:0!important;}
   .drive-briefing-stats small{font-size:8px!important;letter-spacing:.025em!important;}
   .drive-briefing-stats strong{font-size:10px!important;}
   .drive-briefing-note{font-size:11px!important;padding:6px 8px!important;}
-  .drive-briefing-actions{display:flex!important;}
-  .drive-briefing-action{width:auto!important;flex:1 1 auto!important;min-height:34px!important;padding:6px 9px!important;}
+  
+  
   .timeline-actions,
   .timeline-actions.timeline-actions--multi{grid-template-columns:repeat(3,minmax(0,1fr))!important;}
   .timeline-actions button,.timeline-actions a{min-height:34px!important;padding:6px 5px!important;font-size:11px!important;}
@@ -2517,4 +2512,16 @@ body.home-bg .home-day-button{min-height:38px;margin:0;padding:8px 22px;border-r
   body.home-bg .home-brand-card.v37-dashboard-home .home-since{display:none}
   body.home-bg .home-brand-card.v37-dashboard-home h1{font-size:41px}
   body.home-bg .home-live-grid .live-card{min-height:56px}
+}
+/* NZ RC8 — canonical road-trip navigation hub */
+.drive-navigation-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px;}
+.drive-nav-primary,.drive-nav-backup{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:8px 12px;border-radius:12px;text-decoration:none!important;font-size:12px;font-weight:850;line-height:1.2;}
+.drive-nav-primary{background:#087f8c;color:#fff!important;flex:1 1 180px;}
+.drive-nav-backup{background:#fff;color:#24543d!important;border:1px solid rgba(47,111,78,.34);flex:0 1 auto;}
+.drive-nav-fuel,.drive-nav-backup-note{margin:7px 0 0!important;padding:7px 9px;border-radius:10px;font-size:11px!important;line-height:1.4!important;font-weight:620!important;}
+.drive-nav-fuel{background:#fff6e6;color:#4b3a20!important;border-left:3px solid #ff9f1c;}
+.drive-nav-backup-note{background:#e7f4ec;color:#243b2f!important;border-left:3px solid #2f6f4e;}
+@media(max-width:620px){
+  .drive-navigation-actions{display:grid;grid-template-columns:1fr;gap:6px;}
+  .drive-nav-primary,.drive-nav-backup{width:100%;min-height:34px;padding:7px 9px;font-size:11px;}
 }

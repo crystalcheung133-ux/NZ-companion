@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>Day · New Zealand Companion</title><link href="manifest.json" rel="manifest"/><meta content="#087F8C" name="theme-color"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="New Zealand" name="apple-mobile-web-app-title"/><link href="icon-192.png" rel="apple-touch-icon"/><link href="styles.css?v=nz0.6rc7" rel="stylesheet"/></head><body><nav class="site-nav"><a class="brand" href="index.html"><span class="brand-mark"><img alt="" data-brand-logo="header" src="nz-adventure-mark.png"/></span><span data-brand-text="navLabel">New Zealand Companion</span></a><button class="friend-pill" onclick="openFriendModal()"><span data-friend-label="">🏙️ Lee</span></button></nav><main class="content-page" id="dynamicDayRoot" aria-live="polite"></main>
-<script src="data.js"></script><script src="script.js?v=nz0.6rc7"></script>
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>Day · New Zealand Companion</title><link href="manifest.json" rel="manifest"/><meta content="#087F8C" name="theme-color"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="New Zealand" name="apple-mobile-web-app-title"/><link href="icon-192.png" rel="apple-touch-icon"/><link href="styles.css?v=nz0.6rc8" rel="stylesheet"/></head><body><nav class="site-nav"><a class="brand" href="index.html"><span class="brand-mark"><img alt="" data-brand-logo="header" src="nz-adventure-mark.png"/></span><span data-brand-text="navLabel">New Zealand Companion</span></a><button class="friend-pill" onclick="openFriendModal()"><span data-friend-label="">🏙️ Lee</span></button></nav><main class="content-page" id="dynamicDayRoot" aria-live="polite"></main>
+<script src="data.js"></script><script src="script.js?v=nz0.6rc8"></script>
 <script>
 (function(){
   const DAY_RENDER_DATA = ITINERARY_DATA; // Stage 3E: canonical data now lives in data.js
@@ -19,22 +19,31 @@
   function buildDriveBriefing(dayData){
     const d=dayData.drive;
     if(!d) return '';
-    const stops=(d.stops||[]).map(stop=>`<span>${esc(stop)}</span>`).join('');
-    const primary=d.primaryMap ? `<a class="drive-briefing-action" href="${esc(d.primaryMap)}" target="_blank" rel="noopener">Open route</a>` : '';
-    const backup=d.backupMap ? `<a class="drive-briefing-action drive-briefing-action--secondary" href="${esc(d.backupMap)}" target="_blank" rel="noopener">Backup route</a>` : '';
-    return `<section class="drive-briefing" aria-label="Today’s drive">
+    const primary=d.primaryMap
+      ? `<a class="drive-nav-primary" href="${esc(d.primaryMap)}" target="_blank" rel="noopener">🚙 Start Today’s Drive</a>`
+      : '';
+    const backup=d.backupMap
+      ? `<a class="drive-nav-backup" href="${esc(d.backupMap)}" target="_blank" rel="noopener">Open Backup Route</a>`
+      : '';
+    const fuel=d.fuelAdvice
+      ? `<p class="drive-nav-fuel"><strong>⛽ Fuel</strong> ${esc(d.fuelAdvice)}</p>`
+      : '';
+    const backupNote=d.backupMap && d.contingency
+      ? `<p class="drive-nav-backup-note"><strong>⚠️ Route backup</strong> ${esc(d.contingency)}</p>`
+      : '';
+    return `<section class="drive-briefing drive-navigation-hub" aria-label="Today’s navigation">
       <div class="drive-briefing-head"><div><p class="kicker">Today’s drive</p><h2>${esc(d.route)}</h2></div><span class="drive-briefing-icon">🚙</span></div>
       <div class="drive-briefing-stats"><div><small>Distance</small><strong>${esc(d.distance)}</strong></div><div><small>Wheel time</small><strong>${esc(d.drivingTime)}</strong></div><div><small>Road</small><strong>${esc(d.road)}</strong></div></div>
       ${d.note ? `<p class="drive-briefing-note">${esc(d.note)}</p>` : ''}
-      ${d.backupMap && d.contingency ? `<p class="drive-briefing-contingency"><strong>Backup route</strong><br>${esc(d.contingency)}</p>` : ''}
-      <div class="drive-briefing-actions">${primary}${backup}</div>
+      ${fuel}${backupNote}
+      <div class="drive-navigation-actions">${primary}${backup}</div>
     </section>`;
   }
   const driveBriefing=buildDriveBriefing(data);
   const items = data.items.map(item => {
     const detailHtml = (item.details || []).map(text => `<p>${esc(text)}</p>`).join('');
     const routeHtml = item.route ? `<div class="route-hint"><strong>Next leg</strong><br/>${esc(item.route)}</div>` : '';
-    const mapHtml = item.map ? `<a class="timeline-action timeline-action--map" href="${esc(item.map)}" target="_blank" rel="noopener">Navigate</a>` : '';
+    const mapHtml = item.map ? `<a class="timeline-action timeline-action--map" href="${esc(item.map)}" target="_blank" rel="noopener">📍 Navigate</a>` : '';
     const requestedGuideIds = Array.isArray(item.guideIds) && item.guideIds.length ? item.guideIds : [item.placeId || item.id];
     const guideIds = requestedGuideIds.filter(key => key && typeof PLACES !== 'undefined' && PLACES[key]);
     const directoryHtml = item.showShoppingDirectory
@@ -115,7 +124,7 @@
 <a class="summary-link" href="moments.html"><span>✨</span><small>Moments</small></a>
 <a class="summary-link" href="expenses.html"><span>💸</span><small>Expenses</small></a>
 </nav>
-<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=nz0.6rc7').catch(()=>{}));}</script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=nz0.6rc8').catch(()=>{}));}</script>
 <div class="trip-modal" id="tripModal"><div class="trip-sheet"><button class="trip-close" onclick="closeTripModal()" type="button">×</button><div id="tripModalContent"></div></div></div>
 <div class="guide-modal" id="guideModal"><div class="guide-sheet"><button class="guide-close" onclick="closeGuideModal()" type="button">×</button><div id="guideModalContent"></div></div></div>
 <div class="moments-modal" id="momentsModal"><div class="moments-sheet"><button class="moments-close" onclick="closeMomentsModal()" type="button">×</button><p class="kicker">MEMORY BOOK</p><h2 id="momentsTitle">Moment</h2><p class="lead modal-intro" id="momentsIntro">Add a rating, a short note and a photo at any stop. After the trip, this becomes the three families’ shared memory book.</p><p><span class="status-badge" id="momentsFriend">Friend</span> <button class="mini-btn" onclick="openFriendModal()">Change Family</button></p><div class="moments-form"><input id="momentsRating" type="hidden" value="0"/><div class="star-row"><span class="star" onclick="setStars(1)">⭐</span><span class="star" onclick="setStars(2)">⭐</span><span class="star" onclick="setStars(3)">⭐</span><span class="star" onclick="setStars(4)">⭐</span><span class="star" onclick="setStars(5)">⭐</span></div><p class="mood-help">Choose up to 2 moods</p><div class="mood-grid" id="moodGrid"></div><textarea id="momentsText" placeholder="Something to say..."></textarea><div class="photo-input">📷 Add Photo (Camera / Photo Library)</div><button class="btn" onclick="saveMoments()">Save</button></div></div></div>
