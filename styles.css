@@ -2581,3 +2581,68 @@ body:has(#dynamicDayRoot) .site-nav{margin-bottom:0!important}
   body.home-bg .home-brand-card.v37-dashboard-home h1{font-size:42px!important}
   body.home-bg .home-live-grid .live-card{min-height:58px!important}
 }
+
+
+/* =========================================================
+   NZ VERSION 0.6 RC4 — FAMILY IDENTITY, SPLASH RIM, NO WATERMARKS
+   ========================================================= */
+/* This active Adventure identity intentionally uses clean surfaces only. */
+html,body,
+body.home-bg,
+body.moments-page,
+body.expenses-page,
+body.trip-page,
+body.guide-page,
+body.day-page{
+  background-image:none!important;
+}
+
+/* Remove every decorative watermark layer from cards, heroes and timelines. */
+body *::before,
+body *::after{
+  background-image:none;
+}
+.timeline-item::after,
+.guide-card::after,
+.page-hero::after,
+.module-hero::after,
+.home-brand-card::after,
+.home-live-grid .live-card::after,
+.trip-sheet::after,
+.expense-dashboard-v33 .expense-total-card::after,
+.moments-entry::after{
+  content:none!important;
+  display:none!important;
+  background:none!important;
+  background-image:none!important;
+  opacity:0!important;
+}
+
+/* Circular badge only: preserve the complete white rim without restoring a tile. */
+#ccmvSplash{overflow:hidden!important}
+#ccmvSplash .splash-content{
+  overflow:visible!important;
+  padding:30px 24px!important;
+}
+#ccmvSplash .splash-logo{
+  width:min(62vw,390px)!important;
+  max-height:48vh!important;
+  padding:10px!important;
+  border:6px solid #fff!important;
+  border-radius:50%!important;
+  background:#fff!important;
+  box-shadow:none!important;
+  object-fit:contain!important;
+  overflow:visible!important;
+  transform:scale(.96)!important;
+  transform-origin:center!important;
+}
+@media(max-width:600px){
+  #ccmvSplash .splash-content{padding:28px 22px!important}
+  #ccmvSplash .splash-logo{
+    width:min(72vw,320px)!important;
+    max-height:44vh!important;
+    padding:8px!important;
+    border-width:5px!important;
+  }
+}
