@@ -287,7 +287,7 @@ function openTripCard(key) {
   const content = document.getElementById('tripModalContent');
   const modal = document.getElementById('tripModal');
   if (!content || !modal) return;
-  content.innerHTML = `<div class="trip-onepage"><p class="kicker">Trip</p><h2>${t.title}</h2>${t.body}<div class="guide-next-row"><button class="pill" onclick="openTripCard('${prev}')">‹ Previous</button><button class="pill" onclick="openTripCard('${next}')">Next ›</button></div><p class="timestamp">Build · Version ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.version)||'0.6 RC11F'} · ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.buildLabel)||'Phase 1 Release Candidate'}</p></div>`;
+  content.innerHTML = `<div class="trip-onepage"><p class="kicker">Trip</p><h2>${t.title}</h2>${t.body}<div class="guide-next-row"><button class="pill" onclick="openTripCard('${prev}')">‹ Previous</button><button class="pill" onclick="openTripCard('${next}')">Next ›</button></div><p class="timestamp">Build · Version ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.version)||'0.6 RC11G'} · ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.buildLabel)||'Phase 1 Release Candidate'}</p></div>`;
   modal.classList.add('show');
   const sheet=document.querySelector('#tripModal .trip-sheet');
   if(sheet) sheet.scrollTop=0;
@@ -1102,8 +1102,30 @@ function getBookingStatusLabel(status){
   };
   window.updateSplitUI=function(){
     document.querySelectorAll('[data-split-mode]').forEach(btn=>btn.classList.toggle('active',btn.dataset.splitMode===expenseSplitMode));
+    const selected=[...document.querySelectorAll('#expenseModal input[data-split]:checked')].map(input=>input.value);
+    const summary=document.getElementById('splitPickerSummary');
+    if(summary){
+      const names={lee:'Lee',fowlers:'Fowlers',yau:'Yau'};
+      summary.textContent=selected.length===3?'All':selected.length===0?'None':selected.map(key=>names[key]||key).join(' + ');
+    }
     renderCustomSplitPanel();
   };
+  window.toggleSplitPicker=function(event){
+    if(event) event.stopPropagation();
+    const menu=document.getElementById('splitPickerMenu');
+    const button=document.getElementById('splitPickerButton');
+    if(!menu||!button) return;
+    const opening=menu.hidden;
+    menu.hidden=!opening;
+    button.setAttribute('aria-expanded',opening?'true':'false');
+  };
+  window.closeSplitPicker=function(){
+    const menu=document.getElementById('splitPickerMenu');
+    const button=document.getElementById('splitPickerButton');
+    if(menu) menu.hidden=true;
+    if(button) button.setAttribute('aria-expanded','false');
+  };
+  document.addEventListener('click',window.closeSplitPicker);
   window.setExpenseSplitMode=function(mode){
     expenseSplitMode=mode==='custom'?'custom':'equal';
     window.updateSplitUI();
@@ -1436,7 +1458,7 @@ function getBookingStatusLabel(status){
 })();
 
 
-/* NZ 0.6 RC11F — dashboard currency exchange */
+/* NZ 0.6 RC11G — dashboard currency exchange */
 (function(){
   const STORAGE_KEY='nz_companion_fx_nzd_aud_v1';
   const API_URL='https://api.frankfurter.dev/v1/latest?base=NZD&symbols=AUD';

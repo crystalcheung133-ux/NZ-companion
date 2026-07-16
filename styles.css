@@ -2665,7 +2665,7 @@ body.expense-modal-open{position:fixed!important;left:0!important;right:0!import
 }
 
 
-/* NZ 0.6 RC11F — expense save unlock, compact categories and custom autofill */
+/* NZ 0.6 RC11G — expense save unlock, compact categories and custom autofill */
 #expenseModal .tools-sheet{max-height:min(88dvh,760px)!important;padding:22px 20px 18px!important;}
 #expenseModal .kicker{margin-bottom:3px!important;}
 #expenseModal #expenseModalTitle{margin:0 42px 12px 0!important;font-size:clamp(1.7rem,7vw,2.15rem)!important;line-height:1.05!important;}
@@ -2704,7 +2704,7 @@ body.expense-modal-open{position:fixed!important;left:0!important;right:0!import
  .custom-split-row>span{width:80px!important;max-width:80px!important;}
 }
 
-/* NZ 0.6 RC11F — deferred custom remainder and clear controls */
+/* NZ 0.6 RC11G — deferred custom remainder and clear controls */
 .field-clear-btn{border:1px solid rgba(31,74,92,.22);background:#fff;color:#31556a;border-radius:12px;height:42px;min-width:46px;padding:0 8px;font:800 11px/1 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer}
 .field-clear-btn:active{transform:translateY(1px)}
 .expense-total-field{display:grid!important;grid-template-columns:minmax(0,1fr) 48px 46px!important;gap:7px!important}
@@ -2714,7 +2714,7 @@ body.expense-modal-open{position:fixed!important;left:0!important;right:0!import
 @media(max-width:390px){.custom-split-row{grid-template-columns:76px minmax(0,1fr)!important}.custom-split-row>span{width:76px!important;max-width:76px!important}.custom-split-row .expense-money-field{grid-template-columns:minmax(82px,1fr) 44px 38px!important;gap:5px!important}.custom-split-row .field-clear-btn{width:44px!important;min-width:44px!important}.custom-split-row .remainder-btn{width:38px!important;min-width:38px!important}.expense-total-field{grid-template-columns:minmax(0,1fr) 46px 44px!important;gap:6px!important}}
 
 
-/* NZ 0.6 RC11F — currency dashboard card and converter */
+/* NZ 0.6 RC11G — currency dashboard card and converter */
 .live-currency-card{font:inherit;text-align:left;cursor:pointer;width:100%;appearance:none;-webkit-appearance:none}
 .live-currency-card strong{font-variant-numeric:tabular-nums}
 .live-currency-card em{display:block;margin-top:3px;font-size:10px;line-height:1.2;color:var(--muted);font-style:normal;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -2733,3 +2733,21 @@ body.currency-modal-open{overflow:hidden}
 .currency-result strong{display:block;color:#174a53;font-size:26px;font-variant-numeric:tabular-nums}
 .currency-status{margin:10px 2px 0;color:var(--muted);font-size:11px;line-height:1.35;text-align:center}
 @media(min-width:721px){.currency-modal{align-items:center}.currency-sheet{padding-bottom:24px}}
+
+
+/* NZ 0.6 RC11G — compact payer/split row and readable currency date */
+.shared-compact-row{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:8px!important;align-items:end!important;margin-top:8px!important;}
+.compact-expense-control{min-width:0!important;position:relative!important;}
+.compact-expense-control>label{display:block!important;margin:0 0 4px!important;font-size:12px!important;line-height:1!important;font-weight:850!important;color:#3b302b!important;}
+#expenseModal #expensePaidBy,.split-picker-button{box-sizing:border-box!important;width:100%!important;min-width:0!important;height:40px!important;min-height:40px!important;border-radius:11px!important;padding:6px 30px 6px 10px!important;font-size:13px!important;font-weight:800!important;}
+.split-picker-button{position:relative!important;display:flex!important;align-items:center!important;justify-content:space-between!important;border:1px solid rgba(16,42,67,.18)!important;background:#fff!important;color:#18344d!important;cursor:pointer!important;appearance:none!important;-webkit-appearance:none!important;}
+.split-picker-arrow{position:absolute!important;right:10px!important;top:50%!important;transform:translateY(-54%)!important;font-size:18px!important;line-height:1!important;}
+.split-picker-menu{position:absolute!important;z-index:30!important;top:calc(100% + 6px)!important;right:0!important;width:max-content!important;min-width:150px!important;padding:7px!important;border:1px solid rgba(16,42,67,.16)!important;border-radius:13px!important;background:#fffdf8!important;box-shadow:0 14px 30px rgba(16,42,67,.18)!important;}
+.split-picker-menu[hidden]{display:none!important;}
+.split-picker-menu label{display:flex!important;align-items:center!important;gap:8px!important;min-height:38px!important;padding:6px 8px!important;border-radius:9px!important;font-size:13px!important;font-weight:750!important;white-space:nowrap!important;}
+.split-picker-menu label:active{background:#edf8f7!important;}
+.split-picker-menu input{width:18px!important;height:18px!important;min-height:18px!important;margin:0!important;padding:0!important;}
+#splitBetweenBlock{margin-top:5px!important;}
+#splitBetweenBlock .expense-split-mode{margin-top:4px!important;}
+.live-currency-card em{font-size:8px!important;letter-spacing:-.01em!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;}
+@media(max-width:380px){.shared-compact-row{gap:6px!important}.compact-expense-control>label{font-size:11px!important}#expenseModal #expensePaidBy,.split-picker-button{font-size:12px!important;padding-left:8px!important}.live-currency-card em{font-size:7.5px!important;}}
