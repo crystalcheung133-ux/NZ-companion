@@ -2665,7 +2665,7 @@ body.expense-modal-open{position:fixed!important;left:0!important;right:0!import
 }
 
 
-/* NZ 0.6 RC11H — expense save unlock, compact categories and custom autofill */
+/* NZ 0.6 RC11J — expense save unlock, compact categories and custom autofill */
 #expenseModal .tools-sheet{max-height:min(88dvh,760px)!important;padding:22px 20px 18px!important;}
 #expenseModal .kicker{margin-bottom:3px!important;}
 #expenseModal #expenseModalTitle{margin:0 42px 12px 0!important;font-size:clamp(1.7rem,7vw,2.15rem)!important;line-height:1.05!important;}
@@ -2704,7 +2704,7 @@ body.expense-modal-open{position:fixed!important;left:0!important;right:0!import
  .custom-split-row>span{width:80px!important;max-width:80px!important;}
 }
 
-/* NZ 0.6 RC11H — deferred custom remainder and clear controls */
+/* NZ 0.6 RC11J — deferred custom remainder and clear controls */
 .field-clear-btn{border:1px solid rgba(31,74,92,.22);background:#fff;color:#31556a;border-radius:12px;height:42px;min-width:46px;padding:0 8px;font:800 11px/1 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer}
 .field-clear-btn:active{transform:translateY(1px)}
 .expense-total-field{display:grid!important;grid-template-columns:minmax(0,1fr) 48px 46px!important;gap:7px!important}
@@ -2714,7 +2714,7 @@ body.expense-modal-open{position:fixed!important;left:0!important;right:0!import
 @media(max-width:390px){.custom-split-row{grid-template-columns:76px minmax(0,1fr)!important}.custom-split-row>span{width:76px!important;max-width:76px!important}.custom-split-row .expense-money-field{grid-template-columns:minmax(82px,1fr) 44px 38px!important;gap:5px!important}.custom-split-row .field-clear-btn{width:44px!important;min-width:44px!important}.custom-split-row .remainder-btn{width:38px!important;min-width:38px!important}.expense-total-field{grid-template-columns:minmax(0,1fr) 46px 44px!important;gap:6px!important}}
 
 
-/* NZ 0.6 RC11H — currency dashboard card and converter */
+/* NZ 0.6 RC11J — currency dashboard card and converter */
 .live-currency-card{font:inherit;text-align:left;cursor:pointer;width:100%;appearance:none;-webkit-appearance:none}
 .live-currency-card strong{font-variant-numeric:tabular-nums}
 .live-currency-card em{display:block;margin-top:3px;font-size:10px;line-height:1.2;color:var(--muted);font-style:normal;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -2735,7 +2735,7 @@ body.currency-modal-open{overflow:hidden}
 @media(min-width:721px){.currency-modal{align-items:center}.currency-sheet{padding-bottom:24px}}
 
 
-/* NZ 0.6 RC11H — compact payer/split row and readable currency date */
+/* NZ 0.6 RC11J — compact payer/split row and readable currency date */
 .shared-compact-row{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:8px!important;align-items:end!important;margin-top:8px!important;}
 .compact-expense-control{min-width:0!important;position:relative!important;}
 .compact-expense-control>label{display:block!important;margin:0 0 4px!important;font-size:12px!important;line-height:1!important;font-weight:850!important;color:#3b302b!important;}
@@ -2756,3 +2756,16 @@ body.currency-modal-open{overflow:hidden}
 .place-group-card{margin:0 0 28px;padding-bottom:10px;border-bottom:1px solid var(--line)}
 .place-group-card:last-child{border-bottom:0;margin-bottom:0}
 .place-group-hero{margin-top:14px}
+
+
+/* NZ 0.6 RC11J — pre-deploy expenses UX canonical controls */
+#expenseModal .shared-compact-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:8px!important;align-items:end!important;}
+#expenseModal #expensePaidBy,#expenseModal .split-picker-button{display:block!important;position:relative!important;left:auto!important;opacity:1!important;pointer-events:auto!important;width:100%!important;height:40px!important;min-height:40px!important;margin:0!important;border:1px solid rgba(16,42,67,.18)!important;border-radius:11px!important;background:#fff!important;color:#18344d!important;padding:6px 30px 6px 10px!important;font-size:13px!important;font-weight:800!important;line-height:1.2!important;box-sizing:border-box!important;}
+#expenseModal #expensePaidBy{-webkit-appearance:auto!important;appearance:auto!important;}
+#expenseModal .paid-by-panel{display:none!important;}
+#expenseModal .split-picker-menu{left:auto!important;right:0!important;top:calc(100% + 5px)!important;width:min(220px,calc(100vw - 44px))!important;min-width:0!important;display:grid!important;grid-template-columns:1fr 1fr!important;gap:4px!important;padding:7px!important;max-height:none!important;overflow:visible!important;}
+#expenseModal .split-picker-menu[hidden]{display:none!important;}
+#expenseModal .split-picker-menu label{min-height:36px!important;padding:5px 7px!important;font-size:12px!important;line-height:1.15!important;}
+#expenseModal .split-picker-menu label:last-child{grid-column:1 / -1!important;}
+#expenseModal .split-picker-menu input{width:17px!important;height:17px!important;min-height:17px!important;}
+@media(max-width:380px){#expenseModal #expensePaidBy,#expenseModal .split-picker-button{font-size:12px!important;padding-left:8px!important}.split-picker-menu{width:196px!important}}

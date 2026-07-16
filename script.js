@@ -81,12 +81,13 @@ function openGuideFromDay(key,itemId){
   window.location.href=placeHref(key);
 }
 function openGuideGroupFromDay(keys,itemId){
-  const clean=(Array.isArray(keys)?keys:[]).filter(key=>key&&typeof PLACES!=='undefined'&&PLACES[key]);
+  const clean=[...new Set((Array.isArray(keys)?keys:[]).filter(key=>key&&typeof PLACES!=='undefined'&&PLACES[key]))];
   if(!clean.length) return;
   const first=PLACES[clean[0]]||{};
   const sourceUrl=`${location.pathname}${location.search}${itemId?`#${encodeURIComponent(itemId)}`:''}`;
   saveGuideNavigationContext(first.cat||'GUIDE',{sourceUrl,sourceType:'day'});
-  window.location.href=`place.html?ids=${encodeURIComponent(clean.join(','))}`;
+  // RC11J: confirmed single destinations open immediately. Only genuine alternatives show a choice page.
+  window.location.href=clean.length===1 ? placeHref(clean[0]) : `place.html?ids=${encodeURIComponent(clean.join(','))}`;
 }
 function readGuideNavigationContext(){
   try{return JSON.parse(sessionStorage.getItem(GUIDE_NAV_CONTEXT_KEY)||'null');}
@@ -295,7 +296,7 @@ function openTripCard(key) {
   const content = document.getElementById('tripModalContent');
   const modal = document.getElementById('tripModal');
   if (!content || !modal) return;
-  content.innerHTML = `<div class="trip-onepage"><p class="kicker">Trip</p><h2>${t.title}</h2>${t.body}<div class="guide-next-row"><button class="pill" onclick="openTripCard('${prev}')">‹ Previous</button><button class="pill" onclick="openTripCard('${next}')">Next ›</button></div><p class="timestamp">Build · Version ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.version)||'0.6 RC11H'} · ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.buildLabel)||'Phase 1 Release Candidate'}</p></div>`;
+  content.innerHTML = `<div class="trip-onepage"><p class="kicker">Trip</p><h2>${t.title}</h2>${t.body}<div class="guide-next-row"><button class="pill" onclick="openTripCard('${prev}')">‹ Previous</button><button class="pill" onclick="openTripCard('${next}')">Next ›</button></div><p class="timestamp">Build · Version ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.version)||'0.6 RC11J'} · ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.buildLabel)||'Phase 1 Release Candidate'}</p></div>`;
   modal.classList.add('show');
   const sheet=document.querySelector('#tripModal .trip-sheet');
   if(sheet) sheet.scrollTop=0;
@@ -405,9 +406,11 @@ function renderPlacePage(key){
 }
 
 function renderPlaceGroupPage(keys){
-  const clean=(Array.isArray(keys)?keys:[]).filter(key=>key&&PLACES[key]);
+  const clean=[...new Set((Array.isArray(keys)?keys:[]).filter(key=>key&&PLACES[key]))];
   const mount=document.getElementById('placeMain');
   if(!clean.length||!mount) return;
+  // Defensive auto-routing for old/shared links containing a single id.
+  if(clean.length===1){ renderPlacePage(clean[0]); return; }
   const cards=clean.map((key,index)=>{
     const g=PLACES[key];
     const sig=(g.signature||g.highlights||[]).map(x=>`<li>${x}</li>`).join('');
@@ -1008,29 +1011,10 @@ function getBookingStatusLabel(status){
   function ensurePaidByUI(){
     const select=document.getElementById('expensePaidBy');
     if(!select) return;
-    if(!document.getElementById('paidByDisplay')){
-      select.classList.add('paid-by-hidden-select');
-      select.setAttribute('aria-hidden','true');
-      select.tabIndex=-1;
-      const panel=document.createElement('div');
-      panel.className='paid-by-panel';
-      panel.innerHTML=`<div class="paid-by-display" id="paidByDisplay"><span class="paid-by-current" id="paidByDisplayName">${labelFor(select.value||currentUser())}</span><button type="button" class="paid-by-change" id="paidByChangeButton">Change</button></div><div class="paid-by-choices" id="paidByChoices" hidden>${FRIEND_ORDER.map(k=>`<button type="button" data-friend="${k}">${labelFor(k)}</button>`).join('')}</div>`;
-      select.insertAdjacentElement('afterend',panel);
-      panel.querySelector('#paidByChangeButton')?.addEventListener('click',()=>{
-        const choices=panel.querySelector('#paidByChoices'); if(choices) choices.hidden=!choices.hidden;
-        updatePaidByDisplay();
-      });
-      panel.querySelectorAll('#paidByChoices button').forEach(btn=>{
-        btn.addEventListener('click',()=>{
-          setSelectValue('expensePaidBy',btn.dataset.friend);
-          try{if(typeof syncConsumedIfAuto==='function') syncConsumedIfAuto();}catch(e){}
-          const choices=panel.querySelector('#paidByChoices'); if(choices) choices.hidden=true;
-          updatePaidByDisplay();
-        });
-      });
-      select.addEventListener('change',updatePaidByDisplay);
-    }
-    updatePaidByDisplay();
+    document.getElementById('paidByDisplay')?.closest('.paid-by-panel')?.remove();
+    select.classList.remove('paid-by-hidden-select');
+    select.removeAttribute('aria-hidden');
+    select.tabIndex=0;
   }
   let expenseSplitMode='equal';
   let calculatorTargetId='expenseTotal';
@@ -1486,7 +1470,7 @@ function getBookingStatusLabel(status){
 })();
 
 
-/* NZ 0.6 RC11H — dashboard currency exchange */
+/* NZ 0.6 RC11J — dashboard currency exchange */
 (function(){
   const STORAGE_KEY='nz_companion_fx_nzd_aud_v1';
   const API_URL='https://api.frankfurter.dev/v1/latest?base=NZD&symbols=AUD';
