@@ -11,7 +11,6 @@ const ASSETS = [
   './offline.html',
   './icon-192.png',
   './icon-512.png',
-  './nz-adventure-watermark.png',
   './nz-adventure-mark.png',
   './nz-adventure-logo.png',
   './guide.html',

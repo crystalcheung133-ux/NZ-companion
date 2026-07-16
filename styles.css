@@ -2646,3 +2646,49 @@ body *::after{
     border-width:5px!important;
   }
 }
+
+
+/* =========================================================
+   NZ VERSION 0.6 RC5 — SPLASH ASSET, FAMILY LABELS, CLEAN SURFACES
+   ========================================================= */
+html,body,body.home-bg,body.moments-page,body.expenses-page,body.trip-page,
+body.guide-page,body.day-page{
+  background-image:none!important;
+}
+body::before,body::after,body *::before,body *::after{
+  background-image:none!important;
+}
+.home-brand-card,.home-brand-card.v37-dashboard-home,.home-live-grid .live-card,
+.page-hero,.module-hero,.timeline-item,.guide-card,.trip-sheet,.moments-entry,
+.expense-dashboard-v33 .expense-total-card{
+  background-image:none!important;
+}
+.home-brand-card::before,.home-brand-card::after,
+.home-live-grid .live-card::before,.home-live-grid .live-card::after,
+.page-hero::before,.page-hero::after,.module-hero::before,.module-hero::after,
+.timeline-item::before,.timeline-item::after,.guide-card::before,.guide-card::after,
+.trip-sheet::before,.trip-sheet::after,.moments-entry::before,.moments-entry::after,
+.expense-dashboard-v33 .expense-total-card::before,
+.expense-dashboard-v33 .expense-total-card::after{
+  content:none!important;display:none!important;background:none!important;
+  background-image:none!important;opacity:0!important;
+}
+/* The PNG now contains transparent safety margin and the complete original badge rim. */
+#ccmvSplash{overflow:visible!important}
+#ccmvSplash .splash-content{overflow:visible!important;padding:18px 20px!important}
+#ccmvSplash .splash-logo{
+  width:min(66vw,410px)!important;
+  max-height:52vh!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  object-fit:contain!important;
+  overflow:visible!important;
+  transform:scale(.98)!important;
+}
+@media(max-width:600px){
+  #ccmvSplash .splash-content{padding:18px 16px!important}
+  #ccmvSplash .splash-logo{width:min(78vw,340px)!important;max-height:47vh!important}
+}
