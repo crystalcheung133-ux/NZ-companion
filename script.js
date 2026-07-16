@@ -20,6 +20,22 @@ function applyTripBranding(){
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',applyTripBranding);
 else applyTripBranding();
 
+function tripDateParts(date=new Date()){
+  const cfg=(typeof TRIP_CALENDAR!=='undefined'&&TRIP_CALENDAR)||{startDate:'2026-09-22',timeZone:'Pacific/Auckland'};
+  const parts=new Intl.DateTimeFormat('en-CA',{timeZone:cfg.timeZone||'Pacific/Auckland',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(date);
+  const out={};
+  parts.forEach(part=>{if(part.type!=='literal')out[part.type]=part.value;});
+  return `${out.year}-${out.month}-${out.day}`;
+}
+function tripDayNumber(date=new Date()){
+  const cfg=(typeof TRIP_CALENDAR!=='undefined'&&TRIP_CALENDAR)||{startDate:'2026-09-22'};
+  const toUtc=value=>{const [y,m,d]=String(value).split('-').map(Number);return Date.UTC(y,m-1,d);};
+  const raw=Math.floor((toUtc(tripDateParts(date))-toUtc(cfg.startDate))/86400000)+1;
+  const available=typeof ITINERARY_DATA!=='undefined'?Object.keys(ITINERARY_DATA).map(Number).filter(Number.isFinite):[1];
+  return Math.min(Math.max(...available,1),Math.max(1,raw));
+}
+window.tripDayNumber=tripDayNumber;
+
 
 /* ============================================================================
    TRAVEL ENGINE ACTIVE-SOURCE NOTE — Stage 4F-S4
@@ -536,11 +552,7 @@ function copyText(text){
     return {contextType:'planned-activity',placeKey:item.placeId||null,activityId:item.id,dayId:normaliseDayId(item.dayId)||('day'+dayNumber),displayTitleSnapshot:stripMomentTitle(item.title)};
   }
   function suggestedMomentDay(){
-    const start=new Date(2026,9,30);
-    const today=new Date();
-    const local=new Date(today.getFullYear(),today.getMonth(),today.getDate());
-    const diff=Math.round((local-start)/86400000);
-    return diff>=0&&diff<=4 ? String(diff+1) : '1';
+    return String(tripDayNumber());
   }
   function renderMomentContextSummary(){
     const box=document.getElementById('momentContextSummary');

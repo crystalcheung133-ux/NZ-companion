@@ -1,4 +1,4 @@
-const CACHE_NAME='travel-engine-new-zealand-family-0-6-rc1';
+const CACHE_NAME='travel-engine-new-zealand-family-0-6-rc2';
 const ASSETS = [
   './',
   './index.html',
@@ -45,7 +45,11 @@ async function networkFirst(request) {
     if (response && response.ok) cache.put(request, response.clone());
     return response;
   } catch (error) {
-    const cached = await caches.match(request);
+    let cached = await caches.match(request);
+    if (!cached) {
+      const url = new URL(request.url);
+      cached = await caches.match(url.pathname.split('/').pop() || './index.html');
+    }
     return cached || caches.match('./offline.html');
   }
 }

@@ -2367,3 +2367,21 @@ body.expenses-page .primary-action{
 .timeline-worth b{color:#E07A2F;font-size:.78rem;letter-spacing:-1px;white-space:nowrap}
 .timeline-worth small{margin-top:3px;color:var(--muted);font-size:.62rem;text-align:right;line-height:1.2}
 @media(max-width:520px){.timeline-title-row{gap:8px}.timeline-worth{max-width:112px;padding:4px 6px}.timeline-worth small{font-size:.58rem}}
+
+
+/* NZ 0.6 RC2 — canonical Today and stronger road briefing */
+.drive-briefing{
+  background:linear-gradient(145deg,#d9f1f5 0%,#e3f5ed 58%,#fff0d9 100%)!important;
+  border-color:rgba(0,95,115,.38)!important;
+  box-shadow:0 14px 32px rgba(16,42,67,.14)!important;
+}
+.drive-briefing-stats>div{background:rgba(255,255,255,.94)!important;border-color:rgba(0,95,115,.24)!important}
+.drive-briefing-stops span{background:rgba(255,255,255,.96)!important;border-color:rgba(0,95,115,.28)!important}
+.drive-briefing-contingency{margin:0 0 14px!important;padding:12px 14px;border-left:4px solid #2f6f4e;border-radius:10px;background:#e7f4ec;color:#243b2f!important;font-size:14px!important;line-height:1.5!important}
+.home-today-summary{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin:18px 0 12px;padding:15px 16px;border:1.5px solid rgba(0,95,115,.30);border-radius:18px;background:linear-gradient(135deg,#e3f5f8,#edf8f0 58%,#fff1dc);box-shadow:0 10px 24px rgba(16,42,67,.10);text-align:left}
+.home-today-summary[hidden]{display:none!important}
+.home-today-summary div{display:grid;gap:4px;min-width:0}
+.home-today-summary small{color:#087f8c;font-weight:850;letter-spacing:.06em;text-transform:uppercase}
+.home-today-summary strong{color:#102a43;font-size:16px;line-height:1.35}
+.home-today-summary span:not(.home-today-icon){color:#486581;font-size:13px;line-height:1.4}
+.home-today-icon{font-size:27px;line-height:1}
