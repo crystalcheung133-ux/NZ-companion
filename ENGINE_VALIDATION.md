@@ -28,3 +28,9 @@ Deployable without UI redesign. Core timeline/place/booking model is reusable, b
 - Traveller-group-specific CCMV logo is no longer used by the NZ dataset.
 - Logo assets are selected by dataset configuration without UI redesign.
 - `manifest.json` remains build-time metadata and cannot be changed by browser JavaScript after installation.
+
+## Validation Build 0.3 — Trip Identity
+- PASS: New trip logo can replace the Vietnam/CCMV identity without redesigning the UI.
+- PASS: A high-energy NZ palette can be applied through shared CSS variables and identity assets.
+- PASS: Moments and Expenses can use family-level identities (Lee Family / Fowlers / Yau).
+- BACKLOG: Rental car information is usable in Trip and Days, but a generic Transport Guide card remains a Version 1.1 item.

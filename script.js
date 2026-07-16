@@ -114,7 +114,7 @@ function toggleDays(){toggleMenu('daysMenu',document.querySelector('.days-trigge
 window.addEventListener('resize',closeMiniMenus);
 document.addEventListener('click',e=>{if(!e.target.closest('.mini-menu')&&!e.target.closest('.trip-trigger')&&!e.target.closest('.guide-trigger')&&!e.target.closest('.days-trigger')) closeMiniMenus();});
 
-function getFriend(){return localStorage.getItem('nz_friend')||'crystal';}
+function getFriend(){return localStorage.getItem('nz_friend')||'lee';}
 function setFriend(k){
   localStorage.setItem('nz_friend',k);
   closeFriendModal();
@@ -122,7 +122,7 @@ function setFriend(k){
   if(document.getElementById('expenseModal')?.classList.contains('show')&&typeof window.resetExpenseForm==='function')window.resetExpenseForm();
   if(document.getElementById('momentsModal')?.classList.contains('show')&&typeof window.simplifyMomentsAuthor==='function')window.simplifyMomentsAuthor();
 }
-function updateFriendLabels(){const label=FRIENDS[getFriend()]||'👓 Crystal';document.querySelectorAll('[data-friend-label]').forEach(e=>e.textContent=label);}
+function updateFriendLabels(){const label=FRIENDS[getFriend()]||'🏔️ Lee Family';document.querySelectorAll('[data-friend-label]').forEach(e=>e.textContent=label);}
 function openFriendModal(){$('mamaModal').classList.add('show')} function closeFriendModal(){$('mamaModal').classList.remove('show')}
 
 
@@ -809,14 +809,14 @@ document.addEventListener('DOMContentLoaded',()=>{
    Stage 4C-6 removed the expense open/save/edit wrappers from this block;
    Expense current-user defaults are handled by the Stage 4F-Q module. */
 (function(){
-  const DEFAULT_FRIEND = 'crystal';
+  const DEFAULT_FRIEND = 'lee';
   function currentUser(){
     try { return (typeof getFriend === 'function' ? getFriend() : localStorage.getItem('nz_friend')) || DEFAULT_FRIEND; }
     catch(e){ return DEFAULT_FRIEND; }
   }
   function friendLabel(k){
-    try { return (typeof FRIENDS !== 'undefined' && FRIENDS[k]) ? FRIENDS[k] : (FRIENDS?.[DEFAULT_FRIEND] || '👓 Crystal'); }
-    catch(e){ return '👓 Crystal'; }
+    try { return (typeof FRIENDS !== 'undefined' && FRIENDS[k]) ? FRIENDS[k] : (FRIENDS?.[DEFAULT_FRIEND] || '🏔️ Lee Family'); }
+    catch(e){ return '🏔️ Lee Family'; }
   }
   function simplifyMomentsAuthor(){
     const row=document.querySelector('#momentsModal p:has(#momentsFriend)');
@@ -890,11 +890,11 @@ function getBookingStatusLabel(status){
    are unchanged from the deploy-tested Stage 4F-P baseline.
    ============================================================================ */
 (function(){
-  const FRIEND_ORDER=['christal','crystal','mero','vivian'];
-  const FRIEND_FALLBACK={christal:'🧸 Christal',crystal:'👓 Crystal',mero:'✝️ Mero',vivian:'👟 Vivian'};
+  const FRIEND_ORDER=['lee','fowlers','yau'];
+  const FRIEND_FALLBACK={lee:'🏔️ Lee Family',fowlers:'🦉 Fowlers',yau:'🥝 Yau'};
 
   function currentUser(){
-    try{return (typeof getFriend==='function' ? getFriend() : localStorage.getItem('nz_friend')) || 'crystal';}
+    try{return (typeof getFriend==='function' ? getFriend() : localStorage.getItem('nz_friend')) || 'lee';}
     catch(e){return 'crystal';}
   }
   function labelFor(k){
@@ -1056,8 +1056,8 @@ function getBookingStatusLabel(status){
     const sorted=arr.map((e,i)=>({...e,_idx:i})).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
     if(pageBox){
       const total=arr.reduce((sum,e)=>sum+Number(e.total||0),0);
-      const personalSpend={christal:0,crystal:0,mero:0,vivian:0};
-      const balance={christal:0,crystal:0,mero:0,vivian:0};
+      const personalSpend={lee:0,fowlers:0,yau:0};
+      const balance={lee:0,fowlers:0,yau:0};
       arr.forEach(e=>{
         const amount=Number(e.total||0);
         if(!balance[e.paidBy]) balance[e.paidBy]=0;
@@ -1087,8 +1087,8 @@ function getBookingStatusLabel(status){
     if(!arr.length) return alert('No expense data to export yet.');
     const quote=value=>`"${String(value??'').replace(/"/g,'""')}"`;
     const total=arr.reduce((sum,e)=>sum+Number(e.total||0),0);
-    const personalSpend={christal:0,crystal:0,mero:0,vivian:0};
-    const balance={christal:0,crystal:0,mero:0,vivian:0};
+    const personalSpend={lee:0,fowlers:0,yau:0};
+    const balance={lee:0,fowlers:0,yau:0};
     arr.forEach(e=>{
       const amount=Number(e.total||0);
       if(!(e.paidBy in balance)) balance[e.paidBy]=0;
@@ -1156,12 +1156,12 @@ function getBookingStatusLabel(status){
     ensurePaidByUI();
     const item=document.getElementById('expenseItem'); if(item) item.value=e.item||'';
     const total=document.getElementById('expenseTotal'); if(total) total.value=e.total||'';
-    setSelectValue('expensePaidBy',e.paidBy||'crystal');
+    setSelectValue('expensePaidBy',e.paidBy||'lee');
     const personal=(e.type==='personal');
     const personalBox=document.getElementById('expensePersonal'); if(personalBox) personalBox.checked=personal;
     const consumed=document.getElementById('expenseConsumedBy');
     if(consumed){
-      consumed.value=e.consumedBy || ((e.split||[])[0]) || e.paidBy || 'crystal';
+      consumed.value=e.consumedBy || ((e.split||[])[0]) || e.paidBy || 'lee';
       consumed.dataset.manual=personal && consumed.value!==e.paidBy ? 'true':'false';
     }
     document.querySelectorAll('#expenseModal input[data-split]').forEach(x=>x.checked=(e.split||[]).includes(x.value));

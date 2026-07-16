@@ -69,7 +69,7 @@ h1,h2{font-family:"Cormorant Garamond",serif;line-height:.95;margin:8px 0 14px}.
 #consumedByBlock select,#expensePaidBy{width:100%;margin:8px 0 12px}
 #expensePersonal{width:20px;height:20px}/* v2.1.8 polish */.prose-block,.trip-card,.timeline-item,.day-summary a,.guide-sheet,.moments-sheet,.unexpected-sheet,.tools-sheet,.trip-sheet{position:relative;overflow:hidden}.prose-block > *,.trip-card > *,.timeline-item > *,.day-summary a > *,.guide-sheet > *,.moments-sheet > *,.unexpected-sheet > *,.tools-sheet > *,.trip-sheet > *{position:relative;z-index:1}.prose-block,.trip-card,.timeline-item,.day-summary a,
 .guide-sheet,.moments-sheet,.unexpected-sheet,.tools-sheet,.trip-sheet{background-color:var(--card)!important;background-image:linear-gradient(rgba(255,253,248,.94), rgba(255,253,248,.94)),
-    url("nz-family-watermark.png")!important;background-repeat:repeat!important;background-size:auto, 92px 92px!important;background-position:center center!important;position:relative!important;overflow:hidden!important}
+    url("nz-adventure-watermark.png")!important;background-repeat:repeat!important;background-size:auto, 92px 92px!important;background-position:center center!important;position:relative!important;overflow:hidden!important}
 .guide-modal,.moments-modal,.unexpected-modal,.tools-modal,.mama-modal,.trip-modal{position:fixed!important;inset:0!important;z-index:5000!important}
 .guide-sheet,.moments-sheet,.unexpected-sheet,.tools-sheet,.trip-sheet{position:relative!important;padding-top:68px!important}
 .guide-close,.moments-close,.unexpected-close,.tools-close,.mama-close,.trip-close{position:absolute!important;top:18px!important;right:18px!important;z-index:50!important;pointer-events:auto!important}
@@ -377,13 +377,13 @@ h3{font-size:20px}
 }
 /* v3.9.2 Design Consistency + Outdoor Use Final Pass */
 /* Global CCMV watermark system: visible on every page, consistent and still readable outdoors. */
-body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background-image:url('nz-family-monogram.png');background-repeat:repeat;background-size:340px 340px;background-position:center 92px;opacity:.105;mix-blend-mode:multiply;filter:saturate(1.08) contrast(1.08)}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background-image:url('nz-adventure-mark.png');background-repeat:repeat;background-size:340px 340px;background-position:center 92px;opacity:.105;mix-blend-mode:multiply;filter:saturate(1.08) contrast(1.08)}
 .site-nav,.mini-menu,.guide-modal,.moments-modal,.unexpected-modal,.tools-modal,.mama-modal,.trip-modal{position:relative;z-index:50}
 main,.content-page,.section,.dashboard{position:relative;z-index:1}
 .content-page,.section,.dashboard{isolation:isolate}
 /* Unified module header: label → title → intro → CTA → content */
 .page-hero,.module-hero{position:relative;overflow:hidden;border-radius:32px!important;padding:24px 24px 22px!important;margin:20px 0 24px!important;border:1px solid rgba(210,190,169,.78)!important;box-shadow:0 14px 46px rgba(54,39,24,.07)!important}
-.page-hero::after,.module-hero::after{content:"";position:absolute;right:-70px;bottom:-86px;width:260px;height:260px;background:url('nz-family-monogram.png') center/contain no-repeat;opacity:.15;mix-blend-mode:multiply;pointer-events:none}
+.page-hero::after,.module-hero::after{content:"";position:absolute;right:-70px;bottom:-86px;width:260px;height:260px;background:url('nz-adventure-mark.png') center/contain no-repeat;opacity:.15;mix-blend-mode:multiply;pointer-events:none}
 .page-hero > *,.module-hero > *{position:relative;z-index:1}
 .page-hero .kicker,.module-hero .kicker{display:block!important;margin:0 0 10px!important;font-size:14px!important;line-height:1.1!important;letter-spacing:.18em!important;text-transform:uppercase!important;font-weight:950!important;color:#7a4a31!important}
 .page-hero h1,.module-hero h1{margin:0 0 14px!important;font-size:clamp(52px,12vw,84px)!important;line-height:.88!important;color:#241b16!important}
@@ -429,7 +429,7 @@ input,select,textarea{font-size:16px!important;-webkit-text-size-adjust:100%}
 .section .category-pop-list button{position:relative!important;overflow:hidden!important;isolation:isolate}
 .quick-info-card::after,
 .guide-modal .quick-info-card::after,
-.section .category-pop-list button::after{content:"";position:absolute;right:-30px;bottom:-42px;width:150px;height:150px;background:url('nz-family-monogram.png') center/contain no-repeat;opacity:.13;mix-blend-mode:multiply;pointer-events:none;z-index:0}
+.section .category-pop-list button::after{content:"";position:absolute;right:-30px;bottom:-42px;width:150px;height:150px;background:url('nz-adventure-mark.png') center/contain no-repeat;opacity:.13;mix-blend-mode:multiply;pointer-events:none;z-index:0}
 .quick-info-card > *,
 .guide-modal .quick-info-card > *,
 .section .category-pop-list button > *{position:relative;z-index:1}
@@ -486,7 +486,7 @@ html body.moments-page .module-hero .kicker{color:#9a5361!important}
 .guide-sheet::after,
 .moments-sheet::after,
 .tools-sheet::after,
-.trip-sheet::after{content:""!important;display:block!important;position:absolute!important;width:var(--card-watermark-size)!important;height:var(--card-watermark-size)!important;right:var(--card-watermark-inset)!important;bottom:var(--card-watermark-inset)!important;left:auto!important;top:auto!important;inset:auto var(--card-watermark-inset) var(--card-watermark-inset) auto!important;background:url('nz-family-monogram.png') center/contain no-repeat!important;background-size:contain!important;background-repeat:no-repeat!important;opacity:var(--card-watermark-opacity)!important;mix-blend-mode:multiply!important;pointer-events:none!important;z-index:0!important;transform:none!important}
+.trip-sheet::after{content:""!important;display:block!important;position:absolute!important;width:var(--card-watermark-size)!important;height:var(--card-watermark-size)!important;right:var(--card-watermark-inset)!important;bottom:var(--card-watermark-inset)!important;left:auto!important;top:auto!important;inset:auto var(--card-watermark-inset) var(--card-watermark-inset) auto!important;background:url('nz-adventure-mark.png') center/contain no-repeat!important;background-size:contain!important;background-repeat:no-repeat!important;opacity:var(--card-watermark-opacity)!important;mix-blend-mode:multiply!important;pointer-events:none!important;z-index:0!important;transform:none!important}
 .prose-block > *,
 .trip-card > *,
 .hotel-card > *,
@@ -716,7 +716,7 @@ body.home-bg .home-day-button{min-height:38px!important;padding:8px 16px!importa
    ========================================================= */
 html,body{-webkit-text-size-adjust:100%}
 body{margin:0;background:radial-gradient(circle at 50% 12%,rgba(255,255,255,.55),transparent 26rem),linear-gradient(135deg,#f7f0e6,#f3eadb)!important;color:var(--ink)!important;font:16px/1.65 Inter,"Noto Sans TC",system-ui,sans-serif;padding-bottom:92px;background-color:var(--bg)!important;background-image:linear-gradient(rgba(244,237,227,.90), rgba(244,237,227,.90)),
-    url("nz-family-watermark.png")!important;background-repeat:repeat!important;background-size:auto, 140px 140px!important;background-position:center center!important;font-size:16px!important;line-height:1.55!important;font-weight:500;-webkit-text-size-adjust:100%;font-family:var(--font-sans)!important}
+    url("nz-adventure-watermark.png")!important;background-repeat:repeat!important;background-size:auto, 140px 140px!important;background-position:center center!important;font-size:16px!important;line-height:1.55!important;font-weight:500;-webkit-text-size-adjust:100%;font-family:var(--font-sans)!important}
 
 body.home-bg{padding-bottom:0!important;background:radial-gradient(circle at 50% 10%,rgba(255,255,255,.58),transparent 24rem),linear-gradient(135deg,#f7f0e6,#f3eadb)!important}
 .site-nav .brand,
@@ -782,7 +782,7 @@ h1,h2,.home-brand-card h1,.page-hero h1,.module-hero h1{font-family:var(--ccmv-f
 body.moments-page .page-hero,
 body.moments-page .module-hero{position:relative!important;overflow:hidden!important;isolation:isolate!important}
 body.moments-page .page-hero::after,
-body.moments-page .module-hero::after{content:""!important;display:block!important;position:absolute!important;width:118px!important;height:118px!important;right:14px!important;bottom:12px!important;background:url('nz-family-watermark.png') center/contain no-repeat!important;opacity:var(--ccmv-watermark-deep)!important;mix-blend-mode:multiply!important;filter:saturate(1.02) contrast(1.06)!important;pointer-events:none!important;z-index:0!important}
+body.moments-page .module-hero::after{content:""!important;display:block!important;position:absolute!important;width:118px!important;height:118px!important;right:14px!important;bottom:12px!important;background:url('nz-adventure-watermark.png') center/contain no-repeat!important;opacity:var(--ccmv-watermark-deep)!important;mix-blend-mode:multiply!important;filter:saturate(1.02) contrast(1.06)!important;pointer-events:none!important;z-index:0!important}
 body.moments-page .page-hero > *,
 body.moments-page .module-hero > *{position:relative!important;z-index:1!important}
 /* Feature cards: only selective premium watermarks, not every card. */
@@ -795,7 +795,7 @@ body.moments-page .module-hero > *{position:relative!important;z-index:1!importa
 .home-live-grid .live-card:nth-child(3)::after,
 .quick-info-card:nth-of-type(1)::after,
 .trip-card:nth-of-type(1)::after,
-.moments-entry:nth-of-type(1)::after{content:""!important;display:block!important;position:absolute!important;width:72px!important;height:72px!important;right:10px!important;bottom:8px!important;background:url('nz-family-watermark.png') center/contain no-repeat!important;opacity:var(--ccmv-watermark-feature)!important;mix-blend-mode:multiply!important;filter:saturate(.98) contrast(1.03)!important;pointer-events:none!important;z-index:0!important}
+.moments-entry:nth-of-type(1)::after{content:""!important;display:block!important;position:absolute!important;width:72px!important;height:72px!important;right:10px!important;bottom:8px!important;background:url('nz-adventure-watermark.png') center/contain no-repeat!important;opacity:var(--ccmv-watermark-feature)!important;mix-blend-mode:multiply!important;filter:saturate(.98) contrast(1.03)!important;pointer-events:none!important;z-index:0!important}
 .home-live-grid .live-card > *,
 .quick-info-card > *,
 .trip-card > *,
@@ -806,7 +806,7 @@ body.moments-page .page-hero::after,
 body.moments-page .page-hero::after,body.moments-page .module-hero::after,
 .home-live-grid .live-card:nth-child(1)::after,.home-live-grid .live-card:nth-child(3)::after,
 .quick-info-card:nth-of-type(1)::after,.trip-card:nth-of-type(1)::after,
-.moments-entry:nth-of-type(1)::after{background-image:url('nz-family-mark.png')!important;background-size:contain!important;background-repeat:no-repeat!important;background-position:center!important;transform:none!important}
+.moments-entry:nth-of-type(1)::after{background-image:url('nz-adventure-logo.png')!important;background-size:contain!important;background-repeat:no-repeat!important;background-position:center!important;transform:none!important}
 .home-live-grid .live-card:nth-child(1)::after,.home-live-grid .live-card:nth-child(3)::after,
 .quick-info-card:nth-of-type(1)::after,.trip-card:nth-of-type(1)::after,
 .moments-entry:nth-of-type(1)::after{width:64px!important;height:64px!important;right:10px!important;bottom:9px!important;opacity:.12!important}
@@ -927,7 +927,7 @@ body.moments-page .module-hero::after{content:none!important;display:none!import
 .expense-dashboard-v33 .expense-total-card{position:relative;display:block;overflow:hidden;isolation:isolate;background:linear-gradient(180deg,#fffaf2,#fff3e4);border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:0 16px 40px rgba(54,39,24,.07)}
 .expense-dashboard-v33 .expense-total-card span{font-weight:820;color:var(--muted);font-size:14px;text-transform:uppercase;letter-spacing:.08em}
 .expense-dashboard-v33 .expense-total-card strong{display:block;margin:6px 0;color:#3a2619;font-size:clamp(30px,8vw,44px);line-height:1}
-.expense-dashboard-v33 .expense-total-card::after{content:"";display:block;position:absolute;width:96px;height:96px;inset:auto 18px 18px auto;background:url('nz-family-watermark.png') center/contain no-repeat;opacity:.075;mix-blend-mode:multiply;pointer-events:none;z-index:0;transform:none}
+.expense-dashboard-v33 .expense-total-card::after{content:"";display:block;position:absolute;width:96px;height:96px;inset:auto 18px 18px auto;background:url('nz-adventure-watermark.png') center/contain no-repeat;opacity:.075;mix-blend-mode:multiply;pointer-events:none;z-index:0;transform:none}
 .expense-dashboard-v33 .expense-total-card > *{position:relative;z-index:1}
 .expense-dashboard-v33 .expense-focus-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .expense-dashboard-v33 .expense-focus-card{background:#fffaf2;border:1px solid var(--line);border-radius:22px;padding:14px;box-shadow:0 12px 28px rgba(54,39,24,.05)}
@@ -1950,3 +1950,32 @@ body.home-bg .home-day-button{
   letter-spacing:.055em!important;
   box-shadow:0 15px 34px rgba(83,54,29,.22),inset 0 1px 0 rgba(255,255,255,.24)!important;
 }
+
+
+/* NZ Validation Build 0.3 — data-driven Trip Identity palette */
+:root{
+  --nz-primary:#087F8C;
+  --nz-secondary:#4F9D69;
+  --nz-accent:#F29E4C;
+  --nz-highlight:#EF6F6C;
+  --nz-ink:#17324D;
+  --nz-bg:#EAF7F4;
+  --nz-surface:#F8FCFC;
+  --ink:var(--nz-ink)!important;
+  --gold-deep:var(--nz-primary)!important;
+  --accent:var(--nz-accent)!important;
+  --line:rgba(8,127,140,.22)!important;
+  --card:rgba(248,252,252,.94)!important;
+  --bg:var(--nz-bg)!important;
+}
+body{background-color:var(--nz-bg)!important;background-image:linear-gradient(rgba(234,247,244,.92),rgba(234,247,244,.92)),url("nz-adventure-watermark.png")!important;background-size:auto,150px 150px!important;color:var(--nz-ink)!important}
+.site-nav{background:rgba(248,252,252,.88)!important;border-bottom-color:rgba(8,127,140,.18)!important}
+.btn,.home-day-button{background:linear-gradient(135deg,var(--nz-primary),#0A9AA7)!important;border-color:var(--nz-primary)!important;color:white!important}
+.pill,.mini-btn,.timeline-actions button,.timeline-actions a,.friend-pill,.category-pop-list button{background:rgba(255,255,255,.82)!important;border-color:rgba(8,127,140,.22)!important;color:var(--nz-ink)!important}
+.page-hero,.module-hero,.home-brand-card{background:linear-gradient(135deg,rgba(8,127,140,.16),rgba(79,157,105,.13) 52%,rgba(242,158,76,.16))!important;border-color:rgba(8,127,140,.20)!important}
+.kicker,.eyebrow,.status-badge{color:var(--nz-primary)!important}
+.timeline-item,.guide-card,.trip-sheet,.moments-entry,.expense-card,.home-card{border-color:rgba(8,127,140,.18)!important}
+.route-hint{background:#FFF5E8!important;border-color:rgba(242,158,76,.42)!important}
+#ccmvSplash{background:linear-gradient(180deg,#E8FAFB 0%,#DDF4EE 55%,#FFF1DE 100%)!important}
+.splash-logo{width:min(72vw,430px)!important;height:auto!important;filter:drop-shadow(0 18px 28px rgba(23,50,77,.18))!important}
+.brand-mark img{object-fit:contain!important}

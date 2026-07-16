@@ -7,18 +7,27 @@ const TRIP_BRAND = {
   shortName: "NZ Family",
   navLabel: "New Zealand Companion",
   browserTitleSuffix: "New Zealand Family Companion",
-  familyLabel: "FAMILY OF FOUR · ROAD TRIP",
+  familyLabel: "THREE FAMILIES · SOUTH ISLAND ROAD TRIP",
   heroLine1: "New Zealand",
   heroEmphasis: "Companion",
   tagline: "Guide · Itinerary · Memory Book",
   splashSlogan: "TRAVEL TOGETHER,\nCAPTURE TOGETHER",
   splashDestination: "NEW ZEALAND 2026",
   logo: {
-    splash: "nz-family-mark.png",
-    header: "nz-family-monogram.png",
-    watermark: "nz-family-watermark.png",
+    splash: "nz-adventure-logo.png",
+    header: "nz-adventure-mark.png",
+    watermark: "nz-adventure-watermark.png",
     icon192: "icon-192.png",
     icon512: "icon-512.png"
+  },
+  theme: {
+    primary: "#087F8C",
+    secondary: "#4F9D69",
+    accent: "#F29E4C",
+    highlight: "#EF6F6C",
+    ink: "#17324D",
+    surface: "#F5FBFC",
+    background: "#EAF7F4"
   },
   storageNamespace: "nz-family-2026"
 };
@@ -31,7 +40,7 @@ const GUIDE_ORDER=["commodore","peppers","archway","queenstown-house","riverside
 
 const DAY_LINKS={"commodore":[["Day 1","day.html?day=1#commodore"]],"riverside":[["Day 1","day.html?day=1#riverside"]],"bar-yoku":[["Day 1","day.html?day=1#riverside"]],"unknown-chapter":[["Day 2","day.html?day=2#unknown-chapter"]],"peppers":[["Day 2","day.html?day=2#peppers"]],"greedy-cow":[["Day 2","day.html?day=2#greedy-cow"]],"tekapo-springs":[["Day 2","day.html?day=2#tekapo-springs"]],"mt-cook":[["Day 3","day.html?day=3#mt-cook"]],"hooker-valley":[["Day 3","day.html?day=3#hooker-valley"]],"high-country-salmon":[["Day 3","day.html?day=3#high-country-salmon"]],"archway":[["Day 3","day.html?day=3#archway"]],"wanaka-lakefront":[["Day 4","day.html?day=4#wanaka-lakefront"]],"crown-range":[["Day 4","day.html?day=4#crown-range"]],"queenstown-house":[["Day 4","day.html?day=4#queenstown-house"]]};
 
-const FRIENDS={"crystal":"👓 Crystal","alvin":"🧑 Alvin","austin":"🎹 Austin","chelsea":"🎨 Chelsea"};
+const FRIENDS={"lee":"🏔️ Lee Family","fowlers":"🦉 Fowlers","yau":"🥝 Yau"};
 
 const BOOKINGS_DATA={"commodore-booking":{"id":"commodore-booking","type":"accommodation","title":"Commodore Airport Hotel Christchurch","status":"confirmed","date":"2026-09-22","time":"Check-in","placeId":"commodore","dayId":"day1","guests":4,"reference":"1359046150585600","paymentStatus":"confirmed","notes":"22–23 Sep · Business Level Twin Room · NZD 259.20"},"peppers-booking":{"id":"peppers-booking","type":"accommodation","title":"Peppers Bluewater Resort","status":"confirmed","date":"2026-09-23","time":"Check-in","placeId":"peppers","dayId":"day2","guests":4,"reference":"1359046173275966","paymentStatus":"confirmed","notes":"23–24 Sep · Two-Bedroom Suite with Mountain View · AUD 397.65"},"archway-booking":{"id":"archway-booking","type":"accommodation","title":"Archway Motels & Chalets","status":"confirmed","date":"2026-09-24","time":"Check-in","placeId":"archway","dayId":"day3","guests":4,"reference":"1359046173332532","paymentStatus":"confirmed","notes":"24–25 Sep · Superior Access Chalet · AUD 379.99"},"queenstown-booking":{"id":"queenstown-booking","type":"accommodation","title":"House in Queenstown","status":"confirmed","date":"2026-09-25","time":"After 15:00","placeId":"queenstown-house","dayId":"day4","guests":11,"reference":null,"paymentStatus":"confirmed","notes":"25–29 Sep · Hosted by Bridget · check-out before 10:00"},"car-rental":{"id":"car-rental","type":"rentalCar","title":"Thrifty Rental Car","status":"awaitingConfirmation","date":"2026-09-22","time":"17:30 pickup","placeId":null,"dayId":"day1","guests":4,"reference":"753093369","paymentStatus":"unknown","notes":"Nissan X-Trail or similar · Automatic · 5 seats · pickup Christchurch Airport · drop-off Queenstown Airport 1 Oct 16:30"}};
 
