@@ -149,6 +149,7 @@ function setFriend(k){
   updateFriendLabels();
   if(document.getElementById('expenseModal')?.classList.contains('show')&&typeof window.resetExpenseForm==='function')window.resetExpenseForm();
   if(document.getElementById('momentsModal')?.classList.contains('show')&&typeof window.simplifyMomentsAuthor==='function')window.simplifyMomentsAuthor();
+  if(typeof window.refreshExpenseAdminUI==='function')window.refreshExpenseAdminUI();
 }
 function updateFriendLabels(){const label=FRIENDS[getFriend()]||'🏙️ Lee';document.querySelectorAll('[data-friend-label]').forEach(e=>e.textContent=label);}
 function renderFriendChoices(){const list=document.querySelector('#mamaModal .friend-choice-list');if(!list)return;list.innerHTML=Object.entries(FRIENDS).map(([key,label])=>`<button type="button" onclick="setFriend('${key}')">${label}</button>`).join('');}
@@ -264,7 +265,7 @@ function openTripCard(key) {
   const content = document.getElementById('tripModalContent');
   const modal = document.getElementById('tripModal');
   if (!content || !modal) return;
-  content.innerHTML = `<div class="trip-onepage"><p class="kicker">Trip</p><h2>${t.title}</h2>${t.body}<div class="guide-next-row"><button class="pill" onclick="openTripCard('${prev}')">‹ Previous</button><button class="pill" onclick="openTripCard('${next}')">Next ›</button></div><p class="timestamp">Build · Version ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.version)||'0.6 RC9'} · ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.buildLabel)||'Phase 1 Release Candidate'}</p></div>`;
+  content.innerHTML = `<div class="trip-onepage"><p class="kicker">Trip</p><h2>${t.title}</h2>${t.body}<div class="guide-next-row"><button class="pill" onclick="openTripCard('${prev}')">‹ Previous</button><button class="pill" onclick="openTripCard('${next}')">Next ›</button></div><p class="timestamp">Build · Version ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.version)||'0.6 RC10'} · ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.buildLabel)||'Phase 1 Release Candidate'}</p></div>`;
   modal.classList.add('show');
   const sheet=document.querySelector('#tripModal .trip-sheet');
   if(sheet) sheet.scrollTop=0;
@@ -278,10 +279,12 @@ function closeTripModal() {
 
 function splitAll() {
   document.querySelectorAll('#expenseModal input[data-split]').forEach(x => x.checked = true);
+  if(typeof window.updateSplitUI==='function') window.updateSplitUI();
 }
 
 function clearAllSplit() {
   document.querySelectorAll('#expenseModal input[data-split]').forEach(x => x.checked = false);
+  if(typeof window.updateSplitUI==='function') window.updateSplitUI();
 }
 
 const MOODS=[
@@ -979,6 +982,128 @@ function getBookingStatusLabel(status){
     }
     updatePaidByDisplay();
   }
+  let expenseSplitMode='equal';
+  let calculatorTargetId='expenseTotal';
+  let calculatorExpression='';
+
+  function selectedSplitParties(){
+    return [...document.querySelectorAll('#expenseModal input[data-split]:checked')].map(x=>x.value);
+  }
+  function expenseTotalValue(){
+    return Number(String(document.getElementById('expenseTotal')?.value||'').replace(/[^0-9.]/g,''))||0;
+  }
+  function setExportVisibility(){
+    const btn=document.getElementById('expenseExportButton');
+    if(btn) btn.hidden=currentUser()!=='lee';
+  }
+  window.refreshExpenseAdminUI=setExportVisibility;
+  function splitSharesForExpense(e){
+    const amount=Number(e.total||0);
+    if(e.type==='personal'){
+      const who=e.consumedBy || ((e.split||[])[0]) || e.paidBy;
+      return {[who]:amount};
+    }
+    if(e.shares && typeof e.shares==='object') return e.shares;
+    const split=(e.split&&e.split.length)?e.split:[e.paidBy];
+    const share=split.length?amount/split.length:amount;
+    return Object.fromEntries(split.map(k=>[k,share]));
+  }
+  function renderCustomSplitPanel(){
+    const panel=document.getElementById('customSplitPanel');
+    if(!panel) return;
+    const parties=selectedSplitParties();
+    panel.hidden=expenseSplitMode!=='custom';
+    if(panel.hidden){panel.innerHTML='';return;}
+    if(!parties.length){panel.innerHTML='<p class="split-helper">Choose at least one party.</p>';return;}
+    const total=expenseTotalValue();
+    const previous={};
+    panel.querySelectorAll('input[data-custom-party]').forEach(i=>previous[i.dataset.customParty]=i.value);
+    const last=parties[parties.length-1];
+    let used=0;
+    const rows=parties.map((k,idx)=>{
+      const isLast=k===last;
+      let value='';
+      if(isLast){
+        value=Math.max(0,total-used).toFixed(2);
+      }else{
+        value=previous[k]??'';
+        used+=Number(value)||0;
+      }
+      const calcButton=isLast?'':`<button class="calc-open-btn" type="button" onclick="openExpenseCalculator('customShare_${k}')" aria-label="Open calculator">⌗</button>`;
+      return `<label class="custom-split-row"><span>${labelFor(k)}</span><div class="expense-money-field"><input id="customShare_${k}" data-custom-party="${k}" inputmode="decimal" type="text" value="${value}" ${isLast?'readonly aria-readonly="true"':''} oninput="recalculateCustomSplit()"/>${calcButton}</div>${isLast?'<small>Auto remainder</small>':''}</label>`;
+    }).join('');
+    panel.innerHTML=rows+`<p class="split-helper" id="customSplitStatus"></p>`;
+    const inputs=[...panel.querySelectorAll('input[data-custom-party]')];
+    let manual=0;
+    inputs.slice(0,-1).forEach(i=>manual+=Number(i.value)||0);
+    const remainder=total-manual;
+    const lastInput=inputs[inputs.length-1];
+    if(lastInput) lastInput.value=Math.max(0,remainder).toFixed(2);
+    const status=document.getElementById('customSplitStatus');
+    if(status){
+      status.textContent=remainder<0?`Over by ${Math.abs(remainder).toFixed(2)} NZD`:`Remaining ${Math.max(0,remainder).toFixed(2)} NZD assigned to ${labelFor(last)}.`;
+      status.classList.toggle('error',remainder<0);
+    }
+  }
+  window.recalculateCustomSplit=function(){
+    const panel=document.getElementById('customSplitPanel');
+    if(!panel || expenseSplitMode!=='custom') return;
+    const inputs=[...panel.querySelectorAll('input[data-custom-party]')];
+    if(!inputs.length) return;
+    const total=expenseTotalValue();
+    let manual=0;
+    inputs.slice(0,-1).forEach(i=>manual+=Number(i.value)||0);
+    const remainder=total-manual;
+    const lastInput=inputs[inputs.length-1];
+    if(lastInput) lastInput.value=Math.max(0,remainder).toFixed(2);
+    const last=lastInput?.dataset.customParty;
+    const status=document.getElementById('customSplitStatus');
+    if(status){
+      status.textContent=remainder<0?`Over by ${Math.abs(remainder).toFixed(2)} NZD`:`Remaining ${Math.max(0,remainder).toFixed(2)} NZD assigned to ${labelFor(last)}.`;
+      status.classList.toggle('error',remainder<0);
+    }
+  };
+  window.updateSplitUI=function(){
+    document.querySelectorAll('[data-split-mode]').forEach(btn=>btn.classList.toggle('active',btn.dataset.splitMode===expenseSplitMode));
+    renderCustomSplitPanel();
+  };
+  window.setExpenseSplitMode=function(mode){
+    expenseSplitMode=mode==='custom'?'custom':'equal';
+    window.updateSplitUI();
+  };
+  window.openExpenseCalculator=function(targetId){
+    calculatorTargetId=targetId||'expenseTotal';
+    const target=document.getElementById(calculatorTargetId);
+    calculatorExpression=String(target?.value||'').replace(/[^0-9.+\-*/()]/g,'');
+    const display=document.getElementById('expenseCalculatorDisplay');
+    if(display) display.textContent=calculatorExpression||'0';
+    document.getElementById('expenseCalculatorModal')?.classList.add('show');
+  };
+  window.closeExpenseCalculator=function(){document.getElementById('expenseCalculatorModal')?.classList.remove('show');};
+  function safeEvaluateExpression(expr){
+    if(!expr || !/^[0-9.+\-*/()\s]+$/.test(expr)) throw new Error('Invalid');
+    const value=Function(`"use strict";return (${expr})`)();
+    if(!Number.isFinite(value)) throw new Error('Invalid');
+    return value;
+  }
+  window.calcPress=function(key){
+    if(key==='C') calculatorExpression='';
+    else if(key==='⌫') calculatorExpression=calculatorExpression.slice(0,-1);
+    else if(key==='='){
+      try{calculatorExpression=String(Math.round(safeEvaluateExpression(calculatorExpression)*100)/100);}catch(e){calculatorExpression='';}
+    }else calculatorExpression+=key;
+    const display=document.getElementById('expenseCalculatorDisplay');
+    if(display) display.textContent=calculatorExpression||'0';
+  };
+  window.useExpenseCalculatorResult=function(){
+    try{
+      const value=Math.round(safeEvaluateExpression(calculatorExpression)*100)/100;
+      const target=document.getElementById(calculatorTargetId);
+      if(target){target.value=value.toFixed(2);target.dispatchEvent(new Event('input',{bubbles:true}));}
+      window.closeExpenseCalculator();
+    }catch(e){alert('Please complete the calculation first.');}
+  };
+
   function showExpenseSavedNote(){
     const sheet=document.querySelector('#expenseModal .tools-sheet');
     if(!sheet) return;
@@ -1005,7 +1130,9 @@ function getBookingStatusLabel(status){
     if(consumed){consumed.dataset.manual='false';setSelectValue('expenseConsumedBy',user);}
     try{splitAll();}
     catch(e){document.querySelectorAll('#expenseModal input[data-split]').forEach(x=>x.checked=true);}
+    expenseSplitMode='equal';
     try{updateExpenseMode();}catch(e){}
+    window.updateSplitUI();
     const title=document.getElementById('expenseModalTitle'); if(title) title.textContent='💰 What did we spend?';
     const save=document.getElementById('expenseSaveButton'); if(save) save.textContent='Save';
     ensurePaidByUI();
@@ -1015,7 +1142,7 @@ function getBookingStatusLabel(status){
     const personal=e.type==='personal';
     const split=e.split||[];
     const consumer=e.consumedBy || split[0] || e.paidBy;
-    const who=personal ? `Consumed by ${labelFor(consumer)}` : `Split: ${split.map(labelFor).join(' · ')}`;
+    const who=personal ? `Consumed by ${labelFor(consumer)}` : `${e.splitMode==='custom'?'Custom':'Equal'} split: ${split.map(labelFor).join(' · ')}`;
     return `<div class="expense-card"><strong>${escapeHTML(e.item||'')}</strong><p class="timestamp">${timeLabel(e.createdAt)}${e.editedAt?` · Edited ${timeLabel(e.editedAt)}`:''}</p><p>${Number(e.total||0).toLocaleString()} NZD · Paid by ${labelFor(e.paidBy)}</p><p>${personal?'Personal Expense':'Shared Expense'} · ${who}</p><div class="entry-actions"><button class="mini-btn" onclick="editExpense(${e._idx})">✏️ Edit</button><button class="mini-btn" onclick="deleteExpense(${e._idx})">🗑 Delete</button></div></div>`;
   }
   function ensureToolHistory(){
@@ -1044,14 +1171,24 @@ function getBookingStatusLabel(status){
     const total=Number(String(document.getElementById('expenseTotal')?.value||'').replace(/[^0-9.]/g,''));
     const paidBy=document.getElementById('expensePaidBy')?.value || currentUser();
     const personal=!!document.getElementById('expensePersonal')?.checked;
-    const split=[...document.querySelectorAll('#expenseModal input[data-split]:checked')].map(x=>x.value);
+    const split=selectedSplitParties();
+    const splitMode=personal?'personal':expenseSplitMode;
+    let shares=null;
+    if(!personal && splitMode==='custom'){
+      shares={};
+      split.forEach(k=>{shares[k]=Number(document.getElementById(`customShare_${k}`)?.value)||0;});
+    }
     const consumedBy=document.getElementById('expenseConsumedBy')?.value || paidBy;
     if(!item || !total) return alert('Please complete item and total.');
-    if(!personal && !split.length) return alert('Please choose who to split between.');
+    if(!personal && !split.length) return alert('Please choose who to split with.');
+    if(!personal && splitMode==='custom'){
+      const allocated=Object.values(shares||{}).reduce((a,b)=>a+Number(b||0),0);
+      if(Math.abs(allocated-total)>0.01) return alert('Custom split must equal the total.');
+    }
 
     const arr=readExpenses();
     const now=new Date().toISOString();
-    const data={item,total,paidBy,type:personal?'personal':'shared',split:personal?[consumedBy]:split,consumedBy:personal?consumedBy:null,createdAt:now};
+    const data={item,total,paidBy,type:personal?'personal':'shared',split:personal?[consumedBy]:split,splitMode,shares:personal?null:shares,consumedBy:personal?consumedBy:null,createdAt:now};
     if(editingExpenseIndex!==null && arr[editingExpenseIndex]){
       data.createdAt=arr[editingExpenseIndex].createdAt || now;
       data.editedAt=now;
@@ -1094,9 +1231,8 @@ function getBookingStatusLabel(status){
           personalSpend[consumer]+=amount;
           balance[consumer]-=amount;
         }else{
-          const split=(e.split&&e.split.length)?e.split:[e.paidBy];
-          const share=amount/split.length;
-          split.forEach(k=>{if(!personalSpend[k]) personalSpend[k]=0;if(!balance[k]) balance[k]=0;personalSpend[k]+=share;balance[k]-=share;});
+          const shares=splitSharesForExpense(e);
+          Object.entries(shares).forEach(([k,share])=>{if(!personalSpend[k]) personalSpend[k]=0;if(!balance[k]) balance[k]=0;personalSpend[k]+=Number(share||0);balance[k]-=Number(share||0);});
         }
       });
       const spendHtml=FRIEND_ORDER.map(k=>`<p>${labelFor(k)}<br><strong>${Math.round(personalSpend[k]||0).toLocaleString()} NZD</strong></p>`).join('');
@@ -1108,6 +1244,7 @@ function getBookingStatusLabel(status){
   };
 
   window.exportExpenseData=function(){
+    if(currentUser()!=='lee') return alert('Only Lee can export the complete expense data.');
     const arr=readExpenses();
     if(!arr.length) return alert('No expense data to export yet.');
     const quote=value=>`"${String(value??'').replace(/"/g,'""')}"`;
@@ -1125,13 +1262,12 @@ function getBookingStatusLabel(status){
         personalSpend[consumer]+=amount;
         balance[consumer]-=amount;
       }else{
-        const split=(e.split&&e.split.length)?e.split:[e.paidBy];
-        const share=amount/split.length;
-        split.forEach(k=>{
+        const shares=splitSharesForExpense(e);
+        Object.entries(shares).forEach(([k,share])=>{
           if(!(k in personalSpend)) personalSpend[k]=0;
           if(!(k in balance)) balance[k]=0;
-          personalSpend[k]+=share;
-          balance[k]-=share;
+          personalSpend[k]+=Number(share||0);
+          balance[k]-=Number(share||0);
         });
       }
     });
@@ -1149,14 +1285,16 @@ function getBookingStatusLabel(status){
       }),
       [],
       ['TRANSACTION HISTORY'],
-      ['Created At','Item','Total NZD','Paid By','Type','Split Between','Consumed By','Edited At'],
+      ['Created At','Item','Total NZD','Paid By','Type','Split Mode','Split Between','Custom Shares','Consumed By','Edited At'],
       ...arr.map(e=>[
         e.createdAt||'',
         e.item||'',
         Number(e.total||0),
         labelFor(e.paidBy),
         e.type==='personal'?'Personal':'Shared',
+        e.splitMode||'equal',
         (e.split||[]).map(labelFor).join(' | '),
+        Object.entries(e.shares||{}).map(([k,v])=>`${labelFor(k)}: ${Number(v).toFixed(2)}`).join(' | '),
         e.consumedBy?labelFor(e.consumedBy):'',
         e.editedAt||''
       ])
@@ -1190,7 +1328,13 @@ function getBookingStatusLabel(status){
       consumed.dataset.manual=personal && consumed.value!==e.paidBy ? 'true':'false';
     }
     document.querySelectorAll('#expenseModal input[data-split]').forEach(x=>x.checked=(e.split||[]).includes(x.value));
+    expenseSplitMode=e.splitMode==='custom'?'custom':'equal';
     try{updateExpenseMode();}catch(e){}
+    window.updateSplitUI();
+    if(expenseSplitMode==='custom' && e.shares){
+      Object.entries(e.shares).forEach(([k,v])=>{const input=document.getElementById(`customShare_${k}`);if(input&&!input.readOnly) input.value=Number(v).toFixed(2);});
+      window.updateSplitUI();
+    }
     const title=document.getElementById('expenseModalTitle'); if(title) title.textContent='✏️ Edit Expense';
     const save=document.getElementById('expenseSaveButton'); if(save) save.textContent='Update Expense';
     const modal=document.getElementById('expenseModal'); if(modal) modal.classList.add('show');
@@ -1210,6 +1354,8 @@ function getBookingStatusLabel(status){
   document.addEventListener('DOMContentLoaded',()=>{
     ensurePaidByUI();
     updatePaidByDisplay();
+    setExportVisibility();
+    window.updateSplitUI();
     window.renderExpenses();
   });
 })();
