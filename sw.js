@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nz0.6rc11k-admin3g';
+const CACHE_NAME = 'nz0.6rc11k-admin4a';
 const ASSETS = [
   './',
   './index.html',

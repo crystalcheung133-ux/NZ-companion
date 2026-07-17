@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>Day · New Zealand Companion</title><script>(function(){try{if('scrollRestoration' in history)history.scrollRestoration='manual';if(!location.hash)window.scrollTo(0,0);}catch(e){}})();</script><link href="manifest.json" rel="manifest"/><meta content="#087F8C" name="theme-color"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="New Zealand" name="apple-mobile-web-app-title"/><link href="icon-192.png" rel="apple-touch-icon"/><link href="styles.css?v=nz0.6rc11k-admin3g" rel="stylesheet"/></head><body><nav class="site-nav"><a class="brand" href="index.html"><span class="brand-mark"><img alt="" data-brand-logo="header" src="nz-adventure-mark.png"/></span><span data-brand-text="navLabel">New Zealand Companion</span></a><button class="friend-pill" onclick="openFriendModal()"><span data-friend-label="">🏙️ Lee</span></button></nav><main class="content-page" id="dynamicDayRoot" aria-live="polite"></main>
-<script src="data.js"></script><script src="script.js?v=nz0.6rc11k-admin3g"></script>
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>Day · New Zealand Companion</title><script>(function(){try{if('scrollRestoration' in history)history.scrollRestoration='manual';if(!location.hash)window.scrollTo(0,0);}catch(e){}})();</script><link href="manifest.json" rel="manifest"/><meta content="#087F8C" name="theme-color"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="New Zealand" name="apple-mobile-web-app-title"/><link href="icon-192.png" rel="apple-touch-icon"/><link href="styles.css?v=nz0.6rc11k-admin4a" rel="stylesheet"/></head><body><nav class="site-nav"><a class="brand" href="index.html"><span class="brand-mark"><img alt="" data-brand-logo="header" src="nz-adventure-mark.png"/></span><span data-brand-text="navLabel">New Zealand Companion</span></a><button class="friend-pill" onclick="openFriendModal()"><span data-friend-label="">🏙️ Lee</span></button></nav><main class="content-page" id="dynamicDayRoot" aria-live="polite"></main>
+<script src="data.js"></script><script src="script.js?v=nz0.6rc11k-admin4a"></script>
 <script>
 (function(){
   const DAY_RENDER_DATA = ITINERARY_DATA;
@@ -67,12 +67,51 @@
   }
   function ensureEditor(){
     if(document.getElementById('timelineEditorModal'))return;
-    const modal=document.createElement('div');modal.id='timelineEditorModal';modal.className='timeline-editor-modal';modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.innerHTML=`<div class="timeline-editor-sheet"><header class="timeline-editor-head"><p class="kicker">ADMIN MODE</p><h2 id="timelineEditorHeading">Edit activity</h2><button class="timeline-editor-close" onclick="closeTimelineEditor()" aria-label="Close editor">×</button></header><div class="timeline-editor-scroll"><label>Time<input id="timelineEditTime" placeholder="e.g. 10:30 or Flexible"></label><label>Title<input id="timelineEditTitle" placeholder="Activity title"></label><label>Details<textarea id="timelineEditDetails" rows="5" placeholder="One detail per line"></textarea></label><label>Next leg / route<textarea id="timelineEditRoute" rows="3"></textarea></label></div><footer class="timeline-editor-actions"><button class="admin-discard-btn" onclick="closeTimelineEditor()">Cancel</button><button class="admin-save-btn" onclick="applyTimelineEdit()">Apply</button></footer></div>`;document.body.appendChild(modal);
+    const modal=document.createElement('div');modal.id='timelineEditorModal';modal.className='timeline-editor-modal';modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.innerHTML=`<div class="timeline-editor-sheet"><header class="timeline-editor-head"><p class="kicker">ADMIN MODE</p><h2 id="timelineEditorHeading">Edit activity</h2><button class="timeline-editor-close" onclick="closeTimelineEditor()" aria-label="Close editor">×</button></header><div class="timeline-editor-scroll"><label>Time<input id="timelineEditTime" placeholder="e.g. 10:30 or Flexible"></label><label>Title<input id="timelineEditTitle" placeholder="Activity title"></label><label>Details<textarea id="timelineEditDetails" rows="5" placeholder="One detail per line"></textarea></label><label>Next leg / route<textarea id="timelineEditRoute" rows="3"></textarea></label><label id="timelineAddPositionRow" hidden>Insert position<select id="timelineAddPosition"></select><small class="timeline-field-help">Choose where this new activity appears in the day.</small></label></div><footer class="timeline-editor-actions"><button class="admin-discard-btn" onclick="closeTimelineEditor()">Cancel</button><button class="admin-save-btn" id="timelineEditorApply" onclick="applyTimelineEdit()">Apply</button></footer></div>`;document.body.appendChild(modal);
     modal.addEventListener('click',event=>{if(event.target===modal)closeTimelineEditor();});
   }
-  window.openTimelineEditor=function(index){if(!window.isAdminMode||!window.isAdminMode())return;closeTimelineMenu();ensureEditor();editingIndex=index;const item=index>=0?workingItems[index]:{time:'',title:'',details:[],route:''};document.getElementById('timelineEditorHeading').textContent=index>=0?'Edit activity':'Add activity';document.getElementById('timelineEditTime').value=item.time||'';document.getElementById('timelineEditTitle').value=item.title||'';document.getElementById('timelineEditDetails').value=(item.details||[]).join('\n');document.getElementById('timelineEditRoute').value=item.route||'';lockEditorBackground();document.getElementById('timelineEditorModal').classList.add('show');document.querySelector('#timelineEditorModal .timeline-editor-scroll').scrollTop=0;};
+  function populateAddPositions(){
+    const row=document.getElementById('timelineAddPositionRow');
+    const select=document.getElementById('timelineAddPosition');
+    if(!row||!select)return;
+    const adding=editingIndex<0;
+    row.hidden=!adding;
+    if(!adding)return;
+    select.innerHTML='';
+    if(workingItems.length===0){
+      const option=document.createElement('option');option.value='0';option.textContent='First activity of the day';select.appendChild(option);select.disabled=true;
+    }else{
+      select.disabled=false;
+      workingItems.forEach((item,index)=>{const option=document.createElement('option');option.value=String(index);option.textContent='Before '+String(item.title||'activity').replace(/^\S+\s*/, '').slice(0,55);select.appendChild(option);});
+      const end=document.createElement('option');end.value=String(workingItems.length);end.textContent='End of the day';end.selected=true;select.appendChild(end);
+    }
+  }
+  window.openTimelineEditor=function(index){if(!window.isAdminMode||!window.isAdminMode())return;closeTimelineMenu();ensureEditor();editingIndex=index;const item=index>=0?workingItems[index]:{time:'',title:'',details:[],route:''};document.getElementById('timelineEditorHeading').textContent=index>=0?'Edit activity':'Add activity';document.getElementById('timelineEditorApply').textContent=index>=0?'Apply':'Add activity';document.getElementById('timelineEditTime').value=item.time||'';document.getElementById('timelineEditTitle').value=item.title||'';document.getElementById('timelineEditDetails').value=(item.details||[]).join('\n');document.getElementById('timelineEditRoute').value=item.route||'';populateAddPositions();lockEditorBackground();document.getElementById('timelineEditorModal').classList.add('show');document.querySelector('#timelineEditorModal .timeline-editor-scroll').scrollTop=0;};
   window.closeTimelineEditor=function(){const modal=document.getElementById('timelineEditorModal');if(!modal?.classList.contains('show'))return;const active=document.activeElement;if(active&&modal.contains(active))active.blur();modal.classList.remove('show');requestAnimationFrame(()=>requestAnimationFrame(unlockEditorBackground));};
-  window.applyTimelineEdit=function(){const title=document.getElementById('timelineEditTitle').value.trim();if(!title){alert('Please enter an activity title.');return;}const base=editingIndex>=0?workingItems[editingIndex]:{id:'custom-'+Date.now(),type:'custom',dayId:'day'+day,placeId:null,bookingId:null,map:null};base.time=document.getElementById('timelineEditTime').value.trim();base.title=title;base.details=document.getElementById('timelineEditDetails').value.split('\n').map(x=>x.trim()).filter(Boolean);base.route=document.getElementById('timelineEditRoute').value.trim();if(editingIndex<0)workingItems.push(base);else workingItems[editingIndex]=base;markTimelineDirty();closeTimelineEditor();render();};
+  function createActivityId(){
+    const suffix=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():Date.now()+'-'+Math.random().toString(36).slice(2,9);
+    return 'custom-'+day+'-'+suffix;
+  }
+  window.applyTimelineEdit=function(){
+    const title=document.getElementById('timelineEditTitle').value.trim();
+    if(!title){alert('Please enter an activity title.');return;}
+    const adding=editingIndex<0;
+    const base=adding?{id:createActivityId(),type:'custom',dayId:'day'+day,placeId:null,bookingId:null,map:null}:workingItems[editingIndex];
+    base.time=document.getElementById('timelineEditTime').value.trim();
+    base.title=title;
+    base.details=document.getElementById('timelineEditDetails').value.split('\n').map(x=>x.trim()).filter(Boolean);
+    base.route=document.getElementById('timelineEditRoute').value.trim();
+    if(adding){
+      const position=Number(document.getElementById('timelineAddPosition')?.value??workingItems.length);
+      const insertAt=Math.max(0,Math.min(position,workingItems.length));
+      workingItems.splice(insertAt,0,base);
+    }else{
+      workingItems[editingIndex]=base;
+    }
+    markTimelineDirty();
+    closeTimelineEditor();
+    render();
+  };
   function ensureTimelineMenu(){
     let menu=document.getElementById('timelineFloatingMenu');
     if(menu)return menu;
@@ -239,7 +278,7 @@
 <a class="summary-link" href="moments.html"><span>✨</span><small>Moments</small></a>
 <a class="summary-link" href="expenses.html"><span>💸</span><small>Expenses</small></a>
 </nav>
-<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=nz0.6rc11k-admin3g').catch(()=>{}));}</script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=nz0.6rc11k-admin4a').catch(()=>{}));}</script>
 <div class="trip-modal" id="tripModal"><div class="trip-sheet"><button class="trip-close" onclick="closeTripModal()" type="button">×</button><div id="tripModalContent"></div></div></div>
 <div class="guide-modal" id="guideModal"><div class="guide-sheet"><button class="guide-close" onclick="closeGuideModal()" type="button">×</button><div id="guideModalContent"></div></div></div>
 <div class="moments-modal" id="momentsModal"><div class="moments-sheet"><button class="moments-close" onclick="closeMomentsModal()" type="button">×</button><p class="kicker">MEMORY BOOK</p><h2 id="momentsTitle">Moment</h2><p class="lead modal-intro" id="momentsIntro">Add a rating, a short note and a photo at any stop. After the trip, this becomes the three families’ shared memory book.</p><p><span class="status-badge" id="momentsFriend">Friend</span> <button class="mini-btn" onclick="openFriendModal()">Change Family</button></p><div class="moments-form"><input id="momentsRating" type="hidden" value="0"/><div class="star-row"><span class="star" onclick="setStars(1)">⭐</span><span class="star" onclick="setStars(2)">⭐</span><span class="star" onclick="setStars(3)">⭐</span><span class="star" onclick="setStars(4)">⭐</span><span class="star" onclick="setStars(5)">⭐</span></div><p class="mood-help">Choose up to 2 moods</p><div class="mood-grid" id="moodGrid"></div><textarea id="momentsText" placeholder="Something to say..."></textarea><div class="photo-input">📷 Add Photo (Camera / Photo Library)</div><button class="btn" onclick="saveMoments()">Save</button></div></div></div>
