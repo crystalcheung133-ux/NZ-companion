@@ -1,4 +1,4 @@
-const CACHE_NAME='travel-engine-new-zealand-family-0-6-rc11k-admin1';
+const CACHE_NAME = 'nz-companion-0.6-rc11k-admin1b';
 const ASSETS = [
   './',
   './index.html',

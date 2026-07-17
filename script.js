@@ -1574,6 +1574,7 @@ function getBookingStatusLabel(status){
 (function(){
   const MODE_KEY='travel_engine_admin_mode_v1';
   const DRAFT_KEY='travel_engine_admin_draft_v1';
+  const ADMIN_NOTE_KEY='travel_engine_admin_note_v1';
   const ADMIN_USER='lee';
   const state={mode:false,dirty:false,draft:null};
 
@@ -1601,6 +1602,8 @@ function getBookingStatusLabel(status){
   function updateUI(){
     document.body.classList.toggle('admin-mode',state.mode);
     document.body.classList.toggle('admin-dirty',state.mode&&state.dirty);
+    const control=document.getElementById('adminModeControl');
+    if(control) control.hidden=!isAdminUser();
     const toggle=document.getElementById('adminModeToggle');
     if(toggle){
       toggle.checked=state.mode;
@@ -1612,6 +1615,8 @@ function getBookingStatusLabel(status){
     if(bar) bar.hidden=!(state.mode&&state.dirty);
     const status=document.getElementById('adminDirtyText');
     if(status) status.textContent=state.dirty?'Unsaved changes':'All changes saved';
+    const testArea=document.getElementById('adminFrameworkTest');
+    if(testArea) testArea.hidden=!state.mode;
   }
   function buildShell(){
     const familySheet=document.querySelector('#mamaModal .guide-sheet');
@@ -1619,15 +1624,19 @@ function getBookingStatusLabel(status){
       const block=document.createElement('section');
       block.id='adminModeControl';
       block.className='admin-mode-control';
-      block.innerHTML=`<div><strong>Admin Mode</strong><small>Edit and reorganise this Companion</small></div><label class="admin-switch"><input id="adminModeToggle" type="checkbox" role="switch" aria-label="Toggle Admin Mode"><span></span></label>`;
+      block.innerHTML=`<div class="admin-control-head"><div><strong>Admin Mode</strong><small>Edit and reorganise this Companion</small></div><label class="admin-switch"><input id="adminModeToggle" type="checkbox" role="switch" aria-label="Toggle Admin Mode"><span></span></label></div><div id="adminFrameworkTest" class="admin-framework-test" hidden><label for="adminTestNote">Admin note <small>Framework test — edit this text to test Save, Discard and leave protection.</small></label><textarea id="adminTestNote" rows="3" placeholder="Type a test note…"></textarea></div>`;
       familySheet.appendChild(block);
-      const input=block.querySelector('input');
+      const input=block.querySelector('#adminModeToggle');
       input.addEventListener('change',()=>window.setAdminMode(input.checked));
+      const note=block.querySelector('#adminTestNote');
+      note.value=localStorage.getItem(ADMIN_NOTE_KEY)||'';
+      note.addEventListener('input',()=>window.markAdminDirty('adminNote',{value:note.value}));
     }
     if(!document.getElementById('adminModeBanner')){
       const banner=document.createElement('div');
       banner.id='adminModeBanner';
       banner.className='admin-mode-banner';
+      banner.setAttribute('role','status');
       banner.hidden=true;
       banner.innerHTML='<strong>ADMIN MODE</strong><span id="adminDirtyText">All changes saved</span>';
       document.body.prepend(banner);
@@ -1734,6 +1743,18 @@ function getBookingStatusLabel(status){
     if(!state.mode||!state.dirty) return;
     event.preventDefault();
     event.returnValue='';
+  });
+
+  document.addEventListener('travelengine:adminsave',function(event){
+    const change=event.detail?.draft?.changes?.adminNote;
+    if(change && Object.prototype.hasOwnProperty.call(change,'value')){
+      localStorage.setItem(ADMIN_NOTE_KEY,String(change.value));
+    }
+  });
+
+  document.addEventListener('travelengine:admindiscard',function(){
+    const note=document.getElementById('adminTestNote');
+    if(note) note.value=localStorage.getItem(ADMIN_NOTE_KEY)||'';
   });
 
   document.addEventListener('DOMContentLoaded',function(){
