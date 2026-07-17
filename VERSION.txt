@@ -1,1 +1,1 @@
-NZ Companion · Stage 6A-3A Move Positions + Admin Home Fix · Build nz0.6rc11k-admin3a
+NZ Companion · Stage 6A-3D Overlay Cleanup · Build nz0.6rc11k-admin3d

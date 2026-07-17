@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded',restoreGuideNavigationLayer);
 
 function $(id){return document.getElementById(id);}
 function escapeHTML(value){return String(value ?? '').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
-function closeMiniMenus(){document.querySelectorAll('.mini-menu').forEach(m=>m.classList.remove('show'));}
+function closeMiniMenus(){document.querySelectorAll('.mini-menu').forEach(m=>m.classList.remove('show'));document.body.classList.remove('admin-overlay-open');}
 function clampMenuPosition(n,min,max){return Math.max(min,Math.min(max,n));}
 function positionMiniMenu(menu,trigger){
   if(!menu||!trigger)return;
@@ -143,7 +143,7 @@ function toggleMenu(id,trigger){
   const m=$(id);
   const open=m&&m.classList.contains('show');
   closeMiniMenus();
-  if(m&&!open){positionMiniMenu(m,trigger||document.activeElement);m.classList.add('show');}
+  if(m&&!open){positionMiniMenu(m,trigger||document.activeElement);m.classList.add('show');document.body.classList.add('admin-overlay-open');}
 }
 function toggleTripMenu(){toggleMenu('tripMenu',document.querySelector('.trip-trigger'));}
 function toggleGuideMenu(){toggleMenu('guideMenu',document.querySelector('.guide-trigger'));}
