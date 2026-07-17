@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nz-companion-0.6-rc11k-admin3';
+const CACHE_NAME = 'nz-companion-0.6-rc11k-admin3a';
 const ASSETS = [
   './',
   './index.html',

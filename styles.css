@@ -682,7 +682,7 @@ html:has(body.home-bg),
 body.home-bg{height:100dvh!important;min-height:100dvh!important;overflow:hidden!important;}
 
 @media (max-width:720px){body.home-bg .site-nav{min-height:68px!important;padding-top:10px!important;padding-bottom:10px!important;}
-body.home-bg main.dashboard.home-premium.home-v37{height:calc(100dvh - 68px)!important;max-height:calc(100dvh - 68px)!important;overflow:hidden!important;padding:4px 12px calc(100px + env(safe-area-inset-bottom))!important;justify-content:center!important;align-items:center!important;}
+body.home-bg main.dashboard.home-premium.home-v37{height:calc(100dvh - 68px - var(--admin-banner-height,0px))!important;max-height:calc(100dvh - 68px - var(--admin-banner-height,0px))!important;overflow:hidden!important;padding:4px 12px calc(100px + env(safe-area-inset-bottom))!important;justify-content:center!important;align-items:center!important;}
 
 body.home-bg .live-card{min-height:74px!important;padding:8px 9px!important;border-radius:19px!important;}
 body.home-bg .live-card strong{font-size:14px!important;}
@@ -932,17 +932,17 @@ body.home-bg .site-nav{min-height:66px!important;box-sizing:border-box!important
 /* Header logo: use the transparent monogram mark so it reads as printed,
    not as a pasted square photo. Keep Companion's warmer identity. */
 /* Home front page: keep card content size, but reduce the dead air above and below. */
-body.home-bg main.dashboard.home-premium.home-v37{height:calc(100dvh - 66px)!important;min-height:0!important;max-height:calc(100dvh - 66px)!important;box-sizing:border-box!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:0 12px calc(72px + env(safe-area-inset-bottom))!important;margin:0 auto!important;overflow:hidden!important;}
-body.home-bg section.home-brand-card.v37-dashboard-home{box-sizing:border-box!important;transform:translateY(-6.5vh)!important;box-shadow:0 20px 60px rgba(70,48,30,.12)!important;}
+body.home-bg main.dashboard.home-premium.home-v37{height:calc(100dvh - 66px - var(--admin-banner-height,0px))!important;min-height:0!important;max-height:calc(100dvh - 66px - var(--admin-banner-height,0px))!important;box-sizing:border-box!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:0 12px calc(72px + env(safe-area-inset-bottom))!important;margin:0 auto!important;overflow:hidden!important;}
+body.home-bg section.home-brand-card.v37-dashboard-home{box-sizing:border-box!important;transform:translateY(var(--home-hero-shift,-6.5vh))!important;box-shadow:0 20px 60px rgba(70,48,30,.12)!important;}
 
 body.home-bg .live-card{min-height:74px!important;padding:8px 10px!important;}
 body.home-bg .home-day-button{background:linear-gradient(180deg,#a27c45,#7e5b31)!important;color:#fffaf3!important;box-shadow:0 12px 30px rgba(83,54,31,.2)!important;}
-@media(max-width:520px){body.home-bg main.dashboard.home-premium.home-v37{height:calc(100dvh - 68px)!important;max-height:calc(100dvh - 68px)!important;padding:0 10px calc(70px + env(safe-area-inset-bottom))!important;}
-body.home-bg section.home-brand-card.v37-dashboard-home{transform:translateY(-7.2vh)!important;}
+@media(max-width:520px){body.home-bg main.dashboard.home-premium.home-v37{height:calc(100dvh - 68px - var(--admin-banner-height,0px))!important;max-height:calc(100dvh - 68px - var(--admin-banner-height,0px))!important;padding:0 10px calc(70px + env(safe-area-inset-bottom))!important;}
+body.home-bg section.home-brand-card.v37-dashboard-home{transform:translateY(var(--home-hero-shift,-7.2vh))!important;}
 
 body.home-bg .live-card{min-height:72px!important;padding:8px 9px!important;}
 }
-@media(max-height:760px){body.home-bg section.home-brand-card.v37-dashboard-home{transform:translateY(-8.4vh)!important;}}
+@media(max-height:760px){body.home-bg section.home-brand-card.v37-dashboard-home{transform:translateY(var(--home-hero-shift,-8.4vh))!important;}}
 /* =========================================================
    Stage 4E-2.1 — Regression Fix: desktop hero, splash sequence, sticky top bar
    Scope: visual/layout only. No data or interaction logic changes.
@@ -2778,7 +2778,7 @@ body.currency-modal-open{overflow:hidden}
 .admin-framework-test{margin-top:14px;padding-top:14px;border-top:1px solid var(--admin-line)}.admin-framework-test[hidden]{display:none}.admin-framework-test label,.admin-framework-test label small{display:block}.admin-framework-test label{color:#63320f;font-size:12px;font-weight:850}.admin-framework-test label small{margin-top:3px;color:#8c5b36;font-size:10px;font-weight:600;line-height:1.4}.admin-framework-test textarea{width:100%;margin-top:9px;box-sizing:border-box;resize:vertical;border:1px solid var(--admin-line);border-radius:12px;background:#fff;padding:11px 12px;color:#4f2b13;font:inherit;line-height:1.45;outline:none}.admin-framework-test textarea:focus{border-color:var(--admin-accent);box-shadow:0 0 0 3px rgba(200,107,32,.12)}
 .admin-switch{position:relative;flex:0 0 auto;width:52px;height:30px}.admin-switch input{position:absolute;opacity:0;pointer-events:none}.admin-switch span{position:absolute;inset:0;border-radius:999px;background:#c9c4bd;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);cursor:pointer;transition:.2s}.admin-switch span:after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 2px 7px rgba(0,0,0,.2);transition:.2s}.admin-switch input:checked+span{background:var(--admin-accent)}.admin-switch input:checked+span:after{transform:translateX(22px)}
 .admin-mode-banner{position:fixed;top:0;left:0;right:0;z-index:1400;display:flex;align-items:center;justify-content:center;gap:10px;min-height:34px;padding:6px 14px;background:linear-gradient(90deg,#9c4c17,#d87925);color:#fff;box-shadow:0 3px 12px rgba(89,42,10,.22);font-size:11px;letter-spacing:.05em}.admin-mode-banner[hidden]{display:none}.admin-mode-banner span{font-weight:700;letter-spacing:0;text-transform:none;opacity:.9}
-body.admin-mode{--accent:var(--admin-accent);--teal:var(--admin-accent);--green:var(--admin-accent-dark);padding-top:34px}body.admin-mode .site-nav{top:34px!important}
+body.admin-mode{--accent:var(--admin-accent);--teal:var(--admin-accent);--green:var(--admin-accent-dark);--admin-banner-height:34px;--home-hero-shift:0px;padding-top:34px}body.admin-mode .site-nav{top:34px!important}
 body.admin-mode .site-nav{border-bottom-color:var(--admin-line);background:#fff8ef}
 body.admin-mode .friend-pill{background:var(--admin-soft)!important;border-color:var(--admin-line)!important;color:var(--admin-accent-dark)!important}
 body.admin-mode .app-nav{box-shadow:0 -7px 22px rgba(116,57,13,.14)}
