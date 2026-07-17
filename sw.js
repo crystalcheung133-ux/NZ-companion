@@ -1,18 +1,19 @@
-const CACHE_NAME = 'nz1.0-frozen';
+importScripts('./trip-config.js');
+const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-stage7a2`;
 const ASSETS = [
   './',
   './index.html',
   './styles.css',
   './script.js',
+  './trip-config.js',
   './data.js',
-  './manifest.json',
   './place.html',
   './day.html',
   './offline.html',
-  './icon-192.png',
-  './icon-512.png',
-  './nz-adventure-mark.png',
-  './nz-adventure-logo.png',
+  './' + TRIP_CONFIG.logo.icon192,
+  './' + TRIP_CONFIG.logo.icon512,
+  './' + TRIP_CONFIG.logo.header,
+  './' + TRIP_CONFIG.logo.splash,
   './guide.html',
   './itinerary.html',
   './memory.html',

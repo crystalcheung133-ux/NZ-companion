@@ -1,34 +1,14 @@
 
-function applyTripBranding(){
-  if(typeof TRIP_BRAND==='undefined') return;
-  document.querySelectorAll('[data-brand-text]').forEach(function(el){
-    var key=el.getAttribute('data-brand-text');
-    var value=TRIP_BRAND[key];
-    if(value==null) return;
-    if(key==='splashSlogan') el.innerHTML=String(value).replace(/\n/g,'<br>');
-    else el.textContent=value;
-  });
-  document.querySelectorAll('[data-brand-logo]').forEach(function(img){
-    var key=img.getAttribute('data-brand-logo');
-    if(TRIP_BRAND.logo && TRIP_BRAND.logo[key]) img.src=TRIP_BRAND.logo[key];
-  });
-  var suffix=TRIP_BRAND.browserTitleSuffix || TRIP_BRAND.appName;
-  if(suffix && document.title){
-    document.title=document.title.replace(/New Zealand(?: Family)? Companion/g,suffix);
-  }
-}
-if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',applyTripBranding);
-else applyTripBranding();
 
 function tripDateParts(date=new Date()){
-  const cfg=(typeof TRIP_CALENDAR!=='undefined'&&TRIP_CALENDAR)||{startDate:'2026-09-22',timeZone:'Pacific/Auckland'};
-  const parts=new Intl.DateTimeFormat('en-CA',{timeZone:cfg.timeZone||'Pacific/Auckland',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(date);
+  const cfg=TRIP_CONFIG;
+  const parts=new Intl.DateTimeFormat('en-CA',{timeZone:cfg.timeZone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(date);
   const out={};
   parts.forEach(part=>{if(part.type!=='literal')out[part.type]=part.value;});
   return `${out.year}-${out.month}-${out.day}`;
 }
 function tripDayNumber(date=new Date()){
-  const cfg=(typeof TRIP_CALENDAR!=='undefined'&&TRIP_CALENDAR)||{startDate:'2026-09-22'};
+  const cfg=TRIP_CONFIG;
   const toUtc=value=>{const [y,m,d]=String(value).split('-').map(Number);return Date.UTC(y,m-1,d);};
   const raw=Math.floor((toUtc(tripDateParts(date))-toUtc(cfg.startDate))/86400000)+1;
   const available=typeof ITINERARY_DATA!=='undefined'?Object.keys(ITINERARY_DATA).map(Number).filter(Number.isFinite):[1];
@@ -232,7 +212,7 @@ var openMomentsModal, saveMoments, editMoment, deleteMoment, renderMoments;
 
 function openUnexpectedModal(){$('unexpectedFriend').textContent=FRIENDS[getFriend()];$('unexpectedText').value='';$('unexpectedModal').classList.add('show')}
 function closeUnexpectedModal(){$('unexpectedModal').classList.remove('show')}
-function saveUnexpected(){const arr=JSON.parse(localStorage.getItem('moments_freeform')||'[]');arr.push({page:document.title.replace(' · '+((typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.browserTitleSuffix)||'New Zealand Family Companion'),''),friendLabel:FRIENDS[getFriend()],text:$('unexpectedText').value,savedAt:new Date().toISOString()});localStorage.setItem('moments_freeform',JSON.stringify(arr));closeUnexpectedModal();renderUnexpected();}
+function saveUnexpected(){const arr=JSON.parse(localStorage.getItem('moments_freeform')||'[]');arr.push({page:document.title.replace(' · '+TRIP_CONFIG.tripName,''),friendLabel:FRIENDS[getFriend()],text:$('unexpectedText').value,savedAt:new Date().toISOString()});localStorage.setItem('moments_freeform',JSON.stringify(arr));closeUnexpectedModal();renderUnexpected();}
 function renderUnexpected(){const box=$('unexpectedTimeline');if(!box)return;let arr=[];try{arr=JSON.parse(localStorage.getItem('moments_freeform')||'[]');if(!Array.isArray(arr))arr=[];}catch(e){arr=[];}box.innerHTML=arr.length?arr.map(e=>`<div class="moments-entry"><strong>✨ ${escapeHTML(e.page)}</strong><p>${escapeHTML(e.friendLabel)}</p><p>${escapeHTML(e.text)}</p></div>`).join(''):'<p>No Moments yet.</p>'}
 
 function updateExpenseMode(){
@@ -296,7 +276,7 @@ function openTripCard(key) {
   const content = document.getElementById('tripModalContent');
   const modal = document.getElementById('tripModal');
   if (!content || !modal) return;
-  content.innerHTML = `<div class="trip-onepage"><p class="kicker">Trip</p><h2>${t.title}</h2>${t.body}<div class="guide-next-row"><button class="pill" onclick="openTripCard('${prev}')">‹ Previous</button><button class="pill" onclick="openTripCard('${next}')">Next ›</button></div><p class="timestamp">Build · Version ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.version)||'0.6 RC11K Admin 2'} · ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.buildLabel)||'Phase 1 Release Candidate'}</p></div>`;
+  content.innerHTML = `<div class="trip-onepage"><p class="kicker">Trip</p><h2>${t.title}</h2>${t.body}<div class="guide-next-row"><button class="pill" onclick="openTripCard('${prev}')">‹ Previous</button><button class="pill" onclick="openTripCard('${next}')">Next ›</button></div><p class="timestamp">Build · Version ${TRIP_CONFIG.version} · ${TRIP_CONFIG.buildLabel}</p></div>`;
   modal.classList.add('show');
   const sheet=document.querySelector('#tripModal .trip-sheet');
   if(sheet) sheet.scrollTop=0;
@@ -402,7 +382,7 @@ function renderPlacePage(key){
 <section class="prose-block guide-overview"><h2>Overview</h2><p>${g.desc||''}</p></section>
 <section class="prose-block"><h2>Highlights</h2><ul>${sig}</ul></section>
 <section class="prose-block"><h2>Good to Know</h2><ul>${worth}</ul></section>`;
-  document.title = `${g.title} · ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.browserTitleSuffix)||'New Zealand Family Companion'}`;
+  document.title = `${g.title} · ${TRIP_CONFIG.tripName}`;
 }
 
 function renderPlaceGroupPage(keys){
@@ -424,7 +404,7 @@ function renderPlaceGroupPage(keys){
     </article>`;
   }).join('');
   mount.innerHTML=`<button class="place-detail-close" type="button" aria-label="Close guide options" onclick="closePlaceDetail()">×</button><div class="page-hero"><p class="kicker">Guide</p><h1>Choose an option</h1><p class="lead">Compare the planned choices, then use Navigate inside the restaurant card you choose.</p></div>${cards}`;
-  document.title=`Guide options · ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.browserTitleSuffix)||'New Zealand Family Companion'}`;
+  document.title=`Guide options · ${TRIP_CONFIG.tripName}`;
 }
 
 function copyText(text){
@@ -848,7 +828,7 @@ function copyText(text){
     box.innerHTML=latest.map(e=>`<div class="expense-card">
       <strong>${escapeHTML(e.item)}</strong>
       <p class="timestamp">${formatTime(e.createdAt)}</p>
-      <p>${Number(e.total).toLocaleString()} NZD · Paid by ${FRIENDS[e.paidBy]}</p>
+      <p>${Number(e.total).toLocaleString()} ${TRIP_CONFIG.currency.code} · Paid by ${FRIENDS[e.paidBy]}</p>
       <div class="entry-actions"><button class="mini-btn" onclick="editExpense(${e._idx})">✏️ Edit</button><button class="mini-btn" onclick="deleteExpense(${e._idx})">🗑 Delete</button></div>
     </div>`).join('');
   };
@@ -1070,7 +1050,7 @@ function getBookingStatusLabel(status){
       used+=Number(raw)||0;
     }
     const remainder=total-used;
-    if(remainder<0) return alert(`The other amounts exceed the total by ${Math.abs(remainder).toFixed(2)} NZD.`);
+    if(remainder<0) return alert(`The other amounts exceed the total by ${Math.abs(remainder).toFixed(2)} ${TRIP_CONFIG.currency.code}.`);
     const input=document.getElementById(`customShare_${targetParty}`);
     if(input){input.value=remainder.toFixed(2);input.dispatchEvent(new Event('input',{bubbles:true}));}
   };
@@ -1106,8 +1086,8 @@ function getBookingStatusLabel(status){
     if(status){
       if(!total) status.textContent='Enter the total amount first.';
       else if(Math.abs(difference)<=0.01) status.textContent='Custom split matches the total.';
-      else if(difference>0) status.textContent=`${difference.toFixed(2)} NZD remains unallocated.`;
-      else status.textContent=`Over by ${Math.abs(difference).toFixed(2)} NZD.`;
+      else if(difference>0) status.textContent=`${difference.toFixed(2)} ${TRIP_CONFIG.currency.code} remains unallocated.`;
+      else status.textContent=`Over by ${Math.abs(difference).toFixed(2)} ${TRIP_CONFIG.currency.code}.`;
       status.classList.toggle('error',difference<-.01);
       status.classList.toggle('complete',Math.abs(difference)<=.01 && total>0);
     }
@@ -1217,7 +1197,7 @@ function getBookingStatusLabel(status){
     const consumer=e.consumedBy || split[0] || e.paidBy;
     const who=personal ? `Consumed by ${labelFor(consumer)}` : `${e.splitMode==='custom'?'Custom':'Equal'} split: ${split.map(labelFor).join(' · ')}`;
     const latestId=e._latest?' id="latestExpenseCard"':'';
-    return `<div class="expense-card"${latestId}><strong>${escapeHTML(e.item||'')}</strong><p class="timestamp">${timeLabel(e.createdAt)}${e.editedAt?` · Edited ${timeLabel(e.editedAt)}`:''}</p><p>${Number(e.total||0).toLocaleString()} NZD · Paid by ${labelFor(e.paidBy)}</p><p>${personal?'Personal Expense':'Shared Expense'} · ${who}</p><div class="entry-actions"><button class="mini-btn" onclick="editExpense(${e._idx})">✏️ Edit</button><button class="mini-btn" onclick="deleteExpense(${e._idx})">🗑 Delete</button></div></div>`;
+    return `<div class="expense-card"${latestId}><strong>${escapeHTML(e.item||'')}</strong><p class="timestamp">${timeLabel(e.createdAt)}${e.editedAt?` · Edited ${timeLabel(e.editedAt)}`:''}</p><p>${Number(e.total||0).toLocaleString()} ${TRIP_CONFIG.currency.code} · Paid by ${labelFor(e.paidBy)}</p><p>${personal?'Personal Expense':'Shared Expense'} · ${who}</p><div class="entry-actions"><button class="mini-btn" onclick="editExpense(${e._idx})">✏️ Edit</button><button class="mini-btn" onclick="deleteExpense(${e._idx})">🗑 Delete</button></div></div>`;
   }
   function ensureToolHistory(){
     const sheet=document.querySelector('#expenseModal .tools-sheet');
@@ -1342,9 +1322,9 @@ function getBookingStatusLabel(status){
           Object.entries(shares).forEach(([k,share])=>{if(!personalSpend[k]) personalSpend[k]=0;if(!balance[k]) balance[k]=0;personalSpend[k]+=Number(share||0);balance[k]-=Number(share||0);});
         }
       });
-      const spendHtml=FRIEND_ORDER.map(k=>`<p>${labelFor(k)}<br><strong>${Math.round(personalSpend[k]||0).toLocaleString()} NZD</strong></p>`).join('');
-      const balanceHtml=FRIEND_ORDER.map(k=>{const v=balance[k]||0;return `<p>${labelFor(k)}<br><strong>${v>=0?'Receive':'Owes'} ${Math.abs(Math.round(v)).toLocaleString()} NZD</strong></p>`;}).join('');
-      pageBox.innerHTML=`<div class="expense-dashboard-v33"><div class="expense-total-card"><span>Trip Total</span><strong>${total.toLocaleString()} NZD</strong><small>Shared + personal expenses</small></div><div class="expense-focus-grid"><div class="expense-focus-card"><h3>Personal Spend</h3>${spendHtml}</div><div class="expense-focus-card"><h3>Settlement</h3>${balanceHtml}</div></div></div><div class="expense-history-block"><h3>Transaction History</h3><p class="timestamp">Newest transactions appear first.</p><div class="transaction-scroll">${sorted.length?sorted.map(expenseCard).join(''):'<p>No transactions yet.</p>'}</div></div>`;
+      const spendHtml=FRIEND_ORDER.map(k=>`<p>${labelFor(k)}<br><strong>${Math.round(personalSpend[k]||0).toLocaleString()} ${TRIP_CONFIG.currency.code}</strong></p>`).join('');
+      const balanceHtml=FRIEND_ORDER.map(k=>{const v=balance[k]||0;return `<p>${labelFor(k)}<br><strong>${v>=0?'Receive':'Owes'} ${Math.abs(Math.round(v)).toLocaleString()} ${TRIP_CONFIG.currency.code}</strong></p>`;}).join('');
+      pageBox.innerHTML=`<div class="expense-dashboard-v33"><div class="expense-total-card"><span>Trip Total</span><strong>${total.toLocaleString()} ${TRIP_CONFIG.currency.code}</strong><small>Shared + personal expenses</small></div><div class="expense-focus-grid"><div class="expense-focus-card"><h3>Personal Spend</h3>${spendHtml}</div><div class="expense-focus-card"><h3>Settlement</h3>${balanceHtml}</div></div></div><div class="expense-history-block"><h3>Transaction History</h3><p class="timestamp">Newest transactions appear first.</p><div class="transaction-scroll">${sorted.length?sorted.map(expenseCard).join(''):'<p>No transactions yet.</p>'}</div></div>`;
     }
   };
 
@@ -1378,19 +1358,19 @@ function getBookingStatusLabel(status){
     });
     const rows=[
       ['CCMV NEW ZEALAND EXPENSE SUMMARY'],
-      ['Trip Total NZD',Math.round(total)],
+      [`Trip Total ${TRIP_CONFIG.currency.code}`,Math.round(total)],
       [],
-      ['Personal Spend','Amount NZD'],
+      ['Personal Spend',`Amount ${TRIP_CONFIG.currency.code}`],
       ...FRIEND_ORDER.map(k=>[labelFor(k),Math.round(personalSpend[k]||0)]),
       [],
-      ['Settlement','Position','Amount NZD'],
+      ['Settlement','Position',`Amount ${TRIP_CONFIG.currency.code}`],
       ...FRIEND_ORDER.map(k=>{
         const v=balance[k]||0;
         return [labelFor(k),v>=0?'Receive':'Owes',Math.abs(Math.round(v))];
       }),
       [],
       ['TRANSACTION HISTORY'],
-      ['Created At','Category','Details','Item','Total NZD','Paid By','Type','Split Mode','Split Between','Custom Shares','Consumed By','Edited At'],
+      ['Created At','Category','Details','Item',`Total ${TRIP_CONFIG.currency.code}`,'Paid By','Type','Split Mode','Split Between','Custom Shares','Consumed By','Edited At'],
       ...arr.map(e=>[
         e.createdAt||'',
         e.category||'',
@@ -1473,8 +1453,8 @@ function getBookingStatusLabel(status){
 /* NZ 0.6 RC11K — dashboard currency exchange */
 (function(){
   const STORAGE_KEY='nz_companion_fx_nzd_aud_v1';
-  const API_URL='https://api.frankfurter.dev/v1/latest?base=NZD&symbols=AUD';
-  const state={base:'NZD',quote:'AUD',rate:null,date:'',source:'',loaded:false};
+  const API_URL=`https://api.frankfurter.dev/v1/latest?base=${encodeURIComponent(TRIP_CONFIG.currency.code)}&symbols=AUD`;
+  const state={base:TRIP_CONFIG.currency.code,quote:'AUD',rate:null,date:'',source:'',loaded:false};
 
   function parseAmount(value){
     const cleaned=String(value||'').replace(/[^0-9.]/g,'');
@@ -1500,7 +1480,7 @@ function getBookingStatusLabel(status){
   }
   function displayRateForDirection(){
     if(!state.rate) return null;
-    return state.base==='NZD'?state.rate:(1/state.rate);
+    return state.base===TRIP_CONFIG.currency.code?state.rate:(1/state.rate);
   }
   function updateCurrencyUI(){
     const rate=displayRateForDirection();
@@ -1514,11 +1494,11 @@ function getBookingStatusLabel(status){
     const outputLabel=document.getElementById('currencyOutputLabel');
     const resultEl=document.getElementById('currencyResult');
     const status=document.getElementById('currencyStatus');
-    if(card) card.textContent=state.rate?`NZD 100 ≈ AUD ${formatMoney(100*state.rate)}`:'NZD 100 ≈ AUD --';
+    if(card) card.textContent=state.rate?`${TRIP_CONFIG.currency.code} 100 ≈ AUD ${formatMoney(100*state.rate)}`:`${TRIP_CONFIG.currency.code} 100 ≈ AUD --`;
     if(meta) meta.textContent=state.rate?(state.source==='live'?`Rate date · ${state.date}`:`Last saved · ${state.date||'offline'}`):'Rate unavailable';
     if(inputCode) inputCode.textContent=state.base;
-    if(inputLabel) inputLabel.textContent=state.base==='NZD'?'New Zealand dollar':'Australian dollar';
-    if(outputLabel) outputLabel.textContent=state.quote==='AUD'?'Australian dollar':'New Zealand dollar';
+    if(inputLabel) inputLabel.textContent=state.base===TRIP_CONFIG.currency.code?TRIP_CONFIG.currency.name:'Australian dollar';
+    if(outputLabel) outputLabel.textContent=state.quote==='AUD'?'Australian dollar':TRIP_CONFIG.currency.name;
     if(resultEl) resultEl.textContent=`${state.quote} ${result===null?'--':formatMoney(result)}`;
     if(status){
       if(state.rate) status.textContent=state.source==='live'?`Latest daily reference rate · ${state.date}`:`Offline rate saved from ${state.date||'the last update'}`;
@@ -1593,7 +1573,7 @@ function getBookingStatusLabel(status){
   }
   function ensureDraft(){
     if(!state.draft){
-      state.draft=readJSON(DRAFT_KEY,{version:1,tripId:(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.appName)||'travel-engine-trip',changes:{},updatedAt:null});
+      state.draft=readJSON(DRAFT_KEY,{version:1,tripId:TRIP_CONFIG.tripName,changes:{},updatedAt:null});
     }
     return state.draft;
   }
