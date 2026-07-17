@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>Day · New Zealand Companion</title><link href="manifest.json" rel="manifest"/><meta content="#087F8C" name="theme-color"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="New Zealand" name="apple-mobile-web-app-title"/><link href="icon-192.png" rel="apple-touch-icon"/><link href="styles.css?v=nz0.6rc11k-admin2" rel="stylesheet"/></head><body><nav class="site-nav"><a class="brand" href="index.html"><span class="brand-mark"><img alt="" data-brand-logo="header" src="nz-adventure-mark.png"/></span><span data-brand-text="navLabel">New Zealand Companion</span></a><button class="friend-pill" onclick="openFriendModal()"><span data-friend-label="">🏙️ Lee</span></button></nav><main class="content-page" id="dynamicDayRoot" aria-live="polite"></main>
-<script src="data.js"></script><script src="script.js?v=nz0.6rc11k-admin2"></script>
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>Day · New Zealand Companion</title><link href="manifest.json" rel="manifest"/><meta content="#087F8C" name="theme-color"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="New Zealand" name="apple-mobile-web-app-title"/><link href="icon-192.png" rel="apple-touch-icon"/><link href="styles.css?v=nz0.6rc11k-admin2a" rel="stylesheet"/></head><body><nav class="site-nav"><a class="brand" href="index.html"><span class="brand-mark"><img alt="" data-brand-logo="header" src="nz-adventure-mark.png"/></span><span data-brand-text="navLabel">New Zealand Companion</span></a><button class="friend-pill" onclick="openFriendModal()"><span data-friend-label="">🏙️ Lee</span></button></nav><main class="content-page" id="dynamicDayRoot" aria-live="polite"></main>
+<script src="data.js"></script><script src="script.js?v=nz0.6rc11k-admin2a"></script>
 <script>
 (function(){
   const DAY_RENDER_DATA = ITINERARY_DATA;
@@ -36,7 +36,7 @@
     const mapHtml=item.map&&!multi?`<a class="timeline-action timeline-action--map" href="${esc(item.map)}" target="_blank" rel="noopener">🧭 Navigate</a>`:'';
     const directoryHtml=item.showShoppingDirectory?`<button class="timeline-action timeline-action--directory" onclick="location.href='guide.html#shopping-directory'">🛍 Shopping List</button>`:'';
     const guideHtml=guideIds.length?`<button class="timeline-action timeline-action--guide" onclick='openGuideGroupFromDay(${JSON.stringify(guideIds)},${JSON.stringify(item.id)})'>📖 Guide</button>`:'';
-    const admin=`<div class="timeline-admin-tools"><button class="timeline-drag-handle" draggable="true" data-index="${index}" aria-label="Drag to reorder">≡</button><button class="timeline-admin-menu" onclick="openTimelineEditor(${index})" aria-label="Edit activity">Edit</button><button class="timeline-admin-more" onclick="toggleTimelineMenu(${index})" aria-label="More actions">•••</button><div class="timeline-card-menu" id="timelineMenu${index}" hidden><button onclick="duplicateTimelineItem(${index})">Duplicate</button><button onclick="moveTimelineItem(${index},-1)">Move up</button><button onclick="moveTimelineItem(${index},1)">Move down</button><button class="danger" onclick="deleteTimelineItem(${index})">Delete</button></div></div>`;
+    const admin=`<div class="timeline-admin-tools"><button class="timeline-drag-handle" draggable="true" data-index="${index}" aria-label="Drag to reorder">≡</button><button class="timeline-admin-menu" onclick="openTimelineEditor(${index})" aria-label="Edit activity">Edit</button><button class="timeline-admin-more" onclick="toggleTimelineMenu(event,${index})" aria-label="More actions" aria-expanded="false">•••</button></div>`;
     return `<div class="timeline-item" id="${esc(item.id)}" data-index="${index}" draggable="false"><div class="timeline-time">${esc(item.time)}</div><div class="timeline-main"><div class="timeline-title-row"><h3>${esc(item.title)}</h3></div>${detailHtml}${routeHtml}<div class="timeline-actions">${mapHtml}${directoryHtml}${guideHtml}<button class="timeline-action timeline-action--moment" onclick="openMomentsModal('${esc(item.id)}')">✨ Moment</button></div></div>${admin}</div>`;
   }
   function render(){
@@ -44,14 +44,72 @@
     root.innerHTML=`<div class="page-hero day-page-hero"><p class="kicker">${esc(data.kicker)}</p><h1>${esc(data.heading)}</h1></div>${buildDriveBriefing(data)}<section class="timeline" id="adminTimeline">${workingItems.map(itemHTML).join('')}</section>${addButton}`;
     bindDrag();
   }
+  let editorPageScroll=0;
+  function setEditorViewportHeight(){
+    const height=window.visualViewport?window.visualViewport.height:window.innerHeight;
+    document.documentElement.style.setProperty('--timeline-editor-height',Math.round(height)+'px');
+  }
+  function lockEditorBackground(){
+    if(document.body.classList.contains('timeline-editor-open'))return;
+    editorPageScroll=window.scrollY||window.pageYOffset||0;
+    document.body.style.top=`-${editorPageScroll}px`;
+    document.body.classList.add('timeline-editor-open');
+    setEditorViewportHeight();
+  }
+  function unlockEditorBackground(){
+    if(!document.body.classList.contains('timeline-editor-open'))return;
+    document.body.classList.remove('timeline-editor-open');
+    document.body.style.top='';
+    document.documentElement.style.removeProperty('--timeline-editor-height');
+    window.scrollTo(0,editorPageScroll);
+  }
   function ensureEditor(){
     if(document.getElementById('timelineEditorModal'))return;
-    const modal=document.createElement('div');modal.id='timelineEditorModal';modal.className='timeline-editor-modal';modal.innerHTML=`<div class="timeline-editor-sheet"><button class="timeline-editor-close" onclick="closeTimelineEditor()">×</button><p class="kicker">ADMIN MODE</p><h2 id="timelineEditorHeading">Edit activity</h2><label>Time<input id="timelineEditTime" placeholder="e.g. 10:30 or Flexible"></label><label>Title<input id="timelineEditTitle" placeholder="Activity title"></label><label>Details<textarea id="timelineEditDetails" rows="5" placeholder="One detail per line"></textarea></label><label>Next leg / route<textarea id="timelineEditRoute" rows="3"></textarea></label><div class="timeline-editor-actions"><button class="admin-discard-btn" onclick="closeTimelineEditor()">Cancel</button><button class="admin-save-btn" onclick="applyTimelineEdit()">Apply</button></div></div>`;document.body.appendChild(modal);
+    const modal=document.createElement('div');modal.id='timelineEditorModal';modal.className='timeline-editor-modal';modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.innerHTML=`<div class="timeline-editor-sheet"><button class="timeline-editor-close" onclick="closeTimelineEditor()" aria-label="Close editor">×</button><div class="timeline-editor-scroll"><p class="kicker">ADMIN MODE</p><h2 id="timelineEditorHeading">Edit activity</h2><label>Time<input id="timelineEditTime" placeholder="e.g. 10:30 or Flexible"></label><label>Title<input id="timelineEditTitle" placeholder="Activity title"></label><label>Details<textarea id="timelineEditDetails" rows="5" placeholder="One detail per line"></textarea></label><label>Next leg / route<textarea id="timelineEditRoute" rows="3"></textarea></label><div class="timeline-editor-actions"><button class="admin-discard-btn" onclick="closeTimelineEditor()">Cancel</button><button class="admin-save-btn" onclick="applyTimelineEdit()">Apply</button></div></div></div>`;document.body.appendChild(modal);
+    modal.addEventListener('click',event=>{if(event.target===modal)closeTimelineEditor();});
   }
-  window.openTimelineEditor=function(index){if(!window.isAdminMode||!window.isAdminMode())return;ensureEditor();editingIndex=index;const item=index>=0?workingItems[index]:{time:'',title:'',details:[],route:''};document.getElementById('timelineEditorHeading').textContent=index>=0?'Edit activity':'Add activity';document.getElementById('timelineEditTime').value=item.time||'';document.getElementById('timelineEditTitle').value=item.title||'';document.getElementById('timelineEditDetails').value=(item.details||[]).join('\n');document.getElementById('timelineEditRoute').value=item.route||'';document.getElementById('timelineEditorModal').classList.add('show');};
-  window.closeTimelineEditor=function(){document.getElementById('timelineEditorModal')?.classList.remove('show');};
+  window.openTimelineEditor=function(index){if(!window.isAdminMode||!window.isAdminMode())return;closeTimelineMenu();ensureEditor();editingIndex=index;const item=index>=0?workingItems[index]:{time:'',title:'',details:[],route:''};document.getElementById('timelineEditorHeading').textContent=index>=0?'Edit activity':'Add activity';document.getElementById('timelineEditTime').value=item.time||'';document.getElementById('timelineEditTitle').value=item.title||'';document.getElementById('timelineEditDetails').value=(item.details||[]).join('\n');document.getElementById('timelineEditRoute').value=item.route||'';lockEditorBackground();document.getElementById('timelineEditorModal').classList.add('show');document.querySelector('#timelineEditorModal .timeline-editor-scroll').scrollTop=0;};
+  window.closeTimelineEditor=function(){const modal=document.getElementById('timelineEditorModal');if(!modal?.classList.contains('show'))return;const active=document.activeElement;if(active&&modal.contains(active))active.blur();modal.classList.remove('show');unlockEditorBackground();};
   window.applyTimelineEdit=function(){const title=document.getElementById('timelineEditTitle').value.trim();if(!title){alert('Please enter an activity title.');return;}const base=editingIndex>=0?workingItems[editingIndex]:{id:'custom-'+Date.now(),type:'custom',dayId:'day'+day,placeId:null,bookingId:null,map:null};base.time=document.getElementById('timelineEditTime').value.trim();base.title=title;base.details=document.getElementById('timelineEditDetails').value.split('\n').map(x=>x.trim()).filter(Boolean);base.route=document.getElementById('timelineEditRoute').value.trim();if(editingIndex<0)workingItems.push(base);else workingItems[editingIndex]=base;markTimelineDirty();closeTimelineEditor();render();};
-  window.toggleTimelineMenu=function(index){document.querySelectorAll('.timeline-card-menu').forEach((m,i)=>{if(m.id!=='timelineMenu'+index)m.hidden=true;});const menu=document.getElementById('timelineMenu'+index);if(menu)menu.hidden=!menu.hidden;};
+  function ensureTimelineMenu(){
+    let menu=document.getElementById('timelineFloatingMenu');
+    if(menu)return menu;
+    menu=document.createElement('div');
+    menu.id='timelineFloatingMenu';
+    menu.className='timeline-card-menu timeline-card-menu--floating';
+    menu.hidden=true;
+    document.body.appendChild(menu);
+    return menu;
+  }
+  function closeTimelineMenu(){
+    const menu=document.getElementById('timelineFloatingMenu');
+    if(menu)menu.hidden=true;
+    document.querySelectorAll('.timeline-admin-more[aria-expanded="true"]').forEach(button=>button.setAttribute('aria-expanded','false'));
+  }
+  window.toggleTimelineMenu=function(event,index){
+    event?.preventDefault();event?.stopPropagation();
+    const trigger=event?.currentTarget;
+    const menu=ensureTimelineMenu();
+    const wasOpen=!menu.hidden&&menu.dataset.index===String(index);
+    closeTimelineMenu();
+    if(wasOpen)return;
+    menu.dataset.index=String(index);
+    menu.innerHTML=`<button onclick="duplicateTimelineItem(${index});closeTimelineMenu()">Duplicate</button><button onclick="moveTimelineItem(${index},-1);closeTimelineMenu()">Move up</button><button onclick="moveTimelineItem(${index},1);closeTimelineMenu()">Move down</button><button class="danger" onclick="deleteTimelineItem(${index});closeTimelineMenu()">Delete</button>`;
+    menu.hidden=false;
+    trigger?.setAttribute('aria-expanded','true');
+    const rect=trigger.getBoundingClientRect();
+    const width=148;
+    const left=Math.min(window.innerWidth-width-12,Math.max(12,rect.right-width));
+    const estimatedHeight=178;
+    const below=rect.bottom+8;
+    const top=below+estimatedHeight<=window.innerHeight-12?below:Math.max(12,rect.top-estimatedHeight-8);
+    menu.style.left=left+'px';menu.style.top=top+'px';
+  };
+  window.closeTimelineMenu=closeTimelineMenu;
+  document.addEventListener('click',event=>{if(!event.target.closest('#timelineFloatingMenu,.timeline-admin-more'))closeTimelineMenu();});
+  window.addEventListener('resize',closeTimelineMenu,{passive:true});
+  window.addEventListener('scroll',closeTimelineMenu,{passive:true});
+  if(window.visualViewport)window.visualViewport.addEventListener('resize',()=>{if(document.body.classList.contains('timeline-editor-open'))setEditorViewportHeight();else closeTimelineMenu();},{passive:true});
   window.deleteTimelineItem=function(index){if(!confirm('Delete this activity?'))return;workingItems.splice(index,1);markTimelineDirty();render();};
   window.duplicateTimelineItem=function(index){const copy=clone(workingItems[index]);copy.id=(copy.id||'activity')+'-copy-'+Date.now();copy.title=copy.title+' — Copy';workingItems.splice(index+1,0,copy);markTimelineDirty();render();openTimelineEditor(index+1);};
   window.moveTimelineItem=function(index,delta){const to=index+delta;if(to<0||to>=workingItems.length)return;const [item]=workingItems.splice(index,1);workingItems.splice(to,0,item);markTimelineDirty();render();};
@@ -71,7 +129,7 @@
 <a class="summary-link" href="moments.html"><span>✨</span><small>Moments</small></a>
 <a class="summary-link" href="expenses.html"><span>💸</span><small>Expenses</small></a>
 </nav>
-<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=nz0.6rc11k-admin2').catch(()=>{}));}</script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=nz0.6rc11k-admin2a').catch(()=>{}));}</script>
 <div class="trip-modal" id="tripModal"><div class="trip-sheet"><button class="trip-close" onclick="closeTripModal()" type="button">×</button><div id="tripModalContent"></div></div></div>
 <div class="guide-modal" id="guideModal"><div class="guide-sheet"><button class="guide-close" onclick="closeGuideModal()" type="button">×</button><div id="guideModalContent"></div></div></div>
 <div class="moments-modal" id="momentsModal"><div class="moments-sheet"><button class="moments-close" onclick="closeMomentsModal()" type="button">×</button><p class="kicker">MEMORY BOOK</p><h2 id="momentsTitle">Moment</h2><p class="lead modal-intro" id="momentsIntro">Add a rating, a short note and a photo at any stop. After the trip, this becomes the three families’ shared memory book.</p><p><span class="status-badge" id="momentsFriend">Friend</span> <button class="mini-btn" onclick="openFriendModal()">Change Family</button></p><div class="moments-form"><input id="momentsRating" type="hidden" value="0"/><div class="star-row"><span class="star" onclick="setStars(1)">⭐</span><span class="star" onclick="setStars(2)">⭐</span><span class="star" onclick="setStars(3)">⭐</span><span class="star" onclick="setStars(4)">⭐</span><span class="star" onclick="setStars(5)">⭐</span></div><p class="mood-help">Choose up to 2 moods</p><div class="mood-grid" id="moodGrid"></div><textarea id="momentsText" placeholder="Something to say..."></textarea><div class="photo-input">📷 Add Photo (Camera / Photo Library)</div><button class="btn" onclick="saveMoments()">Save</button></div></div></div>
