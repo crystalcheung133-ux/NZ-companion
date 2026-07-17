@@ -1,4 +1,4 @@
-# CCMV Travel Engine Change Protocol — Stage 4F-T Frozen Master
+# CCMV Travel Engine Change Protocol — v1.0 Frozen Master
 
 Use this protocol for every future change, regardless of who performs it.
 
@@ -93,3 +93,8 @@ For cleanup or architecture work:
 **Audit → Patch → Static Verification → Deploy → Regression Test → PASS → Next step**
 
 This package passed the Stage 4F-T static freeze verification. Future engine changes must create a new Build marker and cache name; do not silently edit the frozen baseline. A working deploy is not automatically a clean replacement baseline until regression testing passes.
+
+
+## v1.0 baseline
+
+The current protected rollback baseline is `nz1.0-frozen`. Stage 7 work must branch from this package and must not silently modify the archived v1.0 ZIP.

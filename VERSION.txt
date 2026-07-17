@@ -1,1 +1,1 @@
-nz0.6rc11k-admin4c
+nz1.0-frozen

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nz0.6rc11k-admin4c';
+const CACHE_NAME = 'nz1.0-frozen';
 const ASSETS = [
   './',
   './index.html',

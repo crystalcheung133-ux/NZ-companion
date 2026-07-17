@@ -48,3 +48,29 @@ Deployable without UI redesign. Core timeline/place/booking model is reusable, b
 - Added Crown Range backup route via Cromwell.
 - No GPS tracking, background location, arrival detection or real-time alerts.
 - The Companion remains a pre-drive and between-stop guide; Google Maps remains the navigation tool.
+
+## Validation Stage 6A-5 — Admin Draft Integrity
+
+**Result: PASS — device regression required before freeze**
+
+- PASS: Edit, Add, Duplicate, Delete and Move share one pending draft model.
+- PASS: Cross-page navigation does not automatically save or discard.
+- PASS: Save is the only itinerary commit point.
+- PASS: Discard restores the last committed/original itinerary state.
+- PASS: Cross-day move records both source and destination day arrays in one draft.
+- PASS: New and duplicated activities use independent IDs.
+- PASS: Moments and Expenses storage remain outside the Admin itinerary transaction.
+- NOTE: Final iPhone/PWA regression remains a manual deployment check.
+
+## Validation v1.0 — Frozen Admin Core
+
+**Result: PASS — FROZEN BASELINE**
+
+- PASS: Admin Edit, Move, Add, Duplicate and Delete completed device regression.
+- PASS: Pending edits persist across pages without automatic commit.
+- PASS: Save Changes is the only itinerary commit point.
+- PASS: Discard restores the complete last committed itinerary state.
+- PASS: Moments and Expenses remain outside the Admin itinerary transaction.
+- PASS: PWA build marker and service-worker cache moved to `nz1.0-frozen`.
+- FREEZE: This package is the rollback baseline for all Stage 7 development.
+- RULE: Future development must branch from this package and use a new version/cache identifier; never silently alter this frozen archive.
