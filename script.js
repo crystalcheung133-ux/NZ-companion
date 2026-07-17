@@ -296,7 +296,7 @@ function openTripCard(key) {
   const content = document.getElementById('tripModalContent');
   const modal = document.getElementById('tripModal');
   if (!content || !modal) return;
-  content.innerHTML = `<div class="trip-onepage"><p class="kicker">Trip</p><h2>${t.title}</h2>${t.body}<div class="guide-next-row"><button class="pill" onclick="openTripCard('${prev}')">‹ Previous</button><button class="pill" onclick="openTripCard('${next}')">Next ›</button></div><p class="timestamp">Build · Version ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.version)||'0.6 RC11K'} · ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.buildLabel)||'Phase 1 Release Candidate'}</p></div>`;
+  content.innerHTML = `<div class="trip-onepage"><p class="kicker">Trip</p><h2>${t.title}</h2>${t.body}<div class="guide-next-row"><button class="pill" onclick="openTripCard('${prev}')">‹ Previous</button><button class="pill" onclick="openTripCard('${next}')">Next ›</button></div><p class="timestamp">Build · Version ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.version)||'0.6 RC11K Admin 2'} · ${(typeof TRIP_BRAND!=='undefined'&&TRIP_BRAND.buildLabel)||'Phase 1 Release Candidate'}</p></div>`;
   modal.classList.add('show');
   const sheet=document.querySelector('#tripModal .trip-sheet');
   if(sheet) sheet.scrollTop=0;
@@ -1568,14 +1568,13 @@ function getBookingStatusLabel(status){
 })();
 
 /* ============================================================================
-   STAGE 6A-1 — ADMIN MODE FRAMEWORK
-   Shared, data-safe shell only. Timeline editing is introduced in Stage 6A-2.
+   STAGE 6A-2 — ADMIN MODE + TIMELINE EDITING
+   Shared Admin shell with Day timeline editing support.
    ============================================================================ */
 (function(){
   const MODE_KEY='travel_engine_admin_mode_v1';
   const DRAFT_KEY='travel_engine_admin_draft_v1';
-  const ADMIN_NOTE_KEY='travel_engine_admin_note_v1';
-  const ADMIN_USER='lee';
+    const ADMIN_USER='lee';
   const state={mode:false,dirty:false,draft:null};
 
   function isAdminUser(){ return getFriend()===ADMIN_USER; }
@@ -1615,8 +1614,6 @@ function getBookingStatusLabel(status){
     if(bar) bar.hidden=!(state.mode&&state.dirty);
     const status=document.getElementById('adminDirtyText');
     if(status) status.textContent=state.dirty?'Unsaved changes':'All changes saved';
-    const testArea=document.getElementById('adminFrameworkTest');
-    if(testArea) testArea.hidden=!state.mode;
   }
   function buildShell(){
     const familySheet=document.querySelector('#mamaModal .guide-sheet');
@@ -1624,13 +1621,10 @@ function getBookingStatusLabel(status){
       const block=document.createElement('section');
       block.id='adminModeControl';
       block.className='admin-mode-control';
-      block.innerHTML=`<div class="admin-control-head"><div><strong>Admin Mode</strong><small>Edit and reorganise this Companion</small></div><label class="admin-switch"><input id="adminModeToggle" type="checkbox" role="switch" aria-label="Toggle Admin Mode"><span></span></label></div><div id="adminFrameworkTest" class="admin-framework-test" hidden><label for="adminTestNote">Admin note <small>Framework test — edit this text to test Save, Discard and leave protection.</small></label><textarea id="adminTestNote" rows="3" placeholder="Type a test note…"></textarea></div>`;
+      block.innerHTML=`<div class="admin-control-head"><div><strong>Admin Mode</strong><small>Edit and reorganise Day timeline cards</small></div><label class="admin-switch"><input id="adminModeToggle" type="checkbox" role="switch" aria-label="Toggle Admin Mode"><span></span></label></div>`;
       familySheet.appendChild(block);
       const input=block.querySelector('#adminModeToggle');
       input.addEventListener('change',()=>window.setAdminMode(input.checked));
-      const note=block.querySelector('#adminTestNote');
-      note.value=localStorage.getItem(ADMIN_NOTE_KEY)||'';
-      note.addEventListener('input',()=>window.markAdminDirty('adminNote',{value:note.value}));
     }
     if(!document.getElementById('adminModeBanner')){
       const banner=document.createElement('div');
@@ -1745,17 +1739,6 @@ function getBookingStatusLabel(status){
     event.returnValue='';
   });
 
-  document.addEventListener('travelengine:adminsave',function(event){
-    const change=event.detail?.draft?.changes?.adminNote;
-    if(change && Object.prototype.hasOwnProperty.call(change,'value')){
-      localStorage.setItem(ADMIN_NOTE_KEY,String(change.value));
-    }
-  });
-
-  document.addEventListener('travelengine:admindiscard',function(){
-    const note=document.getElementById('adminTestNote');
-    if(note) note.value=localStorage.getItem(ADMIN_NOTE_KEY)||'';
-  });
 
   document.addEventListener('DOMContentLoaded',function(){
     buildShell();

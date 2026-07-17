@@ -1,122 +1,68 @@
 <!DOCTYPE html>
 
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>Day · New Zealand Companion</title><link href="manifest.json" rel="manifest"/><meta content="#087F8C" name="theme-color"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="New Zealand" name="apple-mobile-web-app-title"/><link href="icon-192.png" rel="apple-touch-icon"/><link href="styles.css?v=nz0.6rc11k-admin1b" rel="stylesheet"/></head><body><nav class="site-nav"><a class="brand" href="index.html"><span class="brand-mark"><img alt="" data-brand-logo="header" src="nz-adventure-mark.png"/></span><span data-brand-text="navLabel">New Zealand Companion</span></a><button class="friend-pill" onclick="openFriendModal()"><span data-friend-label="">🏙️ Lee</span></button></nav><main class="content-page" id="dynamicDayRoot" aria-live="polite"></main>
-<script src="data.js"></script><script src="script.js?v=nz0.6rc11k-admin1b"></script>
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>Day · New Zealand Companion</title><link href="manifest.json" rel="manifest"/><meta content="#087F8C" name="theme-color"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="New Zealand" name="apple-mobile-web-app-title"/><link href="icon-192.png" rel="apple-touch-icon"/><link href="styles.css?v=nz0.6rc11k-admin2" rel="stylesheet"/></head><body><nav class="site-nav"><a class="brand" href="index.html"><span class="brand-mark"><img alt="" data-brand-logo="header" src="nz-adventure-mark.png"/></span><span data-brand-text="navLabel">New Zealand Companion</span></a><button class="friend-pill" onclick="openFriendModal()"><span data-friend-label="">🏙️ Lee</span></button></nav><main class="content-page" id="dynamicDayRoot" aria-live="polite"></main>
+<script src="data.js"></script><script src="script.js?v=nz0.6rc11k-admin2"></script>
 <script>
 (function(){
-  const DAY_RENDER_DATA = ITINERARY_DATA; // Stage 3E: canonical data now lives in data.js
+  const DAY_RENDER_DATA = ITINERARY_DATA;
+  const ADMIN_ITINERARY_KEY='travel_engine_itinerary_overrides_v1';
   function esc(value){return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
+  function clone(value){return JSON.parse(JSON.stringify(value));}
+  function readOverrides(){try{const v=JSON.parse(localStorage.getItem(ADMIN_ITINERARY_KEY)||'{}');return v&&typeof v==='object'?v:{};}catch(e){return {};}}
   const params = new URLSearchParams(location.search);
   const day = params.get('day') || '1';
   const data = DAY_RENDER_DATA[day];
   const root = document.getElementById('dynamicDayRoot');
-  if(!data){
-    document.title = 'Day not found · New Zealand Companion';
-    root.innerHTML = '<div class="page-hero"><p class="kicker">Days</p><h1>Day not found</h1><p>Please choose a day from the Days menu.</p></div>';
-    return;
-  }
-  document.title = data.title;
+  if(!data){document.title='Day not found · New Zealand Companion';root.innerHTML='<div class="page-hero"><p class="kicker">Days</p><h1>Day not found</h1></div>';return;}
+  document.title=data.title;
+  let workingItems=clone((readOverrides()[day]||data.items||[]));
+  let editingIndex=-1;
+
   function buildDriveBriefing(dayData){
-    const d=dayData.drive;
-    if(!d) return '';
-    const primary=d.primaryMap
-      ? `<a class="drive-nav-primary" href="${esc(d.primaryMap)}" target="_blank" rel="noopener">🚙 Start Today’s Drive</a>`
-      : '';
-    const backup=d.backupMap
-      ? `<a class="drive-nav-backup" href="${esc(d.backupMap)}" target="_blank" rel="noopener">Open Backup Route</a>`
-      : '';
-    const fuel=d.fuelAdvice
-      ? `<p class="drive-nav-fuel"><strong>⛽ Fuel</strong> ${esc(d.fuelAdvice)}</p>`
-      : '';
-    const backupNote=d.backupMap && d.contingency
-      ? `<p class="drive-nav-backup-note"><strong>⚠️ Route backup</strong> ${esc(d.contingency)}</p>`
-      : '';
-    return `<section class="drive-briefing drive-navigation-hub" aria-label="Today’s navigation">
-      <div class="drive-briefing-head"><div><p class="kicker">Today’s drive</p><h2>${esc(d.route)}</h2></div><span class="drive-briefing-icon">🚙</span></div>
-      <div class="drive-briefing-stats"><div><small>Distance</small><strong>${esc(d.distance)}</strong></div><div><small>Wheel time</small><strong>${esc(d.drivingTime)}</strong></div><div><small>Road</small><strong>${esc(d.road)}</strong></div></div>
-      ${d.note ? `<p class="drive-briefing-note">${esc(d.note)}</p>` : ''}
-      ${fuel}${backupNote}
-      <div class="drive-navigation-actions">${primary}${backup}</div>
-    </section>`;
+    const d=dayData.drive;if(!d)return '';
+    const primary=d.primaryMap?`<a class="drive-nav-primary" href="${esc(d.primaryMap)}" target="_blank" rel="noopener">🚙 Start Today’s Drive</a>`:'';
+    const backup=d.backupMap?`<a class="drive-nav-backup" href="${esc(d.backupMap)}" target="_blank" rel="noopener">Open Backup Route</a>`:'';
+    const fuel=d.fuelAdvice?`<p class="drive-nav-fuel"><strong>⛽ Fuel</strong> ${esc(d.fuelAdvice)}</p>`:'';
+    const backupNote=d.backupMap&&d.contingency?`<p class="drive-nav-backup-note"><strong>⚠️ Route backup</strong> ${esc(d.contingency)}</p>`:'';
+    return `<section class="drive-briefing drive-navigation-hub" aria-label="Today’s navigation"><div class="drive-briefing-head"><div><p class="kicker">Today’s drive</p><h2>${esc(d.route)}</h2></div><span class="drive-briefing-icon">🚙</span></div><div class="drive-briefing-stats"><div><small>Distance</small><strong>${esc(d.distance)}</strong></div><div><small>Wheel time</small><strong>${esc(d.drivingTime)}</strong></div><div><small>Road</small><strong>${esc(d.road)}</strong></div></div>${d.note?`<p class="drive-briefing-note">${esc(d.note)}</p>`:''}${fuel}${backupNote}<div class="drive-navigation-actions">${primary}${backup}</div></section>`;
   }
-  const driveBriefing=buildDriveBriefing(data);
-  const items = data.items.map(item => {
-    const detailHtml = (item.details || []).map(text => `<p>${esc(text)}</p>`).join('');
-    const routeHtml = item.route ? `<div class="route-hint"><strong>Next leg</strong><br/>${esc(item.route)}</div>` : '';
-    const requestedGuideIds = Array.isArray(item.guideIds) && item.guideIds.length ? item.guideIds : [item.placeId || item.id];
-    const guideIds = requestedGuideIds.filter(key => key && typeof PLACES !== 'undefined' && PLACES[key]);
-    const hasMultipleOptions = guideIds.length > 1;
-    const mapHtml = item.map && !hasMultipleOptions
-      ? `<a class="timeline-action timeline-action--map" href="${esc(item.map)}" target="_blank" rel="noopener">🧭 Navigate</a>`
-      : '';
-    const directoryHtml = item.showShoppingDirectory
-      ? `<button class="timeline-action timeline-action--directory" onclick="location.href='guide.html#shopping-directory'">🛍 Shopping List</button>`
-      : '';
-    const guideHtml = guideIds.length
-      ? `<button class="timeline-action timeline-action--guide" onclick='openGuideGroupFromDay(${JSON.stringify(guideIds)},${JSON.stringify(item.id)})'>📖 Guide</button>`
-      : '';
-    const ratings=guideIds.map(key=>{
-      const place=(typeof PLACES!=='undefined'&&PLACES[key])||{};
-      const worthLine=(place.worth||[]).find(line=>/★/.test(String(line)))||'';
-      const match=String(worthLine).match(/(★{1,5})(?:☆{0,4})?/);
-      if(!match)return '';
-      const note=String(worthLine).split('·').slice(2).join('·').trim();
-      return `<span class="timeline-worth" title="${esc(note||'Worth rating')}"><b>${esc(match[1])}</b>${note?`<small>${esc(note)}</small>`:''}</span>`;
-    }).filter(Boolean).join('');
-    const actionCount = (guideIds.length ? 1 : 0) + (item.showShoppingDirectory ? 1 : 0) + (mapHtml ? 1 : 0) + 1;
-    const actionClass = actionCount > 3 ? 'timeline-actions timeline-actions--multi' : 'timeline-actions';
-    return `
-    <div class="timeline-item" id="${esc(item.id)}">
-      <div class="timeline-time">${esc(item.time)}</div>
-      <div class="timeline-main">
-        <div class="timeline-title-row"><h3>${esc(item.title)}</h3>${ratings}</div>
-        ${detailHtml}
-        ${routeHtml}
-        <div class="${actionClass}">
-          ${mapHtml}${directoryHtml}${guideHtml}
-          <button class="timeline-action timeline-action--moment" onclick="openMomentsModal('${esc(item.id)}')">✨ Moment</button>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-  root.innerHTML = `<div class="page-hero day-page-hero"><p class="kicker">${esc(data.kicker)}</p><h1>${esc(data.heading)}</h1></div>${driveBriefing}<section class="timeline">${items}</section>`;
-
-  // Stage 4F-L: native hash scrolling can run before dynamic cards exist.
-  // Re-resolve the requested card after render and offset the sticky top bar.
-  function scrollToRequestedCard(){
-    if(!location.hash) return;
-    let targetId;
-    try{ targetId = decodeURIComponent(location.hash.slice(1)); }
-    catch(e){ targetId = location.hash.slice(1); }
-    const target = document.getElementById(targetId);
-    if(!target) return;
-    const nav = document.querySelector('.site-nav');
-    const navOffset = (nav ? nav.getBoundingClientRect().height : 0) + 12;
-    const top = target.getBoundingClientRect().top + window.scrollY - navOffset;
-    window.scrollTo({top:Math.max(0, top), behavior:'auto'});
+  function markTimelineDirty(){window.markAdminDirty&&window.markAdminDirty('itineraryDay'+day,{day,items:clone(workingItems)});}
+  function itemHTML(item,index){
+    const detailHtml=(item.details||[]).map(text=>`<p>${esc(text)}</p>`).join('');
+    const routeHtml=item.route?`<div class="route-hint"><strong>Next leg</strong><br/>${esc(item.route)}</div>`:'';
+    const requested=Array.isArray(item.guideIds)&&item.guideIds.length?item.guideIds:[item.placeId||item.id];
+    const guideIds=requested.filter(key=>key&&typeof PLACES!=='undefined'&&PLACES[key]);
+    const multi=guideIds.length>1;
+    const mapHtml=item.map&&!multi?`<a class="timeline-action timeline-action--map" href="${esc(item.map)}" target="_blank" rel="noopener">🧭 Navigate</a>`:'';
+    const directoryHtml=item.showShoppingDirectory?`<button class="timeline-action timeline-action--directory" onclick="location.href='guide.html#shopping-directory'">🛍 Shopping List</button>`:'';
+    const guideHtml=guideIds.length?`<button class="timeline-action timeline-action--guide" onclick='openGuideGroupFromDay(${JSON.stringify(guideIds)},${JSON.stringify(item.id)})'>📖 Guide</button>`:'';
+    const admin=`<div class="timeline-admin-tools"><button class="timeline-drag-handle" draggable="true" data-index="${index}" aria-label="Drag to reorder">≡</button><button class="timeline-admin-menu" onclick="openTimelineEditor(${index})" aria-label="Edit activity">Edit</button><button class="timeline-admin-more" onclick="toggleTimelineMenu(${index})" aria-label="More actions">•••</button><div class="timeline-card-menu" id="timelineMenu${index}" hidden><button onclick="duplicateTimelineItem(${index})">Duplicate</button><button onclick="moveTimelineItem(${index},-1)">Move up</button><button onclick="moveTimelineItem(${index},1)">Move down</button><button class="danger" onclick="deleteTimelineItem(${index})">Delete</button></div></div>`;
+    return `<div class="timeline-item" id="${esc(item.id)}" data-index="${index}" draggable="false"><div class="timeline-time">${esc(item.time)}</div><div class="timeline-main"><div class="timeline-title-row"><h3>${esc(item.title)}</h3></div>${detailHtml}${routeHtml}<div class="timeline-actions">${mapHtml}${directoryHtml}${guideHtml}<button class="timeline-action timeline-action--moment" onclick="openMomentsModal('${esc(item.id)}')">✨ Moment</button></div></div>${admin}</div>`;
   }
-  requestAnimationFrame(()=>requestAnimationFrame(scrollToRequestedCard));
-  window.addEventListener('hashchange', scrollToRequestedCard);
-
-  // Stage 4E-1: restore swipe between dynamic day pages.
-  let touchStartX = 0;
-  let touchStartY = 0;
-  root.addEventListener('touchstart', function(e){
-    const t = e.changedTouches && e.changedTouches[0];
-    if(!t) return;
-    touchStartX = t.clientX;
-    touchStartY = t.clientY;
-  }, {passive:true});
-  root.addEventListener('touchend', function(e){
-    const t = e.changedTouches && e.changedTouches[0];
-    if(!t) return;
-    const dx = t.clientX - touchStartX;
-    const dy = t.clientY - touchStartY;
-    if(Math.abs(dx) < 64 || Math.abs(dx) < Math.abs(dy) * 1.25) return;
-    const current = Number(day);
-    if(dx < 0 && current < 5) location.href = `day.html?day=${current + 1}`;
-    if(dx > 0 && current > 1) location.href = `day.html?day=${current - 1}`;
-  }, {passive:true});
+  function render(){
+    const addButton=`<button class="admin-add-activity" onclick="openTimelineEditor(-1)">＋ Add activity</button>`;
+    root.innerHTML=`<div class="page-hero day-page-hero"><p class="kicker">${esc(data.kicker)}</p><h1>${esc(data.heading)}</h1></div>${buildDriveBriefing(data)}<section class="timeline" id="adminTimeline">${workingItems.map(itemHTML).join('')}</section>${addButton}`;
+    bindDrag();
+  }
+  function ensureEditor(){
+    if(document.getElementById('timelineEditorModal'))return;
+    const modal=document.createElement('div');modal.id='timelineEditorModal';modal.className='timeline-editor-modal';modal.innerHTML=`<div class="timeline-editor-sheet"><button class="timeline-editor-close" onclick="closeTimelineEditor()">×</button><p class="kicker">ADMIN MODE</p><h2 id="timelineEditorHeading">Edit activity</h2><label>Time<input id="timelineEditTime" placeholder="e.g. 10:30 or Flexible"></label><label>Title<input id="timelineEditTitle" placeholder="Activity title"></label><label>Details<textarea id="timelineEditDetails" rows="5" placeholder="One detail per line"></textarea></label><label>Next leg / route<textarea id="timelineEditRoute" rows="3"></textarea></label><div class="timeline-editor-actions"><button class="admin-discard-btn" onclick="closeTimelineEditor()">Cancel</button><button class="admin-save-btn" onclick="applyTimelineEdit()">Apply</button></div></div>`;document.body.appendChild(modal);
+  }
+  window.openTimelineEditor=function(index){if(!window.isAdminMode||!window.isAdminMode())return;ensureEditor();editingIndex=index;const item=index>=0?workingItems[index]:{time:'',title:'',details:[],route:''};document.getElementById('timelineEditorHeading').textContent=index>=0?'Edit activity':'Add activity';document.getElementById('timelineEditTime').value=item.time||'';document.getElementById('timelineEditTitle').value=item.title||'';document.getElementById('timelineEditDetails').value=(item.details||[]).join('\n');document.getElementById('timelineEditRoute').value=item.route||'';document.getElementById('timelineEditorModal').classList.add('show');};
+  window.closeTimelineEditor=function(){document.getElementById('timelineEditorModal')?.classList.remove('show');};
+  window.applyTimelineEdit=function(){const title=document.getElementById('timelineEditTitle').value.trim();if(!title){alert('Please enter an activity title.');return;}const base=editingIndex>=0?workingItems[editingIndex]:{id:'custom-'+Date.now(),type:'custom',dayId:'day'+day,placeId:null,bookingId:null,map:null};base.time=document.getElementById('timelineEditTime').value.trim();base.title=title;base.details=document.getElementById('timelineEditDetails').value.split('\n').map(x=>x.trim()).filter(Boolean);base.route=document.getElementById('timelineEditRoute').value.trim();if(editingIndex<0)workingItems.push(base);else workingItems[editingIndex]=base;markTimelineDirty();closeTimelineEditor();render();};
+  window.toggleTimelineMenu=function(index){document.querySelectorAll('.timeline-card-menu').forEach((m,i)=>{if(m.id!=='timelineMenu'+index)m.hidden=true;});const menu=document.getElementById('timelineMenu'+index);if(menu)menu.hidden=!menu.hidden;};
+  window.deleteTimelineItem=function(index){if(!confirm('Delete this activity?'))return;workingItems.splice(index,1);markTimelineDirty();render();};
+  window.duplicateTimelineItem=function(index){const copy=clone(workingItems[index]);copy.id=(copy.id||'activity')+'-copy-'+Date.now();copy.title=copy.title+' — Copy';workingItems.splice(index+1,0,copy);markTimelineDirty();render();openTimelineEditor(index+1);};
+  window.moveTimelineItem=function(index,delta){const to=index+delta;if(to<0||to>=workingItems.length)return;const [item]=workingItems.splice(index,1);workingItems.splice(to,0,item);markTimelineDirty();render();};
+  function bindDrag(){let from=null;root.querySelectorAll('.timeline-drag-handle').forEach(handle=>{handle.addEventListener('dragstart',e=>{from=Number(handle.dataset.index);e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',String(from));handle.closest('.timeline-item').classList.add('is-dragging');});handle.addEventListener('dragend',()=>{root.querySelectorAll('.timeline-item').forEach(el=>el.classList.remove('is-dragging','drag-over'));});});root.querySelectorAll('.timeline-item').forEach(card=>{card.addEventListener('dragover',e=>{if(from==null)return;e.preventDefault();card.classList.add('drag-over');});card.addEventListener('dragleave',()=>card.classList.remove('drag-over'));card.addEventListener('drop',e=>{e.preventDefault();const to=Number(card.dataset.index);if(from===null||from===to)return;const [item]=workingItems.splice(from,1);workingItems.splice(to,0,item);from=null;markTimelineDirty();render();});});}
+  document.addEventListener('travelengine:adminmodechange',render);
+  document.addEventListener('travelengine:adminsave',function(event){const change=event.detail?.draft?.changes?.['itineraryDay'+day];if(!change)return;const all=readOverrides();all[day]=clone(change.items);localStorage.setItem(ADMIN_ITINERARY_KEY,JSON.stringify(all));workingItems=clone(change.items);render();});
+  document.addEventListener('travelengine:admindiscard',function(){workingItems=clone((readOverrides()[day]||data.items||[]));render();});
+  render();
+  function scrollToRequestedCard(){if(!location.hash)return;let id;try{id=decodeURIComponent(location.hash.slice(1));}catch(e){id=location.hash.slice(1);}const target=document.getElementById(id);if(!target)return;const nav=document.querySelector('.site-nav');const banner=document.getElementById('adminModeBanner');const offset=(nav?nav.getBoundingClientRect().height:0)+(banner&&!banner.hidden?banner.getBoundingClientRect().height:0)+12;window.scrollTo({top:Math.max(0,target.getBoundingClientRect().top+scrollY-offset),behavior:'auto'});}
+  requestAnimationFrame(()=>requestAnimationFrame(scrollToRequestedCard));window.addEventListener('hashchange',scrollToRequestedCard);
+  let sx=0,sy=0;root.addEventListener('touchstart',e=>{if(e.target.closest('.timeline-admin-tools,.timeline-editor-modal'))return;const t=e.changedTouches?.[0];if(t){sx=t.clientX;sy=t.clientY;}},{passive:true});root.addEventListener('touchend',e=>{if(window.isAdminMode&&window.isAdminMode())return;const t=e.changedTouches?.[0];if(!t)return;const dx=t.clientX-sx,dy=t.clientY-sy;if(Math.abs(dx)<64||Math.abs(dx)<Math.abs(dy)*1.25)return;const current=Number(day);if(dx<0&&current<5)location.href=`day.html?day=${current+1}`;if(dx>0&&current>1)location.href=`day.html?day=${current-1}`;},{passive:true});
 })();
 </script><div class="mini-menu" id="guideMenu"><button onclick="openGuideCategory('ATTRACTIONS')"><span><span class="menu-title">🏔️ ATTRACTIONS</span></span><span>›</span></button><button onclick="openGuideCategory('ACTIVITIES')"><span><span class="menu-title">🥾 ACTIVITIES</span></span><span>›</span></button><button onclick="openGuideCategory('DINING')"><span><span class="menu-title">🍽 DINING</span></span><span>›</span></button><button onclick="openGuideCategory('STAY')"><span><span class="menu-title">🏨 STAY</span></span><span>›</span></button></div><div class="mini-menu" id="tripMenu"><a href="#" onclick="openTripCard('checklist');return false;"><span><span class="menu-title">✅ Checklist</span><span class="menu-sub">Before the Trip</span></span><span>›</span></a><a href="#" onclick="openTripCard('city');return false;"><span><span class="menu-title">🇳🇿 Trip</span><span class="menu-sub">South Island</span></span><span>›</span></a><a href="#" onclick="openTripCard('flights');return false;"><span><span class="menu-title">✈️ Flights</span><span class="menu-sub">MEL · CHC · ZQN</span></span><span>›</span></a><a href="#" onclick="openTripCard('vehicle');return false;"><span><span class="menu-title">🚙 Rental Car</span><span class="menu-sub">Thrifty X-Trail</span></span><span>›</span></a><a href="#" onclick="openTripCard('stay');return false;"><span><span class="menu-title">🏨 Stay</span><span class="menu-sub">Road-trip stays</span></span><span>›</span></a><a href="#" onclick="openTripCard('weather');return false;"><span><span class="menu-title">🌦 Weather</span><span class="menu-sub">Road conditions</span></span><span>›</span></a><a href="#" onclick="openTripCard('tips');return false;"><span><span class="menu-title">⚠️ Tips</span><span class="menu-sub">Driving notes</span></span><span>›</span></a><a href="#" onclick="openTripCard('emergency');return false;"><span><span class="menu-title">☎️ Emergency</span><span class="menu-sub">Useful numbers</span></span><span>›</span></a></div><div class="mini-menu" id="daysMenu"><a href="day.html?day=1"><span><span class="menu-title">✈️ Day 1</span><span class="menu-sub">Hello Christchurch<br/>22 Sep • Tuesday</span></span><span>›</span></a><a href="day.html?day=2"><span><span class="menu-title">🚙 Day 2</span><span class="menu-sub">Lake Tekapo<br/>23 Sep • Wednesday</span></span><span>›</span></a><a href="day.html?day=3"><span><span class="menu-title">🏔️ Day 3</span><span class="menu-sub">Mt Cook to Wānaka<br/>24 Sep • Thursday</span></span><span>›</span></a><a href="day.html?day=4"><span><span class="menu-title">🏡 Day 4</span><span class="menu-sub">Queenstown Meet-up<br/>25 Sep • Friday</span></span><span>›</span></a></div><nav class="app-nav">
 <button class="trip-trigger" onclick="toggleTripMenu()" type="button"><span>🧳</span><small>Trip</small></button>
@@ -125,7 +71,7 @@
 <a class="summary-link" href="moments.html"><span>✨</span><small>Moments</small></a>
 <a class="summary-link" href="expenses.html"><span>💸</span><small>Expenses</small></a>
 </nav>
-<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=nz0.6rc11k-admin1b').catch(()=>{}));}</script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=nz0.6rc11k-admin2').catch(()=>{}));}</script>
 <div class="trip-modal" id="tripModal"><div class="trip-sheet"><button class="trip-close" onclick="closeTripModal()" type="button">×</button><div id="tripModalContent"></div></div></div>
 <div class="guide-modal" id="guideModal"><div class="guide-sheet"><button class="guide-close" onclick="closeGuideModal()" type="button">×</button><div id="guideModalContent"></div></div></div>
 <div class="moments-modal" id="momentsModal"><div class="moments-sheet"><button class="moments-close" onclick="closeMomentsModal()" type="button">×</button><p class="kicker">MEMORY BOOK</p><h2 id="momentsTitle">Moment</h2><p class="lead modal-intro" id="momentsIntro">Add a rating, a short note and a photo at any stop. After the trip, this becomes the three families’ shared memory book.</p><p><span class="status-badge" id="momentsFriend">Friend</span> <button class="mini-btn" onclick="openFriendModal()">Change Family</button></p><div class="moments-form"><input id="momentsRating" type="hidden" value="0"/><div class="star-row"><span class="star" onclick="setStars(1)">⭐</span><span class="star" onclick="setStars(2)">⭐</span><span class="star" onclick="setStars(3)">⭐</span><span class="star" onclick="setStars(4)">⭐</span><span class="star" onclick="setStars(5)">⭐</span></div><p class="mood-help">Choose up to 2 moods</p><div class="mood-grid" id="moodGrid"></div><textarea id="momentsText" placeholder="Something to say..."></textarea><div class="photo-input">📷 Add Photo (Camera / Photo Library)</div><button class="btn" onclick="saveMoments()">Save</button></div></div></div>
