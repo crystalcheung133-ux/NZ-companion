@@ -2817,6 +2817,6 @@ body.admin-mode .site-nav{margin-top:0!important}
 body.admin-mode.home-bg main.dashboard.home-v37{padding-top:8px!important}
 .timeline-move-sheet select:disabled{opacity:1;color:#70441f;background:#fff8ef;cursor:default}
 
-/* Stage 6A-3D — global admin top offset and overlay layering */
-body.admin-mode:not(.home-bg) .content-page{padding-top:calc(30px + var(--admin-banner-height,34px))!important}
+/* Stage 6A-3E — Day entry position and overlay layering */
+body.admin-mode:not(.home-bg) .content-page{padding-top:30px!important}
 body.admin-overlay-open .admin-save-bar{display:none!important}
