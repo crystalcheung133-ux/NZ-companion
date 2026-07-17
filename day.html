@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>Day · New Zealand Companion</title><link href="manifest.json" rel="manifest"/><meta content="#087F8C" name="theme-color"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="New Zealand" name="apple-mobile-web-app-title"/><link href="icon-192.png" rel="apple-touch-icon"/><link href="styles.css?v=nz0.6rc11k-admin2b" rel="stylesheet"/></head><body><nav class="site-nav"><a class="brand" href="index.html"><span class="brand-mark"><img alt="" data-brand-logo="header" src="nz-adventure-mark.png"/></span><span data-brand-text="navLabel">New Zealand Companion</span></a><button class="friend-pill" onclick="openFriendModal()"><span data-friend-label="">🏙️ Lee</span></button></nav><main class="content-page" id="dynamicDayRoot" aria-live="polite"></main>
-<script src="data.js"></script><script src="script.js?v=nz0.6rc11k-admin2b"></script>
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>Day · New Zealand Companion</title><link href="manifest.json" rel="manifest"/><meta content="#087F8C" name="theme-color"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="New Zealand" name="apple-mobile-web-app-title"/><link href="icon-192.png" rel="apple-touch-icon"/><link href="styles.css?v=nz0.6rc11k-admin3" rel="stylesheet"/></head><body><nav class="site-nav"><a class="brand" href="index.html"><span class="brand-mark"><img alt="" data-brand-logo="header" src="nz-adventure-mark.png"/></span><span data-brand-text="navLabel">New Zealand Companion</span></a><button class="friend-pill" onclick="openFriendModal()"><span data-friend-label="">🏙️ Lee</span></button></nav><main class="content-page" id="dynamicDayRoot" aria-live="polite"></main>
+<script src="data.js"></script><script src="script.js?v=nz0.6rc11k-admin3"></script>
 <script>
 (function(){
   const DAY_RENDER_DATA = ITINERARY_DATA;
@@ -15,8 +15,16 @@
   const root = document.getElementById('dynamicDayRoot');
   if(!data){document.title='Day not found · New Zealand Companion';root.innerHTML='<div class="page-hero"><p class="kicker">Days</p><h1>Day not found</h1></div>';return;}
   document.title=data.title;
-  let workingItems=clone((readOverrides()[day]||data.items||[]));
+  function getPendingDayItems(dayKey){
+    const pending=window.getAdminDraft&&window.getAdminDraft()?.changes?.['itineraryDay'+dayKey];
+    if(pending&&Array.isArray(pending.items))return pending.items;
+    const saved=readOverrides()[dayKey];
+    return Array.isArray(saved)?saved:(DAY_RENDER_DATA[dayKey]?.items||[]);
+  }
+  function getDayItems(dayKey){return clone(getPendingDayItems(String(dayKey)));}
+  let workingItems=getDayItems(day);
   let editingIndex=-1;
+  let movingIndex=-1;
 
   function buildDriveBriefing(dayData){
     const d=dayData.drive;if(!d)return '';
@@ -26,7 +34,8 @@
     const backupNote=d.backupMap&&d.contingency?`<p class="drive-nav-backup-note"><strong>⚠️ Route backup</strong> ${esc(d.contingency)}</p>`:'';
     return `<section class="drive-briefing drive-navigation-hub" aria-label="Today’s navigation"><div class="drive-briefing-head"><div><p class="kicker">Today’s drive</p><h2>${esc(d.route)}</h2></div><span class="drive-briefing-icon">🚙</span></div><div class="drive-briefing-stats"><div><small>Distance</small><strong>${esc(d.distance)}</strong></div><div><small>Wheel time</small><strong>${esc(d.drivingTime)}</strong></div><div><small>Road</small><strong>${esc(d.road)}</strong></div></div>${d.note?`<p class="drive-briefing-note">${esc(d.note)}</p>`:''}${fuel}${backupNote}<div class="drive-navigation-actions">${primary}${backup}</div></section>`;
   }
-  function markTimelineDirty(){window.markAdminDirty&&window.markAdminDirty('itineraryDay'+day,{day,items:clone(workingItems)});}
+  function markTimelineDayDirty(dayKey,items){window.markAdminDirty&&window.markAdminDirty('itineraryDay'+dayKey,{day:String(dayKey),items:clone(items)});}
+  function markTimelineDirty(){markTimelineDayDirty(day,workingItems);}
   function itemHTML(item,index){
     const detailHtml=(item.details||[]).map(text=>`<p>${esc(text)}</p>`).join('');
     const routeHtml=item.route?`<div class="route-hint"><strong>Next leg</strong><br/>${esc(item.route)}</div>`:'';
@@ -88,7 +97,7 @@
     closeTimelineMenu();
     if(wasOpen)return;
     menu.dataset.index=String(index);
-    menu.innerHTML=`<button onclick="duplicateTimelineItem(${index});closeTimelineMenu()">Duplicate</button><button onclick="moveTimelineItem(${index},-1);closeTimelineMenu()">Move up</button><button onclick="moveTimelineItem(${index},1);closeTimelineMenu()">Move down</button><button class="danger" onclick="deleteTimelineItem(${index});closeTimelineMenu()">Delete</button>`;
+    menu.innerHTML=`<button onclick="openTimelineEditor(${index});closeTimelineMenu()">Edit</button><button onclick="openTimelineMove(${index});closeTimelineMenu()">Move</button><button onclick="duplicateTimelineItem(${index});closeTimelineMenu()">Duplicate</button><button class="danger" onclick="deleteTimelineItem(${index});closeTimelineMenu()">Delete</button>`;
     menu.hidden=false;
     trigger?.setAttribute('aria-expanded','true');
     const rect=trigger.getBoundingClientRect();
@@ -106,10 +115,98 @@
   window.addEventListener('resize',()=>{if(!document.body.classList.contains('timeline-editor-open'))closeTimelineMenu();},{passive:true});
   window.deleteTimelineItem=function(index){if(!confirm('Delete this activity?'))return;workingItems.splice(index,1);markTimelineDirty();render();};
   window.duplicateTimelineItem=function(index){const copy=clone(workingItems[index]);copy.id=(copy.id||'activity')+'-copy-'+Date.now();copy.title=copy.title+' — Copy';workingItems.splice(index+1,0,copy);markTimelineDirty();render();openTimelineEditor(index+1);};
-  window.moveTimelineItem=function(index,delta){const to=index+delta;if(to<0||to>=workingItems.length)return;const [item]=workingItems.splice(index,1);workingItems.splice(to,0,item);markTimelineDirty();render();};
+  function parseClock(value){
+    const match=String(value||'').match(/(?:^|\s)([01]?\d|2[0-3]):([0-5]\d)/);
+    if(!match)return null;
+    return Number(match[1])*60+Number(match[2]);
+  }
+  function formatClock(minutes){
+    minutes=Math.max(0,Math.min(23*60+59,Math.round(minutes/5)*5));
+    return String(Math.floor(minutes/60)).padStart(2,'0')+':'+String(minutes%60).padStart(2,'0');
+  }
+  function suggestedTime(items,index){
+    const previous=index>0?parseClock(items[index-1]?.time):null;
+    const next=index<items.length?parseClock(items[index]?.time):null;
+    if(previous!=null&&next!=null&&next>previous)return formatClock(previous+(next-previous)/2);
+    if(previous!=null)return formatClock(previous+30);
+    if(next!=null)return formatClock(next-30);
+    return null;
+  }
+  function dayOptionLabel(dayKey){
+    const dayData=DAY_RENDER_DATA[dayKey];
+    return dayData?'Day '+dayKey+' · '+dayData.heading:'Day '+dayKey;
+  }
+  function ensureMoveEditor(){
+    if(document.getElementById('timelineMoveModal'))return;
+    const modal=document.createElement('div');
+    modal.id='timelineMoveModal';modal.className='timeline-editor-modal timeline-move-modal';modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');
+    modal.innerHTML=`<div class="timeline-editor-sheet timeline-move-sheet"><header class="timeline-editor-head"><p class="kicker">ADMIN MODE</p><h2>Move activity</h2><button class="timeline-editor-close" onclick="closeTimelineMove()" aria-label="Close move">×</button></header><div class="timeline-editor-scroll"><div class="move-activity-preview" id="timelineMovePreview"></div><label>Move to day<select id="timelineMoveDay"></select></label><label>Insert position<select id="timelineMovePosition"></select></label><label class="move-auto-row"><input id="timelineMoveAutoTime" type="checkbox" checked><span><strong>Auto Adjust time</strong><small>Give the moved card a sensible time based on the cards before and after it.</small></span></label><p class="move-time-preview" id="timelineMoveTimePreview"></p></div><footer class="timeline-editor-actions"><button class="admin-discard-btn" onclick="closeTimelineMove()">Cancel</button><button class="admin-save-btn" onclick="applyTimelineMove()">Move activity</button></footer></div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener('click',event=>{if(event.target===modal)closeTimelineMove();});
+    modal.querySelector('#timelineMoveDay').addEventListener('change',refreshMovePositions);
+    modal.querySelector('#timelineMovePosition').addEventListener('change',refreshMoveTimePreview);
+    modal.querySelector('#timelineMoveAutoTime').addEventListener('change',refreshMoveTimePreview);
+  }
+  function moveTargetItems(targetDay){
+    const items=targetDay===day?clone(workingItems):getDayItems(targetDay);
+    if(targetDay===day&&movingIndex>=0)items.splice(movingIndex,1);
+    return items;
+  }
+  function refreshMovePositions(){
+    const targetDay=document.getElementById('timelineMoveDay').value;
+    const items=moveTargetItems(targetDay);
+    const select=document.getElementById('timelineMovePosition');
+    select.innerHTML='';
+    items.forEach((item,index)=>{const option=document.createElement('option');option.value=String(index);option.textContent='Before '+String(item.title||'activity').replace(/^\S+\s*/, '').slice(0,55);select.appendChild(option);});
+    const end=document.createElement('option');end.value=String(items.length);end.textContent=items.length?'After '+String(items[items.length-1].title||'last activity').replace(/^\S+\s*/, '').slice(0,55):'Start of day';select.appendChild(end);
+    refreshMoveTimePreview();
+  }
+  function refreshMoveTimePreview(){
+    const targetDay=document.getElementById('timelineMoveDay')?.value;
+    const position=Number(document.getElementById('timelineMovePosition')?.value||0);
+    const auto=document.getElementById('timelineMoveAutoTime')?.checked;
+    const preview=document.getElementById('timelineMoveTimePreview');
+    if(!preview||!targetDay)return;
+    const proposed=auto?suggestedTime(moveTargetItems(targetDay),position):null;
+    const current=workingItems[movingIndex]?.time||'No time';
+    preview.textContent=auto?(proposed?'Time: '+current+' → '+proposed:'Time will stay as '+current+' because nearby cards do not have fixed times.'):'Time will stay as '+current+'.';
+  }
+  window.openTimelineMove=function(index){
+    if(!window.isAdminMode||!window.isAdminMode())return;
+    ensureMoveEditor();movingIndex=index;
+    const item=workingItems[index];
+    document.getElementById('timelineMovePreview').innerHTML='<strong>'+esc(item.title)+'</strong><small>'+esc(item.time||'No fixed time')+'</small>';
+    const select=document.getElementById('timelineMoveDay');select.innerHTML='';
+    Object.keys(DAY_RENDER_DATA).sort((a,b)=>Number(a)-Number(b)).forEach(dayKey=>{const option=document.createElement('option');option.value=dayKey;option.textContent=dayOptionLabel(dayKey);option.selected=dayKey===day;select.appendChild(option);});
+    refreshMovePositions();lockEditorBackground();document.getElementById('timelineMoveModal').classList.add('show');
+  };
+  window.closeTimelineMove=function(){const modal=document.getElementById('timelineMoveModal');if(!modal?.classList.contains('show'))return;modal.classList.remove('show');movingIndex=-1;requestAnimationFrame(()=>requestAnimationFrame(unlockEditorBackground));};
+  window.applyTimelineMove=function(){
+    if(movingIndex<0||movingIndex>=workingItems.length)return;
+    const targetDay=document.getElementById('timelineMoveDay').value;
+    const position=Number(document.getElementById('timelineMovePosition').value||0);
+    const auto=document.getElementById('timelineMoveAutoTime').checked;
+    const sourceItems=clone(workingItems);
+    const [item]=sourceItems.splice(movingIndex,1);
+    const targetItems=targetDay===day?sourceItems:getDayItems(targetDay);
+    const insertAt=Math.max(0,Math.min(position,targetItems.length));
+    if(auto){const proposed=suggestedTime(targetItems,insertAt);if(proposed)item.time=proposed;}
+    item.dayId='day'+targetDay;
+    targetItems.splice(insertAt,0,item);
+    if(targetDay===day){workingItems=targetItems;markTimelineDayDirty(day,workingItems);}else{workingItems=sourceItems;markTimelineDayDirty(day,sourceItems);markTimelineDayDirty(targetDay,targetItems);}
+    closeTimelineMove();render();
+    const destination=targetItems[insertAt+1]?.title?'before '+targetItems[insertAt+1].title:'at the end of the day';
+    setTimeout(()=>alert('Moved to '+dayOptionLabel(targetDay)+' '+destination+'.'),40);
+  };
   function bindDrag(){let from=null;root.querySelectorAll('.timeline-drag-handle').forEach(handle=>{handle.addEventListener('dragstart',e=>{from=Number(handle.dataset.index);e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',String(from));handle.closest('.timeline-item').classList.add('is-dragging');});handle.addEventListener('dragend',()=>{root.querySelectorAll('.timeline-item').forEach(el=>el.classList.remove('is-dragging','drag-over'));});});root.querySelectorAll('.timeline-item').forEach(card=>{card.addEventListener('dragover',e=>{if(from==null)return;e.preventDefault();card.classList.add('drag-over');});card.addEventListener('dragleave',()=>card.classList.remove('drag-over'));card.addEventListener('drop',e=>{e.preventDefault();const to=Number(card.dataset.index);if(from===null||from===to)return;const [item]=workingItems.splice(from,1);workingItems.splice(to,0,item);from=null;markTimelineDirty();render();});});}
   document.addEventListener('travelengine:adminmodechange',render);
-  document.addEventListener('travelengine:adminsave',function(event){const change=event.detail?.draft?.changes?.['itineraryDay'+day];if(!change)return;const all=readOverrides();all[day]=clone(change.items);localStorage.setItem(ADMIN_ITINERARY_KEY,JSON.stringify(all));workingItems=clone(change.items);render();});
+  document.addEventListener('travelengine:adminsave',function(event){
+    const all=readOverrides();
+    const changes=event.detail?.draft?.changes||{};
+    Object.keys(changes).forEach(key=>{if(!key.startsWith('itineraryDay'))return;const change=changes[key];if(change&&Array.isArray(change.items))all[String(change.day)]=clone(change.items);});
+    localStorage.setItem(ADMIN_ITINERARY_KEY,JSON.stringify(all));
+    workingItems=clone(all[day]||data.items||[]);render();
+  });
   document.addEventListener('travelengine:admindiscard',function(){workingItems=clone((readOverrides()[day]||data.items||[]));render();});
   render();
   function scrollToRequestedCard(){if(!location.hash)return;let id;try{id=decodeURIComponent(location.hash.slice(1));}catch(e){id=location.hash.slice(1);}const target=document.getElementById(id);if(!target)return;const nav=document.querySelector('.site-nav');const banner=document.getElementById('adminModeBanner');const offset=(nav?nav.getBoundingClientRect().height:0)+(banner&&!banner.hidden?banner.getBoundingClientRect().height:0)+12;window.scrollTo({top:Math.max(0,target.getBoundingClientRect().top+scrollY-offset),behavior:'auto'});}
@@ -123,7 +220,7 @@
 <a class="summary-link" href="moments.html"><span>✨</span><small>Moments</small></a>
 <a class="summary-link" href="expenses.html"><span>💸</span><small>Expenses</small></a>
 </nav>
-<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=nz0.6rc11k-admin2b').catch(()=>{}));}</script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=nz0.6rc11k-admin3').catch(()=>{}));}</script>
 <div class="trip-modal" id="tripModal"><div class="trip-sheet"><button class="trip-close" onclick="closeTripModal()" type="button">×</button><div id="tripModalContent"></div></div></div>
 <div class="guide-modal" id="guideModal"><div class="guide-sheet"><button class="guide-close" onclick="closeGuideModal()" type="button">×</button><div id="guideModalContent"></div></div></div>
 <div class="moments-modal" id="momentsModal"><div class="moments-sheet"><button class="moments-close" onclick="closeMomentsModal()" type="button">×</button><p class="kicker">MEMORY BOOK</p><h2 id="momentsTitle">Moment</h2><p class="lead modal-intro" id="momentsIntro">Add a rating, a short note and a photo at any stop. After the trip, this becomes the three families’ shared memory book.</p><p><span class="status-badge" id="momentsFriend">Friend</span> <button class="mini-btn" onclick="openFriendModal()">Change Family</button></p><div class="moments-form"><input id="momentsRating" type="hidden" value="0"/><div class="star-row"><span class="star" onclick="setStars(1)">⭐</span><span class="star" onclick="setStars(2)">⭐</span><span class="star" onclick="setStars(3)">⭐</span><span class="star" onclick="setStars(4)">⭐</span><span class="star" onclick="setStars(5)">⭐</span></div><p class="mood-help">Choose up to 2 moods</p><div class="mood-grid" id="moodGrid"></div><textarea id="momentsText" placeholder="Something to say..."></textarea><div class="photo-input">📷 Add Photo (Camera / Photo Library)</div><button class="btn" onclick="saveMoments()">Save</button></div></div></div>
