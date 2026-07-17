@@ -1717,28 +1717,10 @@ function getBookingStatusLabel(status){
     updateUI();
   };
 
-  document.addEventListener('click',function(event){
-    if(!state.mode||!state.dirty) return;
-    const link=event.target.closest('a[href]');
-    if(!link) return;
-    const href=link.getAttribute('href')||'';
-    if(!href || href.startsWith('#') || link.target==='_blank') return;
-    if(!window.confirm('Save your Admin changes before leaving this page.')){
-      event.preventDefault();
-      event.stopImmediatePropagation();
-    }else{
-      event.preventDefault();
-      window.saveAdminChanges();
-      window.location.href=link.href;
-    }
-  },true);
-
-  window.addEventListener('beforeunload',function(event){
-    if(!state.mode||!state.dirty) return;
-    event.preventDefault();
-    event.returnValue='';
-  });
-
+  /* Pending Admin changes are intentionally allowed to travel across pages.
+     The draft is already persisted under DRAFT_KEY by markAdminDirty(), so normal
+     in-app navigation must never commit, discard, or prompt. Only the explicit
+     Save Changes button commits the draft to itinerary overrides. */
 
   document.addEventListener('DOMContentLoaded',function(){
     buildShell();
