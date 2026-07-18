@@ -80,6 +80,13 @@
     if(bar) bar.hidden=!(state.mode&&state.dirty);
     const status=document.getElementById('adminDirtyText');
     if(status) status.textContent=state.dirty?'Unsaved changes':'All changes saved';
+    const exportButton=document.getElementById('expenseExportButton');
+    if(exportButton){
+      const showExport=state.mode && isUnlocked() && isAdminUser();
+      exportButton.hidden=!showExport;
+      exportButton.setAttribute('aria-hidden',String(!showExport));
+      exportButton.style.display=showExport?'inline-flex':'none';
+    }
   }
   function buildShell(){
     const familySheet=document.querySelector('#mamaModal .guide-sheet');

@@ -130,6 +130,7 @@ let editingExpenseIndex=null;
     const visible=typeof window.isAdminMode==='function' && window.isAdminMode();
     btn.hidden=!visible;
     btn.setAttribute('aria-hidden',String(!visible));
+    btn.style.display=visible?'inline-flex':'none';
   }
   window.refreshExpenseAdminUI=setExportVisibility;
   document.addEventListener('travelengine:adminmodechange',setExportVisibility);

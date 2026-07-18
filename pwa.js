@@ -133,7 +133,7 @@
       return Promise.resolve(null);
     }
     const url=opts.url || serviceWorkerUrl(opts.version);
-    return global.navigator.serviceWorker.register(url,opts.registrationOptions)
+    return global.navigator.serviceWorker.register(url,Object.assign({updateViaCache:'none'},opts.registrationOptions||{}))
       .then(observeUpdate)
       .then(function(registration){
         state.registration=registration;
@@ -142,6 +142,7 @@
         state.error=null;
         publishState('registered');
         emit(EVENTS.ready,{registration,state:snapshot()});
+        if(typeof registration.update==='function') registration.update().catch(function(){});
         return registration;
       })
       .catch(function(error){
@@ -176,6 +177,17 @@
     if(typeof global.addEventListener !== 'function') return;
     global.addEventListener('online',function(){setConnection(true,'browser-online');});
     global.addEventListener('offline',function(){setConnection(false,'browser-offline');});
+  }
+
+
+  if(supported() && global.navigator.serviceWorker){
+    global.navigator.serviceWorker.addEventListener('controllerchange',function(){
+      try{
+        if(global.sessionStorage.getItem('travel_engine_sw_reloaded_v1')==='1') return;
+        global.sessionStorage.setItem('travel_engine_sw_reloaded_v1','1');
+      }catch(error){}
+      global.location.reload();
+    });
   }
 
   state.supported=supported();

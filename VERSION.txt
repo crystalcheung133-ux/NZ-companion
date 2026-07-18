@@ -1,1 +1,1 @@
-Travel Engine v1.0 — Stage 8A-3G Admin Modal + Lifecycle Visibility Fix
+Travel Engine v1.0 — Stage 8A-3H Export Visibility + PWA Update Fix
