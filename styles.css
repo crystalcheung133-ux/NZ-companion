@@ -2835,7 +2835,7 @@ body.admin-overlay-open .admin-save-bar{display:none!important}
 /* Stage 8A-3F — Admin permission regression fixes */
 .complete-trip-control[hidden]{display:none!important}
 #expenseExportButton[hidden]{display:none!important}
-.admin-pin-modal{position:fixed;inset:0;z-index:3000;display:grid;place-items:end center;padding:18px;background:rgba(18,28,30,.48);box-sizing:border-box}
+.admin-pin-modal{position:fixed;inset:0;z-index:10000;display:grid;place-items:end center;padding:18px;background:rgba(18,28,30,.48);box-sizing:border-box}
 .admin-pin-modal[hidden]{display:none!important}
 .admin-pin-sheet{position:relative;width:min(100%,430px);box-sizing:border-box;padding:24px 20px calc(22px + env(safe-area-inset-bottom));border-radius:24px;background:var(--surface,#fff);box-shadow:0 20px 60px rgba(0,0,0,.25)}
 .admin-pin-close{position:absolute;top:12px;right:14px;width:38px;height:38px;border:0;border-radius:50%;background:transparent;color:var(--ink);font-size:28px;line-height:1;cursor:pointer}

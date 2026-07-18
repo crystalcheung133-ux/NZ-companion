@@ -16,13 +16,32 @@
     const call=(el.getAttribute('onclick')||'')+(el.getAttribute('onchange')||'');
     return /saveChecklist|openExpenseModal|saveExpense|editExpense|deleteExpense|openMomentsModal|openPlannedMomentCapture|saveMoments|editMoment|deleteMoment|openUnexpectedModal|saveUnexpected|setAdminMode|saveAdminChanges|discardAdminChanges/.test(call);
   }
+  function isLifecycleAdmin(){
+    return getFriend()===ADMIN_USER && typeof window.isAdminMode==='function' && window.isAdminMode();
+  }
+  function buildControl(){
+    const host=document.querySelector('#mamaModal .guide-sheet');
+    if(!host || document.getElementById('completeTripControl') || !isLifecycleAdmin()) return;
+    const section=document.createElement('section');
+    section.id='completeTripControl';
+    section.className='complete-trip-control';
+    section.innerHTML='<div><strong id="completeTripTitle">Complete Trip</strong><small id="completeTripHelp">Lock trip changes and keep everything available to browse.</small></div><button id="completeTripButton" type="button" class="complete-trip-btn">Complete Trip</button>';
+    host.appendChild(section);
+  }
   function updateLifecycleControl(){
-    const control=document.getElementById('completeTripControl');
+    let control=document.getElementById('completeTripControl');
+    if(!isLifecycleAdmin()){
+      if(control) control.remove();
+      return;
+    }
+    if(!control){
+      buildControl();
+      control=document.getElementById('completeTripControl');
+    }
+    if(!control) return;
     const title=document.getElementById('completeTripTitle');
     const help=document.getElementById('completeTripHelp');
     const button=document.getElementById('completeTripButton');
-    const isAdmin=getFriend()===ADMIN_USER && typeof window.isAdminMode==='function' && window.isAdminMode();
-    if(control) control.hidden=!isAdmin;
     if(!button) return;
     if(completed){
       if(title) title.textContent='Trip Completed';
@@ -54,15 +73,6 @@
     document.querySelectorAll('#expenseModal input,#expenseModal select,#expenseModal textarea,#expenseModal button:not(.tools-close),#momentsModal input,#momentsModal select,#momentsModal textarea,#momentsModal button:not(.moments-close),#unexpectedModal textarea,#unexpectedModal button:not(.unexpected-close)').forEach(el=>{el.disabled=completed;});
     document.querySelectorAll('button,a').forEach(el=>{if(isMutationControl(el)){el.hidden=completed;el.setAttribute('aria-hidden',String(completed));}});
     updateLifecycleControl();
-  }
-  function buildControl(){
-    const host=document.querySelector('#mamaModal .guide-sheet');
-    if(!host || document.getElementById('completeTripControl')) return;
-    const section=document.createElement('section');
-    section.id='completeTripControl';
-    section.className='complete-trip-control';
-    section.innerHTML='<div><strong id="completeTripTitle">Complete Trip</strong><small id="completeTripHelp">Lock trip changes and keep everything available to browse.</small></div><button id="completeTripButton" type="button" class="complete-trip-btn">Complete Trip</button>';
-    host.appendChild(section);
   }
   function wrap(name){
     const original=window[name];
@@ -125,7 +135,7 @@
   installGuards();
 
   document.addEventListener('DOMContentLoaded',function(){
-    buildControl();
+    updateLifecycleControl();
     if(completed && typeof window.setAdminMode==='function') window.setAdminMode(false);
     render();
   });

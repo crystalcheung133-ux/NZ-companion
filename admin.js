@@ -45,6 +45,7 @@
     return modal;
   }
   function requestUnlock(){
+    if(typeof window.closeFriendModal==='function') window.closeFriendModal();
     const modal=ensurePinModal();
     modal.hidden=false;
     const input=modal.querySelector('#adminPinInput');
