@@ -1,5 +1,5 @@
 importScripts('./theme-config.js', './asset-config.js', './locale-config.js', './formatter.js', './navigation-config.js', './storage-config.js', './trip-config.js');
-const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-stage7m1`;
+const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-stage8ax1`;
 const ASSETS = [
   './',
   './index.html',
@@ -65,10 +65,10 @@ async function networkFirst(request) {
     if (response && response.ok) cache.put(request, response.clone());
     return response;
   } catch (error) {
-    let cached = await caches.match(request);
+    let cached = await caches.match(request, { ignoreSearch: true });
     if (!cached) {
       const url = new URL(request.url);
-      cached = await caches.match(url.pathname.split('/').pop() || './index.html');
+      cached = await caches.match(url.pathname.split('/').pop() || './index.html', { ignoreSearch: true });
     }
     return cached || caches.match('./offline.html');
   }
@@ -76,7 +76,7 @@ async function networkFirst(request) {
 
 async function staleWhileRevalidate(request) {
   const cache = await caches.open(CACHE_NAME);
-  const cached = await caches.match(request);
+  const cached = await caches.match(request, { ignoreSearch: true });
   const fetched = fetch(request).then(response => {
     if (response && response.ok) cache.put(request, response.clone());
     return response;

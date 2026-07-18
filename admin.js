@@ -15,14 +15,6 @@
   const state={mode:false,dirty:false,draft:null};
 
   function isAdminUser(){ return getFriend()===ADMIN_USER; }
-  function readJSON(key,fallback){
-    try{ const value=STORAGE.local.readJSON(key,null); return value==null?fallback:value; }
-    catch(e){ return fallback; }
-  }
-  function writeJSON(key,value){
-    try{return STORAGE.local.writeJSON(key,value);}
-    catch(e){return false;}
-  }
   function readMode(){ return isAdminUser() && STORAGE.local.get(MODE_KEY)==='admin'; }
   function setStoredMode(enabled){
     if(enabled) STORAGE.local.set(MODE_KEY,'admin');
@@ -30,7 +22,7 @@
   }
   function ensureDraft(){
     if(!state.draft){
-      state.draft=readJSON(DRAFT_KEY,{version:1,tripId:TRIP_CONFIG.tripName,changes:{},updatedAt:null});
+      state.draft=STORAGE.local.readJSON(DRAFT_KEY,{version:1,tripId:TRIP_CONFIG.tripName,changes:{},updatedAt:null});
     }
     return state.draft;
   }
@@ -110,7 +102,7 @@
     const draft=ensureDraft();
     draft.changes[String(changeKey||'general')]=payload==null?true:payload;
     draft.updatedAt=new Date().toISOString();
-    writeJSON(DRAFT_KEY,draft);
+    STORAGE.local.writeJSON(DRAFT_KEY,draft);
     state.dirty=true;
     updateUI();
     document.dispatchEvent(new CustomEvent('travelengine:admindirty',{detail:{changeKey,payload}}));
@@ -127,7 +119,7 @@
     document.dispatchEvent(new CustomEvent('travelengine:adminsave',{detail:{draft:JSON.parse(JSON.stringify(draft))}}));
     draft.changes={};
     draft.updatedAt=new Date().toISOString();
-    writeJSON(DRAFT_KEY,draft);
+    STORAGE.local.writeJSON(DRAFT_KEY,draft);
     state.dirty=false;
     updateUI();
     return true;
@@ -138,7 +130,7 @@
     document.dispatchEvent(new CustomEvent('travelengine:admindiscard',{detail:{draft:JSON.parse(JSON.stringify(draft))}}));
     draft.changes={};
     draft.updatedAt=new Date().toISOString();
-    writeJSON(DRAFT_KEY,draft);
+    STORAGE.local.writeJSON(DRAFT_KEY,draft);
     state.dirty=false;
     updateUI();
     return true;
@@ -161,7 +153,7 @@
 
   document.addEventListener('DOMContentLoaded',function(){
     buildShell();
-    state.draft=readJSON(DRAFT_KEY,{version:1,changes:{},updatedAt:null});
+    state.draft=STORAGE.local.readJSON(DRAFT_KEY,{version:1,changes:{},updatedAt:null});
     state.dirty=hasDraftChanges(state.draft);
     state.mode=readMode();
     updateUI();
