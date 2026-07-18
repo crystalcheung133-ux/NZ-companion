@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><script src="app-runtime.js?v=nz1.0-stage7m"></script><script src="theme-config.js"></script><script src="asset-config.js"></script><script src="locale-config.js"></script><script src="formatter.js"></script><script src="money-config.js"></script><script src="navigation-config.js"></script><script src="navigation.js"></script><script src="storage-config.js"></script><script src="storage.js"></script><script src="trip-config.js"></script><script src="money.js"></script><title data-trip-page-title="Day">Day</title><script>(function(){try{if('scrollRestoration' in history)history.scrollRestoration='manual';if(!NAVIGATION.getHash(''))window.scrollTo(0,0);}catch(e){}})();</script><meta content="" data-trip-theme-color="" name="theme-color"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="" data-trip-apple-title="" name="apple-mobile-web-app-title"/><link data-trip-icon="icon192" rel="apple-touch-icon"/><link href="styles.css?v=nz1.0-stage8b2" rel="stylesheet"/></head><body><nav class="site-nav"><a class="brand" href="index.html"><span class="brand-mark"><img alt="" data-brand-logo="header"/></span><span data-brand-text="navLabel"></span></a><button class="friend-pill" onclick="openFriendModal()"><span data-friend-label="">🏙️ Lee</span></button></nav><main class="content-page" id="dynamicDayRoot" aria-live="polite"></main>
-<script src="data.js"></script><script src="core-runtime.js?v=nz1.0-stage7m"></script><script src="expenses.js?v=nz1.0-stage8b2"></script><script src="moments.js?v=nz1.0-stage7m"></script><script src="trip-runtime.js?v=nz1.0-stage7m"></script><script src="moments-compat.js?v=nz1.0-stage7m"></script><script src="script.js?v=nz1.0-stage7m"></script><script src="guide-runtime.js?v=nz1.0-stage7m"></script><script src="admin.js?v=nz1.0-stage8b2"></script><script src="complete-runtime.js?v=nz1.0-stage8b2"></script><script src="export-runtime.js?v=nz1.0-stage8b2"></script><script src="currency-runtime.js?v=nz1.0-stage7m"></script>
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><script src="app-runtime.js?v=nz1.0-stage7m"></script><script src="theme-config.js"></script><script src="asset-config.js"></script><script src="locale-config.js"></script><script src="formatter.js"></script><script src="money-config.js"></script><script src="navigation-config.js"></script><script src="navigation.js"></script><script src="storage-config.js"></script><script src="storage.js"></script><script src="trip-config.js"></script><script src="money.js"></script><title data-trip-page-title="Day">Day</title><script>(function(){try{if('scrollRestoration' in history)history.scrollRestoration='manual';if(!NAVIGATION.getHash(''))window.scrollTo(0,0);}catch(e){}})();</script><meta content="" data-trip-theme-color="" name="theme-color"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="" data-trip-apple-title="" name="apple-mobile-web-app-title"/><link data-trip-icon="icon192" rel="apple-touch-icon"/><link href="styles.css?v=nz1.0-stage8c" rel="stylesheet"/></head><body><nav class="site-nav"><a class="brand" href="index.html"><span class="brand-mark"><img alt="" data-brand-logo="header"/></span><span data-brand-text="navLabel"></span></a><button class="friend-pill" onclick="openFriendModal()"><span data-friend-label="">🏙️ Lee</span></button></nav><main class="content-page" id="dynamicDayRoot" aria-live="polite"></main>
+<script src="data.js"></script><script src="core-runtime.js?v=nz1.0-stage7m"></script><script src="expenses.js?v=nz1.0-stage8b2"></script><script src="moments.js?v=nz1.0-stage7m"></script><script src="trip-runtime.js?v=nz1.0-stage7m"></script><script src="moments-compat.js?v=nz1.0-stage7m"></script><script src="script.js?v=nz1.0-stage7m"></script><script src="guide-runtime.js?v=nz1.0-stage7m"></script><script src="admin.js?v=nz1.0-stage8b2"></script><script src="complete-runtime.js?v=nz1.0-stage8b2"></script><script src="export-runtime.js?v=nz1.0-stage8c"></script><script src="currency-runtime.js?v=nz1.0-stage7m"></script>
 <script>
 (function(){
   const DAY_RENDER_DATA = ITINERARY_DATA;
   const ADMIN_ITINERARY_KEY=STORAGE_CONFIG.keys.itineraryOverrides;
+  const CHANGED_PLAN_KEY=STORAGE_CONFIG.keys.changedPlans||'travel_engine_changed_plans_v1';
   function esc(value){return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
   function clone(value){return JSON.parse(JSON.stringify(value));}
   function readOverrides(){const v=STORAGE.local.readJSON(ADMIN_ITINERARY_KEY,{});return v&&typeof v==='object'?v:{};}
@@ -28,6 +29,11 @@
   let pendingDeleteIndex=-1;
   let movingIndex=-1;
   let editorInitialState='';
+  let changedPlanIndex=-1;
+  function readChangedPlans(){const value=STORAGE.local.readJSON(CHANGED_PLAN_KEY,{});return value&&typeof value==='object'?value:{};}
+  function changedPlanId(item){return String(item&&item.id||'day'+day+'-item-'+changedPlanIndex);}
+  function getChangedPlan(item){return readChangedPlans()[changedPlanId(item)]||null;}
+  function writeChangedPlan(item,value){const plans=readChangedPlans();const id=changedPlanId(item);if(value)plans[id]=value;else delete plans[id];STORAGE.local.writeJSON(CHANGED_PLAN_KEY,plans);}
 
   function buildDriveBriefing(dayData){
     const d=dayData.drive;if(!d)return '';
@@ -49,12 +55,28 @@
     const directoryHtml=item.showShoppingDirectory?`<button class="timeline-action timeline-action--directory" onclick="NAVIGATION.goPage('guide',{hash:'shoppingDirectory'})">🛍 Shopping List</button>`:'';
     const guideHtml=guideIds.length?`<button class="timeline-action timeline-action--guide" onclick='openGuideGroupFromDay(${JSON.stringify(guideIds)},${JSON.stringify(item.id)})'>📖 Guide</button>`:'';
     const admin=`<div class="timeline-admin-tools"><button class="timeline-admin-menu" onclick="openTimelineEditor(${index})" aria-label="Edit activity">Edit</button><button class="timeline-admin-more" onclick="toggleTimelineMenu(event,${index})" aria-label="More actions" aria-expanded="false">•••</button></div>`;
-    return `<div class="timeline-item" id="${esc(item.id)}" data-index="${index}" draggable="false"><div class="timeline-time">${esc(item.time)}</div><div class="timeline-main"><div class="timeline-title-row"><h3>${esc(item.title)}</h3></div>${detailHtml}${routeHtml}<div class="timeline-actions">${mapHtml}${directoryHtml}${guideHtml}<button class="timeline-action timeline-action--moment" onclick="openMomentsModal('${esc(item.id)}')">✨ Moment</button></div></div>${admin}</div>`;
+    const changed=getChangedPlan(item);
+    const changedHtml=changed?`<button class="changed-plan-toggle is-changed" type="button" onclick="openChangedPlan(${index})"><span>☑</span> Changed plan</button>`:`<button class="changed-plan-toggle" type="button" onclick="openChangedPlan(${index})"><span>☐</span> Changed plan</button>`;
+    const changedSummary=changed?`<div class="changed-plan-summary"><strong>Plan changed</strong>${changed.reason?`<p><span>Why:</span> ${esc(changed.reason)}</p>`:''}${changed.instead?`<p><span>Went instead:</span> ${esc(changed.instead)}</p>`:''}</div>`:'';
+    return `<div class="timeline-item" id="${esc(item.id)}" data-index="${index}" draggable="false"><div class="timeline-time">${esc(item.time)}</div><div class="timeline-main"><div class="timeline-title-row"><h3>${esc(item.title)}</h3></div>${detailHtml}${routeHtml}${changedSummary}<div class="timeline-actions">${mapHtml}${directoryHtml}${guideHtml}<button class="timeline-action timeline-action--moment" onclick="openMomentsModal('${esc(item.id)}')">✨ Moment</button></div>${changedHtml}</div>${admin}</div>`;
   }
   function render(){
     const addButton=`<button class="admin-add-activity" onclick="openTimelineEditor(-1)">＋ Add activity</button>`;
     root.innerHTML=`<div class="page-hero day-page-hero"><p class="kicker">${esc(data.kicker)}</p><h1>${esc(data.heading)}</h1></div>${buildDriveBriefing(data)}<section class="timeline" id="adminTimeline">${workingItems.map(itemHTML).join('')}</section>${addButton}`;
   }
+
+  function ensureChangedPlanModal(){
+    if(document.getElementById('changedPlanModal'))return;
+    const modal=document.createElement('div');
+    modal.id='changedPlanModal';modal.className='changed-plan-modal';modal.setAttribute('aria-hidden','true');
+    modal.innerHTML=`<div class="changed-plan-sheet" role="dialog" aria-modal="true" aria-labelledby="changedPlanTitle"><header><div><p class="kicker">JOURNEY UPDATE</p><h2 id="changedPlanTitle">Changed plan</h2></div><button type="button" onclick="closeChangedPlan()" aria-label="Close">×</button></header><p class="changed-plan-intro">Only record something when the original plan changed.</p><label>Why did the plan change? <small>(optional)</small><textarea id="changedPlanReason" rows="3" placeholder="e.g. Too windy, closed, kids were tired"></textarea></label><label>Where did you go instead? <small>(optional)</small><textarea id="changedPlanInstead" rows="3" placeholder="e.g. Kiwi Park"></textarea></label><footer><button id="changedPlanClear" class="changed-plan-clear" type="button" onclick="clearChangedPlan()">Clear</button><span></span><button type="button" onclick="closeChangedPlan()">Cancel</button><button class="changed-plan-save" type="button" onclick="saveChangedPlan()">Save</button></footer></div>`;
+    modal.addEventListener('click',event=>{if(event.target===modal)closeChangedPlan();});document.body.appendChild(modal);
+  }
+  window.openChangedPlan=function(index){changedPlanIndex=index;ensureChangedPlanModal();const item=workingItems[index];const existing=getChangedPlan(item)||{};document.getElementById('changedPlanReason').value=existing.reason||'';document.getElementById('changedPlanInstead').value=existing.instead||'';document.getElementById('changedPlanClear').hidden=!getChangedPlan(item);const modal=document.getElementById('changedPlanModal');modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.classList.add('admin-overlay-open');};
+  window.closeChangedPlan=function(){const modal=document.getElementById('changedPlanModal');if(modal){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');}document.body.classList.remove('admin-overlay-open');changedPlanIndex=-1;};
+  window.saveChangedPlan=function(){if(changedPlanIndex<0)return;const item=workingItems[changedPlanIndex];const reason=document.getElementById('changedPlanReason').value.trim();const instead=document.getElementById('changedPlanInstead').value.trim();writeChangedPlan(item,{reason,instead,updatedAt:new Date().toISOString()});closeChangedPlan();render();};
+  window.clearChangedPlan=function(){if(changedPlanIndex<0)return;writeChangedPlan(workingItems[changedPlanIndex],null);closeChangedPlan();render();};
+
   let editorPageScroll=0;
   function lockEditorBackground(){
     if(document.body.classList.contains('timeline-editor-open'))return;
