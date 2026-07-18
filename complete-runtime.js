@@ -14,7 +14,7 @@
     if(!el) return false;
     if(el.closest('#adminSaveBar')) return true;
     const call=(el.getAttribute('onclick')||'')+(el.getAttribute('onchange')||'');
-    return /saveChecklist|openExpenseModal|saveExpense|editExpense|deleteExpense|openMomentsModal|openPlannedMomentCapture|saveMoments|editMoment|deleteMoment|openUnexpectedModal|saveUnexpected|setAdminMode|saveAdminChanges|discardAdminChanges/.test(call);
+    return /saveChecklist|openExpenseModal|saveExpense|editExpense|deleteExpense|openMomentsModal|openPlannedMomentCapture|saveMoments|editMoment|deleteMoment|openUnexpectedModal|saveUnexpected|openTimelineEditor|applyTimelineEdit|openTimelineDelete|confirmTimelineDelete|openTimelineMove|applyTimelineMove|markAdminDirty|saveAdminChanges|discardAdminChanges/.test(call);
   }
   function isLifecycleAdmin(){
     return getFriend()===ADMIN_USER && typeof window.isAdminMode==='function' && window.isAdminMode();
@@ -82,7 +82,7 @@
     window[name]=wrapped;
   }
   function installGuards(){
-    ['saveChecklist','openExpenseModal','saveExpense','editExpense','deleteExpense','openMomentsModal','openPlannedMomentCapture','saveMoments','editMoment','deleteMoment','openUnexpectedModal','saveUnexpected','markAdminDirty','saveAdminChanges','discardAdminChanges'].forEach(wrap);
+    ['saveChecklist','openExpenseModal','saveExpense','editExpense','deleteExpense','openMomentsModal','openPlannedMomentCapture','saveMoments','editMoment','deleteMoment','openUnexpectedModal','saveUnexpected','openTimelineEditor','applyTimelineEdit','openTimelineDelete','confirmTimelineDelete','openTimelineMove','applyTimelineMove','markAdminDirty','saveAdminChanges','discardAdminChanges'].forEach(wrap);
   }
   function persist(nextRecord){
     record=nextRecord;
@@ -135,8 +135,8 @@
   installGuards();
 
   document.addEventListener('DOMContentLoaded',function(){
+    installGuards();
     updateLifecycleControl();
-    if(completed && typeof window.setAdminMode==='function') window.setAdminMode(false);
     render();
   });
   document.addEventListener('travelengine:adminmodechange',render);
