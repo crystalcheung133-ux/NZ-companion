@@ -19,6 +19,22 @@
   function isAdminUser(){ return getFriend()===ADMIN_USER; }
   function isUnlocked(){ return sessionStorage.getItem(SESSION_KEY)==='1'; }
   function lockAdminSession(){ sessionStorage.removeItem(SESSION_KEY); }
+  function scrollTripStudioToBottom(){
+    const modal=document.getElementById('mamaModal');
+    const sheet=modal&&modal.querySelector('.guide-sheet');
+    if(!modal||!sheet) return;
+    window.requestAnimationFrame(()=>window.requestAnimationFrame(()=>{
+      sheet.scrollTop=sheet.scrollHeight;
+      modal.scrollTop=modal.scrollHeight;
+    }));
+  }
+  function openTripStudioPanel(){
+    if(typeof renderFriendChoices==='function') renderFriendChoices();
+    const modal=document.getElementById('mamaModal');
+    if(!modal) return;
+    modal.classList.add('show');
+    scrollTripStudioToBottom();
+  }
   function ensurePinModal(){
     let modal=document.getElementById('adminPinModal');
     if(modal) return modal;
@@ -41,6 +57,7 @@
       sessionStorage.setItem(SESSION_KEY,'1');
       close();
       window.setAdminMode(true);
+      window.setTimeout(openTripStudioPanel,0);
     });
     return modal;
   }
@@ -201,6 +218,7 @@
     setStoredMode(enabled);
     if(!enabled) lockAdminSession();
     updateUI();
+    if(!enabled && typeof window.closeFriendModal==='function') window.closeFriendModal();
     if(typeof window.refreshExpenseAdminUI==='function') window.refreshExpenseAdminUI();
     document.dispatchEvent(new CustomEvent('travelengine:adminmodechange',{detail:{enabled:state.mode}}));
     return true;
@@ -246,6 +264,15 @@
     return true;
   };
 
+  window.openTripStudioPanel=openTripStudioPanel;
+  window.scrollTripStudioToBottom=scrollTripStudioToBottom;
+
+  const originalOpenFriendModal=window.openFriendModal||openFriendModal;
+  window.openFriendModal=function(){
+    originalOpenFriendModal();
+    if(state.mode&&isUnlocked()&&isAdminUser()) scrollTripStudioToBottom();
+  };
+
   const originalSetFriend=window.setFriend||setFriend;
   window.setFriend=function(key){
     if(state.mode&&state.dirty&&!confirmExit()) return;
@@ -256,6 +283,7 @@
     updateUI();
     if(typeof window.refreshExpenseAdminUI==='function') window.refreshExpenseAdminUI();
     document.dispatchEvent(new CustomEvent('travelengine:adminmodechange',{detail:{enabled:state.mode}}));
+    if(key===ADMIN_USER&&state.mode) window.setTimeout(openTripStudioPanel,0);
   };
 
   /* Pending Admin changes are intentionally allowed to travel across pages.
