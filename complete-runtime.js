@@ -9,7 +9,15 @@
   function tripId(){ return TRIP_CONFIG.storageNamespace || TRIP_CONFIG.tripName || 'trip'; }
   function valid(value){ return !!value && value.version===1 && value.tripId===tripId() && typeof value.completed==='boolean'; }
   function read(){ const value=STORAGE.local.readJSON(KEY,null); return valid(value)?value:null; }
-  function guardMessage(){ alert('This trip is complete and is now read-only.'); return false; }
+  const NOTICE_KEY=KEY+':notice';
+  function noticeId(){ return record&&record.completedAt?record.completedAt:'complete'; }
+  function guardMessage(){ return false; }
+  function showCompletionNoticeOnce(){
+    if(!completed || !record) return;
+    if(STORAGE.local.get(NOTICE_KEY)===noticeId()) return;
+    alert('Trip completed. You can still browse the itinerary, guide, moments and expenses. Enter Admin Mode and choose Reopen Trip to make changes.');
+    STORAGE.local.set(NOTICE_KEY,noticeId());
+  }
   function isMutationControl(el){
     if(!el) return false;
     if(el.closest('#adminSaveBar')) return true;
@@ -59,16 +67,6 @@
   }
   function render(){
     document.body.classList.toggle('trip-completed',completed);
-    let banner=document.getElementById('tripCompleteBanner');
-    if(completed && !banner){
-      banner=document.createElement('div');
-      banner.id='tripCompleteBanner';
-      banner.className='trip-complete-banner';
-      banner.setAttribute('role','status');
-      banner.innerHTML='<strong>TRIP COMPLETE</strong><span>Read only</span>';
-      document.body.prepend(banner);
-    }
-    if(banner) banner.hidden=!completed;
     document.querySelectorAll('[data-check]').forEach(el=>{el.disabled=completed;});
     document.querySelectorAll('#expenseModal input,#expenseModal select,#expenseModal textarea,#expenseModal button:not(.tools-close),#momentsModal input,#momentsModal select,#momentsModal textarea,#momentsModal button:not(.moments-close),#unexpectedModal textarea,#unexpectedModal button:not(.unexpected-close)').forEach(el=>{el.disabled=completed;});
     document.querySelectorAll('button,a').forEach(el=>{if(isMutationControl(el)){el.hidden=completed;el.setAttribute('aria-hidden',String(completed));}});
@@ -89,6 +87,7 @@
     STORAGE.local.writeJSON(KEY,record);
     completed=record.completed===true;
     render();
+    if(completed) setTimeout(showCompletionNoticeOnce,0);
   }
 
   window.isTripCompleted=function(){ return completed; };
@@ -125,6 +124,7 @@
       reopenedBy:ADMIN_USER
     };
     persist(next);
+    STORAGE.local.remove(NOTICE_KEY);
     document.dispatchEvent(new CustomEvent('travelengine:tripreopened',{detail:{...next}}));
     closeFriendModal();
     return true;
@@ -138,6 +138,7 @@
     installGuards();
     updateLifecycleControl();
     render();
+    showCompletionNoticeOnce();
   });
   document.addEventListener('travelengine:adminmodechange',render);
 })();

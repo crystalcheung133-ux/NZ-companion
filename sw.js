@@ -1,5 +1,5 @@
 importScripts('./theme-config.js', './asset-config.js', './locale-config.js', './formatter.js', './navigation-config.js', './storage-config.js', './trip-config.js');
-const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-stage8af`;
+const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-stage8b2`;
 const ASSETS = [
   './',
   './index.html',
@@ -14,6 +14,7 @@ const ASSETS = [
   './moments.js',
   './admin.js',
   './complete-runtime.js',
+  './export-runtime.js',
   './pwa.js',
   './app-runtime.js',
   './theme-config.js',

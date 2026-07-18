@@ -32,7 +32,7 @@
     splashDestination: 'NEW ZEALAND 2026',
     storageNamespace: 'nz-family-2026',
     version: '1.0',
-    buildLabel: 'Stage 8A Complete Mode',
+    buildLabel: 'Stage 8B Export Center',
     theme: root.THEME_CONFIG.colors
   });
 
