@@ -12,7 +12,7 @@
   function guardMessage(){ alert('This trip is complete and is now read-only.'); return false; }
   function isMutationControl(el){
     if(!el) return false;
-    if(el.closest('#adminModeControl,#adminSaveBar')) return true;
+    if(el.closest('#adminSaveBar')) return true;
     const call=(el.getAttribute('onclick')||'')+(el.getAttribute('onchange')||'');
     return /saveChecklist|openExpenseModal|saveExpense|editExpense|deleteExpense|openMomentsModal|openPlannedMomentCapture|saveMoments|editMoment|deleteMoment|openUnexpectedModal|saveUnexpected|setAdminMode|saveAdminChanges|discardAdminChanges/.test(call);
   }
@@ -21,7 +21,7 @@
     const title=document.getElementById('completeTripTitle');
     const help=document.getElementById('completeTripHelp');
     const button=document.getElementById('completeTripButton');
-    const isAdmin=getFriend()===ADMIN_USER;
+    const isAdmin=getFriend()===ADMIN_USER && typeof window.isAdminMode==='function' && window.isAdminMode();
     if(control) control.hidden=!isAdmin;
     if(!button) return;
     if(completed){
@@ -73,8 +73,6 @@
   }
   function installGuards(){
     ['saveChecklist','openExpenseModal','saveExpense','editExpense','deleteExpense','openMomentsModal','openPlannedMomentCapture','saveMoments','editMoment','deleteMoment','openUnexpectedModal','saveUnexpected','markAdminDirty','saveAdminChanges','discardAdminChanges'].forEach(wrap);
-    const originalSetAdmin=window.setAdminMode;
-    if(typeof originalSetAdmin==='function') window.setAdminMode=function(enabled){ if(completed && enabled) return guardMessage(); return originalSetAdmin.apply(this,arguments); };
   }
   function persist(nextRecord){
     record=nextRecord;
@@ -88,7 +86,7 @@
   window.assertTripWritable=function(){ return completed?guardMessage():true; };
   window.completeTrip=function(){
     if(completed) return true;
-    if(getFriend()!==ADMIN_USER){ alert('Only Lee can complete the trip.'); return false; }
+    if(getFriend()!==ADMIN_USER || typeof window.isAdminMode!=='function' || !window.isAdminMode()){ alert('Enter Admin Mode to complete the trip.'); return false; }
     if(typeof window.hasUnsavedAdminChanges==='function' && window.hasUnsavedAdminChanges()){
       alert('Save or discard the pending Admin changes before completing the trip.');
       return false;
@@ -104,7 +102,7 @@
   };
   window.reopenTrip=function(){
     if(!completed) return true;
-    if(getFriend()!==ADMIN_USER){ alert('Only Lee can reopen the trip.'); return false; }
+    if(getFriend()!==ADMIN_USER || typeof window.isAdminMode!=='function' || !window.isAdminMode()){ alert('Enter Admin Mode to reopen the trip.'); return false; }
     const ok=window.confirm('Reopen this trip? Editing will be enabled again. Existing moments, expenses and trip data will remain unchanged.');
     if(!ok) return false;
     const next={

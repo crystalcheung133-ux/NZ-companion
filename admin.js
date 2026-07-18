@@ -11,11 +11,23 @@
 (function(){
   const MODE_KEY=STORAGE_CONFIG.keys.adminMode;
   const DRAFT_KEY=STORAGE_CONFIG.keys.adminDraft;
-    const ADMIN_USER='lee';
+  const ADMIN_USER='lee';
+  const ADMIN_PIN='260922';
+  const SESSION_KEY='travel_engine_admin_unlocked_v1';
   const state={mode:false,dirty:false,draft:null};
 
   function isAdminUser(){ return getFriend()===ADMIN_USER; }
-  function readMode(){ return isAdminUser() && STORAGE.local.get(MODE_KEY)==='admin'; }
+  function isUnlocked(){ return sessionStorage.getItem(SESSION_KEY)==='1'; }
+  function lockAdminSession(){ sessionStorage.removeItem(SESSION_KEY); }
+  function requestUnlock(){
+    const value=window.prompt('Enter the 6-digit Admin PIN');
+    if(value===null) return false;
+    if(!/^\d{6}$/.test(value)){ alert('Admin PIN must contain 6 digits.'); return false; }
+    if(value!==ADMIN_PIN){ alert('Incorrect Admin PIN.'); return false; }
+    sessionStorage.setItem(SESSION_KEY,'1');
+    return true;
+  }
+  function readMode(){ return isAdminUser() && isUnlocked() && STORAGE.local.get(MODE_KEY)==='admin'; }
   function setStoredMode(enabled){
     if(enabled) STORAGE.local.set(MODE_KEY,'admin');
     else STORAGE.local.remove(MODE_KEY);
@@ -85,6 +97,10 @@
       updateUI();
       return false;
     }
+    if(enabled && !isUnlocked() && !requestUnlock()){
+      updateUI();
+      return false;
+    }
     if(!enabled && state.dirty){
       const leave=confirmExit();
       if(!leave){ updateUI(); return false; }
@@ -92,6 +108,7 @@
     }
     state.mode=enabled;
     setStoredMode(enabled);
+    if(!enabled) lockAdminSession();
     updateUI();
     document.dispatchEvent(new CustomEvent('travelengine:adminmodechange',{detail:{enabled}}));
     return true;
@@ -110,7 +127,8 @@
   };
 
   window.getAdminDraft=function(){ return JSON.parse(JSON.stringify(ensureDraft())); };
-  window.isAdminMode=function(){ return state.mode; };
+  window.isAdminMode=function(){ return state.mode && isUnlocked() && isAdminUser(); };
+  window.isAdminUnlocked=function(){ return isUnlocked() && isAdminUser(); };
   window.hasUnsavedAdminChanges=function(){ return state.dirty; };
 
   window.saveAdminChanges=function(){
@@ -140,7 +158,7 @@
   window.setFriend=function(key){
     if(state.mode&&state.dirty&&!confirmExit()) return;
     if(state.mode&&state.dirty) window.discardAdminChanges();
-    if(key!==ADMIN_USER){ state.mode=false; setStoredMode(false); }
+    if(key!==ADMIN_USER){ state.mode=false; setStoredMode(false); lockAdminSession(); }
     originalSetFriend(key);
     state.mode=readMode();
     updateUI();
@@ -156,6 +174,7 @@
     state.draft=STORAGE.local.readJSON(DRAFT_KEY,{version:1,changes:{},updatedAt:null});
     state.dirty=hasDraftChanges(state.draft);
     state.mode=readMode();
+    if(STORAGE.local.get(MODE_KEY)==='admin' && !state.mode) setStoredMode(false);
     updateUI();
   });
 })();

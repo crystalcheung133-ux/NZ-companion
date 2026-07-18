@@ -126,9 +126,10 @@ let editingExpenseIndex=null;
   }
   function setExportVisibility(){
     const btn=document.getElementById('expenseExportButton');
-    if(btn) btn.hidden=currentUser()!=='lee';
+    if(btn) btn.hidden=!(currentUser()==='lee' && typeof window.isAdminMode==='function' && window.isAdminMode());
   }
   window.refreshExpenseAdminUI=setExportVisibility;
+  document.addEventListener('travelengine:adminmodechange',setExportVisibility);
   function splitSharesForExpense(e){
     const amount=MONEY.normalizeAmount(e.total);
     if(e.type==='personal'){
@@ -446,7 +447,7 @@ let editingExpenseIndex=null;
   };
 
   window.exportExpenseData=function(){
-    if(currentUser()!=='lee') return alert('Only Lee can export the complete expense data.');
+    if(currentUser()!=='lee' || typeof window.isAdminMode!=='function' || !window.isAdminMode()) return alert('Enter Admin Mode to export the complete expense data.');
     const arr=readExpenses();
     if(!arr.length) return alert('No expense data to export yet.');
     const quote=value=>`"${String(value??'').replace(/"/g,'""')}"`;

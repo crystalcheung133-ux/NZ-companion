@@ -124,3 +124,8 @@ Stage 7M module ownership remains frozen. New features must be added to their ow
 ## Stage 8A-2 Complete Lifecycle
 - `complete-runtime.js` owns Complete Trip, persisted read-only state, and Lee-only Reopen Trip.
 - Reopen changes lifecycle status back to active without deleting or rolling back trip data.
+
+## Stage 8A-3 Admin PIN Gate
+- `admin.js` owns the six-digit PIN gate and session-scoped Admin unlock.
+- `complete-runtime.js` exposes Complete/Reopen only while Lee is actively in Admin Mode.
+- `expenses.js` exposes and permits expense export only while Lee is actively in Admin Mode.
