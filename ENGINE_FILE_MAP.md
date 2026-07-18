@@ -120,3 +120,7 @@ Stage 7M module ownership remains frozen. New features must be added to their ow
 - `storage-config.js` owns the versioned `travel_engine_trip_completion_v1` key.
 - Complete Mode preserves all browsing and disables Admin, Checklist, Expenses, and Moments mutation paths.
 - Memory Book, Trip Review, and Export remain out of scope for Stage 8B.
+
+## Stage 8A-2 Complete Lifecycle
+- `complete-runtime.js` owns Complete Trip, persisted read-only state, and Lee-only Reopen Trip.
+- Reopen changes lifecycle status back to active without deleting or rolling back trip data.
