@@ -80,6 +80,14 @@ let editingExpenseIndex=null;
     try{return (typeof FRIENDS!=='undefined' && FRIENDS[k]) ? FRIENDS[k] : (FRIEND_FALLBACK[k]||k||'');}
     catch(e){return FRIEND_FALLBACK[k]||k||'';}
   }
+  function identityFor(k,compact=false){
+    try{return typeof window.friendIdentityHTML==='function' ? window.friendIdentityHTML(k,compact) : escapeHTML(labelFor(k));}
+    catch(e){return escapeHTML(labelFor(k));}
+  }
+  function syncIdentityControls(){
+    document.querySelectorAll('#expenseModal select').forEach(select=>{if(FRIEND_ORDER.includes(select.value)) select.dataset.family=select.value;});
+    document.querySelectorAll('#splitPickerMenu label').forEach(label=>{const input=label.querySelector('input[data-split]');const text=label.querySelector('span');if(input&&text) text.innerHTML=identityFor(input.value,true);});
+  }
   function readExpenses(){
     try{return STORAGE.local.readJSON(STORAGE_CONFIG.keys.expenses,[]);}
     catch(e){return [];}
@@ -101,7 +109,7 @@ let editingExpenseIndex=null;
     const hidden=document.getElementById('expensePaidBy');
     const paid=hidden?.value || currentUser();
     const display=document.getElementById('paidByDisplayName');
-    if(display) display.textContent=labelFor(paid);
+    if(display) display.innerHTML=identityFor(paid,true);
     document.querySelectorAll('#paidByChoices button').forEach(btn=>{
       btn.classList.toggle('active',btn.dataset.friend===paid);
     });
@@ -156,7 +164,7 @@ let editingExpenseIndex=null;
     if(!parties.length){panel.innerHTML='<p class="split-helper">Choose at least one party.</p>';return;}
     const previous={};
     panel.querySelectorAll('input[data-custom-party]').forEach(i=>previous[i.dataset.customParty]=i.value);
-    panel.innerHTML=parties.map(k=>`<label class="custom-split-row"><span>${labelFor(k)}</span><div class="expense-money-field"><input id="customShare_${k}" data-custom-party="${k}" inputmode="decimal" type="text" value="${previous[k]??''}" placeholder="0.00" oninput="recalculateCustomSplit()" onblur="autofillCustomRemainderOnExit('${k}')"/><button class="field-clear-btn" type="button" onclick="clearExpenseField('customShare_${k}')" aria-label="Clear ${labelFor(k)} amount">Clear</button><button class="calc-open-btn remainder-btn" type="button" onclick="calculateCustomRemainder('${k}')" aria-label="Calculate remainder for ${labelFor(k)}">${calculatorIcon()}</button></div></label>`).join('')+`<p class="split-helper" id="customSplitStatus">Enter two amounts, then move to the remaining field to fill the balance automatically.</p>`;
+    panel.innerHTML=parties.map(k=>`<label class="custom-split-row"><span>${identityFor(k,true)}</span><div class="expense-money-field"><input id="customShare_${k}" data-custom-party="${k}" inputmode="decimal" type="text" value="${previous[k]??''}" placeholder="0.00" oninput="recalculateCustomSplit()" onblur="autofillCustomRemainderOnExit('${k}')"/><button class="field-clear-btn" type="button" onclick="clearExpenseField('customShare_${k}')" aria-label="Clear ${labelFor(k)} amount">Clear</button><button class="calc-open-btn remainder-btn" type="button" onclick="calculateCustomRemainder('${k}')" aria-label="Calculate remainder for ${labelFor(k)}">${calculatorIcon()}</button></div></label>`).join('')+`<p class="split-helper" id="customSplitStatus">Enter two amounts, then move to the remaining field to fill the balance automatically.</p>`;
     window.recalculateCustomSplit();
   }
   window.calculateCustomRemainder=function(targetParty){
@@ -220,9 +228,10 @@ let editingExpenseIndex=null;
     const summary=document.getElementById('splitPickerSummary');
     if(summary){
       const names={lee:'Lee',fowlers:'Fowlers',yau:'Yau'};
-      summary.textContent=selected.length===3?'All':selected.length===0?'None':selected.map(key=>names[key]||key).join(' + ');
+      summary.innerHTML=selected.length===3?'All':selected.length===0?'None':selected.map(key=>identityFor(key,true)).join('<span class="identity-plus">+</span>');
     }
     renderCustomSplitPanel();
+    syncIdentityControls();
   };
   window.toggleSplitPicker=function(event){
     if(event) event.stopPropagation();
@@ -317,9 +326,9 @@ let editingExpenseIndex=null;
     const personal=e.type==='personal';
     const split=e.split||[];
     const consumer=e.consumedBy || split[0] || e.paidBy;
-    const who=personal ? `Consumed by ${labelFor(consumer)}` : `${e.splitMode==='custom'?'Custom':'Equal'} split: ${split.map(labelFor).join(' · ')}`;
+    const who=personal ? `Consumed by ${identityFor(consumer,true)}` : `${e.splitMode==='custom'?'Custom':'Equal'} split: ${split.map(k=>identityFor(k,true)).join('<span class="identity-separator">·</span>')}`;
     const latestId=e._latest?' id="latestExpenseCard"':'';
-    return `<div class="expense-card"${latestId}><strong>${escapeHTML(e.item||'')}</strong><p class="timestamp">${timeLabel(e.createdAt)}${e.editedAt?` · Edited ${timeLabel(e.editedAt)}`:''}</p><p>${FORMATTER.number(MONEY.normalizeAmount(e.total))} ${MONEY.getTripCurrency().code} · Paid by ${labelFor(e.paidBy)}</p><p>${personal?'Personal Expense':'Shared Expense'} · ${who}</p><div class="entry-actions"><button class="mini-btn" onclick="editExpense(${e._idx})">✏️ Edit</button><button class="mini-btn" onclick="deleteExpense(${e._idx})">🗑 Delete</button></div></div>`;
+    return `<div class="expense-card"${latestId}><strong>${escapeHTML(e.item||'')}</strong><p class="timestamp">${timeLabel(e.createdAt)}${e.editedAt?` · Edited ${timeLabel(e.editedAt)}`:''}</p><p>${FORMATTER.number(MONEY.normalizeAmount(e.total))} ${MONEY.getTripCurrency().code} · Paid by ${identityFor(e.paidBy,true)}</p><p>${personal?'Personal Expense':'Shared Expense'} · ${who}</p><div class="entry-actions"><button class="mini-btn" onclick="editExpense(${e._idx})">✏️ Edit</button><button class="mini-btn" onclick="deleteExpense(${e._idx})">🗑 Delete</button></div></div>`;
   }
   function ensureToolHistory(){
     const sheet=document.querySelector('#expenseModal .tools-sheet');
@@ -444,9 +453,9 @@ let editingExpenseIndex=null;
           Object.entries(shares).forEach(([k,share])=>{if(!personalSpend[k]) personalSpend[k]=0;if(!balance[k]) balance[k]=0;const shareAmount=MONEY.normalizeAmount(share);personalSpend[k]+=shareAmount;balance[k]-=shareAmount;});
         }
       });
-      const spendHtml=FRIEND_ORDER.map(k=>`<p>${labelFor(k)}<br><strong>${FORMATTER.number(Math.round(personalSpend[k]||0))} ${MONEY.getTripCurrency().code}</strong></p>`).join('');
-      const balanceHtml=FRIEND_ORDER.map(k=>{const v=balance[k]||0;return `<p>${labelFor(k)}<br><strong>${v>=0?'Receive':'Owes'} ${FORMATTER.number(Math.abs(Math.round(v)))} ${MONEY.getTripCurrency().code}</strong></p>`;}).join('');
-      pageBox.innerHTML=`<div class="expense-dashboard-v33"><div class="expense-total-card"><span>Trip Total</span><strong>${FORMATTER.number(total)} ${MONEY.getTripCurrency().code}</strong><small>Shared + personal expenses</small></div><div class="expense-focus-grid"><div class="expense-focus-card"><h3>Personal Spend</h3>${spendHtml}</div><div class="expense-focus-card"><h3>Settlement</h3>${balanceHtml}</div></div></div><div class="expense-history-block"><h3>Transaction History</h3><p class="timestamp">Newest transactions appear first.</p><div class="transaction-scroll">${sorted.length?sorted.map(expenseCard).join(''):'<p>No transactions yet.</p>'}</div></div>`;
+      const spendHtml=FRIEND_ORDER.map(k=>`<p data-family="${k}">${identityFor(k)}<strong>${FORMATTER.number(Math.round(personalSpend[k]||0))} ${MONEY.getTripCurrency().code}</strong></p>`).join('');
+      const balanceHtml=FRIEND_ORDER.map(k=>{const v=balance[k]||0;return `<p data-family="${k}">${identityFor(k)}<strong>${v>=0?'Receive':'Owes'} ${FORMATTER.number(Math.abs(Math.round(v)))} ${MONEY.getTripCurrency().code}</strong></p>`;}).join('');
+      pageBox.innerHTML=`<div class="expense-dashboard-v33 identity-dashboard"><div class="expense-total-card"><span>Trip Total</span><strong>${FORMATTER.number(total)} ${MONEY.getTripCurrency().code}</strong><small>Shared + personal expenses</small></div><div class="expense-focus-grid"><div class="expense-focus-card"><h3>Personal Spend</h3>${spendHtml}</div><div class="expense-focus-card"><h3>Settlement</h3>${balanceHtml}</div></div></div><div class="expense-history-block"><h3>Transaction History</h3><p class="timestamp">Newest transactions appear first.</p><div class="transaction-scroll">${sorted.length?sorted.map(expenseCard).join(''):'<p>No transactions yet.</p>'}</div></div>`;
     }
   };
 

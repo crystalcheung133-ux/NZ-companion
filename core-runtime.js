@@ -62,8 +62,18 @@ function setFriend(k){
   if(document.getElementById('momentsModal')?.classList.contains('show')&&typeof window.simplifyMomentsAuthor==='function')window.simplifyMomentsAuthor();
   if(typeof window.refreshExpenseAdminUI==='function')window.refreshExpenseAdminUI();
 }
-function updateFriendLabels(){const label=FRIENDS[getFriend()]||'MEL · Lee';document.querySelectorAll('[data-friend-label]').forEach(e=>e.textContent=label);}
-function renderFriendChoices(){const list=document.querySelector('#mamaModal .friend-choice-list');if(!list)return;list.innerHTML=Object.entries(FRIENDS).map(([key,label])=>`<button type="button" onclick="setFriend('${key}')">${label}</button>`).join('');}
+const FRIEND_IDENTITY={
+  lee:{code:'MEL',name:'Lee'},
+  fowlers:{code:'SYD',name:'Fowlers'},
+  yau:{code:'NTL',name:'Yau'}
+};
+function friendIdentityHTML(key,compact=false){
+  const identity=FRIEND_IDENTITY[key]||FRIEND_IDENTITY.lee;
+  return `<span class="family-identity family-${escapeHTML(key)}${compact?' is-compact':''}"><span class="family-code">${escapeHTML(identity.code)}</span><span class="family-name">${escapeHTML(identity.name)}</span></span>`;
+}
+window.friendIdentityHTML=friendIdentityHTML;
+function updateFriendLabels(){const key=getFriend();document.querySelectorAll('[data-friend-label]').forEach(e=>{e.innerHTML=friendIdentityHTML(key,true);e.dataset.family=key;});}
+function renderFriendChoices(){const list=document.querySelector('#mamaModal .friend-choice-list');if(!list)return;const current=getFriend();list.innerHTML=Object.keys(FRIEND_IDENTITY).map(key=>`<button type="button" class="family-choice${key===current?' active':''}" data-family="${key}" onclick="setFriend('${key}')">${friendIdentityHTML(key)}</button>`).join('');}
 function openFriendModal(){renderFriendChoices();$('mamaModal').classList.add('show')} function closeFriendModal(){$('mamaModal').classList.remove('show')}
 
 
