@@ -1,1 +1,1 @@
-Travel Engine v1.0 — Stage 7M Architecture Freeze Audit
+Travel Engine v1.0 — Stage 7M-1 Desktop Editor Guard

@@ -27,6 +27,7 @@
   let duplicateSourceIndex=-1;
   let pendingDeleteIndex=-1;
   let movingIndex=-1;
+  let editorInitialState='';
 
   function buildDriveBriefing(dayData){
     const d=dayData.drive;if(!d)return '';
@@ -70,7 +71,12 @@
   function ensureEditor(){
     if(document.getElementById('timelineEditorModal'))return;
     const modal=document.createElement('div');modal.id='timelineEditorModal';modal.className='timeline-editor-modal';modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.innerHTML=`<div class="timeline-editor-sheet"><header class="timeline-editor-head"><p class="kicker">ADMIN MODE</p><h2 id="timelineEditorHeading">Edit activity</h2><button class="timeline-editor-close" onclick="closeTimelineEditor()" aria-label="Close editor">×</button></header><div class="timeline-editor-scroll"><label>Time<input id="timelineEditTime" placeholder="e.g. 10:30 or Flexible"></label><label>Title<input id="timelineEditTitle" placeholder="Activity title"></label><label>Details<textarea id="timelineEditDetails" rows="5" placeholder="One detail per line"></textarea></label><label>Next leg / route<textarea id="timelineEditRoute" rows="3"></textarea></label><label id="timelineAddPositionRow" hidden>Insert position<select id="timelineAddPosition"></select><small class="timeline-field-help">Choose where this new activity appears in the day.</small></label></div><footer class="timeline-editor-actions"><button class="admin-discard-btn" onclick="closeTimelineEditor()">Cancel</button><button class="admin-save-btn" id="timelineEditorApply" onclick="applyTimelineEdit()">Apply</button></footer></div>`;document.body.appendChild(modal);
-    modal.addEventListener('click',event=>{if(event.target===modal)closeTimelineEditor();});
+    modal.addEventListener('click',event=>{if(event.target===modal)event.preventDefault();});
+    document.addEventListener('keydown',event=>{
+      if(event.key!=='Escape')return;
+      const activeModal=document.getElementById('timelineEditorModal');
+      if(activeModal?.classList.contains('show')){event.preventDefault();closeTimelineEditor();}
+    });
   }
   function populateAddPositions(){
     const row=document.getElementById('timelineAddPositionRow');
@@ -88,6 +94,16 @@
       const end=document.createElement('option');end.value=String(workingItems.length);end.textContent='End of the day';end.selected=true;select.appendChild(end);
     }
   }
+  function getTimelineEditorState(){
+    return JSON.stringify({
+      time:document.getElementById('timelineEditTime')?.value||'',
+      title:document.getElementById('timelineEditTitle')?.value||'',
+      details:document.getElementById('timelineEditDetails')?.value||'',
+      route:document.getElementById('timelineEditRoute')?.value||'',
+      position:document.getElementById('timelineAddPosition')?.value||''
+    });
+  }
+  function timelineEditorHasChanges(){return Boolean(editorInitialState&&getTimelineEditorState()!==editorInitialState);}
   function showTimelineEditor(item,heading,applyLabel){
     document.getElementById('timelineEditorHeading').textContent=heading;
     document.getElementById('timelineEditorApply').textContent=applyLabel;
@@ -99,6 +115,7 @@
     lockEditorBackground();
     document.getElementById('timelineEditorModal').classList.add('show');
     document.querySelector('#timelineEditorModal .timeline-editor-scroll').scrollTop=0;
+    editorInitialState=getTimelineEditorState();
   }
   window.openTimelineEditor=function(index){
     if(!window.isAdminMode||!window.isAdminMode())return;
@@ -119,7 +136,15 @@
     item.title=(item.title||'Activity')+' — Copy';
     showTimelineEditor(item,'Duplicate activity','Duplicate activity');
   };
-  window.closeTimelineEditor=function(){const modal=document.getElementById('timelineEditorModal');if(!modal?.classList.contains('show'))return;const active=document.activeElement;if(active&&modal.contains(active))active.blur();modal.classList.remove('show');requestAnimationFrame(()=>requestAnimationFrame(unlockEditorBackground));};
+  window.closeTimelineEditor=function(forceClose=false){
+    const modal=document.getElementById('timelineEditorModal');
+    if(!modal?.classList.contains('show'))return;
+    if(!forceClose&&timelineEditorHasChanges()&&!window.confirm('Discard this unfinished edit?'))return;
+    const active=document.activeElement;if(active&&modal.contains(active))active.blur();
+    editorInitialState='';
+    modal.classList.remove('show');
+    requestAnimationFrame(()=>requestAnimationFrame(unlockEditorBackground));
+  };
   function createActivityId(){
     const suffix=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():Date.now()+'-'+Math.random().toString(36).slice(2,9);
     return 'custom-'+day+'-'+suffix;
@@ -153,7 +178,7 @@
       workingItems[editingIndex]=base;
     }
     markTimelineDirty();
-    closeTimelineEditor();
+    closeTimelineEditor(true);
     render();
   };
   function ensureTimelineMenu(){
