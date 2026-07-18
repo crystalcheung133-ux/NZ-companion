@@ -102,7 +102,6 @@
     }
     const ok=window.confirm('Complete this trip? All trip content will remain available to browse, but editing will be disabled until Lee reopens the trip.');
     if(!ok) return false;
-    if(typeof window.setAdminMode==='function') window.setAdminMode(false);
     const next={version:1,tripId:tripId(),completed:true,completedAt:new Date().toISOString(),completedBy:ADMIN_USER};
     persist(next);
     document.dispatchEvent(new CustomEvent('travelengine:tripcompleted',{detail:{...next}}));
