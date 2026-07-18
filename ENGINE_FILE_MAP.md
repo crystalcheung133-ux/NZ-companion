@@ -112,3 +112,11 @@ Page-specific inline bootstrap may run after its required canonical modules.
 ## Architecture freeze
 
 Stage 7M module ownership remains frozen. New features must be added to their owning module or to a deliberately created new module with documented load order. Historical stage notes belong in dedicated audit/freeze documents, not in this canonical file map.
+
+
+## Stage 8A Complete Mode
+
+- `complete-runtime.js` owns the persisted Complete Trip lifecycle and read-only enforcement.
+- `storage-config.js` owns the versioned `travel_engine_trip_completion_v1` key.
+- Complete Mode preserves all browsing and disables Admin, Checklist, Expenses, and Moments mutation paths.
+- Memory Book, Trip Review, and Export remain out of scope for Stage 8B.

@@ -15,7 +15,8 @@
     adminDraft:'travel_engine_admin_draft_v1',
     guideNavContext:'ccmv_guide_nav_context',
     guideNavReopen:'ccmv_guide_nav_reopen',
-    itineraryOverrides:'travel_engine_itinerary_overrides_v1'
+    itineraryOverrides:'travel_engine_itinerary_overrides_v1',
+    tripCompletion:'travel_engine_trip_completion_v1'
   });
 
   const domains=Object.freeze({
@@ -25,7 +26,8 @@
     moments:Object.freeze({records:keys.momentsList,freeform:keys.momentsFreeform,legacyPrefix:keys.momentPrefix,latestPrefix:keys.latestMomentPrefix}),
     admin:Object.freeze({mode:keys.adminMode,draft:keys.adminDraft}),
     guide:Object.freeze({context:keys.guideNavContext,reopen:keys.guideNavReopen}),
-    itinerary:Object.freeze({overrides:keys.itineraryOverrides})
+    itinerary:Object.freeze({overrides:keys.itineraryOverrides}),
+    completion:Object.freeze({state:keys.tripCompletion})
   });
 
   root.STORAGE_CONFIG=Object.freeze({
