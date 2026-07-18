@@ -3019,4 +3019,70 @@ body.admin-mode #mamaModal .guide-sheet>h2{opacity:.72}
   .home-reunion-story strong{font-size:19px}
   .home-reunion-story span{font-size:9px;letter-spacing:.09em}
 }
-\n\n/* ============================================================================\n   RC3 — FAMILY IDENTITY SYSTEM\n   One reusable MEL / SYD / NTL identity language across family and Expenses UI.\n   ============================================================================ */\n:root{\n  --family-mel:#286f67;--family-mel-soft:#e5f1ef;--family-mel-line:#b9d7d2;\n  --family-syd:#326f9f;--family-syd-soft:#e7f0f7;--family-syd-line:#bfd3e4;\n  --family-ntl:#a66a2c;--family-ntl-soft:#f8eddf;--family-ntl-line:#e6c9a6;\n}\n.family-identity{display:inline-flex;align-items:center;gap:8px;min-width:0;vertical-align:middle}\n.family-code{display:inline-grid;place-items:center;min-width:42px;height:25px;padding:0 8px;border:1px solid currentColor;border-radius:999px;font-size:10px;font-weight:900;letter-spacing:.09em;line-height:1}\n.family-name{min-width:0;color:var(--ink);font-size:14px;font-weight:760;line-height:1.2}\n.family-lee{color:var(--family-mel)}.family-fowlers{color:var(--family-syd)}.family-yau{color:var(--family-ntl)}\n.family-lee .family-code{background:var(--family-mel-soft);border-color:var(--family-mel-line)}\n.family-fowlers .family-code{background:var(--family-syd-soft);border-color:var(--family-syd-line)}\n.family-yau .family-code{background:var(--family-ntl-soft);border-color:var(--family-ntl-line)}\n.family-identity.is-compact{gap:6px}.family-identity.is-compact .family-code{min-width:37px;height:21px;padding:0 6px;font-size:9px}.family-identity.is-compact .family-name{font-size:12px}\n.friend-pill{padding:7px 10px}.friend-pill [data-friend-label]{display:flex}.friend-pill .family-name{display:none}.friend-pill .family-code{height:24px;min-width:40px}\n.friend-choice-list{display:grid;gap:9px}.friend-choice-list .family-choice{display:flex;align-items:center;justify-content:flex-start;width:100%;min-height:54px;padding:12px 14px;border:1px solid var(--line);border-radius:15px;background:#fff;text-align:left}\n.friend-choice-list .family-choice.active{box-shadow:inset 3px 0 0 currentColor;background:#fbfcfa}.friend-choice-list .family-choice[data-family=lee]{color:var(--family-mel)}.friend-choice-list .family-choice[data-family=fowlers]{color:var(--family-syd)}.friend-choice-list .family-choice[data-family=yau]{color:var(--family-ntl)}\n.expenses-page .primary-action{letter-spacing:.01em}\n.expenses-page select[data-family=lee]{border-color:var(--family-mel-line);box-shadow:inset 3px 0 0 var(--family-mel)}\n.expenses-page select[data-family=fowlers]{border-color:var(--family-syd-line);box-shadow:inset 3px 0 0 var(--family-syd)}\n.expenses-page select[data-family=yau]{border-color:var(--family-ntl-line);box-shadow:inset 3px 0 0 var(--family-ntl)}\n#splitPickerSummary{display:inline-flex;align-items:center;gap:5px;min-width:0;overflow:hidden}\n.identity-plus,.identity-separator{color:var(--muted);font-size:11px;font-weight:700}\n#splitPickerMenu label{display:flex;align-items:center;gap:9px;min-height:42px;padding:7px 9px;border-radius:11px}\n#splitPickerMenu label:has(input:checked){background:#f7f8f5}\n.custom-split-row>span{display:flex;align-items:center}\n.expense-card p .family-identity{margin:0 2px}\n.identity-dashboard .expense-focus-card>p{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;margin:0;padding:11px 0;border-top:1px solid var(--line)}\n.identity-dashboard .expense-focus-card>p:first-of-type{border-top:0}\n.identity-dashboard .expense-focus-card>p>strong{margin:0;text-align:right;font-size:13px;white-space:nowrap}\n.identity-dashboard .expense-focus-card .family-name{font-size:13px}\n.identity-dashboard .expense-focus-card .family-code{min-width:39px;height:23px}\n@media(max-width:420px){\n  .identity-dashboard .expense-focus-grid{grid-template-columns:1fr}\n  .family-name{font-size:13px}\n  #splitPickerSummary .family-name{display:none}\n}\n
+
+/* ============================================================================
+   RC3.1 — FAMILY IDENTITY SYSTEM
+   Canonical MEL / SYD / NTL identity language across Family and Expenses UI.
+   ============================================================================ */
+:root{
+  --family-mel:#1f766c;
+  --family-mel-soft:#dff1ee;
+  --family-mel-line:#8fc8c0;
+  --family-syd:#2f6fa3;
+  --family-syd-soft:#e1eef8;
+  --family-syd-line:#91b9d7;
+  --family-ntl:#aa6724;
+  --family-ntl-soft:#f8ead8;
+  --family-ntl-line:#ddb47f;
+}
+.family-identity{display:inline-flex;align-items:center;gap:8px;min-width:0;vertical-align:middle}
+.family-code{display:inline-grid;place-items:center;min-width:44px;height:27px;padding:0 9px;border:1px solid currentColor;border-radius:999px;font-size:10px;font-weight:900;letter-spacing:.09em;line-height:1}
+.family-name{min-width:0;color:var(--ink);font-size:14px;font-weight:780;line-height:1.2}
+.family-lee{color:var(--family-mel)}
+.family-fowlers{color:var(--family-syd)}
+.family-yau{color:var(--family-ntl)}
+.family-lee .family-code{background:var(--family-mel-soft);border-color:var(--family-mel-line)}
+.family-fowlers .family-code{background:var(--family-syd-soft);border-color:var(--family-syd-line)}
+.family-yau .family-code{background:var(--family-ntl-soft);border-color:var(--family-ntl-line)}
+.family-identity.is-compact{gap:6px}
+.family-identity.is-compact .family-code{min-width:39px;height:23px;padding:0 7px;font-size:9px}
+.family-identity.is-compact .family-name{font-size:12px}
+.friend-pill{padding:7px 10px;border-width:1px}
+.friend-pill [data-friend-label]{display:flex}
+.friend-pill .family-name{display:none}
+.friend-pill .family-code{height:25px;min-width:42px}
+.friend-pill [data-friend-label][data-family=lee] .family-code{box-shadow:0 0 0 2px rgba(31,118,108,.12)}
+.friend-pill [data-friend-label][data-family=fowlers] .family-code{box-shadow:0 0 0 2px rgba(47,111,163,.12)}
+.friend-pill [data-friend-label][data-family=yau] .family-code{box-shadow:0 0 0 2px rgba(170,103,36,.12)}
+.friend-choice-list{display:grid;gap:10px}
+.friend-choice-list .family-choice{position:relative;display:flex;align-items:center;justify-content:flex-start;width:100%;min-height:58px;padding:12px 46px 12px 14px;border:1px solid var(--line);border-radius:16px;background:#fff;text-align:left;transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease,background .14s ease}
+.friend-choice-list .family-choice:active{transform:scale(.99)}
+.friend-choice-list .family-choice[data-family=lee]{color:var(--family-mel)}
+.friend-choice-list .family-choice[data-family=fowlers]{color:var(--family-syd)}
+.friend-choice-list .family-choice[data-family=yau]{color:var(--family-ntl)}
+.friend-choice-list .family-choice[data-family=lee]{border-color:var(--family-mel-line);background:linear-gradient(90deg,var(--family-mel-soft),#fff 74%)}
+.friend-choice-list .family-choice[data-family=fowlers]{border-color:var(--family-syd-line);background:linear-gradient(90deg,var(--family-syd-soft),#fff 74%)}
+.friend-choice-list .family-choice[data-family=yau]{border-color:var(--family-ntl-line);background:linear-gradient(90deg,var(--family-ntl-soft),#fff 74%)}
+.friend-choice-list .family-choice.active{border-width:2px;box-shadow:0 8px 22px rgba(32,48,45,.12)}
+.friend-choice-list .family-choice.active::after{content:'✓';position:absolute;right:15px;top:50%;display:grid;place-items:center;width:25px;height:25px;transform:translateY(-50%);border-radius:50%;background:currentColor;color:#fff;font-size:14px;font-weight:900}
+.friend-choice-list .family-choice:not(.active){opacity:.86}
+.expenses-page .primary-action{letter-spacing:.01em}
+.expenses-page select[data-family=lee]{border-color:var(--family-mel-line);box-shadow:inset 4px 0 0 var(--family-mel)}
+.expenses-page select[data-family=fowlers]{border-color:var(--family-syd-line);box-shadow:inset 4px 0 0 var(--family-syd)}
+.expenses-page select[data-family=yau]{border-color:var(--family-ntl-line);box-shadow:inset 4px 0 0 var(--family-ntl)}
+#splitPickerSummary{display:inline-flex;align-items:center;gap:5px;min-width:0;overflow:hidden}
+.identity-plus,.identity-separator{color:var(--muted);font-size:11px;font-weight:700}
+#splitPickerMenu label{display:flex;align-items:center;gap:9px;min-height:42px;padding:7px 9px;border-radius:11px}
+#splitPickerMenu label:has(input:checked){background:#f7f8f5}
+.custom-split-row>span{display:flex;align-items:center}
+.expense-card p .family-identity{margin:0 2px}
+.identity-dashboard .expense-focus-card>p{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;margin:0;padding:11px 0;border-top:1px solid var(--line)}
+.identity-dashboard .expense-focus-card>p:first-of-type{border-top:0}
+.identity-dashboard .expense-focus-card>p>strong{margin:0;text-align:right;font-size:13px;white-space:nowrap}
+.identity-dashboard .expense-focus-card .family-name{font-size:13px}
+.identity-dashboard .expense-focus-card .family-code{min-width:41px;height:24px}
+@media(max-width:420px){
+  .identity-dashboard .expense-focus-grid{grid-template-columns:1fr}
+  .family-name{font-size:13px}
+  #splitPickerSummary .family-name{display:none}
+}

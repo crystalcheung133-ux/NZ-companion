@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   function polishExpenseCopy(){
     document.querySelectorAll('button,a').forEach(el=>{
       if((el.textContent||'').includes('Add Expense') || (el.textContent||'').includes('Split Bill')){
-        el.textContent='What did we spend?';
+        el.textContent='💸 What did we spend?';
       }
     });
     const title=document.getElementById('expenseModalTitle'); if(title) title.textContent='Add expense';
