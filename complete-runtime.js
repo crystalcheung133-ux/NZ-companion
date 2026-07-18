@@ -28,12 +28,12 @@
     return getFriend()===ADMIN_USER && typeof window.isAdminMode==='function' && window.isAdminMode();
   }
   function buildControl(){
-    const host=document.querySelector('#mamaModal .guide-sheet');
+    const host=document.getElementById('tripStudioManagement') || document.querySelector('#mamaModal .guide-sheet');
     if(!host || document.getElementById('completeTripControl') || !isLifecycleAdmin()) return;
     const section=document.createElement('section');
     section.id='completeTripControl';
     section.className='complete-trip-control';
-    section.innerHTML='<div><strong id="completeTripTitle">Complete Trip</strong><small id="completeTripHelp">Lock trip changes and keep everything available to browse.</small></div><button id="completeTripButton" type="button" class="complete-trip-btn">Complete Trip</button>';
+    section.innerHTML='<div class="trip-studio-copy"><strong id="completeTripTitle">Complete Trip</strong><small id="completeTripHelp">Lock editing and unlock post-trip outputs.</small></div><button id="completeTripButton" type="button" class="complete-trip-btn">Complete Trip</button>';
     host.appendChild(section);
   }
   function updateLifecycleControl(){
@@ -59,7 +59,7 @@
       button.onclick=window.reopenTrip;
     }else{
       if(title) title.textContent='Complete Trip';
-      if(help) help.textContent='Lock trip changes and keep everything available to browse.';
+      if(help) help.textContent='Lock editing and unlock post-trip outputs.';
       button.textContent='Complete Trip';
       button.classList.remove('reopen-trip-btn');
       button.onclick=window.completeTrip;
@@ -105,7 +105,6 @@
     const next={version:1,tripId:tripId(),completed:true,completedAt:new Date().toISOString(),completedBy:ADMIN_USER};
     persist(next);
     document.dispatchEvent(new CustomEvent('travelengine:tripcompleted',{detail:{...next}}));
-    closeFriendModal();
     return true;
   };
   window.reopenTrip=function(){
@@ -125,7 +124,6 @@
     persist(next);
     STORAGE.local.remove(NOTICE_KEY);
     document.dispatchEvent(new CustomEvent('travelengine:tripreopened',{detail:{...next}}));
-    closeFriendModal();
     return true;
   };
 

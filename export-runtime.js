@@ -11,10 +11,10 @@
   function currentItems(dayNo,day){const saved=readObject(OVERRIDES_KEY)[String(dayNo)];return Array.isArray(saved)?saved:(day.items||[]);}
 
   function buildControl(){
-    const host=document.querySelector('#mamaModal .guide-sheet');
+    const host=document.getElementById('tripStudioExports') || document.querySelector('#mamaModal .guide-sheet');
     if(!host||document.getElementById('tripExportControl'))return;
     const section=document.createElement('section');section.id='tripExportControl';section.className='trip-export-control';
-    section.innerHTML='<button class="trip-export-launch" type="button" onclick="openTripExportCenter()"><span><strong>Export Trip</strong><small>Shareable itinerary and post-trip outputs</small></span><span aria-hidden="true">›</span></button>';
+    section.innerHTML='<button class="trip-export-launch" type="button" onclick="openTripExportCenter()"><span><strong>Open Export Centre</strong><small>Itinerary and expenses are available anytime.</small></span><span aria-hidden="true">›</span></button>';
     host.appendChild(section);
   }
   function buildModal(){
