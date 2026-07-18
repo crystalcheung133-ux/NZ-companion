@@ -8,17 +8,17 @@
     country: 'New Zealand',
     startDate: '2026-09-22',
     endDate: '2026-10-01',
-    currency: Object.freeze({ code: 'NZD', name: 'New Zealand Dollar' }),
-    timeZone: 'Pacific/Auckland',
-    language: 'en-NZ',
+    currency: root.LOCALE_CONFIG.currency,
+    timeZone: root.LOCALE_CONFIG.timeZone,
+    language: root.LOCALE_CONFIG.language,
     logo: Object.freeze({
-      splash: 'nz-adventure-logo.png',
-      header: 'nz-adventure-mark.png',
-      icon192: 'icon-192.png',
-      icon512: 'icon-512.png'
+      splash: root.ASSET_CONFIG.branding.splashLogo,
+      header: root.ASSET_CONFIG.branding.secondaryMark,
+      icon192: root.ASSET_CONFIG.icons.icon192,
+      icon512: root.ASSET_CONFIG.icons.icon512
     }),
-    coverImage: null,
-    themeName: 'New Zealand Adventure',
+    coverImage: root.ASSET_CONFIG.hero.coverImage,
+    themeName: root.THEME_CONFIG.name,
 
     /* Existing presentation labels retained here so identity has one owner. */
     engineName: 'CCMV Travel Engine',
@@ -33,15 +33,7 @@
     storageNamespace: 'nz-family-2026',
     version: '1.0',
     buildLabel: 'Frozen Admin Core',
-    theme: Object.freeze({
-      primary: '#007C91',
-      secondary: '#2F7D32',
-      accent: '#FF9F1C',
-      highlight: '#E94F37',
-      ink: '#102A43',
-      surface: '#FFFFFF',
-      background: '#E8F4F8'
-    })
+    theme: root.THEME_CONFIG.colors
   });
 
   root.TRIP_CONFIG = config;
@@ -58,8 +50,8 @@
       background_color: config.theme.background,
       theme_color: config.theme.primary,
       icons: [
-        {src: config.logo.icon192, sizes: '192x192', type: 'image/png', purpose: 'any maskable'},
-        {src: config.logo.icon512, sizes: '512x512', type: 'image/png', purpose: 'any maskable'}
+        {src: root.ASSET_CONFIG.icons.icon192, sizes: '192x192', type: 'image/png', purpose: 'any maskable'},
+        {src: root.ASSET_CONFIG.icons.icon512, sizes: '512x512', type: 'image/png', purpose: 'any maskable'}
       ],
       description: config.tripName
     };
@@ -101,7 +93,10 @@
       meta.content=config.theme.primary;
     });
     document.querySelectorAll('[data-trip-currency-placeholder]').forEach(function(input){
-      input.placeholder='Total ' + config.currency.code;
+      input.placeholder='Total ' + root.LOCALE_CONFIG.currency.code;
+    });
+    document.querySelectorAll('[data-locale-currency-placeholder]').forEach(function(input){
+      input.placeholder='0.00 ' + root.LOCALE_CONFIG.currency.code;
     });
   }
 
