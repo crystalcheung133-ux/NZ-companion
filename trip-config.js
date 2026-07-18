@@ -24,7 +24,7 @@
     engineName: 'CCMV Travel Engine',
     shortName: 'NZ Family',
     navLabel: 'New Zealand Companion',
-    familyLabel: 'LEE · FOWLERS · YAU',
+    familyLabel: 'MELBOURNE · SYDNEY · NEWCASTLE',
     heroLine1: 'New Zealand',
     heroEmphasis: 'Companion',
     tagline: 'Drive · Discover · Adventure',
@@ -32,7 +32,7 @@
     splashDestination: 'NEW ZEALAND 2026',
     storageNamespace: 'nz-family-2026',
     version: '1.0',
-    buildLabel: 'Stage 8B Export Center',
+    buildLabel: 'RC1 Identity Polish',
     theme: root.THEME_CONFIG.colors
   });
 

@@ -2978,3 +2978,44 @@ body.admin-mode #mamaModal .guide-sheet>h2{opacity:.72}
   .trip-studio .complete-trip-control{align-items:stretch;flex-direction:column}
   .trip-studio .complete-trip-btn{width:100%}
 }
+
+
+/* ============================================================================
+   RC1 — IDENTITY POLISH
+   Annual reunion story, city-based family identity and Trip Studio icon.
+   ============================================================================ */
+.home-reunion-story{
+  display:grid;
+  justify-items:center;
+  gap:2px;
+  margin:0 0 10px;
+  text-align:center;
+}
+.home-reunion-story strong{
+  color:var(--nz-ink,#17372f);
+  font-family:var(--ccmv-fashion-serif,"Cormorant Garamond",serif);
+  font-size:clamp(19px,4vw,25px);
+  font-weight:600;
+  letter-spacing:-.02em;
+  line-height:1.05;
+}
+.home-reunion-story span{
+  color:#527064;
+  font-size:10px;
+  font-weight:750;
+  letter-spacing:.13em;
+  line-height:1.35;
+  text-transform:uppercase;
+}
+.trip-studio-mark{
+  font-size:17px;
+  line-height:1;
+}
+.friend-choice-list button{
+  text-align:left;
+}
+@media(max-width:560px){
+  .home-reunion-story{margin-bottom:8px}
+  .home-reunion-story strong{font-size:19px}
+  .home-reunion-story span{font-size:9px;letter-spacing:.09em}
+}

@@ -121,7 +121,7 @@
             <h3>Trip Studio</h3>
             <small>Create, refine and manage this companion.</small>
           </div>
-          <span class="trip-studio-mark" aria-hidden="true">✦</span>
+          <span class="trip-studio-mark" aria-hidden="true">🧭</span>
         </header>
         <div class="trip-studio-section trip-studio-mode">
           <div class="trip-studio-copy"><strong>Studio Mode</strong><small>Turn on editing tools for itinerary and trip data.</small></div>

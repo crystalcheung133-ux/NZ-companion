@@ -62,7 +62,7 @@ function setFriend(k){
   if(document.getElementById('momentsModal')?.classList.contains('show')&&typeof window.simplifyMomentsAuthor==='function')window.simplifyMomentsAuthor();
   if(typeof window.refreshExpenseAdminUI==='function')window.refreshExpenseAdminUI();
 }
-function updateFriendLabels(){const label=FRIENDS[getFriend()]||'🏙️ Lee';document.querySelectorAll('[data-friend-label]').forEach(e=>e.textContent=label);}
+function updateFriendLabels(){const label=FRIENDS[getFriend()]||'📍 Melbourne · Lee';document.querySelectorAll('[data-friend-label]').forEach(e=>e.textContent=label);}
 function renderFriendChoices(){const list=document.querySelector('#mamaModal .friend-choice-list');if(!list)return;list.innerHTML=Object.entries(FRIENDS).map(([key,label])=>`<button type="button" onclick="setFriend('${key}')">${label}</button>`).join('');}
 function openFriendModal(){renderFriendChoices();$('mamaModal').classList.add('show')} function closeFriendModal(){$('mamaModal').classList.remove('show')}
 
