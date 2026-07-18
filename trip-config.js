@@ -32,7 +32,7 @@
     splashDestination: 'NEW ZEALAND 2026',
     storageNamespace: 'nz-family-2026',
     version: '1.0-rc4.1',
-    buildLabel: 'RC4.1 Accessibility & Readability Polish',
+    buildLabel: 'RC4.2 Responsive Family Split Picker',
     theme: root.THEME_CONFIG.colors
   });
 
@@ -44,7 +44,7 @@
       name: config.tripName,
       short_name: config.shortName,
       id: './',
-      start_url: './index.html?v=rc4-1',
+      start_url: './index.html?v=rc4-2',
       scope: './',
       display: 'standalone',
       orientation: 'portrait',
