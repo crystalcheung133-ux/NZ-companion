@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   function polishExpenseCopy(){
     document.querySelectorAll('button,a').forEach(el=>{
       if((el.textContent||'').includes('Add Expense') || (el.textContent||'').includes('Split Bill')){
-        el.textContent='💰 What did we spend?';
+        el.textContent='What did we spend?';
       }
     });
     const title=document.getElementById('expenseModalTitle'); if(title) title.textContent='Add expense';
@@ -92,8 +92,8 @@ document.addEventListener('DOMContentLoaded',()=>{
     catch(e){ return DEFAULT_FRIEND; }
   }
   function friendLabel(k){
-    try { return (typeof FRIENDS !== 'undefined' && FRIENDS[k]) ? FRIENDS[k] : (FRIENDS?.[DEFAULT_FRIEND] || '🏙️ Lee'); }
-    catch(e){ return '🏙️ Lee'; }
+    try { return (typeof FRIENDS !== 'undefined' && FRIENDS[k]) ? FRIENDS[k] : (FRIENDS?.[DEFAULT_FRIEND] || 'MEL · Lee'); }
+    catch(e){ return 'MEL · Lee'; }
   }
   function simplifyMomentsAuthor(){
     const row=document.querySelector('#momentsModal p:has(#momentsFriend)');

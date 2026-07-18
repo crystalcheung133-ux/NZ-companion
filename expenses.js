@@ -70,7 +70,7 @@ let editingExpenseIndex=null;
    ============================================================================ */
 (function(){
   const FRIEND_ORDER=['lee','fowlers','yau'];
-  const FRIEND_FALLBACK={lee:'🏙️ Lee',fowlers:'🌉 Fowlers',yau:'⚓ Yau'};
+  const FRIEND_FALLBACK={lee:'MEL · Lee',fowlers:'SYD · Fowlers',yau:'NTL · Yau'};
 
   function currentUser(){
     try{return (typeof getFriend==='function' ? getFriend() : STORAGE.local.get(STORAGE_CONFIG.keys.friend)) || 'lee';}

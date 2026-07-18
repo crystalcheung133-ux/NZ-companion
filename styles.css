@@ -2501,13 +2501,13 @@ body::before,body::after,body *::before,body *::after{
 }
 @media(prefers-reduced-motion:reduce){#ccmvSplash .splash-logo,#ccmvSplash .splash-line,#ccmvSplash .splash-destination{animation:none;opacity:1}}
 
-body.home-bg main.dashboard.home-v37{display:flex;justify-content:center;padding:10px 12px calc(88px + env(safe-area-inset-bottom))}
+body.home-bg main.dashboard.home-v37{display:flex!important;justify-content:center!important;align-items:flex-start!important;height:auto!important;max-height:none!important;min-height:calc(100dvh - 66px)!important;overflow:visible!important;padding:16px 12px calc(88px + env(safe-area-inset-bottom))!important}
 body.home-bg section.home-brand-card.v37-dashboard-home{
   width:min(900px,calc(100vw - 24px));min-height:0;height:auto;max-height:none;
   margin:0 auto;padding:16px 18px 18px;border-radius:var(--theme-hero-radius);overflow:visible;
 }
 body.home-bg .home-brand-card.v37-dashboard-home h1{margin:0 0 4px;font-size:clamp(50px,7vw,76px);line-height:.86}
-body.home-bg .home-brand-card.v37-dashboard-home .home-since{margin:0 0 3px}
+body.home-bg .home-brand-card.v37-dashboard-home .home-since{display:none!important}
 body.home-bg .home-brand-card.v37-dashboard-home .home-tagline{margin:2px 0 7px;font-size:12px}
 body.home-bg .home-brand-card.v37-dashboard-home .home-trip-line{margin:0 0 9px;gap:7px}
 body.home-bg .home-brand-card.v37-dashboard-home .home-trip-line span{padding:5px 10px;font-size:11px}
@@ -2519,7 +2519,7 @@ body.home-bg .home-live-grid .live-card strong{font-size:14px;line-height:1.18}
 body.home-bg .home-live-grid .live-card em{font-size:10px;line-height:1.12}
 body.home-bg .home-day-button{min-height:38px;margin:0;padding:8px 22px;border-radius:14px;font-size:14px}
 @media(max-width:620px){
-  body.home-bg main.dashboard.home-v37{padding:4px 7px calc(82px + env(safe-area-inset-bottom))}
+  body.home-bg main.dashboard.home-v37{padding:10px 7px calc(82px + env(safe-area-inset-bottom))!important}
   body.home-bg section.home-brand-card.v37-dashboard-home{width:calc(100vw - 14px);padding:10px 11px 11px;border-radius:24px}
   body.home-bg .home-brand-card.v37-dashboard-home h1{font-size:clamp(42px,7.1vh,58px)}
   body.home-bg .home-live-grid .live-card{min-height:61px;padding:7px 8px}
@@ -2987,8 +2987,8 @@ body.admin-mode #mamaModal .guide-sheet>h2{opacity:.72}
 .home-reunion-story{
   display:grid;
   justify-items:center;
-  gap:2px;
-  margin:0 0 10px;
+  gap:0;
+  margin:2px 0 9px;
   text-align:center;
 }
 .home-reunion-story strong{

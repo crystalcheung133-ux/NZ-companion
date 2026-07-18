@@ -37,4 +37,4 @@ The trip-level selector represents the three travelling families: Lee Family, Fo
 - Splash badge renders without a tile.
 - Moments actions use blue and orange outdoor controls.
 - Primary Expenses action returns to universal blue.
-- Traveller groups use origin cues: 🏙️ Lee, 🌉 Fowlers, ⚓ Yau.
+- Traveller groups use origin cues: MEL · Lee, SYD · Fowlers, NTL · Yau.
