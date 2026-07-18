@@ -126,7 +126,7 @@ let editingExpenseIndex=null;
   }
   function setExportVisibility(){
     const btn=document.getElementById('expenseExportButton');
-    if(btn) btn.hidden=!(currentUser()==='lee' && typeof window.isAdminMode==='function' && window.isAdminMode());
+    if(btn) btn.hidden=!(typeof window.isAdminMode==='function' && window.isAdminMode());
   }
   window.refreshExpenseAdminUI=setExportVisibility;
   document.addEventListener('travelengine:adminmodechange',setExportVisibility);
