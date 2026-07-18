@@ -327,7 +327,7 @@ body:has(#tripModal) .trip-card,.trip-sheet{border-color:rgba(112,133,91,.28)!im
 .page-hero .lead,.prose-block p,.guide-sheet p,.tools-sheet p,.moments-sheet p{font-weight:650;}
 /* v3.9 Outdoor Readability Pass
    Higher contrast, larger text and clearer tap targets for outdoor travel use. */
-p,li,.lead,.timeline-main p,.guide-list-sub,.menu-sub,.timestamp,.quick-info-value{color:var(--muted);font-weight:560;}
+p,li,.lead,.timeline-main p,.guide-list-sub,.menu-sub,.timestamp,.quick-info-value{color:var(--muted);font-weight:620;}
 .lead{font-size:18.5px;color:var(--muted);line-height:1.68;}
 h1,h2,h3,.guide-list-title,.menu-title,.timeline-time,.timeline-main h3,.brand,.quick-info-label{font-weight:700;color:var(--ink);}
 h1{font-size:clamp(58px,12vw,96px);letter-spacing:-.02em;}
@@ -340,7 +340,7 @@ h3{font-size:20px;}
 
 .quick-info-card,.prose-block,.trip-card,.timeline-item,.expense-card,.moments-entry{border-color:var(--surface-border);box-shadow:var(--surface-shadow);}
 .quick-info-label,.timestamp{opacity:1;}
-.moments-form textarea,.expense-form input,.expense-form select,textarea{font-size:17px;color:var(--ink);font-weight:560;}
+.moments-form textarea,.expense-form input,.expense-form select,textarea{font-size:17px;color:var(--ink);font-weight:620;}
 @media(max-width:760px){body{font-size:17px;line-height:1.7;}
 .lead{font-size:18px;}
 .timeline-main h3{font-size:19px;}
@@ -359,7 +359,7 @@ h3{font-size:20px;}
 
 .page-hero .kicker{font-size:14px!important;font-weight:900!important;color:#7b4a2f!important;}
 .prose-block h2,.guide-list-title,.menu-title{font-weight:650!important;letter-spacing:-.018em!important;color:#241b16!important;}
-.quick-info-value,.prose-block li{font-size:17px!important;line-height:1.66!important;font-weight:540!important;color:#3b3029!important;}
+.quick-info-value,.prose-block li{font-size:17px!important;line-height:1.66!important;font-weight:620!important;color:#3b3029!important;}
 /* Stage 4E-19: .timeline-main h3 (weight/color), .timeline-main p (font-size/line-height),
    and .route-hint relocated to the Days canonical section (see EOF). Note: .timeline-main p's
    color/font-weight are owned by the later shared muted-text rule below, not by this block. */
@@ -698,7 +698,7 @@ body.home-bg .live-card{min-height:72px!important;padding:8px!important;}
    Reference: Journey Planner 11.43 calm cream / gold editorial system.
    ========================================================= */
 html,body{-webkit-text-size-adjust:100%;}
-body{margin:0;background:radial-gradient(circle at 50% 12%,rgba(255,255,255,.55),transparent 26rem),linear-gradient(135deg,#f7f0e6,#f3eadb)!important;color:var(--ink)!important;font:16px/1.65 Inter,"Noto Sans TC",system-ui,sans-serif;padding-bottom:92px;background-color:var(--bg)!important;font-size:16px!important;line-height:1.55!important;font-weight:500;-webkit-text-size-adjust:100%;font-family:var(--font-sans)!important;}
+body{margin:0;background:radial-gradient(circle at 50% 12%,rgba(255,255,255,.55),transparent 26rem),linear-gradient(135deg,#f7f0e6,#f3eadb)!important;color:var(--ink)!important;font:16px/1.65 Inter,"Noto Sans TC",system-ui,sans-serif;padding-bottom:92px;background-color:var(--bg)!important;font-size:16px!important;line-height:1.55!important;font-weight:560;-webkit-text-size-adjust:100%;font-family:var(--font-sans)!important;}
 
 body.home-bg{padding-bottom:0!important;background:radial-gradient(circle at 50% 10%,rgba(255,255,255,.58),transparent 24rem),linear-gradient(135deg,#f7f0e6,#f3eadb)!important;}
 .site-nav .brand,
@@ -723,7 +723,7 @@ h1,h2,.home-brand-card h1,.page-hero h1,.module-hero h1{font-family:var(--ccmv-f
 
 .home-brand-card h1 em{font-style:italic!important;color:var(--ink)!important;}
 .home-tagline,.home-trip-line,.lead,.page-hero .lead,.module-hero .lead,p,li,
-.timeline-main p,.guide-list-sub,.quick-info-value{color:var(--muted)!important;font-weight:560!important;}
+.timeline-main p,.guide-list-sub,.quick-info-value{color:var(--muted)!important;font-weight:620!important;}
 .home-tagline{font-size:17px!important;letter-spacing:.19em!important;text-transform:uppercase;margin:0 0 18px!important;}
 
 
@@ -3036,26 +3036,26 @@ body.admin-mode #mamaModal .guide-sheet>h2{opacity:.72}
   --family-ntl-line:#ddb47f;
 }
 .family-identity{display:inline-flex;align-items:center;gap:8px;min-width:0;vertical-align:middle}
-.family-code{display:inline-grid;place-items:center;min-width:44px;height:27px;padding:0 9px;border:1px solid currentColor;border-radius:999px;font-size:10px;font-weight:900;letter-spacing:.09em;line-height:1}
-.family-name{min-width:0;color:var(--ink);font-size:14px;font-weight:780;line-height:1.2}
+.family-code{display:inline-grid;place-items:center;min-width:52px;height:32px;padding:0 11px;border:1.5px solid currentColor;border-radius:999px;font-size:12px;font-weight:900;letter-spacing:.08em;line-height:1}
+.family-name{min-width:0;color:var(--ink);font-size:15px;font-weight:820;line-height:1.2}
 .family-lee{color:var(--family-mel)}
 .family-fowlers{color:var(--family-syd)}
 .family-yau{color:var(--family-ntl)}
 .family-lee .family-code{background:var(--family-mel-soft);border-color:var(--family-mel-line)}
 .family-fowlers .family-code{background:var(--family-syd-soft);border-color:var(--family-syd-line)}
 .family-yau .family-code{background:var(--family-ntl-soft);border-color:var(--family-ntl-line)}
-.family-identity.is-compact{gap:6px}
-.family-identity.is-compact .family-code{min-width:39px;height:23px;padding:0 7px;font-size:9px}
-.family-identity.is-compact .family-name{font-size:12px}
-.friend-pill{padding:7px 10px;border-width:1px}
+.family-identity.is-compact{gap:7px}
+.family-identity.is-compact .family-code{min-width:48px;height:30px;padding:0 10px;font-size:11px}
+.family-identity.is-compact .family-name{font-size:14px}
+.friend-pill{padding:8px 12px;border-width:1.5px;min-height:46px}
 .friend-pill [data-friend-label]{display:flex}
 .friend-pill .family-name{display:none}
-.friend-pill .family-code{height:25px;min-width:42px}
+.friend-pill .family-code{height:30px;min-width:48px}
 .friend-pill [data-friend-label][data-family=lee] .family-code{box-shadow:0 0 0 2px rgba(31,118,108,.12)}
 .friend-pill [data-friend-label][data-family=fowlers] .family-code{box-shadow:0 0 0 2px rgba(47,111,163,.12)}
 .friend-pill [data-friend-label][data-family=yau] .family-code{box-shadow:0 0 0 2px rgba(170,103,36,.12)}
-.friend-choice-list{display:grid;gap:10px}
-.friend-choice-list .family-choice{position:relative;display:flex;align-items:center;justify-content:flex-start;width:100%;min-height:58px;padding:12px 46px 12px 14px;border:1px solid var(--line);border-radius:16px;background:#fff;text-align:left;transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease,background .14s ease}
+.friend-choice-list{display:grid;gap:12px}
+.friend-choice-list .family-choice{position:relative;display:flex;align-items:center;justify-content:flex-start;width:100%;min-height:68px;padding:15px 52px 15px 16px;border:1.5px solid var(--line);border-radius:18px;background:#fff;text-align:left;transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease,background .14s ease}
 .friend-choice-list .family-choice:active{transform:scale(.99)}
 .friend-choice-list .family-choice[data-family=lee]{color:var(--family-mel)}
 .friend-choice-list .family-choice[data-family=fowlers]{color:var(--family-syd)}
@@ -3064,14 +3064,14 @@ body.admin-mode #mamaModal .guide-sheet>h2{opacity:.72}
 .friend-choice-list .family-choice[data-family=fowlers]{border-color:var(--family-syd-line);background:linear-gradient(90deg,var(--family-syd-soft),#fff 74%)}
 .friend-choice-list .family-choice[data-family=yau]{border-color:var(--family-ntl-line);background:linear-gradient(90deg,var(--family-ntl-soft),#fff 74%)}
 .friend-choice-list .family-choice.active{border-width:2px;box-shadow:0 8px 22px rgba(32,48,45,.12)}
-.friend-choice-list .family-choice.active::after{content:'✓';position:absolute;right:15px;top:50%;display:grid;place-items:center;width:25px;height:25px;transform:translateY(-50%);border-radius:50%;background:currentColor;color:#fff;font-size:14px;font-weight:900}
-.friend-choice-list .family-choice:not(.active){opacity:.86}
+.friend-choice-list .family-choice.active::after{content:'✓';position:absolute;right:16px;top:50%;display:grid;place-items:center;width:30px;height:30px;transform:translateY(-50%);border-radius:50%;background:currentColor;color:#fff;font-size:17px;font-weight:900}
+.friend-choice-list .family-choice:not(.active){opacity:.92}
 .expenses-page .primary-action{letter-spacing:.01em}
 .expenses-page select[data-family=lee]{border-color:var(--family-mel-line);box-shadow:inset 4px 0 0 var(--family-mel)}
 .expenses-page select[data-family=fowlers]{border-color:var(--family-syd-line);box-shadow:inset 4px 0 0 var(--family-syd)}
 .expenses-page select[data-family=yau]{border-color:var(--family-ntl-line);box-shadow:inset 4px 0 0 var(--family-ntl)}
 #splitPickerSummary{display:inline-flex;align-items:center;gap:5px;min-width:0;overflow:hidden}
-.identity-plus,.identity-separator{color:var(--muted);font-size:11px;font-weight:700}
+.identity-plus,.identity-separator{color:var(--muted);font-size:12px;font-weight:800}
 #splitPickerMenu label{display:flex;align-items:center;gap:9px;min-height:42px;padding:7px 9px;border-radius:11px}
 #splitPickerMenu label:has(input:checked){background:#f7f8f5}
 .custom-split-row>span{display:flex;align-items:center}
@@ -3079,10 +3079,10 @@ body.admin-mode #mamaModal .guide-sheet>h2{opacity:.72}
 .identity-dashboard .expense-focus-card>p{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;margin:0;padding:11px 0;border-top:1px solid var(--line)}
 .identity-dashboard .expense-focus-card>p:first-of-type{border-top:0}
 .identity-dashboard .expense-focus-card>p>strong{margin:0;text-align:right;font-size:13px;white-space:nowrap}
-.identity-dashboard .expense-focus-card .family-name{font-size:13px}
-.identity-dashboard .expense-focus-card .family-code{min-width:41px;height:24px}
+.identity-dashboard .expense-focus-card .family-name{font-size:14px}
+.identity-dashboard .expense-focus-card .family-code{min-width:48px;height:29px}
 @media(max-width:420px){
   .identity-dashboard .expense-focus-grid{grid-template-columns:1fr}
-  .family-name{font-size:13px}
+  .family-name{font-size:14px}
   #splitPickerSummary .family-name{display:none}
 }
