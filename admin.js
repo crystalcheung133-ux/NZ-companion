@@ -57,7 +57,6 @@
       sessionStorage.setItem(SESSION_KEY,'1');
       close();
       window.setAdminMode(true);
-      window.setTimeout(openTripStudioPanel,0);
     });
     return modal;
   }
