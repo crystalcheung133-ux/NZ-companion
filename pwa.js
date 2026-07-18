@@ -183,8 +183,9 @@
   if(supported() && global.navigator.serviceWorker){
     global.navigator.serviceWorker.addEventListener('controllerchange',function(){
       try{
-        if(global.sessionStorage.getItem('travel_engine_sw_reloaded_v1')==='1') return;
-        global.sessionStorage.setItem('travel_engine_sw_reloaded_v1','1');
+        const reloadKey='travel_engine_sw_reloaded_'+(state.version || 'unversioned');
+        if(global.sessionStorage.getItem(reloadKey)==='1') return;
+        global.sessionStorage.setItem(reloadKey,'1');
       }catch(error){}
       global.location.reload();
     });

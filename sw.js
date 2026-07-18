@@ -1,5 +1,6 @@
 importScripts('./theme-config.js', './asset-config.js', './locale-config.js', './formatter.js', './navigation-config.js', './storage-config.js', './trip-config.js');
-const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-rc3-1`;
+const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-rc3-2`;
+const CRITICAL_EXTENSIONS = /\.(?:css|js)$/i;
 const ASSETS = [
   './',
   './index.html',
@@ -52,7 +53,7 @@ self.addEventListener('message', event => {
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(ASSETS))
+      .then(cache => Promise.all(ASSETS.map(asset => cache.add(new Request(asset,{cache:'reload'})))))
       .then(() => self.skipWaiting())
   );
 });
@@ -81,14 +82,17 @@ async function networkFirst(request) {
   }
 }
 
-async function staleWhileRevalidate(request) {
+async function cacheFirstMedia(request) {
   const cache = await caches.open(CACHE_NAME);
-  const cached = await caches.match(request, { ignoreSearch: true });
-  const fetched = fetch(request).then(response => {
+  const cached = await cache.match(request, {ignoreSearch:true});
+  if (cached) return cached;
+  try {
+    const response = await fetch(request);
     if (response && response.ok) cache.put(request, response.clone());
     return response;
-  }).catch(() => null);
-  return cached || fetched || caches.match('./offline.html');
+  } catch (error) {
+    return caches.match('./offline.html');
+  }
 }
 
 self.addEventListener('fetch', event => {
@@ -100,7 +104,9 @@ self.addEventListener('fetch', event => {
   const acceptsHtml = event.request.headers.get('accept')?.includes('text/html');
   if (event.request.mode === 'navigate' || acceptsHtml) {
     event.respondWith(networkFirst(event.request));
+  } else if (CRITICAL_EXTENSIONS.test(url.pathname)) {
+    event.respondWith(networkFirst(event.request));
   } else {
-    event.respondWith(staleWhileRevalidate(event.request));
+    event.respondWith(cacheFirstMedia(event.request));
   }
 });

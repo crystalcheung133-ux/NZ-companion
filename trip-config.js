@@ -31,8 +31,8 @@
     splashSlogan: 'ADVENTURE AWAITS',
     splashDestination: 'NEW ZEALAND 2026',
     storageNamespace: 'nz-family-2026',
-    version: '1.0',
-    buildLabel: 'RC1 Identity Polish',
+    version: '1.0-rc3.2',
+    buildLabel: 'RC3.2 Mobile Identity Root Cause Fix',
     theme: root.THEME_CONFIG.colors
   });
 
@@ -43,7 +43,8 @@
     const manifest = {
       name: config.tripName,
       short_name: config.shortName,
-      start_url: './index.html',
+      id: './',
+      start_url: './index.html?v=rc3-2',
       scope: './',
       display: 'standalone',
       orientation: 'portrait',

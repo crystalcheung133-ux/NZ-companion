@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         el.textContent='💸 What did we spend?';
       }
     });
-    const title=document.getElementById('expenseModalTitle'); if(title) title.textContent='Add expense';
+    const title=document.getElementById('expenseModalTitle'); if(title) title.textContent='💸 What did we spend?';
     const intro=document.getElementById('expenseIntro'); if(intro) intro.textContent='Record each shared or personal expense. Personal Spend and Settlement update automatically.';
     const save=document.getElementById('expenseSaveButton'); if(save) save.textContent='Save';
   }
