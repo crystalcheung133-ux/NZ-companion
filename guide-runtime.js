@@ -116,9 +116,31 @@ function openGuideCategory(cat){
  closeMiniMenus();$('guideModal').classList.add('show');
 }
 
-function quickInfoInnerHTML(g,key){
- return `<div class="quick-info-top"><span class="category-tag">${g.categoryLabel||g.cat||'Guide'}</span></div><div class="quick-info-grid"><div class="quick-info-row"><span class="quick-info-icon">📍</span><span><span class="quick-info-label">Address</span><span class="quick-info-value">${g.address||'Check before visit'}</span></span></div><div class="quick-info-row"><span class="quick-info-icon">🕘</span><span><span class="quick-info-label">Hours</span><span class="quick-info-value">${g.hours||'Check before visit'}</span></span></div><div class="quick-info-row"><span class="quick-info-icon">💰</span><span><span class="quick-info-label">Price</span><span class="quick-info-value">${g.price||'Varies'}</span></span></div>${visitDayHTML(key)}</div><div class="quick-info-actions"><a class="map-button" href="${g.maps}" target="_blank" rel="noopener">🗺 Open Google Maps</a><button class="moment-button" aria-label="Add Moment" onclick="openMomentsModal('${key}')">✨ Moment</button></div>`;
+function guideStatusHTML(g){
+ const audit=String(g.audit||'');
+ const optionalPattern=/optional|option|alternative|backup|recommended|flexible|weather-dependent/i;
+ const status=(g.status==='optional'||(!g.status&&optionalPattern.test(audit)))?'OPTIONAL':'PLANNED';
+ return `<span class="guide-status guide-status-${status.toLowerCase()}">${status}</span>`;
 }
+function copyGuideAddress(key){
+ const g=PLACES[key]; if(!g?.address)return;
+ const text=`${g.title}\n${g.address}`;
+ const done=()=>{if(typeof showToast==='function')showToast('Address copied');};
+ if(navigator.clipboard?.writeText){navigator.clipboard.writeText(text).then(done).catch(()=>fallbackCopy(text,done));}
+ else fallbackCopy(text,done);
+}
+function fallbackCopy(text,done){const box=document.createElement('textarea');box.value=text;box.setAttribute('readonly','');box.style.position='fixed';box.style.opacity='0';document.body.appendChild(box);box.select();try{document.execCommand('copy');done();}catch(e){}box.remove();}
+function usefulGoodToKnow(items){
+ const generic=[/currently planned/i,/recommended only/i,/optional rather than essential/i,/keep .* flexible/i,/validation build/i];
+ return (items||[]).filter(x=>x&&generic.every(rule=>!rule.test(x)));
+}
+function quickInfoInnerHTML(g,key){
+ const phoneRow=g.phone?`<div class="quick-info-row"><span class="quick-info-icon">☎️</span><span><span class="quick-info-label">Phone</span><span class="quick-info-value">${g.phone}</span></span></div>`:'';
+ const callButton=g.phone?`<a class="utility-button" href="tel:${String(g.phone).replace(/[^+\d]/g,'')}">☎️ Call</a>`:'';
+ const websiteButton=g.website?`<a class="utility-button" href="${g.website}" target="_blank" rel="noopener">🌐 Website</a>`:'';
+ return `<div class="quick-info-top"><span class="category-tag">${g.categoryLabel||g.cat||'Guide'}</span>${guideStatusHTML(g)}</div><div class="quick-info-grid"><div class="quick-info-row"><span class="quick-info-icon">📍</span><span><span class="quick-info-label">Address</span><span class="quick-info-value">${g.address||'Check before visit'}</span></span></div>${phoneRow}<div class="quick-info-row"><span class="quick-info-icon">🕘</span><span><span class="quick-info-label">Hours</span><span class="quick-info-value">${g.hours||'Check before visit'}</span></span></div><div class="quick-info-row"><span class="quick-info-icon">💰</span><span><span class="quick-info-label">Price</span><span class="quick-info-value">${g.price||'Varies'}</span></span></div>${visitDayHTML(key)}</div><div class="quick-info-actions"><button class="utility-button" type="button" onclick="copyGuideAddress('${key}')">📍 Copy Address</button><a class="map-button" href="${g.maps}" target="_blank" rel="noopener">🧭 Navigate</a>${callButton}${websiteButton}<button class="moment-button" aria-label="Add Moment" onclick="openMomentsModal('${key}')">✨ Moment</button></div>`;
+}
+
 function quickInfoHTML(g,key){
  return `<div class="quick-info-card">${quickInfoInnerHTML(g,key)}</div>`;
 }
@@ -127,7 +149,7 @@ function guideNavButtons(key){const idx=GUIDE_ORDER.indexOf(key); if(idx<0)retur
 function openGuideModal(key){
  const g=PLACES[key]; if(!g)return;
  const sig=(g.signature||[]).map(x=>`<li>${x}</li>`).join('');
- const worth=(g.worth||[]).map(x=>`<li>${x}</li>`).join('');
+ const worth=usefulGoodToKnow(g.worth||[]).map(x=>`<li>${x}</li>`).join('');
  $('guideModalContent').innerHTML=`<p class="kicker">Guide</p><h2>${g.emoji} ${g.title}</h2><p><strong>${g.sub}</strong></p>${quickInfoHTML(g,key)}<p>${g.desc}</p>${sig?`<h3>Highlights</h3><ul>${sig}</ul>`:''}${worth?`<h3>Good to Know</h3><ul>${worth}</ul>`:''}${guideNavButtons(key)}`;
  $('guideModal').classList.add('show');
  const sheet=document.querySelector('#guideModal .guide-sheet');
@@ -140,14 +162,14 @@ function renderPlacePage(key){
   const mount = document.getElementById('placeMain');
   if(!g || !mount) return;
   const sig = (g.signature||g.highlights||[]).map(x=>`<li>${x}</li>`).join('');
-  const worth = (g.worth||g.tips||[]).map(x=>`<li>${x}</li>`).join('');
+  const worth = usefulGoodToKnow(g.worth||g.tips||[]).map(x=>`<li>${x}</li>`).join('');
   mount.innerHTML = `
 <button class="place-detail-close" type="button" aria-label="Close place detail" onclick="closePlaceDetail()">×</button>
 <div class="page-hero"><p class="kicker">Guide</p><h1>${g.emoji} ${g.title}</h1><p class="lead">${g.sub||''}</p></div>
 <section aria-label="Quick Info" class="quick-info-card">${quickInfoInnerHTML(g,key)}</section>
 <section class="prose-block guide-overview"><h2>Overview</h2><p>${g.desc||''}</p></section>
 <section class="prose-block"><h2>Highlights</h2><ul>${sig}</ul></section>
-<section class="prose-block"><h2>Good to Know</h2><ul>${worth}</ul></section>`;
+${worth?`<section class="prose-block"><h2>Good to Know</h2><ul>${worth}</ul></section>`:``}`;
   document.title = `${g.title} · ${TRIP_CONFIG.tripName}`;
 }
 
@@ -160,13 +182,13 @@ function renderPlaceGroupPage(keys){
   const cards=clean.map((key,index)=>{
     const g=PLACES[key];
     const sig=(g.signature||g.highlights||[]).map(x=>`<li>${x}</li>`).join('');
-    const worth=(g.worth||g.tips||[]).map(x=>`<li>${x}</li>`).join('');
+    const worth=usefulGoodToKnow(g.worth||g.tips||[]).map(x=>`<li>${x}</li>`).join('');
     return `<article class="place-group-card" id="guide-${key}">
       <div class="page-hero place-group-hero"><p class="kicker">Option ${index+1}</p><h1>${g.emoji} ${g.title}</h1><p class="lead">${g.sub||''}</p></div>
       <section aria-label="Quick Info" class="quick-info-card">${quickInfoInnerHTML(g,key)}</section>
       <section class="prose-block guide-overview"><h2>Overview</h2><p>${g.desc||''}</p></section>
       <section class="prose-block"><h2>Highlights</h2><ul>${sig}</ul></section>
-      <section class="prose-block"><h2>Good to Know</h2><ul>${worth}</ul></section>
+      ${worth?`<section class="prose-block"><h2>Good to Know</h2><ul>${worth}</ul></section>`:``}
     </article>`;
   }).join('');
   mount.innerHTML=`<button class="place-detail-close" type="button" aria-label="Close guide options" onclick="closePlaceDetail()">×</button><div class="page-hero"><p class="kicker">Guide</p><h1>Choose an option</h1><p class="lead">Compare the planned choices, then use Navigate inside the restaurant card you choose.</p></div>${cards}`;

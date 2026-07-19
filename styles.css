@@ -3067,3 +3067,11 @@ body.admin-mode #mamaModal .guide-sheet>h2{opacity:.72}
   .family-name{font-size:14px}
   #splitPickerSummary .family-name{display:none}
 }
+
+/* RC4.5 Guide utility and status polish */
+.quick-info-top{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;flex-wrap:nowrap!important}
+.guide-status{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;flex:0 0 auto;min-width:86px;padding:7px 12px;border-radius:999px;font-size:.75rem;font-weight:900;letter-spacing:.075em;line-height:1}
+.guide-status-planned{background:#dbeee4;color:#235d46;border:1px solid rgba(35,93,70,.22)}
+.guide-status-optional{background:#fff0d6;color:#80561f;border:1px solid rgba(128,86,31,.24)}
+.quick-info-actions .utility-button{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:14px;padding:12px 15px;font:inherit;font-weight:800;line-height:1.15;display:inline-flex;align-items:center;justify-content:center;gap:7px;text-decoration:none;cursor:pointer;box-shadow:0 6px 16px rgba(54,39,24,.055)}
+@media(max-width:600px){.quick-info-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}.quick-info-actions>*{width:100%!important;min-width:0!important}.guide-status{min-width:84px;font-size:.72rem;padding-inline:10px}}
