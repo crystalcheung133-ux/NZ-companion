@@ -31,7 +31,7 @@
     splashSlogan: 'ADVENTURE AWAITS',
     splashDestination: 'NEW ZEALAND 2026',
     storageNamespace: 'nz-family-2026',
-    version: 'RC4.8A',
+    version: 'RC4.8B',
     buildLabel: 'Trip Essentials & Before Trip Checklist',
     theme: root.THEME_CONFIG.colors
   });

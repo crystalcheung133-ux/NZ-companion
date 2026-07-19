@@ -145,11 +145,24 @@ function quickInfoHTML(g,key){
 }
 
 function guideNavButtons(key){const idx=GUIDE_ORDER.indexOf(key); if(idx<0)return ''; const prev=GUIDE_ORDER[(idx-1+GUIDE_ORDER.length)%GUIDE_ORDER.length]; const next=GUIDE_ORDER[(idx+1)%GUIDE_ORDER.length]; return `<div class="guide-next-row"><button class="pill" onclick="openGuideModal('${prev}')">‹ Previous</button><button class="pill" onclick="openGuideModal('${next}')">Next ›</button></div>`;}
+
+function suggestedItems(g){
+ const items=(g.signature||g.highlights||[]);
+ return items.map(x=>String(x)).filter(x=>/^TRY\s*[·:]/i.test(x)).map(x=>x.replace(/^TRY\s*[·:]\s*/i,''));
+}
+function criticalGuideNotes(g){
+ const rules=/booking|book ahead|sell out|last entry|last order|queue|check-in|reception|closed|closure|fuel|height|age restriction|weather|road condition|mobile reception|no petrol|arrive early|order timing/i;
+ return usefulGoodToKnow(g.worth||g.tips||[]).filter(x=>rules.test(x));
+}
+function compactGuideSections(g){
+ const suggested=suggestedItems(g).map(x=>`<li>${x}</li>`).join('');
+ const notes=criticalGuideNotes(g).map(x=>`<li>${x}</li>`).join('');
+ return `${suggested?`<h3>Suggested Dishes</h3><ul>${suggested}</ul>`:''}${notes?`<h3>Practical</h3><ul>${notes}</ul>`:''}`;
+}
+
 function openGuideModal(key){
  const g=PLACES[key]; if(!g)return;
- const sig=(g.signature||[]).map(x=>`<li>${x}</li>`).join('');
- const worth=usefulGoodToKnow(g.worth||[]).map(x=>`<li>${x}</li>`).join('');
- $('guideModalContent').innerHTML=`<p class="kicker">Guide</p><h2>${g.emoji} ${g.title}</h2><p><strong>${g.sub}</strong></p>${quickInfoHTML(g,key)}<p>${g.desc}</p>${sig?`<h3>Highlights</h3><ul>${sig}</ul>`:''}${worth?`<h3>Good to Know</h3><ul>${worth}</ul>`:''}${guideNavButtons(key)}`;
+ $('guideModalContent').innerHTML=`<p class="kicker">Guide</p><h2>${g.emoji} ${g.title}</h2><p><strong>${g.sub}</strong></p>${quickInfoHTML(g,key)}<p>${g.desc}</p>${compactGuideSections(g)}${guideNavButtons(key)}`;
  $('guideModal').classList.add('show');
  const sheet=document.querySelector('#guideModal .guide-sheet');
  if(sheet) sheet.scrollTop=0;
@@ -160,15 +173,12 @@ function renderPlacePage(key){
   const g = PLACES[key];
   const mount = document.getElementById('placeMain');
   if(!g || !mount) return;
-  const sig = (g.signature||g.highlights||[]).map(x=>`<li>${x}</li>`).join('');
-  const worth = usefulGoodToKnow(g.worth||g.tips||[]).map(x=>`<li>${x}</li>`).join('');
   mount.innerHTML = `
 <button class="place-detail-close" type="button" aria-label="Close place detail" onclick="closePlaceDetail()">×</button>
 <div class="page-hero"><p class="kicker">Guide</p><h1>${g.emoji} ${g.title}</h1><p class="lead">${g.sub||''}</p></div>
 <section aria-label="Quick Info" class="quick-info-card">${quickInfoInnerHTML(g,key)}</section>
 <section class="prose-block guide-overview"><h2>Overview</h2><p>${g.desc||''}</p></section>
-<section class="prose-block"><h2>Highlights</h2><ul>${sig}</ul></section>
-${worth?`<section class="prose-block"><h2>Good to Know</h2><ul>${worth}</ul></section>`:``}`;
+${compactGuideSections(g)}`;
   document.title = `${g.title} · ${TRIP_CONFIG.tripName}`;
 }
 
@@ -180,14 +190,11 @@ function renderPlaceGroupPage(keys){
   if(clean.length===1){ renderPlacePage(clean[0]); return; }
   const cards=clean.map((key,index)=>{
     const g=PLACES[key];
-    const sig=(g.signature||g.highlights||[]).map(x=>`<li>${x}</li>`).join('');
-    const worth=usefulGoodToKnow(g.worth||g.tips||[]).map(x=>`<li>${x}</li>`).join('');
     return `<article class="place-group-card" id="guide-${key}">
       <div class="page-hero place-group-hero"><p class="kicker">Option ${index+1}</p><h1>${g.emoji} ${g.title}</h1><p class="lead">${g.sub||''}</p></div>
       <section aria-label="Quick Info" class="quick-info-card">${quickInfoInnerHTML(g,key)}</section>
       <section class="prose-block guide-overview"><h2>Overview</h2><p>${g.desc||''}</p></section>
-      <section class="prose-block"><h2>Highlights</h2><ul>${sig}</ul></section>
-      ${worth?`<section class="prose-block"><h2>Good to Know</h2><ul>${worth}</ul></section>`:``}
+      ${compactGuideSections(g)}
     </article>`;
   }).join('');
   mount.innerHTML=`<button class="place-detail-close" type="button" aria-label="Close guide options" onclick="closePlaceDetail()">×</button><div class="page-hero"><p class="kicker">Guide</p><h1>Choose an option</h1><p class="lead">Compare the planned choices, then use Navigate inside the restaurant card you choose.</p></div>${cards}`;

@@ -61,7 +61,7 @@ function toggleDays(){toggleMenu('daysMenu',document.querySelector('.days-trigge
 function reopenTripMenu(){requestAnimationFrame(()=>openMiniMenu('tripMenu',document.querySelector('.trip-trigger')));}
 function reopenGuideMenu(){requestAnimationFrame(()=>openMiniMenu('guideMenu',document.querySelector('.guide-trigger')));}
 window.addEventListener('resize',closeMiniMenus);
-document.addEventListener('click',e=>{if(!e.target.closest('.mini-menu')&&!e.target.closest('.trip-trigger')&&!e.target.closest('.guide-trigger')&&!e.target.closest('.days-trigger')) closeMiniMenus();});
+document.addEventListener('click',e=>{if(!e.target.closest('.mini-menu')&&!e.target.closest('.trip-modal')&&!e.target.closest('.trip-trigger')&&!e.target.closest('.guide-trigger')&&!e.target.closest('.days-trigger')) closeMiniMenus();});
 document.addEventListener('DOMContentLoaded',()=>{
   if(location.hash==='#open-guide'){
     history.replaceState(null,'',location.pathname+location.search);
