@@ -1,0 +1,13 @@
+{
+  "version": "RC5.0",
+  "status": "PASS",
+  "checks": {
+    "trip_menus_with_checklist": 8,
+    "native_share_api": true,
+    "clipboard_fallback": true,
+    "javascript_files_checked": 26,
+    "service_worker_literal_assets_checked": 36,
+    "html_files_checked": 10
+  },
+  "issues": []
+}

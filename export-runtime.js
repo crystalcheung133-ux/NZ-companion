@@ -1,4 +1,4 @@
-/* Travel Engine v1.0 — Stage 8C Shareable Itinerary Export. */
+/* Travel Engine v1.0 — RC5.0 Native Share & Preparation Checklist. */
 (function(){
   'use strict';
   const ADMIN_USER='lee';
@@ -25,13 +25,60 @@
   function buildModal(){
     if(document.getElementById('tripExportModal'))return;
     const modal=document.createElement('div');modal.id='tripExportModal';modal.className='trip-export-modal';modal.setAttribute('aria-hidden','true');
-    modal.innerHTML=`<div class="trip-export-sheet" role="dialog" aria-modal="true" aria-labelledby="tripExportTitle"><button class="trip-export-close" type="button" onclick="closeTripExportCenter()" aria-label="Close">×</button><p class="kicker">POST-TRIP OUTPUTS</p><h2 id="tripExportTitle">Export Trip</h2><p class="lead">Create a clean itinerary you can keep or share with friends.</p><div class="trip-export-list"><button type="button" onclick="exportFinalItinerary()"><span class="trip-export-icon">📄</span><span><strong>Shareable Itinerary</strong><small>Addresses, notes and any changed plans.</small></span><span>›</span></button><button type="button" onclick="exportExpenseSummary()"><span class="trip-export-icon">💰</span><span><strong>Expense Summary</strong><small>Download the complete expense and settlement CSV.</small></span><span>›</span></button><button type="button" class="coming-soon" disabled><span class="trip-export-icon">📖</span><span><strong>Memory Book</strong><small>Coming Soon</small></span></button></div></div>`;
+    modal.innerHTML=`<div class="trip-export-sheet" role="dialog" aria-modal="true" aria-labelledby="tripExportTitle"><button class="trip-export-close" type="button" onclick="closeTripExportCenter()" aria-label="Close">×</button><p class="kicker">TRIP OUTPUTS</p><h2 id="tripExportTitle">Export Trip</h2><p class="lead">Share through the iPhone or Android share sheet, or create a printable copy.</p><div class="trip-export-list"><button type="button" onclick="shareItineraryNative()"><span class="trip-export-icon">📤</span><span><strong>Share Itinerary</strong><small>Open WhatsApp, Mail, Messages, AirDrop and other apps.</small></span><span>›</span></button><button type="button" onclick="exportFinalItinerary()"><span class="trip-export-icon">📄</span><span><strong>Printable Itinerary</strong><small>Open a clean copy and save it as PDF.</small></span><span>›</span></button><button type="button" onclick="exportExpenseSummary()"><span class="trip-export-icon">💰</span><span><strong>Expense Summary</strong><small>Download the complete expense and settlement CSV.</small></span><span>›</span></button><button type="button" class="coming-soon" disabled><span class="trip-export-icon">📖</span><span><strong>Memory Book</strong><small>Coming Soon</small></span></button></div></div>`;
     modal.addEventListener('click',event=>{if(event.target===modal)closeTripExportCenter();});document.body.appendChild(modal);
   }
   function render(){buildControl();buildModal();const control=document.getElementById('tripExportControl');if(control)control.hidden=!isExportAdmin();if(!isExportAdmin())closeTripExportCenter();}
   window.openTripExportCenter=function(){if(!isExportAdmin())return alert('Enter Admin Mode to export the trip.');if(typeof closeFriendModal==='function')closeFriendModal();buildModal();const modal=document.getElementById('tripExportModal');modal.classList.add('open');modal.setAttribute('aria-hidden','false');};
   window.closeTripExportCenter=function(){const modal=document.getElementById('tripExportModal');if(!modal)return;modal.classList.remove('open');modal.setAttribute('aria-hidden','true');};
   window.exportExpenseSummary=function(){if(!isExportAdmin())return alert('Enter Admin Mode to export the trip.');if(typeof window.exportExpenseData!=='function')return alert('Expense export is not available on this page.');window.exportExpenseData();returnToTripStudio();};
+
+  function itineraryShareText(){
+    const source=(typeof ITINERARY_DATA!=='undefined'?ITINERARY_DATA:{});
+    const days=Object.keys(source).sort((a,b)=>Number(a)-Number(b));
+    const changedPlans=readObject(CHANGED_PLAN_KEY);
+    const lines=[];
+    days.forEach(dayNo=>{
+      const day=source[dayNo]||{};
+      lines.push(`${day.kicker||`Day ${dayNo}`} — ${day.heading||day.title||''}`);
+      const drive=day.drive||{};
+      if(drive.route) lines.push(`Drive: ${drive.route}${drive.distance?` · ${drive.distance}`:''}${drive.drivingTime?` · ${drive.drivingTime}`:''}`);
+      currentItems(dayNo,day).forEach(item=>{
+        lines.push(`${item.time?item.time+' ':''}${item.title||''}`.trim());
+        (Array.isArray(item.details)?item.details:[]).forEach(detail=>lines.push(`  ${detail}`));
+        const changed=changedPlans[String(item.id||'')];
+        if(changed&&changed.instead) lines.push(`  Changed plan: ${changed.instead}`);
+      });
+      lines.push('');
+    });
+    return lines.join('\n').trim();
+  }
+  window.shareItineraryNative=async function(){
+    if(!isExportAdmin())return alert('Enter Admin Mode to share the trip.');
+    const title=(window.TRIP_CONFIG&&TRIP_CONFIG.tripName)||'Trip Itinerary';
+    const text=itineraryShareText();
+    if(!text)return alert('No itinerary data is available.');
+    try{
+      if(navigator.share){
+        const filename=String(title).replace(/[^a-z0-9]+/gi,'_').replace(/^_+|_+$/g,'')+'_Itinerary.txt';
+        const file=new File([text],filename,{type:'text/plain'});
+        if(navigator.canShare&&navigator.canShare({files:[file]})) await navigator.share({title,text:`${title} itinerary`,files:[file]});
+        else await navigator.share({title,text});
+        closeTripExportCenter();
+        return;
+      }
+      if(navigator.clipboard&&navigator.clipboard.writeText){
+        await navigator.clipboard.writeText(text);
+        alert('Itinerary copied. Paste it into WhatsApp, Mail or Messages.');
+        closeTripExportCenter();
+        return;
+      }
+      const area=document.createElement('textarea');area.value=text;area.setAttribute('readonly','');area.style.position='fixed';area.style.opacity='0';document.body.appendChild(area);area.select();document.execCommand('copy');area.remove();alert('Itinerary copied. Paste it into WhatsApp, Mail or Messages.');closeTripExportCenter();
+    }catch(error){
+      if(error&&error.name==='AbortError')return;
+      alert('Sharing is not available right now. Use Printable Itinerary instead.');
+    }
+  };
 
   window.exportFinalItinerary=function(){
     if(!isExportAdmin())return alert('Enter Admin Mode to export the trip.');
