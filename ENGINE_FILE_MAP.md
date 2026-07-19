@@ -131,3 +131,13 @@ Stage 7M module ownership remains frozen. New features must be added to their ow
 - `admin.js` owns the six-digit PIN gate and session-scoped Admin unlock.
 - `complete-runtime.js` exposes Complete/Reopen only while Lee is actively in Admin Mode.
 - `expenses.js` exposes and permits expense export only while Lee is actively in Admin Mode.
+
+## Stage 9A-2 Supabase Read Sync
+
+- `sync-config.js` owns browser-safe Supabase connection settings and publication identifiers.
+- `sync-runtime.js` owns read-only fetch, validation, cache fallback, version detection and dataset hydration.
+- `data.js` remains the bundled canonical fallback and applies a validated cached publication before render.
+- `trip-runtime.js` exposes the active sync/data status in the existing Trip build line.
+- No Admin, Expenses or Moments writes are part of this stage.
+
+- `publication-runtime.js` — builds the next read-only cloud publication payload and downloads a safe SQL insert from Trip Studio.

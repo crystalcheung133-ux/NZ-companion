@@ -3086,3 +3086,9 @@ body.admin-mode #mamaModal .guide-sheet>h2{opacity:.72}
 
 /* RC4.8B content utility cleanup */
 .stay-booking-list{display:grid;gap:12px}.stay-booking{padding:15px;border:1px solid var(--surface-border);border-radius:18px;background:#fffaf2}.stay-booking .trip-action-row{margin-bottom:0}.trip-modal.show~#tripMenu.show{}
+
+/* RC5.3 — Stage 9B-1 safe cloud publication builder */
+.trip-studio-action{width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;border:1px solid rgba(18,70,83,.18);border-radius:16px;background:#fff;padding:14px 15px;text-align:left;font:inherit;color:inherit;box-shadow:0 5px 14px rgba(26,62,68,.06);cursor:pointer}
+.trip-studio-action span:first-child{display:grid;gap:3px}.trip-studio-action strong{font-weight:800}.trip-studio-action small{font-weight:650;line-height:1.35;color:rgba(23,49,56,.7)}
+.trip-studio-action span:last-child{font-size:1.35rem}.trip-studio-action:disabled{opacity:.62;cursor:wait}.trip-studio-action[hidden]{display:none!important}
+.publication-prepare-btn{margin-top:10px}
