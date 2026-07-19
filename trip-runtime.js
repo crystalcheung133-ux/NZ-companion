@@ -14,19 +14,34 @@ function compactEmergencyHTML(html){
     [...grid.querySelectorAll(':scope > .fact')].forEach((fact,index)=>{
       fact.classList.add('emergency-row');
       if(gridIndex===0&&index===0)fact.classList.add('emergency-primary');
-      const actions=fact.querySelector('.trip-action-row');
-      if(actions)actions.classList.add('emergency-actions');
-      [...fact.querySelectorAll('a[href^="tel:"]')].forEach(link=>{
-        link.classList.add('emergency-call');
-        const number=(link.getAttribute('href')||'').replace(/^tel:/,'');
-        const visible=(link.textContent||'').trim();
-        const label=/\d/.test(visible)?visible:(gridIndex===0&&index<2?'Call '+number:'Call');
-        link.innerHTML=`<span aria-hidden="true">☎</span><span>${label}</span>`;
+
+      const title=fact.querySelector(':scope > strong');
+      const titleHTML=title?title.outerHTML:'';
+      const actionLinks=[...fact.querySelectorAll('a')].map(link=>link.cloneNode(true));
+      const contentClone=fact.cloneNode(true);
+      contentClone.querySelectorAll('strong,a,.trip-action-row').forEach(node=>node.remove());
+      const detailHTML=contentClone.innerHTML
+        .replace(/^(\s|<br\s*\/?\s*>)+|((\s|<br\s*\/?\s*>)+)$/gi,'')
+        .trim();
+
+      const actions=document.createElement('div');
+      actions.className='emergency-actions';
+      actionLinks.forEach(link=>{
+        if((link.getAttribute('href')||'').startsWith('tel:')){
+          link.classList.add('emergency-call');
+          const number=(link.getAttribute('href')||'').replace(/^tel:/,'');
+          const visible=(link.textContent||'').trim();
+          const label=/\d/.test(visible)?visible:(gridIndex===0&&index<2?'Call '+number:'Call');
+          link.innerHTML=`<span aria-hidden="true">☎</span><span>${label}</span>`;
+        }else if((link.getAttribute('href')||'').includes('maps.google')){
+          link.classList.add('emergency-navigate');
+          link.innerHTML='<span aria-hidden="true">↗</span><span>Navigate</span>';
+        }
+        actions.appendChild(link);
       });
-      [...fact.querySelectorAll('a[href*="maps.google"]')].forEach(link=>{
-        link.classList.add('emergency-navigate');
-        link.innerHTML='<span aria-hidden="true">↗</span><span>Navigate</span>';
-      });
+
+      fact.innerHTML=`<div class="emergency-copy">${titleHTML}${detailHTML?`<div class="emergency-details">${detailHTML}</div>`:''}</div>`;
+      if(actions.children.length)fact.appendChild(actions);
     });
   });
   return wrapper.outerHTML;
@@ -39,6 +54,7 @@ function tripSyncSummary(){
 }
 
 function openTripCard(key) {
+  closeMiniMenus();
   const t = TRIP_DATA[key];
   if (!t) return;
   const idx = TRIP_ORDER.indexOf(key);
@@ -58,6 +74,10 @@ function openTripCard(key) {
 function closeTripModal() {
   const modal = document.getElementById('tripModal');
   if (modal) modal.classList.remove('show');
+  const guideModal=document.getElementById('guideModal');
+  if(guideModal) guideModal.classList.remove('show');
+  closeMiniMenus();
+  document.body.classList.remove('admin-overlay-open');
 }
 
 

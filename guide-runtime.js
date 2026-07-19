@@ -93,11 +93,11 @@ function openGuideCategory(cat){
  const list=(CATEGORIES[cat]||[]).slice().sort((a,b)=>String(a.title||'').localeCompare(String(b.title||'')));
  if(cat==='SHOP'){
   const directoryRow=`<button onclick="openShoppingDirectoryView()"><span><span class="guide-list-title">🛍 Shopping Directory</span><span class="guide-list-sub">Optional shops · Near · Best with Day</span></span><span>↓</span></button>`;
-  const rows=directoryRow+list.map(i=>`<button onclick="goPlace('${i.key}')"><span><span class="guide-list-title">${i.emoji} ${i.title}</span><span class="guide-list-sub">${i.sub||''}</span></span><span class="guide-list-meta">${guideStatusHTML(PLACES[i.key]||{})}<span class="guide-list-chevron">›</span></span></button>`).join('');
+  const rows=directoryRow+list.map(i=>`<button onclick="openGuideModal('${i.key}')"><span><span class="guide-list-title">${i.emoji} ${i.title}</span><span class="guide-list-sub">${i.sub||''}</span></span><span class="guide-list-meta">${guideStatusHTML(PLACES[i.key]||{})}<span class="guide-list-chevron">›</span></span></button>`).join('');
   $('guideModalContent').innerHTML=`<p class="kicker">Guide</p><h2>SHOP</h2><div class="category-pop-list">${rows}</div>`;
   closeMiniMenus();$('guideModal').classList.add('show');return;
  }
- const rows=list.map(i=>`<button onclick="goPlace('${i.key}')"><span><span class="guide-list-title">${i.emoji} ${i.title}</span><span class="guide-list-sub">${i.sub||''}</span></span><span class="guide-list-meta">${guideStatusHTML(PLACES[i.key]||{})}<span class="guide-list-chevron">›</span></span></button>`).join('');
+ const rows=list.map(i=>`<button onclick="openGuideModal('${i.key}')"><span><span class="guide-list-title">${i.emoji} ${i.title}</span><span class="guide-list-sub">${i.sub||''}</span></span><span class="guide-list-meta">${guideStatusHTML(PLACES[i.key]||{})}<span class="guide-list-chevron">›</span></span></button>`).join('');
  $('guideModalContent').innerHTML=`<p class="kicker">Guide</p><h2>${cat}</h2><div class="category-pop-list">${rows}</div>`;
  closeMiniMenus();$('guideModal').classList.add('show');
 }
@@ -177,7 +177,15 @@ function openGuideModal(key){
  const sheet=document.querySelector('#guideModal .guide-sheet');
  if(sheet) sheet.scrollTop=0;
 }
-function closeGuideModal(){$('guideModal').classList.remove('show');clearGuideNavigationContext()}
+function closeGuideModal(){
+ const modal=$('guideModal');
+ if(modal)modal.classList.remove('show');
+ const tripModal=$('tripModal');
+ if(tripModal)tripModal.classList.remove('show');
+ closeMiniMenus();
+ document.body.classList.remove('admin-overlay-open');
+ clearGuideNavigationContext();
+}
 
 function renderPlacePage(key){
   const g = PLACES[key];
