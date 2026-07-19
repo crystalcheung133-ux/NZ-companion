@@ -41,17 +41,36 @@ function positionMiniMenu(menu,trigger){
   menu.style.right='auto';
   menu.style.width=menuWidth+'px';
 }
+function openMiniMenu(id,trigger){
+  const m=$(id);
+  if(!m)return;
+  closeMiniMenus();
+  positionMiniMenu(m,trigger||document.activeElement);
+  m.classList.add('show');
+  document.body.classList.add('admin-overlay-open');
+}
 function toggleMenu(id,trigger){
   const m=$(id);
   const open=m&&m.classList.contains('show');
   closeMiniMenus();
-  if(m&&!open){positionMiniMenu(m,trigger||document.activeElement);m.classList.add('show');document.body.classList.add('admin-overlay-open');}
+  if(m&&!open)openMiniMenu(id,trigger);
 }
 function toggleTripMenu(){toggleMenu('tripMenu',document.querySelector('.trip-trigger'));}
 function toggleGuideMenu(){toggleMenu('guideMenu',document.querySelector('.guide-trigger'));}
 function toggleDays(){toggleMenu('daysMenu',document.querySelector('.days-trigger'));}
+function reopenTripMenu(){requestAnimationFrame(()=>openMiniMenu('tripMenu',document.querySelector('.trip-trigger')));}
+function reopenGuideMenu(){requestAnimationFrame(()=>openMiniMenu('guideMenu',document.querySelector('.guide-trigger')));}
 window.addEventListener('resize',closeMiniMenus);
 document.addEventListener('click',e=>{if(!e.target.closest('.mini-menu')&&!e.target.closest('.trip-trigger')&&!e.target.closest('.guide-trigger')&&!e.target.closest('.days-trigger')) closeMiniMenus();});
+document.addEventListener('DOMContentLoaded',()=>{
+  if(location.hash==='#open-guide'){
+    history.replaceState(null,'',location.pathname+location.search);
+    reopenGuideMenu();
+  }else if(location.hash==='#open-trip'){
+    history.replaceState(null,'',location.pathname+location.search);
+    reopenTripMenu();
+  }
+});
 
 function getFriend(){return STORAGE.local.get(STORAGE_CONFIG.keys.friend,'lee');}
 function setFriend(k){
@@ -78,16 +97,21 @@ function openFriendModal(){renderFriendChoices();$('mamaModal').classList.add('s
 
 
 
-/* v2.1.11 safe modal close fallback */
+/* Context-aware modal close fallback. */
 document.addEventListener('click', function(e){
   const modal = e.target.closest('.guide-modal,.moments-modal,.unexpected-modal,.tools-modal,.mama-modal,.trip-modal');
-  if(modal && e.target === modal){
-    modal.classList.remove('show');
-  }
+  if(!modal || e.target !== modal) return;
+  if(modal.id==='tripModal' && typeof closeTripModal==='function') closeTripModal();
+  else if(modal.id==='guideModal' && typeof closeGuideModal==='function') closeGuideModal();
+  else modal.classList.remove('show');
 });
 document.addEventListener('keydown', function(e){
   if(e.key === 'Escape'){
-    document.querySelectorAll('.guide-modal,.moments-modal,.unexpected-modal,.tools-modal,.mama-modal,.trip-modal').forEach(m=>m.classList.remove('show'));
+    const tripModal=document.getElementById('tripModal');
+    const guideModal=document.getElementById('guideModal');
+    if(tripModal?.classList.contains('show') && typeof closeTripModal==='function') closeTripModal();
+    else if(guideModal?.classList.contains('show') && typeof closeGuideModal==='function') closeGuideModal();
+    else document.querySelectorAll('.moments-modal,.unexpected-modal,.tools-modal,.mama-modal').forEach(m=>m.classList.remove('show'));
   }
 });
 

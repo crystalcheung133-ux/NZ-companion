@@ -26,7 +26,7 @@
       shoppingDirectory: 'shopping-directory'
     }),
     fallback: Object.freeze({
-      placeClose: 'guide',
+      placeClose: 'home',
       unknown: 'home'
     }),
     permittedReturnPages: Object.freeze([

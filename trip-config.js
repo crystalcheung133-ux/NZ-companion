@@ -31,8 +31,8 @@
     splashSlogan: 'ADVENTURE AWAITS',
     splashDestination: 'NEW ZEALAND 2026',
     storageNamespace: 'nz-family-2026',
-    version: '1.0-rc4.6',
-    buildLabel: 'RC4.6 Guide List Status & PWA Cold Launch Fix',
+    version: '1.0-rc4.7',
+    buildLabel: 'RC4.7 Context Navigation & Trip Return Flow',
     theme: root.THEME_CONFIG.colors
   });
 
@@ -44,7 +44,7 @@
       name: config.tripName,
       short_name: config.shortName,
       id: './',
-      start_url: './index.html?v=rc4-6&source=pwa',
+      start_url: './index.html?v=rc4-7&source=pwa',
       scope: './',
       display: 'standalone',
       orientation: 'portrait',

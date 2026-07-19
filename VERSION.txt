@@ -1,1 +1,1 @@
-NZ Companion RC4.6 — Guide List Status + PWA Cold Launch Fix
+NZ Companion RC4.7 — Context Navigation & Trip Return Flow

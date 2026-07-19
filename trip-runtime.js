@@ -23,6 +23,7 @@ function openTripCard(key) {
 function closeTripModal() {
   const modal = document.getElementById('tripModal');
   if (modal) modal.classList.remove('show');
+  if(typeof reopenTripMenu==='function') setTimeout(reopenTripMenu,0);
 }
 
 
