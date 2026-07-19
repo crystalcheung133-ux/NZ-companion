@@ -3087,8 +3087,35 @@ body.admin-mode #mamaModal .guide-sheet>h2{opacity:.72}
 /* RC4.8B content utility cleanup */
 .stay-booking-list{display:grid;gap:12px}.stay-booking{padding:15px;border:1px solid var(--surface-border);border-radius:18px;background:#fffaf2}.stay-booking .trip-action-row{margin-bottom:0}.trip-modal.show~#tripMenu.show{}
 
-/* RC5.3 — Stage 9B-1 safe cloud publication builder */
+/* RC5.4 — Stage 9B-1 safe cloud publication builder */
 .trip-studio-action{width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;border:1px solid rgba(18,70,83,.18);border-radius:16px;background:#fff;padding:14px 15px;text-align:left;font:inherit;color:inherit;box-shadow:0 5px 14px rgba(26,62,68,.06);cursor:pointer}
 .trip-studio-action span:first-child{display:grid;gap:3px}.trip-studio-action strong{font-weight:800}.trip-studio-action small{font-weight:650;line-height:1.35;color:rgba(23,49,56,.7)}
 .trip-studio-action span:last-child{font-size:1.35rem}.trip-studio-action:disabled{opacity:.62;cursor:wait}.trip-studio-action[hidden]{display:none!important}
 .publication-prepare-btn{margin-top:10px}
+
+
+/* RC5.4 — origin-close navigation, category browsing and mobile Emergency density */
+.guide-browse-meta{text-align:center;margin:16px 0 -8px;font-size:12px;font-weight:850;letter-spacing:.08em;color:var(--muted)}
+.guide-next-row .pill:disabled{opacity:.38;cursor:default;box-shadow:none}
+.trip-build-summary{text-align:center;margin-top:14px!important}
+.emergency-compact .emergency-list{display:grid;grid-template-columns:1fr;gap:8px;margin:10px 0 18px}
+.emergency-compact .emergency-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:10px;row-gap:4px;padding:12px 13px;border:1px solid var(--surface-border);border-radius:16px;background:#fffaf2;box-shadow:none}
+.emergency-compact .emergency-row>strong{grid-column:1;display:block;margin:0;font-size:15px;line-height:1.2}
+.emergency-compact .emergency-row>br{display:none}
+.emergency-compact .emergency-row>.emergency-call{grid-column:2;grid-row:1 / span 3;align-self:center}
+.emergency-compact .emergency-actions{grid-column:1 / -1;display:flex;justify-content:flex-end;gap:7px;margin:5px 0 0}
+.emergency-compact .emergency-actions .emergency-call{grid-column:auto;grid-row:auto}
+.emergency-compact .emergency-call,.emergency-compact .emergency-navigate{min-height:36px!important;padding:7px 10px!important;border-radius:999px!important;font-size:12px!important;font-weight:850!important;white-space:nowrap}
+.emergency-compact .emergency-primary{padding:15px;border-color:rgba(190,55,45,.34);background:rgba(255,247,244,.96)}
+.emergency-compact .emergency-primary>strong{font-size:17px}
+.emergency-compact .emergency-primary>.emergency-call{min-height:44px!important;padding:10px 14px!important;font-size:14px!important}
+.emergency-compact h3{margin:18px 0 8px}
+@media(max-width:760px){
+  .trip-onepage-emergency .fact-grid{grid-template-columns:1fr!important}
+  .trip-onepage-emergency .trip-sheet,.trip-onepage-emergency{font-size:14px}
+  .emergency-compact .emergency-row{padding:10px 11px}
+  .emergency-compact .emergency-row>strong{font-size:14px}
+  .emergency-compact .emergency-primary>strong{font-size:16px}
+  .emergency-compact .emergency-actions{margin-top:3px}
+  .trip-onepage-emergency .guide-next-row{margin-top:10px!important}
+}

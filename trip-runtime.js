@@ -3,6 +3,41 @@ function saveChecklist(){const checks=[...document.querySelectorAll('[data-check
 function loadChecklist(){const stored=STORAGE.local.readJSON(STORAGE_CONFIG.keys.checklist,[]);document.querySelectorAll('[data-check]').forEach((c,i)=>c.checked=!!stored[i]);saveChecklist();}
 document.addEventListener('DOMContentLoaded',()=>{updateFriendLabels();renderMoments();renderUnexpected();renderExpenses();loadChecklist();renderDashboard();});
 
+
+function compactEmergencyHTML(html){
+  const wrapper=document.createElement('div');
+  wrapper.innerHTML=html||'';
+  wrapper.classList.add('emergency-compact');
+  const grids=[...wrapper.querySelectorAll('.emergency-grid')];
+  grids.forEach((grid,gridIndex)=>{
+    grid.classList.add('emergency-list');
+    [...grid.querySelectorAll(':scope > .fact')].forEach((fact,index)=>{
+      fact.classList.add('emergency-row');
+      if(gridIndex===0&&index===0)fact.classList.add('emergency-primary');
+      const actions=fact.querySelector('.trip-action-row');
+      if(actions)actions.classList.add('emergency-actions');
+      [...fact.querySelectorAll('a[href^="tel:"]')].forEach(link=>{
+        link.classList.add('emergency-call');
+        const number=(link.getAttribute('href')||'').replace(/^tel:/,'');
+        const visible=(link.textContent||'').trim();
+        const label=/\d/.test(visible)?visible:(gridIndex===0&&index<2?'Call '+number:'Call');
+        link.innerHTML=`<span aria-hidden="true">☎</span><span>${label}</span>`;
+      });
+      [...fact.querySelectorAll('a[href*="maps.google"]')].forEach(link=>{
+        link.classList.add('emergency-navigate');
+        link.innerHTML='<span aria-hidden="true">↗</span><span>Navigate</span>';
+      });
+    });
+  });
+  return wrapper.outerHTML;
+}
+function tripSyncSummary(){
+  const state=(typeof TRIP_SYNC!=='undefined'&&TRIP_SYNC.getState)?TRIP_SYNC.getState():null;
+  const status=(typeof TRIP_SYNC!=='undefined'&&TRIP_SYNC.statusLabel)?TRIP_SYNC.statusLabel():'Local data';
+  const version=state&&Number.isFinite(Number(state.remoteVersion))?' · Version '+Number(state.remoteVersion):'';
+  return `${TRIP_CONFIG.version} · ${status}${version}`;
+}
+
 function openTripCard(key) {
   const t = TRIP_DATA[key];
   if (!t) return;
@@ -12,7 +47,8 @@ function openTripCard(key) {
   const content = document.getElementById('tripModalContent');
   const modal = document.getElementById('tripModal');
   if (!content || !modal) return;
-  content.innerHTML = `<div class="trip-onepage"><p class="kicker">Trip</p><h2>${t.title}</h2>${t.body}<div class="guide-next-row"><button class="pill" onclick="openTripCard('${prev}')">‹ Previous</button><button class="pill" onclick="openTripCard('${next}')">Next ›</button></div><p class="timestamp">Build · Version ${TRIP_CONFIG.version} · ${TRIP_CONFIG.buildLabel}<br>Data · ${typeof TRIP_SYNC!=='undefined'&&TRIP_SYNC.statusLabel?TRIP_SYNC.statusLabel():'Local data'}</p></div>`;
+  const body=key==='emergency'?compactEmergencyHTML(t.body):t.body;
+  content.innerHTML = `<div class="trip-onepage trip-onepage-${key}"><p class="kicker">Trip</p><h2>${t.title}</h2>${body}<div class="guide-next-row"><button class="pill" onclick="openTripCard('${prev}')">‹ Previous</button><button class="pill" onclick="openTripCard('${next}')">Next ›</button></div><p class="timestamp trip-build-summary">${tripSyncSummary()}</p></div>`;
   modal.classList.add('show');
   const sheet=document.querySelector('#tripModal .trip-sheet');
   if(sheet) sheet.scrollTop=0;

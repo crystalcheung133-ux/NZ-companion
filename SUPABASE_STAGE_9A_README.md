@@ -65,5 +65,5 @@ The SQL/RLS setup remains the one in `SUPABASE_STAGE_9A_SETUP.sql`.
 RC5.2 is configured for the existing Supabase project and automatically checks `trip_publications` on launch. If the table has no matching publication, the bundled trip remains active.
 
 
-## RC5.3 safe publication workflow
+## RC5.4 safe publication workflow
 Trip Studio can now prepare the next immutable publication as a SQL file. The browser does not write with the public key. Save Admin changes, choose **Prepare Cloud Publication**, then run the downloaded SQL in Supabase SQL Editor.

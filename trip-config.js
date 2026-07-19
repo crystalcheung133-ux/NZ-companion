@@ -31,8 +31,8 @@
     splashSlogan: 'ADVENTURE AWAITS',
     splashDestination: 'NEW ZEALAND 2026',
     storageNamespace: 'nz-family-2026',
-    version: 'RC5.3',
-    buildLabel: 'Supabase Read Sync',
+    version: 'RC5.4',
+    buildLabel: 'Navigation & Emergency UX',
     theme: root.THEME_CONFIG.colors
   });
 
@@ -44,7 +44,7 @@
       name: config.tripName,
       short_name: config.shortName,
       id: './',
-      start_url: './index.html?v=rc5-3&source=pwa',
+      start_url: './index.html?v=rc5-4&source=pwa',
       scope: './',
       display: 'standalone',
       orientation: 'portrait',

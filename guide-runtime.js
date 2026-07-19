@@ -61,26 +61,13 @@ function goPlace(key){
 }
 function closePlaceDetail(){
   const context=readGuideNavigationContext();
-  if(context?.category&&context?.sourceUrl){
-    if(context.sourceType!=='day'){
-      try{STORAGE.session.set(GUIDE_NAV_REOPEN_KEY,context.category);}catch(e){}
-    }else{
-      try{STORAGE.session.remove(GUIDE_NAV_CONTEXT_KEY);}catch(e){}
-    }
-    NAVIGATION.go(NAVIGATION.permittedReturnTarget(context.sourceUrl,NAVIGATION_CONFIG.fallback.placeClose));
-    return;
-  }
-  NAVIGATION.goPage(NAVIGATION_CONFIG.fallback.placeClose);
+  const target=context?.sourceUrl
+    ? NAVIGATION.permittedReturnTarget(context.sourceUrl,NAVIGATION_CONFIG.fallback.placeClose)
+    : NAVIGATION.build(NAVIGATION_CONFIG.fallback.placeClose);
+  clearGuideNavigationContext();
+  NAVIGATION.go(target);
 }
-function restoreGuideNavigationLayer(){
-  let category='';
-  try{
-    category=STORAGE.session.get(GUIDE_NAV_REOPEN_KEY,'');
-    STORAGE.session.remove(GUIDE_NAV_REOPEN_KEY);
-  }catch(e){}
-  if(category)requestAnimationFrame(()=>openGuideCategory(category));
-}
-document.addEventListener('DOMContentLoaded',restoreGuideNavigationLayer);
+
 
 function applyGuideHashView(){
  const directory=document.getElementById('shopping-directory');
@@ -144,7 +131,30 @@ function quickInfoHTML(g,key){
  return `<div class="quick-info-card">${quickInfoInnerHTML(g,key)}</div>`;
 }
 
-function guideNavButtons(key){const idx=GUIDE_ORDER.indexOf(key); if(idx<0)return ''; const prev=GUIDE_ORDER[(idx-1+GUIDE_ORDER.length)%GUIDE_ORDER.length]; const next=GUIDE_ORDER[(idx+1)%GUIDE_ORDER.length]; return `<div class="guide-next-row"><button class="pill" onclick="openGuideModal('${prev}')">‹ Previous</button><button class="pill" onclick="openGuideModal('${next}')">Next ›</button></div>`;}
+function guideCategoryKeys(key){
+ const place=PLACES[key]||{};
+ const category=place.cat;
+ const categoryItems=(category&&Array.isArray(CATEGORIES[category]))?CATEGORIES[category]:[];
+ const keys=categoryItems.map(item=>item&&item.key).filter(itemKey=>itemKey&&PLACES[itemKey]);
+ return keys.length?keys:GUIDE_ORDER.filter(itemKey=>PLACES[itemKey]);
+}
+function guideNavModel(key){
+ const keys=guideCategoryKeys(key);
+ const idx=keys.indexOf(key);
+ return {keys,idx,prev:idx>0?keys[idx-1]:'',next:idx>=0&&idx<keys.length-1?keys[idx+1]:'',position:idx>=0?idx+1:0,total:keys.length};
+}
+function guideNavButtons(key,mode){
+ const nav=guideNavModel(key);
+ if(nav.total<2||nav.idx<0)return '';
+ const open=mode==='page'?'openAdjacentPlace':'openGuideModal';
+ const prev=nav.prev?`<button class="pill" onclick="${open}('${nav.prev}')">‹ Previous</button>`:`<button class="pill" disabled aria-disabled="true">‹ Previous</button>`;
+ const next=nav.next?`<button class="pill" onclick="${open}('${nav.next}')">Next ›</button>`:`<button class="pill" disabled aria-disabled="true">Next ›</button>`;
+ return `<div class="guide-browse-meta">${nav.position} / ${nav.total}</div><div class="guide-next-row">${prev}${next}</div>`;
+}
+function openAdjacentPlace(key){
+ if(!PLACES[key])return;
+ NAVIGATION.go(placeHref(key));
+}
 
 function suggestedItems(g){
  const items=(g.signature||g.highlights||[]);
@@ -178,7 +188,7 @@ function renderPlacePage(key){
 <div class="page-hero"><p class="kicker">Guide</p><h1>${g.emoji} ${g.title}</h1><p class="lead">${g.sub||''}</p></div>
 <section aria-label="Quick Info" class="quick-info-card">${quickInfoInnerHTML(g,key)}</section>
 <section class="prose-block guide-overview"><h2>Overview</h2><p>${g.desc||''}</p></section>
-${compactGuideSections(g)}`;
+${compactGuideSections(g)}${guideNavButtons(key,'page')}`;
   document.title = `${g.title} · ${TRIP_CONFIG.tripName}`;
 }
 

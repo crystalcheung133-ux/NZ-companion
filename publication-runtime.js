@@ -79,8 +79,12 @@
     button.disabled=state.busy;
     const strong=button.querySelector('strong');
     const small=button.querySelector('small');
-    if(strong)strong.textContent=state.busy?'Preparing publication…':'Prepare Cloud Publication';
-    if(small)small.textContent=status||'Build the next version as a Supabase SQL file.';
+    if(strong)strong.textContent=state.busy?'Preparing cloud version…':'Publish Latest Trip';
+    if(small)small.textContent=status||publicationStatusText();
+  }
+  function publicationStatusText(){
+    const current=currentRemoteVersion();
+    return current>0?'Latest published version: v'+current+'. Prepare the next cloud version.':'Prepare the first cloud version.';
   }
   async function prepare(){
     if(state.busy)return false;
@@ -114,7 +118,7 @@
     if(!group||document.getElementById('preparePublicationButton'))return;
     const button=document.createElement('button');
     button.id='preparePublicationButton';button.type='button';button.className='trip-studio-action publication-prepare-btn';button.hidden=!(root.isAdminMode&&root.isAdminMode());
-    button.innerHTML='<span><strong>Prepare Cloud Publication</strong><small>Build the next version as a Supabase SQL file.</small></span><span aria-hidden="true">☁️</span>';
+    button.innerHTML='<span><strong>Publish Latest Trip</strong><small>'+publicationStatusText()+'</small></span><span aria-hidden="true">☁️</span>';
     button.addEventListener('click',prepare);group.appendChild(button);
   }
   function reflectMode(){
