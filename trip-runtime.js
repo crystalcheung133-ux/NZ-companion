@@ -1,10 +1,9 @@
 /* Travel Engine v1.0 — Stage 7M modular runtime. */
-function saveChecklist(){const checks=[...document.querySelectorAll('[data-check]')].map(c=>c.checked);STORAGE.local.writeJSON(STORAGE_CONFIG.keys.checklist,checks);const ready=$('readyBox');if(ready)ready.classList.toggle('show',checks.length>0&&checks.every(Boolean)); renderDashboard();}
+function saveChecklist(){const checks=[...document.querySelectorAll('[data-check]')].map(c=>c.checked);STORAGE.local.writeJSON(STORAGE_CONFIG.keys.checklist,checks);const done=checks.filter(Boolean).length;const ready=$('readyBox');if(ready)ready.classList.toggle('show',checks.length===7&&checks.every(Boolean));const progress=$('checklistProgress');if(progress)progress.textContent=`${done} / 7 Complete`;renderDashboard();renderBeforeTripCard();}
 function loadChecklist(){const stored=STORAGE.local.readJSON(STORAGE_CONFIG.keys.checklist,[]);document.querySelectorAll('[data-check]').forEach((c,i)=>c.checked=!!stored[i]);saveChecklist();}
 document.addEventListener('DOMContentLoaded',()=>{updateFriendLabels();renderMoments();renderUnexpected();renderExpenses();loadChecklist();renderDashboard();});
 
 function openTripCard(key) {
-  closeMiniMenus();
   const t = TRIP_DATA[key];
   if (!t) return;
   const idx = TRIP_ORDER.indexOf(key);
@@ -23,8 +22,8 @@ function openTripCard(key) {
 function closeTripModal() {
   const modal = document.getElementById('tripModal');
   if (modal) modal.classList.remove('show');
-  if(typeof reopenTripMenu==='function') setTimeout(reopenTripMenu,0);
 }
+
 
 
 function renderDashboard(){
@@ -32,7 +31,7 @@ function renderDashboard(){
   if(!checks.length) return;
   const stored=STORAGE.local.readJSON(STORAGE_CONFIG.keys.checklist,[]);
   const done=stored.filter(Boolean).length;
-  const total=10;
+  const total=7;
   const percent=Math.round((done/total)*100);
   const pct=document.getElementById('dashReadyPercent');
   const bar=document.getElementById('dashReadyBar');
@@ -75,3 +74,18 @@ function getBookingStatusLabel(status){
   return map[status] || (status || 'Unknown');
 }
 
+
+function renderBeforeTripCard(){
+  const card=document.getElementById('beforeTripCard');
+  if(!card) return;
+  const today=typeof tripDateParts==='function'?tripDateParts():new Date().toISOString().slice(0,10);
+  const before=today<TRIP_CONFIG.startDate;
+  card.hidden=!before;
+  if(!before)return;
+  const stored=STORAGE.local.readJSON(STORAGE_CONFIG.keys.checklist,[]);
+  const done=stored.slice(0,7).filter(Boolean).length;
+  const label=document.getElementById('beforeTripProgress');
+  if(label)label.textContent=done===7?'Ready for departure':`${done} / 7 complete`;
+  card.classList.toggle('is-ready',done===7);
+}
+document.addEventListener('DOMContentLoaded',renderBeforeTripCard);

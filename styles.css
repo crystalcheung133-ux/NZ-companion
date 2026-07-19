@@ -3080,3 +3080,6 @@ body.admin-mode #mamaModal .guide-sheet>h2{opacity:.72}
 .guide-list-meta{display:flex;align-items:center;gap:8px;flex:0 0 auto}
 .guide-list-chevron{flex:0 0 auto}
 @media(max-width:600px){.category-pop-list button{gap:8px}.guide-list-meta{gap:6px}}
+
+/* RC4.8A — lifecycle checklist and persistent Trip menu overlay */
+.before-trip-card{width:100%;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;margin:12px 0 4px;padding:13px 15px;border:1px solid var(--surface-border);border-radius:18px;background:#fffaf2;color:var(--ink);text-align:left;font:inherit;box-shadow:0 8px 22px rgba(54,39,24,.07);cursor:pointer}.before-trip-card[hidden]{display:none!important}.before-trip-card small,.before-trip-card em{display:block;font-style:normal}.before-trip-card small{font-size:10px;letter-spacing:.12em}.before-trip-card strong{display:block;font-size:17px}.before-trip-card em{font-size:12px;opacity:.72}.before-trip-icon{font-size:22px}.before-trip-arrow{font-size:24px}.before-trip-card.is-ready{border-color:rgba(74,123,91,.42)}.checklist-progress{font-weight:800;text-align:center;margin-top:14px}.trip-action-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}.trip-modal{background:rgba(43,37,31,.24)!important}.mini-menu.show{z-index:5001!important}.trip-modal.show{z-index:5002!important}.trip-sheet{z-index:5003!important}
