@@ -102,6 +102,8 @@
       ['MONEY_CONFIG',function(){return typeof MONEY_CONFIG!=='undefined';}],
       ['STORAGE_CONFIG',function(){return typeof STORAGE_CONFIG!=='undefined';}],
       ['STORAGE',function(){return typeof STORAGE!=='undefined';}],
+      ['SYNC_CONFIG',function(){return typeof SYNC_CONFIG!=='undefined';}],
+      ['TRIP_SYNC',function(){return typeof TRIP_SYNC!=='undefined';}],
       ['MONEY',function(){return typeof MONEY!=='undefined';}],
       ['PLACES',function(){return typeof PLACES!=='undefined';}],
       ['ITINERARY_DATA',function(){return typeof ITINERARY_DATA!=='undefined';}],

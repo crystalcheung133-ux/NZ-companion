@@ -40,6 +40,8 @@ This document describes the current active architecture after the Stage 7M freez
 | `navigation.js` | URL construction, query/hash parsing, safe return validation and navigation helpers |
 | `storage-config.js` | Canonical persisted key names, versions and read-only domain grouping |
 | `storage.js` | Safe local/session storage access and JSON helpers |
+| `sync-config.js` | Supabase endpoint, trip ID, schema version and safe feature flag |
+| `sync-runtime.js` | Read-only cloud snapshot fetch, status events and local cache fallback |
 | `money-config.js` | Home currency, FX provider, endpoint and cache policy |
 | `money.js` | Amount normalisation, arithmetic helpers, FX cache/fetch and conversion |
 

@@ -17,7 +17,9 @@
     guideNavReopen:'ccmv_guide_nav_reopen',
     itineraryOverrides:'travel_engine_itinerary_overrides_v1',
     tripCompletion:'travel_engine_trip_completion_v1',
-    changedPlans:'travel_engine_changed_plans_v1'
+    changedPlans:'travel_engine_changed_plans_v1',
+    cloudSnapshot:'travel_engine_cloud_snapshot_v1',
+    cloudSyncMeta:'travel_engine_cloud_sync_meta_v1'
   });
 
   const domains=Object.freeze({
@@ -29,7 +31,8 @@
     guide:Object.freeze({context:keys.guideNavContext,reopen:keys.guideNavReopen}),
     itinerary:Object.freeze({overrides:keys.itineraryOverrides}),
     completion:Object.freeze({state:keys.tripCompletion}),
-    journey:Object.freeze({changedPlans:keys.changedPlans})
+    journey:Object.freeze({changedPlans:keys.changedPlans}),
+    sync:Object.freeze({snapshot:keys.cloudSnapshot,metadata:keys.cloudSyncMeta})
   });
 
   root.STORAGE_CONFIG=Object.freeze({
