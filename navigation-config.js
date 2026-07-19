@@ -18,7 +18,9 @@
       day: 'day',
       placeId: 'id',
       legacyPlaceId: 'place',
-      placeIds: 'ids'
+      placeIds: 'ids',
+      source: 'source',
+      coldLaunch: 'coldLaunch'
     }),
     hash: Object.freeze({
       shoppingDirectory: 'shopping-directory'

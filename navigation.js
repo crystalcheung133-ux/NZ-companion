@@ -109,6 +109,51 @@
     }
   }
 
+  /* RC4.6 — PWA cold-launch canonical entry enforcement.
+     This module loads before storage-config.js/storage.js in every page's
+     required script order, so it uses sessionStorage directly rather than
+     the shared STORAGE helper. The key name follows the same
+     travel_engine_..._v1 convention as STORAGE_CONFIG keys. */
+  const PWA_SESSION_KEY='travel_engine_pwa_session_active_v1';
+
+  function isStandaloneDisplay(){
+    try{
+      if(global.navigator && global.navigator.standalone===true) return true;
+      return !!(global.matchMedia && global.matchMedia('(display-mode: standalone)').matches);
+    }catch(e){return false;}
+  }
+
+  function hasActiveSession(){
+    try{return global.sessionStorage.getItem(PWA_SESSION_KEY)==='1';}
+    catch(e){return true;} // fail open: never force a redirect loop if storage is unavailable
+  }
+
+  function markSessionActive(){
+    try{global.sessionStorage.setItem(PWA_SESSION_KEY,'1');}catch(e){}
+  }
+
+  /* True only for a genuine cold start of the installed standalone app:
+     display-mode is standalone AND no flag survived from a prior page in
+     this process. A background/resume (no force-close) never re-runs this
+     script, so the flag set on first load is still present when the user
+     returns. A true force-close discards the process and its
+     sessionStorage, so the next launch reads as a fresh session again,
+     regardless of which page the OS happens to reopen. */
+  function isColdLaunch(){
+    return isStandaloneDisplay() && !hasActiveSession();
+  }
+
+  function enforceCanonicalEntry(){
+    if(isPage('offline')) return; // never redirect the offline fallback; avoid loops with no network
+    const cold=isColdLaunch();
+    if(cold && !isPage('home')){
+      markSessionActive();
+      go(build('home',{query:{source:'pwa',coldLaunch:'1'}}));
+      return;
+    }
+    markSessionActive();
+  }
+
   const NAVIGATION=Object.freeze({
     page,
     queryName,
@@ -127,8 +172,12 @@
     setHash,
     go,
     goPage,
-    permittedReturnTarget
+    permittedReturnTarget,
+    isStandaloneDisplay,
+    isColdLaunch,
+    enforceCanonicalEntry
   });
 
   global.NAVIGATION=NAVIGATION;
+  enforceCanonicalEntry();
 })(typeof self !== 'undefined' ? self : window);
