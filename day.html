@@ -45,8 +45,26 @@
   }
   function markTimelineDayDirty(dayKey,items){window.markAdminDirty&&window.markAdminDirty('itineraryDay'+dayKey,{day:String(dayKey),items:clone(items)});}
   function markTimelineDirty(){markTimelineDayDirty(day,workingItems);}
+  /* Stage RC10A.1: single shared source for booking supplement lines. Both the Day
+     timeline card and the Trip card read the same BOOKINGS_DATA record so an
+     activity shows identical information everywhere, instead of the timeline
+     relying only on the itinerary item's own short-form details array. */
+  function bookingSupplementLines(booking){
+    if(!booking)return[];
+    const lines=[];
+    if(booking.type==='rentalCar'){
+      if(booking.bookingNumber)lines.push(`Booking: ${booking.bookingNumber}`);
+      const office=[booking.officePhone,booking.email].filter(Boolean).join(' · ');
+      if(office)lines.push(`Office: ${office}`);
+    }else if(booking.reference){
+      lines.push(`Booking reference: ${booking.reference}`);
+    }
+    return lines;
+  }
   function itemHTML(item,index){
-    const detailHtml=(item.details||[]).map(text=>`<p>${esc(text)}</p>`).join('');
+    const booking=(item.bookingId&&typeof BOOKINGS_DATA!=='undefined')?BOOKINGS_DATA[item.bookingId]:null;
+    const bookingHtml=bookingSupplementLines(booking).map(text=>`<p>${esc(text)}</p>`).join('');
+    const detailHtml=(item.details||[]).map(text=>`<p>${esc(text)}</p>`).join('')+bookingHtml;
     const routeHtml=item.route?`<div class="route-hint"><strong>Next leg</strong><br/>${esc(item.route)}</div>`:'';
     const requested=Array.isArray(item.guideIds)&&item.guideIds.length?item.guideIds:[item.placeId||item.id];
     const guideIds=requested.filter(key=>key&&typeof PLACES!=='undefined'&&PLACES[key]);
