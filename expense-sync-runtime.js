@@ -157,8 +157,21 @@
     if(state.inFlight){try{await state.inFlight;}catch(e){}}
     if(!configured()||!navigator.onLine)throw new Error('An internet connection is required to reset cloud expenses.');
     await ensureSession();
-    const {error}=await withTimeout(client().from(table).delete().eq('trip_id',config.tripId));
+    const {data:beforeRows,error:beforeError}=await withTimeout(
+      client().from(table).select('id').eq('trip_id',config.tripId)
+    );
+    if(beforeError)throw new Error(beforeError.message||'Unable to verify cloud expenses before reset');
+    const {data:deletedRows,error}=await withTimeout(
+      client().from(table).delete().eq('trip_id',config.tripId).select('id')
+    );
     if(error)throw new Error(error.message||'Cloud expense reset failed');
+    const {data:remainingRows,error:verifyError}=await withTimeout(
+      client().from(table).select('id').eq('trip_id',config.tripId).limit(1)
+    );
+    if(verifyError)throw new Error(verifyError.message||'Unable to verify cloud expense reset');
+    if((remainingRows||[]).length){
+      throw new Error(`Cloud expenses were not deleted. Supabase DELETE policy has not been applied (found ${(beforeRows||[]).length}, deleted ${(deletedRows||[]).length}). Run SUPABASE_STAGE_10AB_SYNC_SETUP.sql, then try Reset again.`);
+    }
     writeLocal([]);writeTombstones([]);
     try{storage?.remove?storage.remove(META_KEY):localStorage.removeItem(META_KEY);}catch(e){}
     state.lastSyncAt=null;state.error=null;emit('paused','Expenses reset complete');

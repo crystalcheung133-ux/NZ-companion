@@ -152,9 +152,24 @@
     const {data:files,error:listError}=await client().storage.from(bucket).list(config.tripId,{limit:1000});
     if(listError)throw new Error(listError.message||'Unable to list cloud moment photos');
     const paths=(files||[]).filter(file=>file?.name).map(file=>`${config.tripId}/${file.name}`);
-    if(paths.length){const {error:removeError}=await client().storage.from(bucket).remove(paths);if(removeError)throw new Error(removeError.message||'Cloud photo reset failed');}
-    const {error}=await withTimeout(client().from(table).delete().eq('trip_id',config.tripId));
+    if(paths.length){
+      const {data:removedFiles,error:removeError}=await client().storage.from(bucket).remove(paths);
+      if(removeError)throw new Error(removeError.message||'Cloud photo reset failed');
+      const {data:remainingFiles,error:photoVerifyError}=await client().storage.from(bucket).list(config.tripId,{limit:1});
+      if(photoVerifyError)throw new Error(photoVerifyError.message||'Unable to verify cloud photo reset');
+      if((remainingFiles||[]).some(file=>file?.name)){
+        throw new Error(`Cloud photos were not deleted. Supabase Storage DELETE policy has not been applied (requested ${paths.length}, removed ${(removedFiles||[]).length}). Run SUPABASE_STAGE_10AB_SYNC_SETUP.sql, then try Reset again.`);
+      }
+    }
+    const {data:beforeRows,error:beforeError}=await withTimeout(client().from(table).select('id').eq('trip_id',config.tripId));
+    if(beforeError)throw new Error(beforeError.message||'Unable to verify cloud moments before reset');
+    const {data:deletedRows,error}=await withTimeout(client().from(table).delete().eq('trip_id',config.tripId).select('id'));
     if(error)throw new Error(error.message||'Cloud moment reset failed');
+    const {data:remainingRows,error:verifyError}=await withTimeout(client().from(table).select('id').eq('trip_id',config.tripId).limit(1));
+    if(verifyError)throw new Error(verifyError.message||'Unable to verify cloud moment reset');
+    if((remainingRows||[]).length){
+      throw new Error(`Cloud moments were not deleted. Supabase DELETE policy has not been applied (found ${(beforeRows||[]).length}, deleted ${(deletedRows||[]).length}). Run SUPABASE_STAGE_10AB_SYNC_SETUP.sql, then try Reset again.`);
+    }
     writeLocal([]);writeTombstones([]);await clearPendingPhotos();
     try{storage?.remove?storage.remove(META_KEY):localStorage.removeItem(META_KEY);}catch(e){}
     state.lastSyncAt=null;state.error=null;emit('paused','Moments reset complete');
