@@ -3240,3 +3240,13 @@ body.admin-mode #mamaModal .guide-sheet>h2{opacity:.72}
     transition:none!important;
   }
 }
+
+/* Stage 10A — Expenses cloud-sync status */
+.expense-sync-line{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:10px;font-size:.78rem;font-weight:750;color:var(--muted)}
+.expense-sync-dot{width:8px;height:8px;border-radius:50%;background:#9aa5a0;flex:0 0 auto}
+.expense-sync-line:has(#expenseSyncStatus[data-state="synced"]) .expense-sync-dot{background:#3d8b6d}
+.expense-sync-line:has(#expenseSyncStatus[data-state="syncing"]) .expense-sync-dot{background:#c58a2d;animation:expenseSyncPulse 1s ease-in-out infinite}
+.expense-sync-line:has(#expenseSyncStatus[data-state="offline"]),.expense-sync-line:has(#expenseSyncStatus[data-state="error"]){color:#7d6244}
+.expense-sync-now{border:0;background:transparent;color:inherit;font:inherit;font-weight:850;text-decoration:underline;text-underline-offset:2px;padding:4px 2px;cursor:pointer}
+@keyframes expenseSyncPulse{50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){.expense-sync-dot{animation:none!important}}

@@ -292,7 +292,7 @@
     if(modal) modal.classList.add('show');
     try{ if(typeof window.simplifyMomentsAuthor === 'function') window.simplifyMomentsAuthor(); }catch(e){}
   };
-  window.saveMoments = function(){
+  window.saveMoments = async function(){
     const key = currentMomentKey || 'general';
     const g = PLACES[key] || PLACES.general || {title:'Moment'};
     const textEl=document.getElementById('momentsText');
@@ -309,17 +309,26 @@
       moods:(currentMood||[]).slice(),
       text:textEl?.value||'',
       photoPrototype:currentMomentPhoto ? {...currentMomentPhoto.meta, retained:false} : null,
-      createdAt:now
+      createdAt:now,
+      updatedAt:now,
+      createdBy:(typeof getFriend==='function'?getFriend():'lee'),
+      editedBy:(typeof getFriend==='function'?getFriend():'lee')
     };
     if(editingMomentId){
       const existing=arr.find(e=>e.id===editingMomentId);
       if(!currentMomentPhoto && existing?.photoPrototype) entry.photoPrototype=existing.photoPrototype;
-      arr=arr.map(e=> e.id===editingMomentId ? {...e,...entry,createdAt:e.createdAt||now,editedAt:now} : e);
+      arr=arr.map(e=> e.id===editingMomentId ? {...e,...entry,createdAt:e.createdAt||now,createdBy:e.createdBy||entry.createdBy,editedAt:now,updatedAt:now,editedBy:(typeof getFriend==='function'?getFriend():'lee')} : e);
     }else{
       arr.push(entry);
     }
     if(currentMomentPhoto?.url) prototypePhotoUrls.set(entry.id,currentMomentPhoto.url);
+    if(currentMomentPhoto?.blob && window.MOMENT_SYNC){
+      const photoState=await window.MOMENT_SYNC.stagePhoto(entry.id,currentMomentPhoto.blob);
+      entry={...entry,...(photoState||{}),updatedAt:new Date().toISOString()};
+      arr=arr.map(e=>e.id===entry.id?{...e,...entry}:e);
+    }
     writeJson(STORAGE_CONFIG.keys.momentsList,arr);
+    window.MOMENT_SYNC?.queueSync();
     STORAGE.local.writeJSON(STORAGE_CONFIG.keys.latestMomentPrefix+key,entry);
     editingMomentId=null;
     if(textEl) textEl.value='';
@@ -366,11 +375,14 @@
   window.deleteMoment = function(idOrKey){
     let arr=readJson(STORAGE_CONFIG.keys.momentsList,[]);
     const before=arr.length;
+    const deleting=arr.find(e=>e.id===idOrKey);
+    window.MOMENT_SYNC?.markDeleted(deleting);
     arr=arr.filter(e=>e.id!==idOrKey);
     writeJson(STORAGE_CONFIG.keys.momentsList,arr);
     if(before===arr.length && idOrKey && !idOrKey.startsWith('m_')) STORAGE.local.remove(STORAGE_CONFIG.keys.momentPrefix+idOrKey);
     const photoUrl=prototypePhotoUrls.get(idOrKey);
     if(photoUrl){try{URL.revokeObjectURL(photoUrl);}catch(e){} prototypePhotoUrls.delete(idOrKey);}
+    window.MOMENT_SYNC?.queueSync();
     renderMoments();
   };
   window.renderMoments = function(){
@@ -392,9 +404,7 @@
     box.innerHTML=arr.map(e=>`<div class="moments-entry">
       <strong>${escapeHTML(e.itemTitle||'Moment')}</strong>
       <p class="timestamp">${escapeHTML(e.friendLabel||'')} · ${formatTime(e.createdAt)}${e.editedAt?` · Edited ${formatTime(e.editedAt)}`:''}</p>
-      ${e.photoPrototype ? (prototypePhotoUrls.get(e.id)
-        ? `<img class="moment-prototype-photo" src="${prototypePhotoUrls.get(e.id)}" alt="Moment photo preview">`
-        : `<p class="moment-photo-note">📸 Photo tested · preview was intentionally not kept after reload</p>`) : ''}
+      ${(e.photoUrl||prototypePhotoUrls.get(e.id)) ? `<img class="moment-prototype-photo" src="${escapeHTML(e.photoUrl||prototypePhotoUrls.get(e.id))}" alt="Moment photo">` : (e.photoPending?`<p class="moment-photo-note">📸 Photo saved offline · waiting to sync</p>`:(e.photoPrototype?`<p class="moment-photo-note">📸 Photo preview unavailable on this device</p>`:''))}
       <p class="moment-mood">${moodLabel(e.moods||[])}</p>
       <p class="moment-stars">${'⭐'.repeat(e.rating||0)}</p>
       <p class="moment-copy">${escapeHTML(e.text||'')}</p>
@@ -417,5 +427,5 @@
   };
   /* Stage 4C-6: removed legacy v3.2 window.renderExpenses; canonical handler is later in this file. */
 
-  document.addEventListener('DOMContentLoaded',()=>{enhanceMomentPhotoInput();renderMoodButtons([]);renderMoments();renderExpenses();});
+  document.addEventListener('DOMContentLoaded',()=>{enhanceMomentPhotoInput();renderMoodButtons([]);renderMoments();renderExpenses();window.MOMENT_SYNC?.queueSync(150);document.addEventListener(window.MOMENT_SYNC?.EVENTS?.changed||'travelengine:momentsyncchanged',()=>renderMoments());});
 })();

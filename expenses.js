@@ -89,11 +89,13 @@ let editingExpenseIndex=null;
     document.querySelectorAll('#splitPickerMenu label').forEach(label=>{const input=label.querySelector('input[data-split]');const text=label.querySelector('span');if(input&&text) text.innerHTML=identityFor(input.value,true);});
   }
   function readExpenses(){
-    try{return STORAGE.local.readJSON(STORAGE_CONFIG.keys.expenses,[]);}
+    try{return window.EXPENSE_SYNC?.readLocal ? window.EXPENSE_SYNC.readLocal() : STORAGE.local.readJSON(STORAGE_CONFIG.keys.expenses,[]);}
     catch(e){return [];}
   }
   function writeExpenses(arr){
-    STORAGE.local.writeJSON(STORAGE_CONFIG.keys.expenses,Array.isArray(arr)?arr:[]);
+    const list=Array.isArray(arr)?arr:[];
+    if(window.EXPENSE_SYNC?.writeLocal) window.EXPENSE_SYNC.writeLocal(list);
+    else STORAGE.local.writeJSON(STORAGE_CONFIG.keys.expenses,list);
   }
   function timeLabel(iso){
     try{return (typeof formatTime==='function') ? formatTime(iso) : (iso?FORMATTER.dateTime(new Date(iso)):'');}
@@ -400,16 +402,19 @@ let editingExpenseIndex=null;
 
     const arr=readExpenses();
     const now=new Date().toISOString();
-    const data={item,details,category,total,paidBy,type:personal?'personal':'shared',split:personal?[consumedBy]:split,splitMode,shares:personal?null:shares,consumedBy:personal?consumedBy:null,createdAt:now};
+    const data={item,details,category,total,paidBy,type:personal?'personal':'shared',split:personal?[consumedBy]:split,splitMode,shares:personal?null:shares,consumedBy:personal?consumedBy:null,createdAt:now,updatedAt:now};
     if(editingExpenseIndex!==null && arr[editingExpenseIndex]){
+      data.id=arr[editingExpenseIndex].id;
       data.createdAt=arr[editingExpenseIndex].createdAt || now;
       data.editedAt=now;
+      data.updatedAt=now;
       arr[editingExpenseIndex]=data;
       editingExpenseIndex=null;
     }else{
       arr.push(data);
     }
     writeExpenses(arr);
+    window.EXPENSE_SYNC?.queueSync();
     window.renderExpenses();
     resetExpenseForm();
     closeExpenseModal();
@@ -565,19 +570,33 @@ let editingExpenseIndex=null;
   window.deleteExpense=function(i){
     const arr=readExpenses();
     if(!arr[i]) return;
+    window.EXPENSE_SYNC?.markDeleted(arr[i]);
     arr.splice(i,1);
     writeExpenses(arr);
+    window.EXPENSE_SYNC?.queueSync();
     if(editingExpenseIndex===i) editingExpenseIndex=null;
     window.renderExpenses();
   };
 
   window.resetExpenseForm=resetExpenseForm;
+  document.addEventListener('travelengine:expensesyncchanged',()=>window.renderExpenses());
+  document.addEventListener('travelengine:expensesyncstatus',event=>{
+    const badge=document.getElementById('expenseSyncStatus');
+    if(!badge)return;
+    const detail=event.detail||{};
+    badge.textContent=detail.message||'Saved on this device';
+    badge.dataset.state=detail.status||'idle';
+  });
   document.addEventListener('DOMContentLoaded',()=>{
     ensurePaidByUI();
     updatePaidByDisplay();
     setExportVisibility();
     window.updateSplitUI();
     window.renderExpenses();
+    const initial=window.EXPENSE_SYNC?.getState?.();
+    const badge=document.getElementById('expenseSyncStatus');
+    if(badge&&initial){badge.textContent=initial.message;badge.dataset.state=initial.status;}
+    window.EXPENSE_SYNC?.syncNow();
   });
 })();
 
