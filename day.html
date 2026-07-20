@@ -45,26 +45,12 @@
   }
   function markTimelineDayDirty(dayKey,items){window.markAdminDirty&&window.markAdminDirty('itineraryDay'+dayKey,{day:String(dayKey),items:clone(items)});}
   function markTimelineDirty(){markTimelineDayDirty(day,workingItems);}
-  /* Stage RC10A.1: single shared source for booking supplement lines. Both the Day
-     timeline card and the Trip card read the same BOOKINGS_DATA record so an
-     activity shows identical information everywhere, instead of the timeline
-     relying only on the itinerary item's own short-form details array. */
-  function bookingSupplementLines(booking){
-    if(!booking)return[];
-    const lines=[];
-    if(booking.type==='rentalCar'){
-      if(booking.bookingNumber)lines.push(`Booking: ${booking.bookingNumber}`);
-      const office=[booking.officePhone,booking.email].filter(Boolean).join(' · ');
-      if(office)lines.push(`Office: ${office}`);
-    }else if(booking.reference){
-      lines.push(`Booking reference: ${booking.reference}`);
-    }
-    return lines;
-  }
+  /* RC10C: Day owns only today's short-form activity text. Booking metadata is
+     owned by Trip Info, so the visible Day card now matches exactly what the
+     activity editor edits. */
   function itemHTML(item,index){
     const booking=(item.bookingId&&typeof BOOKINGS_DATA!=='undefined')?BOOKINGS_DATA[item.bookingId]:null;
-    const bookingHtml=bookingSupplementLines(booking).map(text=>`<p>${esc(text)}</p>`).join('');
-    const detailHtml=(item.details||[]).map(text=>`<p>${esc(text)}</p>`).join('')+bookingHtml;
+    const detailHtml=(item.details||[]).map(text=>`<p>${esc(text)}</p>`).join('');
     const routeHtml=item.route?`<div class="route-hint"><strong>Next leg</strong><br/>${esc(item.route)}</div>`:'';
     const requested=Array.isArray(item.guideIds)&&item.guideIds.length?item.guideIds:[item.placeId||item.id];
     const guideIds=requested.filter(key=>key&&typeof PLACES!=='undefined'&&PLACES[key]);
@@ -72,11 +58,12 @@
     const mapHtml=item.map&&!multi?`<a class="timeline-action timeline-action--map" href="${esc(item.map)}" target="_blank" rel="noopener">🧭 Navigate</a>`:'';
     const directoryHtml=item.showShoppingDirectory?`<button class="timeline-action timeline-action--directory" onclick="NAVIGATION.goPage('guide',{hash:'shoppingDirectory'})">🛍 Shopping List</button>`:'';
     const guideHtml=guideIds.length?`<button class="timeline-action timeline-action--guide" onclick='openGuideGroupFromDay(${JSON.stringify(guideIds)},${JSON.stringify(item.id)})'>📖 Guide</button>`:'';
+    const tripInfoHtml=booking?`<button class="timeline-action timeline-action--trip" onclick="${booking.type==='accommodation'?`openAccommodationDetail('${esc(booking.id)}')`:`openTripCard('vehicle')`}">🧳 Trip Info</button>`:'';
     const admin=`<div class="timeline-admin-tools"><button class="timeline-admin-menu" onclick="openTimelineEditor(${index})" aria-label="Edit activity">Edit</button><button class="timeline-admin-more" onclick="toggleTimelineMenu(event,${index})" aria-label="More actions" aria-expanded="false">•••</button></div>`;
     const changed=getChangedPlan(item);
     const changedHtml=changed?`<button class="changed-plan-toggle is-changed" type="button" onclick="openChangedPlan(${index})"><span>☑</span> Changed plan</button>`:`<button class="changed-plan-toggle" type="button" onclick="openChangedPlan(${index})"><span>☐</span> Changed plan</button>`;
     const changedSummary=changed?`<div class="changed-plan-summary"><strong>Plan changed</strong>${changed.reason?`<p><span>Why:</span> ${esc(changed.reason)}</p>`:''}${changed.instead?`<p><span>Went instead:</span> ${esc(changed.instead)}</p>`:''}</div>`:'';
-    return `<div class="timeline-item" id="${esc(item.id)}" data-index="${index}" draggable="false"><div class="timeline-time">${esc(item.time)}</div><div class="timeline-main"><div class="timeline-title-row"><h3>${esc(item.title)}</h3></div>${detailHtml}${routeHtml}${changedSummary}<div class="timeline-actions">${mapHtml}${directoryHtml}${guideHtml}<button class="timeline-action timeline-action--moment" onclick="openMomentsModal('${esc(item.id)}')">✨ Moment</button></div>${changedHtml}</div>${admin}</div>`;
+    return `<div class="timeline-item" id="${esc(item.id)}" data-index="${index}" draggable="false"><div class="timeline-time">${esc(item.time)}</div><div class="timeline-main"><div class="timeline-title-row"><h3>${esc(item.title)}</h3></div>${detailHtml}${routeHtml}${changedSummary}<div class="timeline-actions">${mapHtml}${directoryHtml}${tripInfoHtml}${guideHtml}<button class="timeline-action timeline-action--moment" onclick="openMomentsModal('${esc(item.id)}')">✨ Moment</button></div>${changedHtml}</div>${admin}</div>`;
   }
   function render(){
     const addButton=`<button class="admin-add-activity" onclick="openTimelineEditor(-1)">＋ Add activity</button>`;

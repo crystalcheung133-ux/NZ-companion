@@ -63,35 +63,58 @@ function accommodationMapURL(address){
 function accommodationReferenceLabel(booking){
   return booking.id==='queenstown-booking'?'Airbnb reference':(booking.id==='lakefront-booking'?'Luxury Escapes reference':'Booking reference');
 }
-function buildAccommodationHTML(){
-  const bookings=(typeof BOOKINGS_DATA==='undefined'?[]:Object.values(BOOKINGS_DATA))
+function getAccommodationBookings(){
+  return (typeof BOOKINGS_DATA==='undefined'?[]:Object.values(BOOKINGS_DATA))
     .filter(function(booking){return booking&&booking.type==='accommodation';})
     .sort(function(a,b){return String(a.date||'').localeCompare(String(b.date||''));});
+}
+function buildAccommodationListHTML(){
+  const bookings=getAccommodationBookings();
   if(!bookings.length) return '<p class="timestamp">No accommodation has been added yet.</p>';
-  return '<div class="stay-booking-list accommodation-detail-list">'+bookings.map(function(booking){
-    const place=(typeof PLACES!=='undefined'&&booking.placeId)?PLACES[booking.placeId]:null;
-    const address=booking.address||(place&&place.address)||'';
-    const phone=booking.phone||(place&&place.phone)||'';
-    const map=address?accommodationMapURL(address):'';
+  return '<div class="accommodation-picker" role="list">'+bookings.map(function(booking){
     const nights=Number(booking.nights||0);
     const nightsLabel=nights?`${nights} night${nights===1?'':'s'}`:'';
-    const facts=[
-      ['Stay',booking.stayDates||booking.date||''],
-      ['Length',nightsLabel],
-      ['Room',booking.roomType||booking.notes||'Not added yet'],
-      ['Check-in',booking.checkIn||booking.time||'Not added yet'],
-      ['Check-out',booking.checkOut||'Not added yet'],
-      [accommodationReferenceLabel(booking),booking.reference||'Not added yet'],
-      ['Price',booking.price||'Not added yet']
-    ].filter(function(row){return row[1];});
-    const factHTML=facts.map(function(row){return `<div class="accommodation-fact"><small>${escapeTripHTML(row[0])}</small><strong>${escapeTripHTML(row[1])}</strong></div>`;}).join('');
-    const actions=[
-      map?`<a class="pill" href="${escapeTripHTML(map)}" target="_blank" rel="noopener">Navigate</a>`:'',
-      address?`<button class="pill" type="button" onclick="navigator.clipboard&&navigator.clipboard.writeText(${JSON.stringify(address).replace(/"/g,'&quot;')})">Copy Address</button>`:'',
-      phone?`<a class="pill" href="tel:${escapeTripHTML(phone.replace(/\s/g,''))}">Call</a>`:''
-    ].join('');
-    return `<article class="fact stay-booking accommodation-detail-card"><div class="accommodation-detail-head"><div><strong>${escapeTripHTML(booking.title)}</strong><span>${escapeTripHTML(booking.stayDates||'')}</span></div><span class="accommodation-night-badge">${escapeTripHTML(nightsLabel)}</span></div><div class="accommodation-facts">${factHTML}</div><div class="accommodation-section"><h3>Address</h3><p>${escapeTripHTML(address||'Not added yet')}</p></div><div class="accommodation-section"><h3>Check-in instructions</h3><p>${escapeTripHTML(booking.checkInInstructions||'Not added yet')}</p></div>${actions?`<div class="trip-action-row">${actions}</div>`:''}</article>`;
+    return `<button class="accommodation-picker-row" type="button" role="listitem" onclick="openAccommodationDetail('${escapeTripHTML(booking.id)}')"><span class="accommodation-picker-icon" aria-hidden="true">🏨</span><span class="accommodation-picker-copy"><strong>${escapeTripHTML(booking.title)}</strong><small>${escapeTripHTML(booking.stayDates||booking.date||'')}</small></span><span class="accommodation-picker-meta">${escapeTripHTML(nightsLabel)}<b aria-hidden="true">›</b></span></button>`;
   }).join('')+'</div>';
+}
+function buildAccommodationDetailHTML(booking){
+  if(!booking)return '<p class="timestamp">Accommodation booking not found.</p>';
+  const place=(typeof PLACES!=='undefined'&&booking.placeId)?PLACES[booking.placeId]:null;
+  const address=booking.address||(place&&place.address)||'';
+  const phone=booking.phone||(place&&place.phone)||'';
+  const map=address?accommodationMapURL(address):'';
+  const nights=Number(booking.nights||0);
+  const nightsLabel=nights?`${nights} night${nights===1?'':'s'}`:'';
+  const facts=[
+    ['Stay',booking.stayDates||booking.date||''],
+    ['Length',nightsLabel],
+    ['Room',booking.roomType||booking.notes||'Not added yet'],
+    ['Check-in',booking.checkIn||booking.time||'Not added yet'],
+    ['Check-out',booking.checkOut||'Not added yet'],
+    [accommodationReferenceLabel(booking),booking.reference||'Not added yet'],
+    ['Price',booking.price||'Not added yet']
+  ].filter(function(row){return row[1];});
+  const factHTML=facts.map(function(row){return `<div class="accommodation-fact"><small>${escapeTripHTML(row[0])}</small><strong>${escapeTripHTML(row[1])}</strong></div>`;}).join('');
+  const actions=[
+    map?`<a class="pill" href="${escapeTripHTML(map)}" target="_blank" rel="noopener">Navigate</a>`:'',
+    address?`<button class="pill" type="button" onclick="navigator.clipboard&&navigator.clipboard.writeText(${JSON.stringify(address).replace(/"/g,'&quot;')})">Copy Address</button>`:'',
+    phone?`<a class="pill" href="tel:${escapeTripHTML(phone.replace(/\s/g,''))}">Call</a>`:''
+  ].join('');
+  return `<article class="fact stay-booking accommodation-detail-card"><div class="accommodation-detail-head"><div><strong>${escapeTripHTML(booking.title)}</strong><span>${escapeTripHTML(booking.stayDates||'')}</span></div><span class="accommodation-night-badge">${escapeTripHTML(nightsLabel)}</span></div><div class="accommodation-facts">${factHTML}</div><div class="accommodation-section"><h3>Address</h3><p>${escapeTripHTML(address||'Not added yet')}</p></div><div class="accommodation-section"><h3>Check-in instructions</h3><p>${escapeTripHTML(booking.checkInInstructions||'Not added yet')}</p></div>${actions?`<div class="trip-action-row">${actions}</div>`:''}</article>`;
+}
+function openAccommodationList(){
+  openTripCard('stay');
+}
+function openAccommodationDetail(bookingId){
+  closeMiniMenus();
+  const booking=(typeof BOOKINGS_DATA==='undefined')?null:BOOKINGS_DATA[bookingId];
+  const content=document.getElementById('tripModalContent');
+  const modal=document.getElementById('tripModal');
+  if(!content||!modal)return;
+  content.innerHTML=`<div class="trip-onepage trip-onepage-stay accommodation-onepage-detail"><button class="accommodation-back" type="button" onclick="openAccommodationList()">‹ All accommodation</button><p class="kicker">Trip · Accommodation</p><h2>${escapeTripHTML(booking?booking.title:'Accommodation')}</h2>${buildAccommodationDetailHTML(booking)}<p class="timestamp trip-build-summary">${tripSyncSummary()}</p></div>`;
+  modal.classList.add('show');
+  const sheet=document.querySelector('#tripModal .trip-sheet');
+  if(sheet)sheet.scrollTop=0;
 }
 
 function openTripCard(key) {
@@ -104,7 +127,7 @@ function openTripCard(key) {
   const content = document.getElementById('tripModalContent');
   const modal = document.getElementById('tripModal');
   if (!content || !modal) return;
-  const body=key==='emergency'?compactEmergencyHTML(t.body):(key==='stay'?buildAccommodationHTML():t.body);
+  const body=key==='emergency'?compactEmergencyHTML(t.body):(key==='stay'?buildAccommodationListHTML():t.body);
   content.innerHTML = `<div class="trip-onepage trip-onepage-${key}"><p class="kicker">Trip</p><h2>${t.title}</h2>${body}<div class="guide-next-row"><button class="pill" onclick="openTripCard('${prev}')">‹ Previous</button><button class="pill" onclick="openTripCard('${next}')">Next ›</button></div><p class="timestamp trip-build-summary">${tripSyncSummary()}</p></div>`;
   modal.classList.add('show');
   const sheet=document.querySelector('#tripModal .trip-sheet');
