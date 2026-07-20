@@ -72,18 +72,70 @@
   async function storePendingPhoto(id,blob){const db=await openDb();return new Promise((resolve,reject)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).put({id,blob,type:blob.type||'image/jpeg',updatedAt:new Date().toISOString()});tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);});}
   async function getPendingPhotos(){const db=await openDb();return new Promise((resolve,reject)=>{const req=db.transaction(STORE,'readonly').objectStore(STORE).getAll();req.onsuccess=()=>resolve(req.result||[]);req.onerror=()=>reject(req.error);});}
   async function deletePendingPhoto(id){try{const db=await openDb();await new Promise((resolve,reject)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).delete(id);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);});}catch(e){}}
-  function extension(type){return type==='image/webp'?'webp':type==='image/png'?'png':'jpg';}
-  async function uploadPhoto(id,blob){
-    await ensureSession();
-    const path=`${config.tripId}/${id}.${extension(blob.type)}`;
-    const{error}=await client().storage.from(bucket).upload(path,blob,{upsert:true,contentType:blob.type||'image/jpeg'});
-    if(error){console.error(LOG,'Storage upload failed',error.message,error);throw new Error(error.message||`Photo upload failed`);}
-    const{data:publicUrlData}=client().storage.from(bucket).getPublicUrl(path);
-    console.log(LOG,'Moment photo uploaded',path);
-    return{photoPath:path,photoUrl:publicUrlData?.publicUrl||null};
+  function extension(type){return type==='image/png'?'png':'jpg';}
+  function photoErrorMessage(error){
+    return error?.message||error?.error_description||error?.details||String(error||'Photo upload failed');
   }
-  async function stagePhoto(id,blob){if(!blob)return null;await storePendingPhoto(id,blob);if(!navigator.onLine)return{photoPending:true};try{const result=await uploadPhoto(id,blob);await deletePendingPhoto(id);return Object.assign({photoPending:false},result);}catch(e){return{photoPending:true};}}
-  async function flushPhotos(){const pending=await getPendingPhotos();if(!pending.length)return false;let changed=false;const list=readLocal();for(const p of pending){try{const result=await uploadPhoto(p.id,p.blob);const idx=list.findIndex(x=>x.id===p.id);if(idx>=0){list[idx]=Object.assign({},list[idx],result,{photoPending:false,updatedAt:new Date().toISOString(),editedAt:new Date().toISOString()});changed=true;}await deletePendingPhoto(p.id);}catch(e){}}if(changed)writeLocal(list);return changed;}
+  async function uploadPhoto(id,blob){
+    if(!(blob instanceof Blob)||!blob.size)throw new Error('Moment photo blob is empty or invalid');
+    const session=await ensureSession();
+    const contentType=blob.type==='image/png'?'image/png':'image/jpeg';
+    const path=`${config.tripId}/${id}.${extension(contentType)}`;
+    console.log(LOG,'Moment photo upload started',{id,path,type:contentType,size:blob.size,userId:session?.user?.id||null});
+    const{error}=await client().storage.from(bucket).upload(path,blob,{upsert:true,contentType,cacheControl:'3600'});
+    if(error){
+      console.error(LOG,'Storage upload failed',{id,path,type:contentType,size:blob.size,statusCode:error.statusCode||error.status||null,message:photoErrorMessage(error),error});
+      throw new Error(photoErrorMessage(error));
+    }
+    const{data:publicUrlData}=client().storage.from(bucket).getPublicUrl(path);
+    const photoUrl=publicUrlData?.publicUrl||null;
+    if(!photoUrl)throw new Error('Supabase returned no public photo URL');
+    console.log(LOG,'Moment photo uploaded',{id,path,photoUrl});
+    return{photoPath:path,photoUrl};
+  }
+  async function stagePhoto(id,blob){
+    if(!blob)return null;
+    await storePendingPhoto(id,blob);
+    console.log(LOG,'Moment photo queued',{id,type:blob.type||null,size:blob.size||0,online:navigator.onLine});
+    if(!navigator.onLine)return{photoPending:true,photoSyncError:null};
+    try{
+      const result=await uploadPhoto(id,blob);
+      await deletePendingPhoto(id);
+      return Object.assign({photoPending:false,photoSyncError:null},result);
+    }catch(error){
+      const message=photoErrorMessage(error);
+      console.error(LOG,'Moment photo remains pending',{id,message,error});
+      return{photoPending:true,photoSyncError:message};
+    }
+  }
+  async function flushPhotos(){
+    const pending=await getPendingPhotos();
+    if(!pending.length)return false;
+    console.log(LOG,'Retrying pending moment photos',pending.length);
+    let changed=false;
+    const list=readLocal();
+    for(const p of pending){
+      try{
+        const result=await uploadPhoto(p.id,p.blob);
+        const idx=list.findIndex(x=>x.id===p.id);
+        if(idx>=0){
+          list[idx]=Object.assign({},list[idx],result,{photoPending:false,photoSyncError:null,updatedAt:new Date().toISOString(),editedAt:new Date().toISOString()});
+          changed=true;
+        }
+        await deletePendingPhoto(p.id);
+      }catch(error){
+        const message=photoErrorMessage(error);
+        const idx=list.findIndex(x=>x.id===p.id);
+        if(idx>=0&&list[idx].photoSyncError!==message){
+          list[idx]=Object.assign({},list[idx],{photoPending:true,photoSyncError:message});
+          changed=true;
+        }
+        console.error(LOG,'Pending moment photo retry failed',{id:p.id,message,error});
+      }
+    }
+    if(changed)writeLocal(list);
+    return changed;
+  }
 
   async function syncNow(){if(!configured()||!navigator.onLine){emit('offline','Saved offline — will sync later');return snapshot();}if(state.inFlight)return state.inFlight;state.inFlight=(async()=>{emit('syncing','Syncing moments…');try{await flushPhotos();const remoteRows=await pull();const localActive=readLocal(),localDeleted=readTombstones();const localMap=new Map([...localActive,...localDeleted].map(x=>[x.id,x]));const remoteMap=new Map(remoteRows.map(r=>[r.id,fromRemote(r)]));const ids=new Set([...localMap.keys(),...remoteMap.keys()]);const active=[],deleted=[],toPush=[];ids.forEach(id=>{const l=localMap.get(id),r=remoteMap.get(id);let winner;if(!l)winner=r;else if(!r){winner=l;toPush.push(toRemote(l,!!l.deletedAt));}else{const lt=new Date(l.updatedAt||0).getTime(),rt=new Date(r.updatedAt||0).getTime();winner=lt>rt?l:r;if(lt>rt)toPush.push(toRemote(l,!!l.deletedAt));}if(winner?.deletedAt)deleted.push(winner);else if(winner)active.push(winner);});await push(toPush);active.sort((a,b)=>String(a.createdAt).localeCompare(String(b.createdAt)));writeLocal(active);writeTombstones(deleted);state.lastSyncAt=new Date().toISOString();writeJSON(META_KEY,{lastSyncAt:state.lastSyncAt});emit('synced','Synced across families');root.document?.dispatchEvent(new CustomEvent(EVENTS.changed,{detail:{count:active.length}}));return snapshot();}catch(error){console.error(LOG,'Moments sync failed',error?.message||error);emit('error',navigator.onLine?'Sync unavailable — saved on this device':'Saved offline — will sync later',error?.message||String(error));return snapshot();}finally{state.inFlight=null;}})();return state.inFlight;}
   function queueSync(delay=350){clearTimeout(state.timer);state.timer=setTimeout(syncNow,delay);}

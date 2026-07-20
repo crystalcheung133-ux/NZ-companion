@@ -64,10 +64,12 @@
     const ctx=canvas.getContext('2d',{alpha:false});
     ctx.fillStyle='#fff'; ctx.fillRect(0,0,width,height);
     ctx.drawImage(img,0,0,width,height);
-    let type='image/webp', quality=.75;
-    let blob=await canvasToBlob(canvas,type,quality);
-    if(!blob){ type='image/jpeg'; quality=.82; blob=await canvasToBlob(canvas,type,quality); }
-    for(const q of [.68,.60,.52]){
+    /* RC10F: always encode Moment photos as JPEG. Mobile browsers can produce
+       WebP blobs inconsistently inside installed PWAs; JPEG is the stable
+       cross-device upload format and is allowed by the Supabase bucket. */
+    const type='image/jpeg';
+    let blob=await canvasToBlob(canvas,type,.82);
+    for(const q of [.74,.66,.58]){
       if(blob && blob.size<=500*1024) break;
       const next=await canvasToBlob(canvas,type,q);
       if(next) blob=next;
