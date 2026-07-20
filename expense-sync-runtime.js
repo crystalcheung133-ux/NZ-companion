@@ -7,7 +7,6 @@
   const config=root.SYNC_CONFIG||{};
   const storage=root.STORAGE?.local;
   const EVENTS=Object.freeze({status:'travelengine:expensesyncstatus',changed:'travelengine:expensesyncchanged'});
-  const SESSION_KEY='travel_engine_supabase_anon_session_v1';
   const TOMBSTONE_KEY='travel_engine_expense_tombstones_v1';
   const META_KEY='travel_engine_expense_sync_meta_v1';
   const table=config.tables?.expenses||'trip_expenses';
@@ -62,21 +61,9 @@
   }
   function snapshot(){return Object.freeze({status:state.status,message:state.message,lastSyncAt:state.lastSyncAt,error:state.error});}
   function configured(){return !!(config.enabled&&config.url&&config.anonKey&&config.tripId);}
-  function sessionValid(s){return !!(s?.access_token&&s?.refresh_token&&Number(s.expires_at||0)*1000>Date.now()+60000);}
-  async function authRequest(path,body){
-    const res=await fetch(config.url.replace(/\/$/,'')+path,{method:'POST',headers:{apikey:config.anonKey,Authorization:`Bearer ${config.anonKey}`,'Content-Type':'application/json'},body:JSON.stringify(body||{})});
-    const data=await res.json().catch(()=>({}));if(!res.ok)throw new Error(data?.msg||data?.message||`Auth ${res.status}`);return data;
-  }
   async function getSession(){
-    let session=readJSON(SESSION_KEY,null);
-    if(sessionValid(session)) return session;
-    if(session?.refresh_token){
-      try{session=await authRequest('/auth/v1/token?grant_type=refresh_token',{refresh_token:session.refresh_token});writeJSON(SESSION_KEY,session);return session;}catch(e){}
-    }
-    const authData=await authRequest('/auth/v1/signup',{data:{}});
-    session=authData?.session||authData;
-    if(!session?.access_token) throw new Error(authData?.error_description||authData?.msg||authData?.message||'Anonymous session was not returned');
-    writeJSON(SESSION_KEY,session);return session;
+    if(!root.SUPABASE_AUTH?.getSession)throw new Error('Shared Supabase Auth runtime unavailable');
+    return root.SUPABASE_AUTH.getSession();
   }
   async function api(path,options={}){
     const session=await getSession();
