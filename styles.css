@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap");
-:root{--bg:#f4ede3;--paper:#fffaf2;--card:#fffdf8;--ink:#2b251f;--muted:#433a33;--line:#cfbdab;--accent:#8a4f2d;--green:#315f4e;--lav:#6b4a7a;--blue:#455f86;--surface-radius:var(--theme-surface-radius);--surface-padding:22px;--surface-border:rgba(185,160,135,.88);--surface-shadow:0 14px 38px rgba(54,39,24,.065);--surface-gap:18px;--mobile-action-height:50px;--mobile-action-radius:var(--theme-button-radius);--mobile-action-padding:10px 12px;--mobile-action-font-size:15px;--mobile-action-weight:800;--admin-accent:#8b4b1d;--admin-accent-dark:#60300f;--admin-line:rgba(139,75,29,.28);--admin-soft:rgba(139,75,29,.12);}
+:root{--bg:#f4ede3;--paper:#fffaf2;--card:#fffdf8;--ink:#2b251f;--muted:#433a33;--line:#cfbdab;--accent:#8a4f2d;--green:#315f4e;--lav:#6b4a7a;--blue:#455f86;--surface-radius:var(--theme-surface-radius);--surface-padding:22px;--surface-border:rgba(185,160,135,.88);--surface-shadow:0 14px 38px rgba(54,39,24,.065);--surface-gap:18px;--text-body-size:16px;--text-body-line:1.58;--text-small-size:13px;--text-label-size:12px;--text-title-line:1.08;--control-height:48px;--control-radius:var(--theme-button-radius);--control-gap:8px;--focus-ring:0 0 0 3px rgba(49,95,78,.22);--mobile-action-height:50px;--mobile-action-radius:var(--theme-button-radius);--mobile-action-padding:10px 12px;--mobile-action-font-size:15px;--mobile-action-weight:800;--admin-accent:#8b4b1d;--admin-accent-dark:#60300f;--admin-line:rgba(139,75,29,.28);--admin-soft:rgba(139,75,29,.12);}
 *{box-sizing:border-box;}
 a{color:inherit;text-decoration:none;}
 .brand{display:flex;align-items:center;gap:12px;font-weight:900;font-size:21px;}
@@ -326,15 +326,17 @@ body:has(#tripModal) .trip-card,.trip-sheet{border-color:rgba(112,133,91,.28)!im
 /* v3.9 Outdoor Readability Pass
    Higher contrast, larger text and clearer tap targets for outdoor travel use. */
 p,li,.lead,.timeline-main p,.guide-list-sub,.menu-sub,.timestamp,.quick-info-value{color:var(--muted);font-weight:620;}
-.lead{font-size:18.5px;color:var(--muted);line-height:1.68;}
+p,li{font-size:var(--text-body-size);line-height:var(--text-body-line);}
+.lead{font-size:18px;color:var(--muted);line-height:1.58;}
 h1,h2,h3,.guide-list-title,.menu-title,.timeline-time,.timeline-main h3,.brand,.quick-info-label{font-weight:700;color:var(--ink);}
-h1{font-size:clamp(58px,12vw,96px);letter-spacing:-.02em;}
-h2{font-size:42px;}
-h3{font-size:20px;}
-.kicker{font-size:14px;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);font-weight:850;}
-.btn,.pill,.mini-btn,.timeline-actions button,.timeline-actions a,.friend-pill,.category-pop-list button{font-weight:800;color:var(--ink);}
-.btn,.pill{min-height:50px;padding:14px 18px;}
-.mini-btn{min-height:44px;padding:11px 14px;}
+h1,h2,h3{line-height:var(--text-title-line);text-wrap:balance;}
+h1{font-size:clamp(54px,11vw,88px);letter-spacing:-.025em;}
+h2{font-size:clamp(32px,7vw,42px);letter-spacing:-.018em;}
+h3{font-size:20px;letter-spacing:-.01em;}
+.kicker{font-size:var(--text-label-size);line-height:1.3;text-transform:uppercase;letter-spacing:.11em;color:var(--accent);font-weight:850;}
+.btn,.pill,.mini-btn,.timeline-actions button,.timeline-actions a,.friend-pill,.category-pop-list button{font-weight:800;color:var(--ink);line-height:1.2;}
+.btn,.pill{min-height:var(--control-height);padding:12px 17px;}
+.mini-btn{min-height:42px;padding:10px 13px;}
 
 .quick-info-card,.prose-block,.trip-card,.timeline-item,.expense-card,.moments-entry{border-color:var(--surface-border);box-shadow:var(--surface-shadow);}
 .quick-info-label,.timestamp{opacity:1;}
@@ -3239,6 +3241,25 @@ body.admin-mode #mamaModal .guide-sheet>h2{opacity:.72}
     animation:none!important;
     transition:none!important;
   }
+}
+
+/* RC11A — Typography, rhythm and interaction canonical rules */
+:where(button,a,input,select,textarea):focus-visible{outline:0;box-shadow:var(--focus-ring);}
+:where(.btn,.pill,.mini-btn,.primary-action,.moment-button,.map-button,.day-jump-button,.timeline-actions a,.timeline-actions button){gap:var(--control-gap);}
+:where(.btn,.pill,.mini-btn,.primary-action,.moment-button,.map-button,.day-jump-button,.friend-pill){text-align:center;}
+:where(input,select,textarea){line-height:1.35;}
+:where(.prose-block,.trip-card,.quick-info-card,.timeline-item,.expense-card,.moments-entry)>:first-child{margin-top:0;}
+:where(.prose-block,.trip-card,.quick-info-card,.timeline-item,.expense-card,.moments-entry)>:last-child{margin-bottom:0;}
+:where(.page-hero,.module-hero) .lead{max-width:62ch;}
+:where(.timestamp,.menu-sub,.guide-list-sub,.quick-info-label,.accommodation-picker-copy small){line-height:1.42;}
+:where(.entry-actions,.page-action-row,.quick-info-actions,.timeline-actions){align-items:center;}
+@media(max-width:760px){
+  body{font-size:16.5px;line-height:1.62;}
+  .lead{font-size:17px;line-height:1.55;}
+  .content-page,.section{padding-left:16px;padding-right:16px;}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}
 }
 
 /* Stage 10A — Expenses cloud-sync status */
