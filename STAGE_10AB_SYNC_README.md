@@ -1,4 +1,4 @@
-# Stage 10A+B — Expenses + Moments Sync
+# Stage 10A+B.1 — Expenses + Moments Sync
 
 1. Supabase → Authentication → Providers → enable Anonymous Sign-Ins.
 2. Supabase → SQL Editor → run `SUPABASE_STAGE_10AB_SYNC_SETUP.sql` once.
@@ -6,3 +6,8 @@
 4. Test on two devices: add/edit/delete an expense and a moment, then press Sync now or reopen the page.
 
 Expenses and Moments are local-first. Offline changes remain on the device and retry when online. Deletes use tombstones so removed records do not reappear. Moment photos are compressed, queued in IndexedDB while offline, then uploaded to the `trip-moments` bucket when online.
+
+
+## Stage 10A+B.1 auth hotfix
+- Anonymous Auth request sends the publishable key in both `apikey` and `Authorization` headers.
+- Anonymous signup sends `{ data: {} }` and validates the returned access token before database writes.

@@ -64,7 +64,7 @@
   function configured(){return !!(config.enabled&&config.url&&config.anonKey&&config.tripId);}
   function sessionValid(s){return !!(s?.access_token&&s?.refresh_token&&Number(s.expires_at||0)*1000>Date.now()+60000);}
   async function authRequest(path,body){
-    const res=await fetch(config.url.replace(/\/$/,'')+path,{method:'POST',headers:{apikey:config.anonKey,'Content-Type':'application/json'},body:JSON.stringify(body||{})});
+    const res=await fetch(config.url.replace(/\/$/,'')+path,{method:'POST',headers:{apikey:config.anonKey,Authorization:`Bearer ${config.anonKey}`,'Content-Type':'application/json'},body:JSON.stringify(body||{})});
     const data=await res.json().catch(()=>({}));if(!res.ok)throw new Error(data?.msg||data?.message||`Auth ${res.status}`);return data;
   }
   async function getSession(){
@@ -73,7 +73,9 @@
     if(session?.refresh_token){
       try{session=await authRequest('/auth/v1/token?grant_type=refresh_token',{refresh_token:session.refresh_token});writeJSON(SESSION_KEY,session);return session;}catch(e){}
     }
-    session=await authRequest('/auth/v1/signup',{});
+    const authData=await authRequest('/auth/v1/signup',{data:{}});
+    session=authData?.session||authData;
+    if(!session?.access_token) throw new Error(authData?.error_description||authData?.msg||authData?.message||'Anonymous session was not returned');
     writeJSON(SESSION_KEY,session);return session;
   }
   async function api(path,options={}){
