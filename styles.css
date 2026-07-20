@@ -3250,3 +3250,19 @@ body.admin-mode #mamaModal .guide-sheet>h2{opacity:.72}
 .expense-sync-now{border:0;background:transparent;color:inherit;font:inherit;font-weight:850;text-decoration:underline;text-underline-offset:2px;padding:4px 2px;cursor:pointer}
 @keyframes expenseSyncPulse{50%{opacity:.35}}
 @media (prefers-reduced-motion:reduce){.expense-sync-dot{animation:none!important}}
+
+/* RC10B — Day / Guide / Trip Info information architecture */
+.accommodation-detail-list{display:grid;gap:14px}
+.accommodation-detail-card{display:block;padding:16px;border-radius:18px}
+.accommodation-detail-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
+.accommodation-detail-head strong{display:block;font-size:1.05rem;line-height:1.25}
+.accommodation-detail-head span{display:block;margin-top:4px;font-size:.82rem;opacity:.72}
+.accommodation-night-badge{flex:0 0 auto;margin-top:0!important;padding:6px 9px;border-radius:999px;background:rgba(31,93,89,.1);font-weight:800;white-space:nowrap;opacity:1!important}
+.accommodation-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:0 0 14px}
+.accommodation-fact{min-width:0;padding:10px 11px;border-radius:12px;background:rgba(255,255,255,.62)}
+.accommodation-fact small{display:block;margin-bottom:3px;font-size:.68rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;opacity:.62}
+.accommodation-fact strong{display:block;font-size:.9rem;line-height:1.28;overflow-wrap:anywhere}
+.accommodation-section{margin-top:12px}
+.accommodation-section h3{margin:0 0 4px;font-size:.76rem;letter-spacing:.04em;text-transform:uppercase;opacity:.65}
+.accommodation-section p{margin:0;line-height:1.45}
+@media(max-width:520px){.accommodation-facts{grid-template-columns:1fr}.accommodation-detail-head{align-items:flex-start}.accommodation-night-badge{font-size:.74rem}}

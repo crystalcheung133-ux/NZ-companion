@@ -31,8 +31,8 @@
     splashSlogan: 'ADVENTURE AWAITS',
     splashDestination: 'NEW ZEALAND 2026',
     storageNamespace: 'nz-family-2026',
-    version: 'RC5.5',
-    buildLabel: 'Navigation & Emergency UX',
+    version: 'RC10B',
+    buildLabel: 'Day · Guide · Trip Info Refactor',
     theme: root.THEME_CONFIG.colors
   });
 
