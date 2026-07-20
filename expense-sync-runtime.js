@@ -60,19 +60,23 @@
     root.document?.dispatchEvent(new CustomEvent(EVENTS.status,{detail:snapshot()}));
   }
   function snapshot(){return Object.freeze({status:state.status,message:state.message,lastSyncAt:state.lastSyncAt,error:state.error});}
-  function configured(){return !!(config.enabled&&config.url&&config.anonKey&&config.tripId);}
-  async function getSession(){
-    if(!root.SUPABASE_AUTH?.getSession)throw new Error('Shared Supabase Auth runtime unavailable');
-    return root.SUPABASE_AUTH.getSession();
+  function configured(){return !!(config.enabled&&config.url&&config.anonKey&&config.tripId&&root.SUPABASE?.isConfigured?.());}
+  const LOG='[Supabase]';
+  async function ensureSession(){
+    if(!root.SUPABASE?.getSession)throw new Error('Shared Supabase client runtime unavailable');
+    return root.SUPABASE.getSession();
   }
-  async function api(path,options={}){
-    const session=await getSession();
-    const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),config.requestTimeoutMs||8000);
-    try{
-      const res=await fetch(config.url.replace(/\/$/,'')+'/rest/v1/'+path,Object.assign({},options,{signal:controller.signal,headers:Object.assign({apikey:config.anonKey,Authorization:`Bearer ${session.access_token}`,'Content-Type':'application/json'},options.headers||{})}));
-      if(!res.ok){const text=await res.text();throw new Error(text||`Expenses sync ${res.status}`);}
-      if(res.status===204)return null;return res.json().catch(()=>null);
-    }finally{clearTimeout(timer);}
+  function client(){
+    if(!root.SUPABASE?.getClient)throw new Error('Shared Supabase client runtime unavailable');
+    return root.SUPABASE.getClient();
+  }
+  function withTimeout(builder){
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),config.requestTimeoutMs||8000);
+    return builder.abortSignal(controller.signal).then(
+      result=>{clearTimeout(timer);return result;},
+      error=>{clearTimeout(timer);throw error;}
+    );
   }
   function toRemote(record,deleted=false){
     const r=normalizeRecord(record);
@@ -83,13 +87,29 @@
     if(row.deleted_at)payload.deletedAt=row.deleted_at;return payload;
   }
   async function pull(){
-    const query=`${encodeURIComponent(table)}?trip_id=eq.${encodeURIComponent(config.tripId)}&select=id,payload,created_at,updated_at,deleted_at,actor_family&order=updated_at.asc`;
-    return (await api(query))||[];
+    await ensureSession();
+    const {data,error}=await withTimeout(
+      client().from(table).select('id,payload,created_at,updated_at,deleted_at,actor_family').eq('trip_id',config.tripId).order('updated_at',{ascending:true})
+    );
+    if(error){
+      console.error(LOG,'Supabase select failed',error.message,error);
+      throw new Error(error.message||'Expenses sync select failed');
+    }
+    console.log(LOG,'Expenses pulled',(data||[]).length);
+    return data||[];
   }
   async function push(records){
     if(!records.length)return;
-    const path=`${encodeURIComponent(table)}?on_conflict=id`;
-    await api(path,{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(records)});
+    await ensureSession();
+    const {error}=await withTimeout(
+      client().from(table).upsert(records,{onConflict:'id'})
+    );
+    if(error){
+      const rls=/row-level security|permission denied|policy/i.test(error.message||'');
+      console.error(LOG,rls?'RLS rejected':'Supabase insert failed',error.message,error);
+      throw new Error(error.message||'Expenses sync upsert failed');
+    }
+    console.log(LOG,'Expense uploaded',records.map(r=>r.id).join(', '));
   }
   async function syncNow(){
     if(!configured()||!navigator.onLine){emit('offline','Saved offline — will sync later');return snapshot();}
@@ -123,6 +143,7 @@
         return snapshot();
       }catch(error){
         const msg=/Anonymous sign-ins|anonymous/i.test(String(error?.message))?'Enable Anonymous Sign-Ins in Supabase':(navigator.onLine?'Sync unavailable — saved on this device':'Saved offline — will sync later');
+        console.error(LOG,'Expenses sync failed',error?.message||error);
         emit('error',msg,error?.message||String(error));return snapshot();
       }finally{state.inFlight=null;}
     })();
