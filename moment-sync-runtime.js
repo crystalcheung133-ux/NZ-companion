@@ -12,7 +12,7 @@
   const META_KEY='travel_engine_moment_sync_meta_v1';
   const DB_NAME='travel_engine_moment_photos_v1';
   const STORE='pending_photos';
-  const state={status:'idle',message:'Saved on this device',lastSyncAt:null,error:null,timer:null,inFlight:null};
+  const state={status:'idle',message:'Saved on this device',lastSyncAt:null,error:null,timer:null,inFlight:null,paused:false};
 
   function uuid(){return root.crypto?.randomUUID?root.crypto.randomUUID():'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&3|8)).toString(16);});}
   function readJSON(key,fallback){try{return storage?.readJSON?storage.readJSON(key,fallback):(JSON.parse(localStorage.getItem(key)||'null')??fallback);}catch(e){return fallback;}}
@@ -137,8 +137,28 @@
     return changed;
   }
 
-  async function syncNow(){if(!configured()||!navigator.onLine){emit('offline','Saved offline — will sync later');return snapshot();}if(state.inFlight)return state.inFlight;state.inFlight=(async()=>{emit('syncing','Syncing moments…');try{await flushPhotos();const remoteRows=await pull();const localActive=readLocal(),localDeleted=readTombstones();const localMap=new Map([...localActive,...localDeleted].map(x=>[x.id,x]));const remoteMap=new Map(remoteRows.map(r=>[r.id,fromRemote(r)]));const ids=new Set([...localMap.keys(),...remoteMap.keys()]);const active=[],deleted=[],toPush=[];ids.forEach(id=>{const l=localMap.get(id),r=remoteMap.get(id);let winner;if(!l)winner=r;else if(!r){winner=l;toPush.push(toRemote(l,!!l.deletedAt));}else{const lt=new Date(l.updatedAt||0).getTime(),rt=new Date(r.updatedAt||0).getTime();winner=lt>rt?l:r;if(lt>rt)toPush.push(toRemote(l,!!l.deletedAt));}if(winner?.deletedAt)deleted.push(winner);else if(winner)active.push(winner);});await push(toPush);active.sort((a,b)=>String(a.createdAt).localeCompare(String(b.createdAt)));writeLocal(active);writeTombstones(deleted);state.lastSyncAt=new Date().toISOString();writeJSON(META_KEY,{lastSyncAt:state.lastSyncAt});emit('synced','Synced across families');root.document?.dispatchEvent(new CustomEvent(EVENTS.changed,{detail:{count:active.length}}));return snapshot();}catch(error){console.error(LOG,'Moments sync failed',error?.message||error);emit('error',navigator.onLine?'Sync unavailable — saved on this device':'Saved offline — will sync later',error?.message||String(error));return snapshot();}finally{state.inFlight=null;}})();return state.inFlight;}
-  function queueSync(delay=350){clearTimeout(state.timer);state.timer=setTimeout(syncNow,delay);}
+  async function syncNow(){if(state.paused){emit('paused','Sync paused for trip reset');return snapshot();}if(!configured()||!navigator.onLine){emit('offline','Saved offline — will sync later');return snapshot();}if(state.inFlight)return state.inFlight;state.inFlight=(async()=>{emit('syncing','Syncing moments…');try{await flushPhotos();const remoteRows=await pull();const localActive=readLocal(),localDeleted=readTombstones();const localMap=new Map([...localActive,...localDeleted].map(x=>[x.id,x]));const remoteMap=new Map(remoteRows.map(r=>[r.id,fromRemote(r)]));const ids=new Set([...localMap.keys(),...remoteMap.keys()]);const active=[],deleted=[],toPush=[];ids.forEach(id=>{const l=localMap.get(id),r=remoteMap.get(id);let winner;if(!l)winner=r;else if(!r){winner=l;toPush.push(toRemote(l,!!l.deletedAt));}else{const lt=new Date(l.updatedAt||0).getTime(),rt=new Date(r.updatedAt||0).getTime();winner=lt>rt?l:r;if(lt>rt)toPush.push(toRemote(l,!!l.deletedAt));}if(winner?.deletedAt)deleted.push(winner);else if(winner)active.push(winner);});await push(toPush);active.sort((a,b)=>String(a.createdAt).localeCompare(String(b.createdAt)));writeLocal(active);writeTombstones(deleted);state.lastSyncAt=new Date().toISOString();writeJSON(META_KEY,{lastSyncAt:state.lastSyncAt});emit('synced','Synced across families');root.document?.dispatchEvent(new CustomEvent(EVENTS.changed,{detail:{count:active.length}}));return snapshot();}catch(error){console.error(LOG,'Moments sync failed',error?.message||error);emit('error',navigator.onLine?'Sync unavailable — saved on this device':'Saved offline — will sync later',error?.message||String(error));return snapshot();}finally{state.inFlight=null;}})();return state.inFlight;}
+  function queueSync(delay=350){if(state.paused)return;clearTimeout(state.timer);state.timer=setTimeout(syncNow,delay);}
+  function pause(){state.paused=true;clearTimeout(state.timer);state.timer=null;emit('paused','Sync paused for trip reset');}
+  async function clearPendingPhotos(){
+    if(!('indexedDB' in root))return;
+    await new Promise((resolve,reject)=>{const request=indexedDB.deleteDatabase(DB_NAME);request.onsuccess=()=>resolve();request.onerror=()=>reject(request.error);request.onblocked=()=>reject(new Error('Pending photo database is still in use'));});
+  }
+  async function resetTrip(){
+    pause();
+    if(state.inFlight){try{await state.inFlight;}catch(e){}}
+    if(!configured()||!navigator.onLine)throw new Error('An internet connection is required to reset cloud moments and photos.');
+    await ensureSession();
+    const {data:files,error:listError}=await client().storage.from(bucket).list(config.tripId,{limit:1000});
+    if(listError)throw new Error(listError.message||'Unable to list cloud moment photos');
+    const paths=(files||[]).filter(file=>file?.name).map(file=>`${config.tripId}/${file.name}`);
+    if(paths.length){const {error:removeError}=await client().storage.from(bucket).remove(paths);if(removeError)throw new Error(removeError.message||'Cloud photo reset failed');}
+    const {error}=await withTimeout(client().from(table).delete().eq('trip_id',config.tripId));
+    if(error)throw new Error(error.message||'Cloud moment reset failed');
+    writeLocal([]);writeTombstones([]);await clearPendingPhotos();
+    try{storage?.remove?storage.remove(META_KEY):localStorage.removeItem(META_KEY);}catch(e){}
+    state.lastSyncAt=null;state.error=null;emit('paused','Moments reset complete');
+  }
   function initialise(){readLocal();root.addEventListener?.('online',()=>queueSync(50));root.document?.addEventListener('visibilitychange',()=>{if(root.document.visibilityState==='visible')queueSync(100);});root.setInterval?.(()=>{if(root.document?.visibilityState==='visible')syncNow();},30000);}
-  root.MOMENT_SYNC=Object.freeze({EVENTS,getState:snapshot,normalizeRecord,readLocal,writeLocal,markDeleted,stagePhoto,syncNow,queueSync,isConfigured:configured});initialise();
+  root.MOMENT_SYNC=Object.freeze({EVENTS,getState:snapshot,normalizeRecord,readLocal,writeLocal,markDeleted,stagePhoto,syncNow,queueSync,pause,clearPendingPhotos,resetTrip,isConfigured:configured});initialise();
 })(globalThis);

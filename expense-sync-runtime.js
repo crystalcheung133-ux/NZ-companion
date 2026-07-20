@@ -10,7 +10,7 @@
   const TOMBSTONE_KEY='travel_engine_expense_tombstones_v1';
   const META_KEY='travel_engine_expense_sync_meta_v1';
   const table=config.tables?.expenses||'trip_expenses';
-  const state={status:'idle',message:'Saved on this device',lastSyncAt:null,error:null,timer:null,inFlight:null};
+  const state={status:'idle',message:'Saved on this device',lastSyncAt:null,error:null,timer:null,inFlight:null,paused:false};
 
   function uuid(){
     if(root.crypto?.randomUUID) return root.crypto.randomUUID();
@@ -112,6 +112,7 @@
     console.log(LOG,'Expense uploaded',records.map(r=>r.id).join(', '));
   }
   async function syncNow(){
+    if(state.paused){emit('paused','Sync paused for trip reset');return snapshot();}
     if(!configured()||!navigator.onLine){emit('offline','Saved offline — will sync later');return snapshot();}
     if(state.inFlight)return state.inFlight;
     state.inFlight=(async()=>{
@@ -149,7 +150,19 @@
     })();
     return state.inFlight;
   }
-  function queueSync(delay=350){clearTimeout(state.timer);state.timer=setTimeout(syncNow,delay);}
+  function queueSync(delay=350){if(state.paused)return;clearTimeout(state.timer);state.timer=setTimeout(syncNow,delay);}
+  function pause(){state.paused=true;clearTimeout(state.timer);state.timer=null;emit('paused','Sync paused for trip reset');}
+  async function resetTrip(){
+    pause();
+    if(state.inFlight){try{await state.inFlight;}catch(e){}}
+    if(!configured()||!navigator.onLine)throw new Error('An internet connection is required to reset cloud expenses.');
+    await ensureSession();
+    const {error}=await withTimeout(client().from(table).delete().eq('trip_id',config.tripId));
+    if(error)throw new Error(error.message||'Cloud expense reset failed');
+    writeLocal([]);writeTombstones([]);
+    try{storage?.remove?storage.remove(META_KEY):localStorage.removeItem(META_KEY);}catch(e){}
+    state.lastSyncAt=null;state.error=null;emit('paused','Expenses reset complete');
+  }
   function initialise(){
     readLocal();
     root.addEventListener?.('online',()=>queueSync(50));
@@ -157,6 +170,6 @@
     root.setInterval?.(()=>{if(root.document?.visibilityState==='visible')syncNow();},30000);
   }
 
-  root.EXPENSE_SYNC=Object.freeze({EVENTS,getState:snapshot,normalizeRecord,readLocal,writeLocal,markDeleted,syncNow,queueSync,isConfigured:configured});
+  root.EXPENSE_SYNC=Object.freeze({EVENTS,getState:snapshot,normalizeRecord,readLocal,writeLocal,markDeleted,syncNow,queueSync,pause,resetTrip,isConfigured:configured});
   initialise();
 })(globalThis);
