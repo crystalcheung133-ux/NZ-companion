@@ -21,7 +21,8 @@
     cloudSnapshot:'travel_engine_cloud_snapshot_v1',
     cloudSyncMeta:'travel_engine_cloud_sync_meta_v1',
     expenseSyncTombstones:'travel_engine_expense_tombstones_v1',
-    expenseSyncMeta:'travel_engine_expense_sync_meta_v1'
+    expenseSyncMeta:'travel_engine_expense_sync_meta_v1',
+    tripGeneration:'travel_engine_trip_generation_v1'
   });
 
   const domains=Object.freeze({

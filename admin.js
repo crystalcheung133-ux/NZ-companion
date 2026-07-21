@@ -168,55 +168,11 @@
   }
 
 
-  window.resetTripData=async function(){
-    if(!isAdminUser() || !isUnlocked() || !state.mode){ alert('Open Trip Studio before resetting trip data.'); return false; }
-    if(state.dirty){ alert('Save or discard pending Trip Studio changes before resetting trip data.'); return false; }
-    const ok=window.confirm('Reset Trip Data?\n\nThis permanently deletes all synced expenses, moments and uploaded photos for this trip, then clears saved progress from this device.\n\nThe original itinerary and guide will remain. This cannot be undone.');
-    if(!ok) return false;
-    const button=document.getElementById('resetTripDataButton');
-    if(button){button.disabled=true;button.setAttribute('aria-busy','true');}
-    try{
-      if(!navigator.onLine) throw new Error('Connect to the internet before resetting trip data so cloud records and photos can be deleted safely.');
-      if(!window.EXPENSE_SYNC?.resetTrip || !window.MOMENT_SYNC?.resetTrip) throw new Error('Cloud reset services are not available. Reload the app and try again.');
-      window.EXPENSE_SYNC.pause();
-      window.MOMENT_SYNC.pause();
-      await Promise.all([window.EXPENSE_SYNC.resetTrip(),window.MOMENT_SYNC.resetTrip()]);
-      const exactKeys=[
-        STORAGE_CONFIG.keys.checklist,
-        STORAGE_CONFIG.keys.expenses,
-        STORAGE_CONFIG.keys.momentsFreeform,
-        STORAGE_CONFIG.keys.momentsList,
-        STORAGE_CONFIG.keys.adminDraft,
-        STORAGE_CONFIG.keys.guideNavContext,
-        STORAGE_CONFIG.keys.guideNavReopen,
-        STORAGE_CONFIG.keys.itineraryOverrides,
-        STORAGE_CONFIG.keys.tripCompletion,
-        STORAGE_CONFIG.keys.changedPlans,
-        STORAGE_CONFIG.keys.cloudSnapshot,
-        STORAGE_CONFIG.keys.cloudSyncMeta,
-        STORAGE_CONFIG.keys.expenseSyncTombstones,
-        STORAGE_CONFIG.keys.expenseSyncMeta,
-        STORAGE_CONFIG.keys.tripCompletion+':notice',
-        'travel_engine_moment_tombstones_v1',
-        'travel_engine_moment_sync_meta_v1',
-        'travel_engine_cloud_reload_version_v1'
-      ];
-      exactKeys.forEach(key=>STORAGE.local.remove(key));
-      const prefixes=[STORAGE_CONFIG.keys.momentPrefix,STORAGE_CONFIG.keys.latestMomentPrefix];
-      for(let i=localStorage.length-1;i>=0;i--){
-        const key=localStorage.key(i);
-        if(key && prefixes.some(prefix=>key.startsWith(prefix))) localStorage.removeItem(key);
-      }
-      alert('Trip data has been permanently reset on this device and in the cloud. The clean companion will now reload.');
-      window.location.reload();
-      return true;
-    }catch(error){
-      console.error('[Reset Trip Data]',error);
-      alert(`Reset could not be completed. No local data was cleared.\n\n${error?.message||String(error)}`);
-      if(button){button.disabled=false;button.removeAttribute('aria-busy');}
-      return false;
-    }
-  };
+  /* window.resetTripData is defined in reset-runtime.js (RC11R4), which
+     owns the whole reset transaction — RPC, storage, and every local store
+     that needs clearing. admin.js only builds the button and wires the
+     click; it doesn't know how a reset works, on purpose, so there's one
+     place (reset-runtime.js) that does. */
 
   window.setAdminMode=function(enabled){
     enabled=!!enabled;

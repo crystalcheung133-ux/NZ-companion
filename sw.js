@@ -1,5 +1,5 @@
 importScripts('./theme-config.js', './asset-config.js', './locale-config.js', './formatter.js', './navigation-config.js', './storage-config.js', './trip-config.js');
-const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-rc11r2-reset-root-fix`;
+const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-rc11r4-reset-architecture`;
 const CRITICAL_EXTENSIONS = /\.(?:css|js)$/i;
 const ASSETS = [
   './',
@@ -15,8 +15,10 @@ const ASSETS = [
   './supabase-client-runtime.js',
   './expense-sync-runtime.js',
   './moment-sync-runtime.js',
+  './generation-runtime.js',
   './moments.js',
   './admin.js',
+  './reset-runtime.js',
   './complete-runtime.js',
   './export-runtime.js',
   './pwa.js',

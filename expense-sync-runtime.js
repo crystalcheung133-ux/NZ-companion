@@ -80,7 +80,7 @@
   }
   function toRemote(record,deleted=false){
     const r=normalizeRecord(record);
-    return {id:r.id,trip_id:config.tripId,payload:r,actor_family:(typeof root.getFriend==='function'?root.getFriend():null)||'lee',created_at:r.createdAt,updated_at:r.updatedAt,deleted_at:deleted?(r.deletedAt||r.updatedAt):null};
+    return {id:r.id,trip_id:config.tripId,payload:r,actor_family:(typeof root.getFriend==='function'?root.getFriend():null)||'lee',created_at:r.createdAt,updated_at:r.updatedAt,deleted_at:deleted?(r.deletedAt||r.updatedAt):null,generation:root.TRIP_GENERATION?.getLocal?.()||1};
   }
   function fromRemote(row){
     const payload=normalizeRecord(Object.assign({},row.payload||{},{id:row.id,createdAt:row.created_at,updatedAt:row.updated_at}));
@@ -118,6 +118,21 @@
     state.inFlight=(async()=>{
       emit('syncing','Syncing expenses…');
       try{
+        const generationCheck=await root.TRIP_GENERATION?.ensureCurrentGeneration?.();
+        if(generationCheck?.stale){
+          // Trip was reset since this device last synced. Local data for
+          // this device has already been wiped by TRIP_GENERATION — pull
+          // whatever the (now-clean) cloud has and stop. Do NOT merge or
+          // push: anything still sitting in memory here is pre-reset state.
+          const remoteRows=await pull();
+          const finalActive=remoteRows.map(fromRemote).filter(r=>!r.deletedAt);
+          finalActive.sort((a,b)=>String(a.createdAt).localeCompare(String(b.createdAt)));
+          writeLocal(finalActive);writeTombstones([]);
+          state.lastSyncAt=new Date().toISOString();writeJSON(META_KEY,{lastSyncAt:state.lastSyncAt});
+          emit('synced','Synced across families');
+          root.document?.dispatchEvent(new CustomEvent(EVENTS.changed,{detail:{count:finalActive.length}}));
+          return snapshot();
+        }
         const remoteRows=await pull();
         const localActive=readLocal();const localDeleted=readTombstones();
         const localMap=new Map([...localActive,...localDeleted].map(x=>[x.id,x]));
@@ -152,29 +167,16 @@
   }
   function queueSync(delay=350){if(state.paused)return;clearTimeout(state.timer);state.timer=setTimeout(syncNow,delay);}
   function pause(){state.paused=true;clearTimeout(state.timer);state.timer=null;emit('paused','Sync paused for trip reset');}
-  async function resetTrip(){
-    pause();
-    if(state.inFlight){try{await state.inFlight;}catch(e){}}
-    if(!configured()||!navigator.onLine)throw new Error('An internet connection is required to reset cloud expenses.');
-    await ensureSession();
-    const {data:beforeRows,error:beforeError}=await withTimeout(
-      client().from(table).select('id').eq('trip_id',config.tripId)
-    );
-    if(beforeError)throw new Error(beforeError.message||'Unable to verify cloud expenses before reset');
-    const {data:deletedRows,error}=await withTimeout(
-      client().from(table).delete().eq('trip_id',config.tripId).select('id')
-    );
-    if(error)throw new Error(error.message||'Cloud expense reset failed');
-    const {data:remainingRows,error:verifyError}=await withTimeout(
-      client().from(table).select('id').eq('trip_id',config.tripId).limit(1)
-    );
-    if(verifyError)throw new Error(verifyError.message||'Unable to verify cloud expense reset');
-    if((remainingRows||[]).length){
-      throw new Error(`Cloud expenses were not deleted. Supabase DELETE policy has not been applied (found ${(beforeRows||[]).length}, deleted ${(deletedRows||[]).length}). Run SUPABASE_STAGE_10AB_SYNC_SETUP.sql, then try Reset again.`);
-    }
+  /* Clears this device's local expense store only (list, tombstones, sync
+     meta). Does NOT touch the cloud — cloud deletion happens exactly once,
+     inside the reset_trip() database RPC, orchestrated by reset-runtime.js.
+     Called both by reset-runtime.js (the device that pressed Reset) and by
+     generation-runtime.js (any other device that detects the trip was
+     reset out from under it). */
+  function clearLocal(){
     writeLocal([]);writeTombstones([]);
     try{storage?.remove?storage.remove(META_KEY):localStorage.removeItem(META_KEY);}catch(e){}
-    state.lastSyncAt=null;state.error=null;emit('paused','Expenses reset complete');
+    state.lastSyncAt=null;state.error=null;
   }
   function initialise(){
     readLocal();
@@ -183,6 +185,6 @@
     root.setInterval?.(()=>{if(root.document?.visibilityState==='visible')syncNow();},30000);
   }
 
-  root.EXPENSE_SYNC=Object.freeze({EVENTS,getState:snapshot,normalizeRecord,readLocal,writeLocal,markDeleted,syncNow,queueSync,pause,resetTrip,isConfigured:configured});
+  root.EXPENSE_SYNC=Object.freeze({EVENTS,getState:snapshot,normalizeRecord,readLocal,writeLocal,markDeleted,syncNow,queueSync,pause,clearLocal,isConfigured:configured});
   initialise();
 })(globalThis);
