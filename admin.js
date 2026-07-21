@@ -65,7 +65,14 @@
     const modal=ensurePinModal();
     modal.hidden=false;
     const input=modal.querySelector('#adminPinInput');
-    window.setTimeout(()=>input&&input.focus(),0);
+    if(input){
+      try{ input.focus({preventScroll:true}); }catch(e){ input.focus(); }
+      window.requestAnimationFrame(()=>{
+        if(document.activeElement!==input){
+          try{ input.focus({preventScroll:true}); }catch(e){ input.focus(); }
+        }
+      });
+    }
     return false;
   }
   function readMode(){ return isAdminUser() && isUnlocked() && STORAGE.local.get(MODE_KEY)==='admin'; }

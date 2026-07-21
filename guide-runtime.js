@@ -79,9 +79,19 @@ function openShoppingDirectoryView(){
 window.addEventListener('hashchange',applyGuideHashView);
 document.addEventListener('DOMContentLoaded',applyGuideHashView);
 
+function guideCategoryItems(cat){
+ if(cat==='EXPLORE'){
+  return [...(CATEGORIES.ATTRACTIONS||[]),...(CATEGORIES.ACTIVITIES||[])]
+   .filter(item=>item&&item.key!=='airport-queenstown');
+ }
+ return CATEGORIES[cat]||[];
+}
+function guideCategoryHeading(cat){
+ return cat==='EXPLORE'?'SIGHTS & ACTIVITIES':cat;
+}
 function openGuideCategory(cat){
  saveGuideNavigationContext(cat);
- const list=(CATEGORIES[cat]||[]).slice().sort((a,b)=>String(a.title||'').localeCompare(String(b.title||'')));
+ const list=guideCategoryItems(cat).slice().sort((a,b)=>String(a.title||'').localeCompare(String(b.title||'')));
  if(cat==='SHOP'){
   const directoryRow=`<button onclick="openShoppingDirectoryView()"><span><span class="guide-list-title">🛍 Shopping Directory</span><span class="guide-list-sub">Optional shops · Near · Best with Day</span></span><span>↓</span></button>`;
   const rows=directoryRow+list.map(i=>`<button onclick="openGuideModal('${i.key}')"><span><span class="guide-list-title">${i.emoji} ${i.title}</span><span class="guide-list-sub">${i.sub||''}</span></span><span class="guide-list-meta">${guideStatusHTML(PLACES[i.key]||{})}<span class="guide-list-chevron">›</span></span></button>`).join('');
@@ -89,7 +99,7 @@ function openGuideCategory(cat){
   closeMiniMenus();$('guideModal').classList.add('show');return;
  }
  const rows=list.map(i=>`<button onclick="openGuideModal('${i.key}')"><span><span class="guide-list-title">${i.emoji} ${i.title}</span><span class="guide-list-sub">${i.sub||''}</span></span><span class="guide-list-meta">${guideStatusHTML(PLACES[i.key]||{})}<span class="guide-list-chevron">›</span></span></button>`).join('');
- $('guideModalContent').innerHTML=`<p class="kicker">Guide</p><h2>${cat}</h2><div class="category-pop-list">${rows}</div>`;
+ $('guideModalContent').innerHTML=`<p class="kicker">Guide</p><h2>${guideCategoryHeading(cat)}</h2><div class="category-pop-list">${rows}</div>`;
  closeMiniMenus();$('guideModal').classList.add('show');
 }
 
@@ -125,7 +135,9 @@ function quickInfoHTML(g,key){
 function guideCategoryKeys(key){
  const place=PLACES[key]||{};
  const category=place.cat;
- const categoryItems=(category&&Array.isArray(CATEGORIES[category]))?CATEGORIES[category]:[];
+ const categoryItems=(category==='ATTRACTIONS'||category==='ACTIVITIES')
+  ? guideCategoryItems('EXPLORE')
+  : ((category&&Array.isArray(CATEGORIES[category]))?CATEGORIES[category]:[]);
  const keys=categoryItems.map(item=>item&&item.key).filter(itemKey=>itemKey&&PLACES[itemKey]);
  return keys.length?keys:GUIDE_ORDER.filter(itemKey=>PLACES[itemKey]);
 }
