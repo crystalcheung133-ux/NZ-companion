@@ -118,11 +118,38 @@
     }
     return undefined;
   }
+  function collectionSize(value){
+    if(Array.isArray(value))return value.length;
+    if(value&&typeof value==='object')return Object.keys(value).length;
+    return 0;
+  }
+  function validateHydrationData(data,targets){
+    const critical=[
+      ['PLACES',['places','PLACES']],
+      ['GUIDE_ORDER',['guideOrder','GUIDE_ORDER']],
+      ['TRIP_DATA',['tripData','TRIP_DATA']],
+      ['TRIP_ORDER',['tripOrder','TRIP_ORDER']],
+      ['ITINERARY_DATA',['itineraryData','itinerary','ITINERARY_DATA']]
+    ];
+    const missing=[];
+    critical.forEach(function(entry){
+      const local=targets&&targets[entry[0]],remote=select(data,entry[1]);
+      if(collectionSize(local)>0&&collectionSize(remote)===0)missing.push(entry[0]);
+    });
+    return {ok:missing.length===0,missing:missing};
+  }
   function hydrateStaticData(targets){
     const wrapper=activeSnapshot||readCachedSnapshot();
     if(!wrapper)return {ok:false,reason:'no-snapshot',applied:[]};
     const data=payloadData(wrapper);
     if(!data)return {ok:false,reason:'invalid-payload',applied:[]};
+    const integrity=validateHydrationData(data,targets);
+    if(!integrity.ok){
+      const entry={message:'Published snapshot is incomplete: '+integrity.missing.join(', '),time:new Date().toISOString()};
+      setState({hydrated:false,error:entry},'hydrate-rejected');
+      emit(EVENTS.error,{error:entry,state:snapshot()});
+      return {ok:false,reason:'incomplete-payload',missing:integrity.missing,applied:[]};
+    }
     const map=[
       ['PLACES',['places','PLACES']],['CATEGORIES',['categories','CATEGORIES']],
       ['GUIDE_ORDER',['guideOrder','GUIDE_ORDER']],['DAY_LINKS',['dayLinks','DAY_LINKS']],

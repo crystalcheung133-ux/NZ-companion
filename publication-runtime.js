@@ -15,8 +15,12 @@
     const value=store?store.readJSON(OVERRIDES_KEY,{}):{};
     return value&&typeof value==='object'&&!Array.isArray(value)?value:{};
   }
+  function datasets(){
+    return root.TRAVEL_DATASETS&&typeof root.TRAVEL_DATASETS==='object'?root.TRAVEL_DATASETS:{};
+  }
   function mergedItinerary(){
-    const itinerary=clone(root.ITINERARY_DATA||{});
+    const source=datasets();
+    const itinerary=clone(source.ITINERARY_DATA||{});
     const overrides=readOverrides();
     Object.keys(overrides).forEach(function(day){
       if(!Array.isArray(overrides[day]))return;
@@ -26,19 +30,32 @@
     return itinerary;
   }
   function buildPayload(){
+    const source=datasets();
     return {
       data:{
-        places:clone(root.PLACES||{}),
-        categories:clone(root.CATEGORIES||{}),
-        guideOrder:clone(root.GUIDE_ORDER||[]),
-        dayLinks:clone(root.DAY_LINKS||{}),
-        friends:clone(root.FRIENDS||{}),
-        bookingsData:clone(root.BOOKINGS_DATA||{}),
-        tripData:clone(root.TRIP_DATA||{}),
-        tripOrder:clone(root.TRIP_ORDER||[]),
+        places:clone(source.PLACES||{}),
+        categories:clone(source.CATEGORIES||{}),
+        guideOrder:clone(source.GUIDE_ORDER||[]),
+        dayLinks:clone(source.DAY_LINKS||{}),
+        friends:clone(source.FRIENDS||{}),
+        bookingsData:clone(source.BOOKINGS_DATA||{}),
+        tripData:clone(source.TRIP_DATA||{}),
+        tripOrder:clone(source.TRIP_ORDER||[]),
         itineraryData:mergedItinerary()
       }
     };
+  }
+  function payloadIntegrity(payload){
+    const data=payload&&payload.data;
+    const counts={
+      places:data&&data.places&&typeof data.places==='object'?Object.keys(data.places).length:0,
+      guideOrder:data&&Array.isArray(data.guideOrder)?data.guideOrder.length:0,
+      tripData:data&&data.tripData&&typeof data.tripData==='object'?Object.keys(data.tripData).length:0,
+      tripOrder:data&&Array.isArray(data.tripOrder)?data.tripOrder.length:0,
+      itineraryData:data&&data.itineraryData&&typeof data.itineraryData==='object'?Object.keys(data.itineraryData).length:0
+    };
+    const ok=counts.places>0&&counts.guideOrder>0&&counts.tripData>0&&counts.tripOrder>0&&counts.itineraryData>0;
+    return {ok:ok,counts:counts};
   }
   function currentRemoteVersion(){
     const sync=root.TRIP_SYNC&&root.TRIP_SYNC.getState?root.TRIP_SYNC.getState():null;
@@ -97,6 +114,10 @@
       const cfg=root.SYNC_CONFIG||{};
       const rpcName=cfg.rpc&&cfg.rpc.publishTrip?cfg.rpc.publishTrip:'publish_trip_snapshot';
       const payload=buildPayload();
+      const integrity=payloadIntegrity(payload);
+      if(!integrity.ok){
+        throw new Error('Publication blocked: Trip or Guide dataset is incomplete. Reload the latest deploy before publishing.');
+      }
       const result=await root.SUPABASE.getClient().rpc(rpcName,{
         p_trip_id:cfg.tripId||'nz-family-2026',
         p_schema_version:Number(cfg.schemaVersion)||1,
@@ -140,7 +161,7 @@
     if(button)button.hidden=!(root.isAdminMode&&root.isAdminMode());
   }
 
-  root.TRIP_PUBLICATION=Object.freeze({buildPayload:buildPayload,publish:publish,prepare:publish,getLastPublishedVersion:function(){return state.lastPublishedVersion;}});
+  root.TRIP_PUBLICATION=Object.freeze({buildPayload:buildPayload,validatePayload:payloadIntegrity,publish:publish,prepare:publish,getLastPublishedVersion:function(){return state.lastPublishedVersion;}});
   root.publishLatestTrip=publish;
   root.prepareCloudPublication=publish;
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){installButton();reflectMode();},{once:true});
