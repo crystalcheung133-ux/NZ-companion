@@ -68,10 +68,11 @@
     console.log(LOG,'Moment uploaded',records.map(r=>r.id).join(', '));
   }
 
-  function openDb(){return new Promise((resolve,reject)=>{const req=indexedDB.open(DB_NAME,1);req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains(STORE))req.result.createObjectStore(STORE,{keyPath:'id'});};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});}
-  async function storePendingPhoto(id,blob){const db=await openDb();return new Promise((resolve,reject)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).put({id,blob,type:blob.type||'image/jpeg',updatedAt:new Date().toISOString()});tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);});}
-  async function getPendingPhotos(){const db=await openDb();return new Promise((resolve,reject)=>{const req=db.transaction(STORE,'readonly').objectStore(STORE).getAll();req.onsuccess=()=>resolve(req.result||[]);req.onerror=()=>reject(req.error);});}
-  async function deletePendingPhoto(id){try{const db=await openDb();await new Promise((resolve,reject)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).delete(id);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);});}catch(e){}}
+  function openDb(){return new Promise((resolve,reject)=>{const req=indexedDB.open(DB_NAME,1);req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains(STORE))req.result.createObjectStore(STORE,{keyPath:'id'});};req.onsuccess=()=>{const db=req.result;db.onversionchange=()=>db.close();resolve(db);};req.onerror=()=>reject(req.error);});}
+  function runDbTransaction(mode,operation){return openDb().then(db=>new Promise((resolve,reject)=>{let result;let settled=false;const finish=(ok,value)=>{if(settled)return;settled=true;try{db.close();}catch(e){}ok?resolve(value):reject(value);};let tx;try{tx=db.transaction(STORE,mode);result=operation(tx.objectStore(STORE));}catch(error){finish(false,error);return;}tx.oncomplete=()=>finish(true,result?.result);tx.onerror=()=>finish(false,tx.error||result?.error||new Error('Pending photo database transaction failed'));tx.onabort=()=>finish(false,tx.error||new Error('Pending photo database transaction aborted'));}));}
+  async function storePendingPhoto(id,blob){await runDbTransaction('readwrite',store=>store.put({id,blob,type:blob.type||'image/jpeg',updatedAt:new Date().toISOString()}));}
+  async function getPendingPhotos(){const rows=await runDbTransaction('readonly',store=>store.getAll());return rows||[];}
+  async function deletePendingPhoto(id){try{await runDbTransaction('readwrite',store=>store.delete(id));}catch(e){}}
   function extension(type){return type==='image/png'?'png':'jpg';}
   function photoErrorMessage(error){
     return error?.message||error?.error_description||error?.details||String(error||'Photo upload failed');
