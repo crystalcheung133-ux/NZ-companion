@@ -249,6 +249,7 @@
   window.getAdminDraft=function(){ return JSON.parse(JSON.stringify(ensureDraft())); };
   window.isAdminMode=function(){ return state.mode && isUnlocked() && isAdminUser(); };
   window.isAdminUnlocked=function(){ return isUnlocked() && isAdminUser(); };
+  window.getAdminPublishCredential=function(){ return isUnlocked() && isAdminUser() ? ADMIN_PIN : null; };
   window.hasUnsavedAdminChanges=function(){ return state.dirty; };
 
   window.saveAdminChanges=function(){

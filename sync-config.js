@@ -19,7 +19,7 @@
     schemaVersion:1,
     tables:Object.freeze({publications:'trip_publications',expenses:'trip_expenses',moments:'trip_moments',generation:'trip_generation'}),
     storage:Object.freeze({momentsBucket:'trip-moments'}),
-    rpc:Object.freeze({resetTrip:'reset_trip'}),
+    rpc:Object.freeze({resetTrip:'reset_trip',publishTrip:'publish_trip_snapshot'}),
     requestTimeoutMs:8000,
     cacheKey:'travel_engine_cloud_snapshot_v1',
     metadataKey:'travel_engine_cloud_sync_meta_v1',
