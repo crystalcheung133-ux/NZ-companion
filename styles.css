@@ -1088,9 +1088,10 @@ body.home-bg {
   border-color:rgba(8,127,156,.21)!important;
   color:var(--nz-ink)!important;
 }body.home-bg .home-day-button {
-  background:var(--theme-accent-action)!important;
-  border-color:var(--nz-orange-deep)!important;
-  box-shadow:0 12px 26px rgba(201,109,0,.20)!important;
+  background:var(--theme-primary-action)!important;
+  border-color:var(--nz-blue-deep)!important;
+  color:#FFFFFF!important;
+  box-shadow:0 12px 28px rgba(8,96,120,.24)!important;
 }/* Moments now follows Days' light gradient. No blush/pink controls. */
 body.moments-page .moments-capture-choices .primary-action, body.moments-page .primary-action, body.moments-page .page-action-row .primary-action, body.moments-page button.primary-action {
   background:var(--theme-primary-action)!important;
