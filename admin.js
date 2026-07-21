@@ -35,6 +35,14 @@
     modal.classList.add('show');
     scrollTripStudioToBottom();
   }
+  function syncPinModalToVisualViewport(modal){
+    if(!modal) return;
+    const viewport=window.visualViewport;
+    const top=viewport?Math.max(0,viewport.offsetTop):0;
+    const height=viewport?viewport.height:window.innerHeight;
+    modal.style.setProperty('--admin-pin-vv-top',`${Math.round(top)}px`);
+    modal.style.setProperty('--admin-pin-vv-height',`${Math.round(height)}px`);
+  }
   function ensurePinModal(){
     let modal=document.getElementById('adminPinModal');
     if(modal) return modal;
@@ -44,10 +52,20 @@
     modal.hidden=true;
     modal.innerHTML=`<div class="admin-pin-sheet" role="dialog" aria-modal="true" aria-labelledby="adminPinTitle"><button type="button" class="admin-pin-close" aria-label="Close">×</button><p class="kicker">TRIP STUDIO ACCESS</p><h2 id="adminPinTitle">Enter Studio PIN</h2><p class="admin-pin-help">Enter the 6-digit PIN to open Trip Studio.</p><form id="adminPinForm"><input id="adminPinInput" type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" aria-label="6-digit Trip Studio PIN" placeholder="••••••"><p id="adminPinError" class="admin-pin-error" hidden>Incorrect PIN.</p><button type="submit" class="admin-pin-submit">Open Trip Studio</button></form></div>`;
     document.body.appendChild(modal);
-    const close=()=>{ modal.hidden=true; const input=modal.querySelector('#adminPinInput'); if(input) input.value=''; };
+    const syncViewport=()=>syncPinModalToVisualViewport(modal);
+    const close=()=>{
+      modal.hidden=true;
+      const input=modal.querySelector('#adminPinInput');
+      if(input) input.value='';
+      if(window.visualViewport){
+        window.visualViewport.removeEventListener('resize',syncViewport);
+        window.visualViewport.removeEventListener('scroll',syncViewport);
+      }
+    };
     modal.querySelector('.admin-pin-close').addEventListener('click',close);
     modal.addEventListener('click',event=>{ if(event.target===modal) close(); });
     modal.querySelector('#adminPinInput').addEventListener('input',event=>{ event.target.value=event.target.value.replace(/\D/g,'').slice(0,6); const error=modal.querySelector('#adminPinError'); if(error) error.hidden=true; });
+    modal._syncAdminPinViewport=syncViewport;
     modal.querySelector('#adminPinForm').addEventListener('submit',event=>{
       event.preventDefault();
       const input=modal.querySelector('#adminPinInput');
@@ -64,13 +82,22 @@
     if(typeof window.closeFriendModal==='function') window.closeFriendModal();
     const modal=ensurePinModal();
     modal.hidden=false;
+    if(typeof modal._syncAdminPinViewport==='function') modal._syncAdminPinViewport();
+    if(window.visualViewport && typeof modal._syncAdminPinViewport==='function'){
+      window.visualViewport.addEventListener('resize',modal._syncAdminPinViewport);
+      window.visualViewport.addEventListener('scroll',modal._syncAdminPinViewport);
+    }
     const input=modal.querySelector('#adminPinInput');
     if(input){
       try{ input.focus({preventScroll:true}); }catch(e){ input.focus(); }
       window.requestAnimationFrame(()=>{
+        if(typeof modal._syncAdminPinViewport==='function') modal._syncAdminPinViewport();
         if(document.activeElement!==input){
           try{ input.focus({preventScroll:true}); }catch(e){ input.focus(); }
         }
+        window.setTimeout(()=>{
+          if(typeof modal._syncAdminPinViewport==='function') modal._syncAdminPinViewport();
+        },120);
       });
     }
     return false;

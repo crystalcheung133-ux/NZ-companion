@@ -1599,23 +1599,40 @@ body.expense-modal-open {position:fixed!important;left:0!important;right:0!impor
 .accommodation-picker {display:grid;gap:10px;margin:4px 0 12px}.accommodation-picker-row {width:100%;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;padding:14px;border:1px solid var(--surface-border);border-radius:16px;background:#fffaf2;color:var(--ink);font:inherit;text-align:left;cursor:pointer}.accommodation-picker-row:active {transform:translateY(1px)}.accommodation-picker-icon {font-size:22px}.accommodation-picker-copy {min-width:0}.accommodation-picker-copy strong, .accommodation-picker-copy small {display:block}.accommodation-picker-copy strong {font-size:16px;line-height:1.25}.accommodation-picker-copy small {margin-top:4px;font-size:13px;opacity:.7}.accommodation-picker-meta {display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;white-space:nowrap;opacity:.75}.accommodation-picker-meta b {font-size:23px;line-height:1}.accommodation-back {margin:0 0 6px;padding:0;border:0;background:transparent;color:var(--accent,#1f5d59);font:inherit;font-size:14px;font-weight:850;cursor:pointer}.accommodation-onepage-detail .accommodation-detail-card {margin-top:2px}.timeline-action--trip {white-space:nowrap}
 @media(max-width:430px){.accommodation-picker-row {padding:12px 11px;gap:10px}.accommodation-picker-meta {font-size:11px}.accommodation-picker-copy strong {font-size:15px}}
 
-
-/* RC12.4 — Desktop Days navigation visibility.
-   Root cause: Studio/Admin mode changed nav controls to dark text while the fixed nav remained dark.
-   Mobile already has sufficient contrast, so this is desktop-only. */
-@media (min-width:621px){
-  .app-nav .days-trigger,
-  body.admin-mode .app-nav .days-trigger{
-    background:#fffdf8!important;
-    color:#005f73!important;
-    border:2px solid rgba(255,255,255,.86)!important;
-    box-shadow:0 5px 16px rgba(0,0,0,.22)!important;
-    opacity:1!important;
-  }
-  .app-nav .days-trigger span,
-  body.admin-mode .app-nav .days-trigger span{color:#005f73!important;opacity:1!important;}
-  .app-nav .days-trigger small,
-  body.admin-mode .app-nav .days-trigger small{color:#005f73!important;opacity:1!important;}
-  .app-nav .days-trigger:hover,
-  .app-nav .days-trigger:focus-visible{background:#ffffff!important;box-shadow:0 0 0 3px rgba(255,255,255,.34),0 7px 18px rgba(0,0,0,.24)!important;}
+/* RC12.5 — Bottom navigation consistency and Days icon contrast.
+   Website now keeps the same dark navigation treatment as mobile.
+   Studio mode must not recolour navigation controls; only the Days glyph is
+   brightened so it remains legible against the dark bar. */
+body.admin-mode .app-nav a,
+body.admin-mode .app-nav button {color:#fff!important;}
+.app-nav .days-trigger,
+body.admin-mode .app-nav .days-trigger {
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  color:#fff!important;
 }
+.app-nav .days-trigger span,
+body.admin-mode .app-nav .days-trigger span {
+  color:#fff!important;
+  opacity:1!important;
+  filter:brightness(1.85) saturate(.2) drop-shadow(0 1px 1px rgba(255,255,255,.22))!important;
+}
+.app-nav .days-trigger small,
+body.admin-mode .app-nav .days-trigger small {color:#fff!important;opacity:.96!important;}
+.app-nav .days-trigger:hover,
+.app-nav .days-trigger:focus-visible {background:rgba(255,255,255,.08)!important;box-shadow:none!important;}
+
+/* Keep the PIN sheet attached to the bottom of the visible iOS viewport. */
+.admin-pin-modal {
+  top:var(--admin-pin-vv-top,0px)!important;
+  right:0!important;
+  bottom:auto!important;
+  left:0!important;
+  height:var(--admin-pin-vv-height,100dvh)!important;
+  min-height:0!important;
+  align-items:end!important;
+  justify-items:center!important;
+  overflow:hidden!important;
+}
+.admin-pin-sheet {max-height:calc(var(--admin-pin-vv-height,100dvh) - 18px);overflow:auto;}
