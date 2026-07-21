@@ -70,7 +70,7 @@ let editingExpenseIndex=null;
    ============================================================================ */
 (function(){
   const FRIEND_ORDER=['lee','fowlers','yau'];
-  const FRIEND_FALLBACK={lee:'MEL · Lee',fowlers:'SYD · Fowlers',yau:'NTL · Yau'};
+  const FRIEND_FALLBACK=Object.fromEntries(Object.entries(TRIP_CONFIG.participants?.identities||{}).map(([key,value])=>[key,`${value.code} · ${value.name}`]));
 
   function currentUser(){
     try{return (typeof getFriend==='function' ? getFriend() : STORAGE.local.get(STORAGE_CONFIG.keys.friend)) || 'lee';}
@@ -461,7 +461,7 @@ let editingExpenseIndex=null;
       }
     });
     const rows=[
-      ['CCMV NEW ZEALAND EXPENSE SUMMARY'],
+      [TRIP_CONFIG.exports?.expenseSummaryTitle||`${TRIP_CONFIG.tripName.toUpperCase()} EXPENSE SUMMARY`],
       [`Trip Total ${MONEY.getTripCurrency().code}`,Math.round(total)],
       [],
       ['Personal Spend',`Amount ${MONEY.getTripCurrency().code}`],

@@ -25,14 +25,37 @@
     shortName: 'NZ Family',
     navLabel: 'New Zealand Companion',
     familyLabel: 'MELBOURNE · SYDNEY · NEWCASTLE',
+    participants: Object.freeze({
+      defaultKey: 'lee',
+      order: Object.freeze(['lee','fowlers','yau']),
+      identities: Object.freeze({
+        lee: Object.freeze({code:'MEL',name:'Lee'}),
+        fowlers: Object.freeze({code:'SYD',name:'Fowlers'}),
+        yau: Object.freeze({code:'NTL',name:'Yau'})
+      })
+    }),
+    home: Object.freeze({
+      ariaLabel: 'New Zealand Companion home',
+      reunionStory: 'Three cities. One reunion.',
+      dateLine: '22 Sep — 1 Oct 2026',
+      regionLine: 'South Island',
+      clockLabel: 'New Zealand',
+      clockSuffix: 'NZ',
+      seasonLabel: 'Spring road trip',
+      seasonNote: 'Alpine weather varies',
+      welcomeMessage: 'Welcome to New Zealand',
+      completedMessage: 'Thanks for the moments'
+    }),
+    guide: Object.freeze({ excludedPlaceIds: Object.freeze(['airport-queenstown']) }),
+    exports: Object.freeze({ expenseSummaryTitle: 'CCMV NEW ZEALAND EXPENSE SUMMARY' }),
     heroLine1: 'New Zealand',
     heroEmphasis: 'Companion',
     tagline: 'Drive · Discover · Adventure',
     splashSlogan: 'ADVENTURE AWAITS',
     splashDestination: 'NEW ZEALAND 2026',
     storageNamespace: 'nz-family-2026',
-    version: 'RC10B',
-    buildLabel: 'Day · Guide · Trip Info Refactor',
+    version: 'RC14A',
+    buildLabel: 'Travel Engine v1.0 · Trip Identity Extraction',
     theme: root.THEME_CONFIG.colors
   });
 

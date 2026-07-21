@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
 });
 
-function getFriend(){return STORAGE.local.get(STORAGE_CONFIG.keys.friend,'lee');}
+function getFriend(){return STORAGE.local.get(STORAGE_CONFIG.keys.friend,TRIP_CONFIG.participants?.defaultKey||'lee');}
 function setFriend(k){
   STORAGE.local.set(STORAGE_CONFIG.keys.friend,k);
   closeFriendModal();
@@ -81,13 +81,10 @@ function setFriend(k){
   if(document.getElementById('momentsModal')?.classList.contains('show')&&typeof window.simplifyMomentsAuthor==='function')window.simplifyMomentsAuthor();
   if(typeof window.refreshExpenseAdminUI==='function')window.refreshExpenseAdminUI();
 }
-const FRIEND_IDENTITY={
-  lee:{code:'MEL',name:'Lee'},
-  fowlers:{code:'SYD',name:'Fowlers'},
-  yau:{code:'NTL',name:'Yau'}
-};
+const FRIEND_IDENTITY=TRIP_CONFIG.participants?.identities||{};
 function friendIdentityHTML(key,compact=false){
-  const identity=FRIEND_IDENTITY[key]||FRIEND_IDENTITY.lee;
+  const fallbackKey=TRIP_CONFIG.participants?.defaultKey||Object.keys(FRIEND_IDENTITY)[0];
+  const identity=FRIEND_IDENTITY[key]||FRIEND_IDENTITY[fallbackKey];
   return `<span class="family-identity family-${escapeHTML(key)}${compact?' is-compact':''}"><span class="family-code">${escapeHTML(identity.code)}</span><span class="family-name">${escapeHTML(identity.name)}</span></span>`;
 }
 window.friendIdentityHTML=friendIdentityHTML;

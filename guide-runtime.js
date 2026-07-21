@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded',applyGuideHashView);
 function guideCategoryItems(cat){
  if(cat==='EXPLORE'){
   return [...(CATEGORIES.ATTRACTIONS||[]),...(CATEGORIES.ACTIVITIES||[])]
-   .filter(item=>item&&item.key!=='airport-queenstown');
+   .filter(item=>item&&!((TRIP_CONFIG.guide?.excludedPlaceIds||[]).includes(item.key)));
  }
  return CATEGORIES[cat]||[];
 }
