@@ -162,36 +162,3 @@ function renderDashboard(){
 }
 
 
-/** Returns an array of BOOKINGS_DATA entries whose dayId matches the given
- *  day id (e.g. 'day1'). Returns [] if BOOKINGS_DATA is missing/empty or
- *  no bookings match — never throws. */
-function getBookingsForDay(dayId){
-  try{
-    if (typeof BOOKINGS_DATA === 'undefined' || !BOOKINGS_DATA) return [];
-    return Object.values(BOOKINGS_DATA).filter(b => b && b.dayId === dayId);
-  }catch(e){ return []; }
-}
-
-/** Returns an array of BOOKINGS_DATA entries whose placeId matches the given
- *  PLACES key. Returns [] if none match or BOOKINGS_DATA is missing. */
-function getBookingsForPlace(placeId){
-  try{
-    if (typeof BOOKINGS_DATA === 'undefined' || !BOOKINGS_DATA) return [];
-    return Object.values(BOOKINGS_DATA).filter(b => b && b.placeId === placeId);
-  }catch(e){ return []; }
-}
-
-/** Maps a booking status code to a short display label + emoji. Falls back
- *  to the raw status string (or 'Unknown') for any value not in the map,
- *  so this never throws on unexpected data. Not currently rendered anywhere. */
-function getBookingStatusLabel(status){
-  const map = {
-    confirmed: '✅ Confirmed',
-    pending:   '🕒 Pending',
-    toBook:    '📌 To Book',
-    cancelled: '✖️ Cancelled'
-  };
-  return map[status] || (status || 'Unknown');
-}
-
-

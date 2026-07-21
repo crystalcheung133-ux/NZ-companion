@@ -415,18 +415,6 @@
   };
   /* Stage 4C-6: removed legacy v3.2 window.saveExpense; canonical handler is later in this file. */
 
-  window.renderLatestExpenseMini = function(){
-    const box=document.getElementById('latestExpenseMini'); if(!box) return;
-    const arr=readJson(STORAGE_CONFIG.keys.expenses,[]);
-    const latest=arr.map((e,i)=>({...e,_idx:i})).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||''))).slice(0,3);
-    if(!latest.length){box.innerHTML='<p class="timestamp">No transactions yet.</p>';return;}
-    box.innerHTML=latest.map(e=>`<div class="expense-card">
-      <strong>${escapeHTML(e.item)}</strong>
-      <p class="timestamp">${formatTime(e.createdAt)}</p>
-      <p>${FORMATTER.number(MONEY.normalizeAmount(e.total))} ${MONEY.getTripCurrency().code} · Paid by ${FRIENDS[e.paidBy]}</p>
-      <div class="entry-actions"><button class="mini-btn" onclick="editExpense(${e._idx})">✏️ Edit</button><button class="mini-btn" onclick="deleteExpense(${e._idx})">🗑 Delete</button></div>
-    </div>`).join('');
-  };
   /* Stage 4C-6: removed legacy v3.2 window.renderExpenses; canonical handler is later in this file. */
 
   document.addEventListener('DOMContentLoaded',()=>{enhanceMomentPhotoInput();renderMoodButtons([]);renderMoments();renderExpenses();window.MOMENT_SYNC?.queueSync(150);document.addEventListener(window.MOMENT_SYNC?.EVENTS?.changed||'travelengine:momentsyncchanged',()=>renderMoments());});

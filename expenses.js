@@ -288,21 +288,6 @@ let editingExpenseIndex=null;
     }catch(e){alert('Please complete the calculation first.');}
   };
 
-  function showExpenseSavedNote(){
-    const sheet=document.querySelector('#expenseModal .tools-sheet');
-    if(!sheet) return;
-    let note=document.getElementById('expenseSavedNote');
-    if(!note){
-      note=document.createElement('div');
-      note.id='expenseSavedNote';
-      note.className='expense-saved-note';
-      note.textContent='✓ Expense saved. Ready for the next one.';
-      const form=sheet.querySelector('.expense-form');
-      sheet.insertBefore(note,form||sheet.firstChild);
-    }
-    note.classList.add('show');
-    setTimeout(()=>note.classList.remove('show'),1400);
-  }
   function resetExpenseForm(){
     editingExpenseIndex=null;
     const user=currentUser();
@@ -332,17 +317,6 @@ let editingExpenseIndex=null;
     const latestId=e._latest?' id="latestExpenseCard"':'';
     return `<div class="expense-card"${latestId}><strong>${escapeHTML(e.item||'')}</strong><p class="timestamp">${timeLabel(e.createdAt)}${e.editedAt?` · Edited ${timeLabel(e.editedAt)}`:''}</p><p>${FORMATTER.number(MONEY.normalizeAmount(e.total))} ${MONEY.getTripCurrency().code} · Paid by ${identityFor(e.paidBy,true)}</p><p>${personal?'Personal Expense':'Shared Expense'} · ${who}</p><div class="entry-actions"><button class="mini-btn" onclick="editExpense(${e._idx})">✏️ Edit</button><button class="mini-btn" onclick="deleteExpense(${e._idx})">🗑 Delete</button></div></div>`;
   }
-  function ensureToolHistory(){
-    const sheet=document.querySelector('#expenseModal .tools-sheet');
-    if(!sheet || document.getElementById('toolTransactionHistory')) return;
-    const form=sheet.querySelector('.expense-form');
-    const holder=document.createElement('div');
-    holder.className='tool-transaction-history';
-    holder.id='toolTransactionHistory';
-    if(form && form.parentNode) form.parentNode.insertBefore(holder,form.nextSibling);
-    else sheet.appendChild(holder);
-  }
-
   let expensePageScrollY=0;
   function lockExpensePage(){
     if(document.body.classList.contains('expense-modal-open')) return;
@@ -426,13 +400,6 @@ let editingExpenseIndex=null;
         setTimeout(()=>latest.classList.remove('expense-card--new'),1800);
       }
     },120);
-  };
-
-  window.renderToolTransactionHistory=function(){
-    const box=document.getElementById('toolTransactionHistory');
-    if(!box) return;
-    const latest=readExpenses().map((e,i)=>({...e,_idx:i})).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||''))).slice(0,1);
-    box.innerHTML=`<h3>Latest Transaction</h3>${latest.length?latest.map(expenseCard).join(''):'<p class="timestamp">No transactions yet.</p>'}`;
   };
 
   window.renderExpenses=function(){

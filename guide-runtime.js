@@ -31,12 +31,6 @@ function saveGuideNavigationContext(category, options){
     }));
   }catch(e){}
 }
-function openGuideFromDay(key,itemId){
-  const place=(typeof PLACES!=='undefined'&&PLACES[key])||{};
-  const sourceUrl=NAVIGATION.currentRelativeUrl({hash:itemId||null});
-  saveGuideNavigationContext(place.cat||'GUIDE',{sourceUrl,sourceType:'day'});
-  NAVIGATION.go(placeHref(key));
-}
 function openGuideGroupFromDay(keys,itemId){
   const clean=[...new Set((Array.isArray(keys)?keys:[]).filter(key=>key&&typeof PLACES!=='undefined'&&PLACES[key]))];
   if(!clean.length) return;
@@ -55,9 +49,6 @@ function clearGuideNavigationContext(){
     STORAGE.session.remove(GUIDE_NAV_CONTEXT_KEY);
     STORAGE.session.remove(GUIDE_NAV_REOPEN_KEY);
   }catch(e){}
-}
-function goPlace(key){
-  NAVIGATION.go(placeHref(key));
 }
 function closePlaceDetail(){
   const context=readGuideNavigationContext();
@@ -217,9 +208,4 @@ function renderPlaceGroupPage(keys){
   }).join('');
   mount.innerHTML=`<button class="place-detail-close" type="button" aria-label="Close guide options" onclick="closePlaceDetail()">×</button><div class="page-hero"><p class="kicker">Guide</p><h1>Choose an option</h1><p class="lead">Compare the planned choices, then use Navigate inside the restaurant card you choose.</p></div>${cards}`;
   document.title=`Guide options · ${TRIP_CONFIG.tripName}`;
-}
-
-function copyText(text){
-  if(navigator.clipboard){navigator.clipboard.writeText(text).then(()=>alert('Address copied')).catch(()=>alert(text));}
-  else alert(text);
 }
