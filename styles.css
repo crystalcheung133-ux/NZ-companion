@@ -1771,3 +1771,53 @@ body.admin-mode .app-nav .days-trigger small {color:#fff!important;opacity:.96!i
 @media(prefers-reduced-motion:reduce){
   #ccmvSplash .splash-logo,#ccmvSplash .splash-line,#ccmvSplash .splash-destination{animation:none!important;opacity:1!important;transform:none!important;}
 }
+
+
+/* RC16.7 — One-screen Guide / Travel Info cards. */
+#guideModal .guide-sheet,
+#tripModal .trip-sheet {
+  max-height:calc(100dvh - 10px)!important;
+  padding:48px 14px 12px!important;
+}
+#guideModalContent .guide-onepage {
+  display:flex!important;
+  flex-direction:column!important;
+  gap:6px!important;
+}
+#guideModalContent .guide-onepage > .kicker {margin:0!important;font-size:11px!important;line-height:1!important;}
+#guideModalContent .guide-onepage > h2 {margin:0 46px 2px 0!important;font-size:25px!important;line-height:1.08!important;}
+#guideModalContent .guide-onepage-sub,
+#guideModalContent .guide-onepage-desc {margin:0!important;font-size:14px!important;line-height:1.3!important;}
+#guideModalContent .guide-onepage .quick-info-card {margin:3px 0 4px!important;padding:11px 12px!important;border-radius:18px!important;}
+#guideModalContent .guide-onepage .quick-info-top {margin-bottom:8px!important;padding-bottom:7px!important;gap:7px!important;}
+#guideModalContent .guide-onepage .category-tag,
+#guideModalContent .guide-onepage .guide-status {padding:5px 8px!important;font-size:11px!important;line-height:1!important;}
+#guideModalContent .guide-onepage .quick-info-grid {gap:6px!important;}
+#guideModalContent .guide-onepage .quick-info-row {gap:7px!important;font-size:13px!important;line-height:1.22!important;}
+#guideModalContent .guide-onepage .quick-info-icon {width:19px!important;flex-basis:19px!important;}
+#guideModalContent .guide-onepage .quick-info-label {font-size:10px!important;line-height:1!important;margin-bottom:1px!important;}
+#guideModalContent .guide-onepage .quick-info-value {font-size:13px!important;line-height:1.24!important;}
+#guideModalContent .guide-onepage .quick-info-actions {margin-top:8px!important;padding-top:8px!important;gap:6px!important;}
+#guideModalContent .guide-onepage .quick-info-actions .utility-button,
+#guideModalContent .guide-onepage .quick-info-actions .map-button,
+#guideModalContent .guide-onepage .quick-info-actions .moment-button {min-height:34px!important;padding:7px 9px!important;font-size:12px!important;line-height:1!important;}
+#guideModalContent .guide-onepage .guide-compact-section {margin:2px 0!important;}
+#guideModalContent .guide-onepage .guide-compact-section h3 {font-size:14px!important;margin:2px 0!important;}
+#guideModalContent .guide-onepage .guide-compact-section ul {margin:0!important;padding-left:17px!important;}
+#guideModalContent .guide-onepage .guide-compact-section li {font-size:13px!important;line-height:1.25!important;margin:2px 0!important;}
+#guideModalContent .guide-onepage .guide-browse-meta {margin:1px 0!important;font-size:11px!important;}
+#guideModalContent .guide-onepage .guide-next-row {margin-top:2px!important;gap:6px!important;}
+#guideModalContent .guide-onepage .guide-next-row .pill {min-height:32px!important;padding:6px 10px!important;font-size:12px!important;}
+#tripModalContent .trip-onepage .trip-build-summary {display:none!important;}
+#tripModalContent .trip-onepage {gap:5px!important;}
+#tripModalContent .trip-onepage .fact-grid {gap:5px!important;}
+#tripModalContent .trip-onepage .fact {padding:7px 8px!important;}
+#tripModalContent .trip-onepage .guide-next-row {margin-top:2px!important;}
+@media(max-width:390px){
+  #guideModalContent .guide-onepage > h2 {font-size:23px!important;}
+  #guideModalContent .guide-onepage-sub,
+  #guideModalContent .guide-onepage-desc {font-size:13px!important;}
+  #guideModalContent .guide-onepage .quick-info-actions .utility-button,
+  #guideModalContent .guide-onepage .quick-info-actions .map-button,
+  #guideModalContent .guide-onepage .quick-info-actions .moment-button {font-size:11px!important;padding:6px 7px!important;}
+}

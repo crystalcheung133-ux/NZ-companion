@@ -125,7 +125,10 @@ function quickInfoInnerHTML(g,key){
  const phoneRow=g.phone?`<div class="quick-info-row"><span class="quick-info-icon">☎️</span><span><span class="quick-info-label">Phone</span><span class="quick-info-value">${g.phone}</span></span></div>`:'';
  const callButton=g.phone?`<a class="utility-button" href="tel:${String(g.phone).replace(/[^+\d]/g,'')}">☎️ Call</a>`:'';
  const websiteButton=g.website?`<a class="utility-button" href="${g.website}" target="_blank" rel="noopener">🌐 Website</a>`:'';
- return `<div class="quick-info-top"><span class="category-tag">${g.categoryLabel||g.cat||'Guide'}</span>${guideStatusHTML(g)}</div><div class="quick-info-grid"><div class="quick-info-row"><span class="quick-info-icon">📍</span><span><span class="quick-info-label">Address</span><span class="quick-info-value">${g.address||'Check before visit'}</span></span></div>${phoneRow}<div class="quick-info-row"><span class="quick-info-icon">🕘</span><span><span class="quick-info-label">Hours</span><span class="quick-info-value">${g.hours||'Check before visit'}</span></span></div><div class="quick-info-row"><span class="quick-info-icon">💰</span><span><span class="quick-info-label">Price</span><span class="quick-info-value">${g.price||'Varies'}</span></span></div>${visitDayHTML(key)}</div><div class="quick-info-actions"><button class="utility-button" type="button" onclick="copyGuideAddress('${key}')">📍 Copy Address</button><a class="map-button" href="${g.maps}" target="_blank" rel="noopener">🧭 Navigate</a>${callButton}${websiteButton}<button class="moment-button" aria-label="Add Moment" onclick="openMomentsModal('${key}')">✨ Moment</button></div>`;
+ const price=String(g.price||'').trim();
+ const showPrice=price&&!/^(see|look at|refer to)\s+trip\s+info$/i.test(price);
+ const priceRow=showPrice?`<div class="quick-info-row"><span class="quick-info-icon">💰</span><span><span class="quick-info-label">Price</span><span class="quick-info-value">${price}</span></span></div>`:'';
+ return `<div class="quick-info-top"><span class="category-tag">${g.categoryLabel||g.cat||'Guide'}</span>${guideStatusHTML(g)}</div><div class="quick-info-grid"><div class="quick-info-row"><span class="quick-info-icon">📍</span><span><span class="quick-info-label">Address</span><span class="quick-info-value">${g.address||'Check before visit'}</span></span></div>${phoneRow}<div class="quick-info-row"><span class="quick-info-icon">🕘</span><span><span class="quick-info-label">Hours</span><span class="quick-info-value">${g.hours||'Check before visit'}</span></span></div>${priceRow}${visitDayHTML(key)}</div><div class="quick-info-actions"><button class="utility-button" type="button" onclick="copyGuideAddress('${key}')">📍 Copy Address</button><a class="map-button" href="${g.maps}" target="_blank" rel="noopener">🧭 Navigate</a>${callButton}${websiteButton}<button class="moment-button" aria-label="Add Moment" onclick="openMomentsModal('${key}')">✨ Moment</button></div>`;
 }
 
 function quickInfoHTML(g,key){
@@ -175,7 +178,7 @@ function compactGuideSections(g){
 
 function openGuideModal(key){
  const g=PLACES[key]; if(!g)return;
- $('guideModalContent').innerHTML=`<p class="kicker">Guide</p><h2>${g.emoji} ${g.title}</h2><p><strong>${g.sub}</strong></p>${quickInfoHTML(g,key)}<p>${g.desc}</p>${compactGuideSections(g)}${guideNavButtons(key)}`;
+ $('guideModalContent').innerHTML=`<div class="guide-onepage"><p class="kicker">Guide</p><h2>${g.emoji} ${g.title}</h2><p class="guide-onepage-sub"><strong>${g.sub}</strong></p>${quickInfoHTML(g,key)}<p class="guide-onepage-desc">${g.desc}</p>${compactGuideSections(g)}${guideNavButtons(key)}</div>`;
  $('guideModal').classList.add('show');
  const sheet=document.querySelector('#guideModal .guide-sheet');
  if(sheet) sheet.scrollTop=0;
