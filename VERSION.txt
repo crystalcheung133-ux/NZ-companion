@@ -1,1 +1,1 @@
-Travel Engine v1.0 RC16.4 — Cold Launch & UI Polish
+Travel Engine v1.0 RC16.5 — Splash Sequence & Navigation State

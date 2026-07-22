@@ -1,15 +1,22 @@
 <!DOCTYPE html>
 
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><script src="app-runtime.js?v=nz1.0-rc5-4"></script><script src="theme-config.js"></script><script src="asset-config.js"></script><script src="locale-config.js"></script><script src="formatter.js"></script><script src="money-config.js"></script><script src="navigation-config.js?v=nz1.0-rc5-4"></script><script src="navigation.js?v=nz1.0-rc5-4"></script><script src="storage-config.js?v=nz1.0-rc11r4"></script><script src="storage.js"></script><script src="sync-config.js?v=nz1.0-rc13"></script><script src="sync-runtime.js?v=nz1.0-rc15-2"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-client-runtime.js?v=nz1.0-stage10a-root"></script><script src="expense-sync-runtime.js?v=nz1.0-rc11r4"></script><script src="moment-sync-runtime.js?v=nz1.0-rc12.4"></script><script src="generation-runtime.js?v=nz1.0-rc11r4"></script><script src="trip-config.js"></script><script src="money.js"></script><title data-trip-page-title="Home">Home</title><meta content="" data-trip-theme-color="" name="theme-color"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="" data-trip-apple-title="" name="apple-mobile-web-app-title"/><link data-trip-icon="icon192" rel="apple-touch-icon"/><link href="styles.css?v=nz1.0-rc16-4" rel="stylesheet"/></head><body class="home-bg"><script>(function(){function applyHomeConfig(){const home=TRIP_CONFIG.home||{};document.querySelectorAll('[data-trip-home]').forEach(function(el){const value=home[el.getAttribute('data-trip-home')];if(value!=null)el.textContent=value;});document.querySelectorAll('[data-trip-home-aria]').forEach(function(el){el.setAttribute('aria-label',home.ariaLabel||TRIP_CONFIG.tripName);});}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',applyHomeConfig);else applyHomeConfig();})();</script><div aria-hidden="true" id="ccmvSplash" role="presentation"><div class="splash-paper"></div><div class="splash-glow"></div><div class="splash-content"><img alt="" class="splash-logo" data-brand-logo="splash"/><h1 class="splash-line" data-brand-text="splashSlogan">ADVENTURE AWAITS</h1><div class="splash-destination" data-brand-text="splashDestination">NEW ZEALAND 2026</div></div><div class="splash-fadeout"></div></div><script>(function(){
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><script src="app-runtime.js?v=nz1.0-rc5-4"></script><script src="theme-config.js"></script><script src="asset-config.js"></script><script src="locale-config.js"></script><script src="formatter.js"></script><script src="money-config.js"></script><script src="navigation-config.js?v=nz1.0-rc5-4"></script><script src="navigation.js?v=nz1.0-rc5-4"></script><script src="storage-config.js?v=nz1.0-rc11r4"></script><script src="storage.js"></script><script src="sync-config.js?v=nz1.0-rc13"></script><script src="sync-runtime.js?v=nz1.0-rc15-2"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-client-runtime.js?v=nz1.0-stage10a-root"></script><script src="expense-sync-runtime.js?v=nz1.0-rc11r4"></script><script src="moment-sync-runtime.js?v=nz1.0-rc12.4"></script><script src="generation-runtime.js?v=nz1.0-rc11r4"></script><script src="trip-config.js"></script><script src="money.js"></script><title data-trip-page-title="Home">Home</title><meta content="" data-trip-theme-color="" name="theme-color"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="" data-trip-apple-title="" name="apple-mobile-web-app-title"/><link data-trip-icon="icon192" rel="apple-touch-icon"/><link href="styles.css?v=nz1.0-rc16-5" rel="stylesheet"/></head><body class="home-bg"><script>(function(){function applyHomeConfig(){const home=TRIP_CONFIG.home||{};document.querySelectorAll('[data-trip-home]').forEach(function(el){const value=home[el.getAttribute('data-trip-home')];if(value!=null)el.textContent=value;});document.querySelectorAll('[data-trip-home-aria]').forEach(function(el){el.setAttribute('aria-label',home.ariaLabel||TRIP_CONFIG.tripName);});}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',applyHomeConfig);else applyHomeConfig();})();</script><div aria-hidden="true" id="ccmvSplash" role="presentation"><div class="splash-paper"></div><div class="splash-glow"></div><div class="splash-content"><img alt="" class="splash-logo" data-brand-logo="splash"/><h1 class="splash-line" data-brand-text="splashSlogan">ADVENTURE AWAITS</h1><div class="splash-destination" data-brand-text="splashDestination">NEW ZEALAND 2026</div></div><div class="splash-fadeout"></div></div><script>(function(){
   var splash=document.getElementById('ccmvSplash');
   if(!splash) return;
+
+  var navType='navigate';
+  try{
+    var nav=performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    if(nav && nav.type) navType=nav.type;
+    else if(performance.navigation && performance.navigation.type===1) navType='reload';
+  }catch(e){}
 
   var coldLaunchRedirect=NAVIGATION.getQuery('coldLaunch')==='1';
   if(coldLaunchRedirect && window.history && window.history.replaceState){
     try{window.history.replaceState(null,'',NAVIGATION.build('home'));}catch(e){}
   }
 
-  // RC16.4 Cold Launch: one brief branded welcome per live app session.
+  // RC15.2 Fast Resume: show the branded splash once per live app session.
   // Internal navigation, browser back/forward and a normal background resume
   // reuse the existing session and must return immediately without replaying it.
   var sessionKey='travel_engine_fast_resume_started';
@@ -36,17 +43,17 @@
     setTimeout(function(){
       document.body.classList.remove('ccmv-splash-active');
       if(splash && splash.parentNode) splash.parentNode.removeChild(splash);
-    }, 500);
+    }, 760);
   }
 
   splash.addEventListener('click', dismiss);
 
   // Local UI is already available in the document. Do not block first use on
   // cloud sync or hold the splash for the former 5.2-second animation.
-  var dismissSoon=function(){window.requestAnimationFrame(function(){setTimeout(dismiss,800);});};
+  var dismissSoon=function(){window.requestAnimationFrame(function(){setTimeout(dismiss,4400);});};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',dismissSoon,{once:true});
   else dismissSoon();
-  setTimeout(dismiss,1150);
+  setTimeout(dismiss,5200);
 })();</script><nav class="site-nav"><a class="brand" href="index.html"><span class="brand-mark"><img alt="" data-brand-logo="header"/></span><span data-brand-text="navLabel"></span></a><button class="friend-pill" onclick="openFriendModal()"><span data-friend-label="" data-family="lee"><span class="family-identity family-lee is-compact"><span class="family-code">MEL</span><span class="family-name">Lee</span></span></span></button></nav><main class="dashboard home-premium home-v37">
 <section aria-label="" data-trip-home-aria="" class="home-brand-card v37-dashboard-home"><p class="home-since" data-brand-text="familyLabel">MELBOURNE · SYDNEY · NEWCASTLE</p><h1><span data-brand-text="heroLine1">New Zealand</span><br/><em data-brand-text="heroEmphasis">Companion</em></h1><div class="home-reunion-story" aria-label="Annual family reunion"><strong data-trip-home="reunionStory">Three cities. One reunion.</strong></div><div class="home-trip-line"><span data-trip-home="dateLine">22 Sep — 1 Oct 2026</span><span data-trip-home="regionLine">South Island</span></div><div aria-label="Live travel dashboard" class="home-live-grid"><div class="live-card live-countdown"><span class="live-icon">⏳</span><small>Countdown</small><strong id="countdownText">Counting down...</strong></div><button aria-label="Open destination and home clocks" class="live-card live-time live-interactive-card" onclick="openHomeInfoModal('clockModal')" type="button"><span class="live-icon">🕒</span><small id="homeClockLabel">New Zealand</small><strong id="hcmTime">--:--</strong><em class="live-card-action">View clocks ›</em></button><a aria-label="Open today’s weather" class="live-card live-weather live-interactive-card" id="homeWeatherCard" href="https://www.google.com/search?q=Christchurch+New+Zealand+weather" rel="noopener" target="_blank"><span class="live-icon" id="homeWeatherIcon">🌦</span><small id="homeWeatherLabel">Today · Christchurch</small><strong id="homeWeatherValue">Loading weather…</strong><em class="live-card-action" id="homeWeatherMeta">Open details ›</em></a><button aria-label="Open currency converter" class="live-card live-rate live-currency-card live-interactive-card" id="currencyCard" onclick="openCurrencyModal()" type="button"><span class="live-icon">💱</span><small>Currency</small><strong id="currencyCardValue">NZD 100 ≈ AUD --</strong><em class="live-card-action" id="currencyCardMeta">Convert ›</em></button></div><a class="home-day-button" id="homeTodayButton" href="day.html?day=1">Let's go ✨</a></section>
 </main><script>(function(){
