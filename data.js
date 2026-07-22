@@ -37,6 +37,34 @@ globalThis.TRAVEL_DATASETS=Object.freeze({
   TRIP_DATA,TRIP_ORDER,ITINERARY_DATA
 });
 
+/* RC15: deterministic master-itinerary content fingerprint.
+   MUST be computed here, on the ITINERARY_DATA literally shipped in this
+   file, and MUST happen before TRIP_SYNC.hydrateStaticData() runs below —
+   otherwise a stale cloud snapshot could overwrite ITINERARY_DATA first and
+   the "master" revision would end up describing the cloud data instead of
+   the deployed master. This is a pure content hash, not a build/version
+   string: it changes exactly when ITINERARY_DATA's content changes, so
+   itinerary-authority.js and sync-runtime.js can tell a same-master edit
+   apart from a genuinely new master with no manual bumping required. */
+(function computeMasterItineraryRevision(){
+  function hashString(input){
+    let h1=0xdeadbeef^input.length,h2=0x41c6ce57^input.length;
+    for(let i=0;i<input.length;i++){
+      const ch=input.charCodeAt(i);
+      h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);
+    }
+    h1=Math.imul(h1^(h1>>>16),2246822507);h1^=Math.imul(h2^(h2>>>13),3266489909);
+    h2=Math.imul(h2^(h2>>>16),2246822507);h2^=Math.imul(h1^(h1>>>13),3266489909);
+    return (4294967296*(2097151&h2)+(h1>>>0)).toString(16);
+  }
+  try{
+    globalThis.MASTER_ITINERARY_REVISION=hashString(JSON.stringify(ITINERARY_DATA));
+  }catch(error){
+    globalThis.MASTER_ITINERARY_REVISION=null;
+    if(globalThis.console&&console.warn)console.warn('[data.js] Could not compute MASTER_ITINERARY_REVISION',error);
+  }
+})();
+
 /* Stage 9A-2: apply a validated cached publication before page renderers run. */
 if(typeof TRIP_SYNC!=='undefined'&&typeof TRIP_SYNC.hydrateStaticData==='function'){
   TRIP_SYNC.hydrateStaticData({PLACES,CATEGORIES,GUIDE_ORDER,DAY_LINKS,FRIENDS,BOOKINGS_DATA,TRIP_DATA,TRIP_ORDER,ITINERARY_DATA});

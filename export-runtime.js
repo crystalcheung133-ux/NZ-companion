@@ -3,12 +3,16 @@
   'use strict';
   const ADMIN_USER='lee';
   const CHANGED_PLAN_KEY=(window.STORAGE_CONFIG&&STORAGE_CONFIG.keys.changedPlans)||'travel_engine_changed_plans_v1';
-  const OVERRIDES_KEY=(window.STORAGE_CONFIG&&STORAGE_CONFIG.keys.itineraryOverrides)||'travel_engine_itinerary_overrides_v1';
-
   function isExportAdmin(){return typeof getFriend==='function'&&getFriend()===ADMIN_USER&&typeof window.isAdminMode==='function'&&window.isAdminMode();}
   function escapeHtml(value){return String(value==null?'':value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
   function readObject(key){const value=window.STORAGE?STORAGE.local.readJSON(key,{}):{};return value&&typeof value==='object'?value:{};}
-  function currentItems(dayNo,day){const saved=readObject(OVERRIDES_KEY)[String(dayNo)];return Array.isArray(saved)?saved:(day.items||[]);}
+  /* RC15: resolved through the single canonical authority (validated saved
+     override, or master) rather than reading the raw override key. */
+  function currentItems(dayNo,day){
+    const authority=window.ITINERARY_AUTHORITY;
+    const saved=authority&&typeof authority.getDayOverrideItems==='function'?authority.getDayOverrideItems(dayNo):null;
+    return Array.isArray(saved)?saved:(day.items||[]);
+  }
   function returnToTripStudio(){
     closeTripExportCenter();
     if(typeof window.openTripStudioPanel==='function') window.openTripStudioPanel();

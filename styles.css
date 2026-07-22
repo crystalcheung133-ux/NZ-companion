@@ -1652,14 +1652,19 @@ body.admin-mode .app-nav .days-trigger small {color:#fff!important;opacity:.96!i
 .timeline-actions:empty{display:none}
 .timeline-actions .timeline-action{flex:1;min-width:120px}
 
-
-/* RC15 — practical Day Card reference images */
-.timeline-reference-thumb{display:grid;grid-template-columns:76px 1fr auto;align-items:center;gap:10px;width:100%;margin:12px 0 4px;padding:8px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.72);color:var(--ink);text-align:left;font:inherit;cursor:pointer}
-.timeline-reference-thumb img{width:76px;height:58px;object-fit:cover;border-radius:9px;background:#eee}
-.timeline-reference-thumb span{font-weight:750}.timeline-reference-thumb small{font-size:.72rem;opacity:.65;white-space:nowrap}
-.reference-viewer-open{overflow:hidden}.reference-image-viewer{position:fixed;inset:0;z-index:5000;background:rgba(10,16,22,.94);padding:max(12px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom));display:grid;place-items:center}
-.reference-image-viewer[hidden]{display:none}.reference-viewer-sheet{position:relative;width:100%;height:100%;display:grid;grid-template-columns:42px minmax(0,1fr) 42px;align-items:center}
-.reference-viewer-sheet figure{margin:0;max-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:auto;touch-action:pan-x pan-y pinch-zoom}
-.reference-viewer-sheet img{max-width:100%;max-height:calc(100vh - 110px);object-fit:contain;border-radius:10px}.reference-viewer-sheet figcaption{color:white;padding:12px 4px;text-align:center;font-weight:650}
-.reference-viewer-close,.reference-viewer-prev,.reference-viewer-next{border:0;background:rgba(255,255,255,.14);color:white;border-radius:999px;font:inherit;cursor:pointer}.reference-viewer-close{position:absolute;z-index:2;right:0;top:0;width:42px;height:42px;font-size:30px}.reference-viewer-prev,.reference-viewer-next{width:38px;height:54px;font-size:36px}.reference-viewer-count{position:absolute;bottom:0;left:50%;transform:translateX(-50%);color:white;font-size:.78rem;opacity:.8}
-@media(max-width:520px){.timeline-reference-thumb{grid-template-columns:70px 1fr auto}.timeline-reference-thumb img{width:70px;height:54px}.reference-viewer-sheet{grid-template-columns:34px minmax(0,1fr) 34px}.reference-viewer-prev,.reference-viewer-next{width:32px}}
+/* RC15 Phase 5 — Reference Images foundation. Scoped, additive only: no
+   layout change when an activity has no referenceImages (Test F). */
+.timeline-reference-thumb{display:block;position:relative;width:100%;max-width:220px;margin:10px 0;padding:0;border:1px solid var(--surface-border);border-radius:14px;overflow:hidden;background:var(--paper);cursor:pointer;box-shadow:0 6px 16px rgba(54,39,24,.08);}
+.timeline-reference-thumb img{display:block;width:100%;height:120px;object-fit:cover;}
+.timeline-reference-count{position:absolute;right:6px;bottom:6px;background:rgba(43,37,31,.72);color:#fffaf2;font-size:11px;font-weight:800;padding:2px 7px;border-radius:999px;}
+.reference-viewer-modal{position:fixed;inset:0;z-index:5100;display:none;background:rgba(20,16,12,.92);padding:0;}
+.reference-viewer-modal.show{display:grid;place-items:center;}
+.reference-viewer-sheet{position:relative;width:100%;height:100%;display:grid;place-items:center;grid-template-rows:1fr auto;}
+.reference-viewer-image{max-width:min(96vw,900px);max-height:78vh;object-fit:contain;touch-action:pinch-zoom;grid-row:1;align-self:center;}
+.reference-viewer-caption{grid-row:2;color:#fffaf2;font-size:15px;font-weight:650;text-align:center;padding:14px 22px 26px;max-width:640px;}
+.reference-viewer-close{position:absolute;top:16px;right:16px;width:44px;height:44px;border-radius:999px;border:1px solid rgba(255,255,255,.4);background:rgba(0,0,0,.4);color:#fffaf2;font-size:24px;line-height:1;cursor:pointer;z-index:2;}
+.reference-viewer-nav{position:absolute;top:50%;transform:translateY(-50%);width:52px;height:52px;border-radius:999px;border:1px solid rgba(255,255,255,.4);background:rgba(0,0,0,.4);color:#fffaf2;font-size:30px;line-height:1;cursor:pointer;z-index:2;}
+.reference-viewer-prev{left:12px;}
+.reference-viewer-next{right:12px;}
+.reference-viewer-nav[hidden]{display:none;}
+@media(max-width:600px){.reference-viewer-nav{width:44px;height:44px;font-size:24px;}}

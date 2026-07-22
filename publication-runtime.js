@@ -5,33 +5,31 @@
 (function(root){
   'use strict';
 
-  const OVERRIDES_KEY=(root.STORAGE_CONFIG&&root.STORAGE_CONFIG.keys&&root.STORAGE_CONFIG.keys.itineraryOverrides)||'travel_engine_itinerary_overrides_v1';
   const state={busy:false,lastPublishedVersion:null};
 
   function clone(value){ return value==null?value:JSON.parse(JSON.stringify(value)); }
-  function localStore(){ return root.STORAGE&&root.STORAGE.local?root.STORAGE.local:null; }
-  function readOverrides(){
-    const store=localStore();
-    const value=store?store.readJSON(OVERRIDES_KEY,{}):{};
-    return value&&typeof value==='object'&&!Array.isArray(value)?value:{};
-  }
   function datasets(){
     return root.TRAVEL_DATASETS&&typeof root.TRAVEL_DATASETS==='object'?root.TRAVEL_DATASETS:{};
   }
+  /* RC15: overrides are read through the single canonical resolver
+     (itinerary-authority.js) so a publication can never embed a saved
+     override that itself belongs to a previous master — the same validation
+     Day rendering relies on is applied here too. */
   function mergedItinerary(){
     const source=datasets();
     const itinerary=clone(source.ITINERARY_DATA||{});
-    const overrides=readOverrides();
-    Object.keys(overrides).forEach(function(day){
-      if(!Array.isArray(overrides[day]))return;
-      if(!itinerary[day]||typeof itinerary[day]!=='object')itinerary[day]={dayId:'day'+day};
-      itinerary[day].items=clone(overrides[day]);
+    const authority=root.ITINERARY_AUTHORITY;
+    Object.keys(itinerary).forEach(function(day){
+      const override=authority&&typeof authority.getDayOverrideItems==='function'?authority.getDayOverrideItems(day):null;
+      if(Array.isArray(override)) itinerary[day].items=override;
     });
     return itinerary;
   }
   function buildPayload(){
     const source=datasets();
+    const authority=root.ITINERARY_AUTHORITY;
     return {
+      masterRevision:authority&&typeof authority.getMasterRevision==='function'?authority.getMasterRevision():(root.MASTER_ITINERARY_REVISION||null),
       data:{
         places:clone(source.PLACES||{}),
         categories:clone(source.CATEGORIES||{}),

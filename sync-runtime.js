@@ -138,9 +138,33 @@
     });
     return {ok:missing.length===0,missing:missing};
   }
+  /* RC15: a cached/fetched publication is only trustworthy if it was built
+     FROM the master-itinerary revision currently shipped on this device. A
+     publication produced before this deploy's data.js changed carries the
+     old masterRevision (or none, if published before RC15) and must never be
+     allowed to silently overwrite a newer local master — that was the root
+     cause of stale itinerary titles surviving a master-file fix. This is a
+     content-derived check (see itinerary-authority.js), not a build-version
+     or one-time-clear check, so it stays correct across every future deploy. */
+  function isCompatiblePublication(wrapper){
+    const authority=root.ITINERARY_AUTHORITY;
+    if(!authority||typeof authority.isCompatibleSnapshotPayload!=='function')return true;
+    const payload=wrapper&&wrapper.payload;
+    return authority.isCompatibleSnapshotPayload(payload);
+  }
+  function discardIncompatibleSnapshot(){
+    const cfg=config(),storage=store();
+    if(cfg&&storage){storage.remove(cfg.cacheKey);storage.remove(cfg.metadataKey);}
+    activeSnapshot=null;
+  }
   function hydrateStaticData(targets){
     const wrapper=activeSnapshot||readCachedSnapshot();
     if(!wrapper)return {ok:false,reason:'no-snapshot',applied:[]};
+    if(!isCompatiblePublication(wrapper)){
+      discardIncompatibleSnapshot();
+      setState({hydrated:false,source:'local',activeVersion:null,error:null},'master-revision-mismatch');
+      return {ok:false,reason:'master-revision-mismatch',applied:[]};
+    }
     const data=payloadData(wrapper);
     if(!data)return {ok:false,reason:'invalid-payload',applied:[]};
     const integrity=validateHydrationData(data,targets);
