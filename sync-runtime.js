@@ -232,6 +232,23 @@
           activeVersion:cached?cached.version:null,error:null},'no-publication');
         return {ok:true,source:cached?'cache':'local',snapshot:cached,reason:'no-publication'};
       }
+      /* RC15.1: a publication fetched fresh from Supabase must pass the SAME
+         master-revision compatibility check as a cached one before it is
+         ever written to cache or allowed to trigger a reload. Without this,
+         an old publication (published before this deploy's master changed)
+         would still be cached and still trigger maybeReloadForNewVersion()
+         purely because its version *number* differs from whatever was
+         previously cached — reloading the page, briefly showing the correct
+         master again, then hydrateStaticData() discarding it a moment later.
+         That discard-after-reload was correct, but the reload itself was an
+         avoidable, confusing flash. Treating an incompatible publication as
+         "nothing new" here stops the flash and the reload loop at the source. */
+      if(!isCompatiblePublication(wrapper)){
+        const cached=readCachedSnapshot();activeSnapshot=cached;
+        setState({status:'ready',source:cached?'cache':'local',remoteVersion:wrapper.version,
+          activeVersion:cached?cached.version:null,error:null},'incompatible-publication');
+        return {ok:true,source:cached?'cache':'local',snapshot:cached,reason:'incompatible-publication'};
+      }
       const previous=readCachedSnapshot();
       writeCache(wrapper);activeSnapshot=wrapper;
       setState({status:'synced',source:'supabase',lastSyncedAt:new Date().toISOString(),
