@@ -194,13 +194,19 @@
     emit(EVENTS.hydrated,{version:wrapper.version,applied:applied.slice(),state:snapshot()});
     return {ok:true,version:wrapper.version,applied:applied};
   }
-  function maybeReloadForNewVersion(wrapper){
-    if(!wrapper||!root.sessionStorage||!root.location)return false;
+  function markNewVersionAvailable(wrapper){
+    if(!wrapper)return false;
     const cfg=config(),version=String(wrapper.version);
-    const marker=root.sessionStorage.getItem(cfg.reloadMarkerKey);
-    if(marker===version)return false;
-    root.sessionStorage.setItem(cfg.reloadMarkerKey,version);
-    root.location.reload();return true;
+    try{
+      if(root.sessionStorage&&cfg&&cfg.reloadMarkerKey){
+        root.sessionStorage.setItem(cfg.reloadMarkerKey,version);
+      }
+    }catch(error){}
+    // RC15.2 Fast Resume: never destroy the visible page for a routine cloud
+    // publication. The compatible snapshot is cached now and will hydrate on
+    // the next normal document navigation or genuine launch.
+    emit(EVENTS.snapshot,{snapshot:wrapper,deferredApply:true,state:snapshot()});
+    return true;
   }
   async function fetchLatestPublished(options){
     const opts=options||{};
@@ -236,7 +242,7 @@
          master-revision compatibility check as a cached one before it is
          ever written to cache or allowed to trigger a reload. Without this,
          an old publication (published before this deploy's master changed)
-         would still be cached and still trigger maybeReloadForNewVersion()
+         would still be cached and still trigger a full-page version refresh
          purely because its version *number* differs from whatever was
          previously cached — reloading the page, briefly showing the correct
          master again, then hydrateStaticData() discarding it a moment later.
@@ -255,7 +261,7 @@
         remoteVersion:wrapper.version,activeVersion:wrapper.version,error:null},'fetch-success');
       emit(EVENTS.snapshot,{snapshot:wrapper,state:snapshot()});
       const changed=!previous||Number(previous.version)!==Number(wrapper.version);
-      if(changed&&opts.reloadOnChange!==false)maybeReloadForNewVersion(wrapper);
+      if(changed)markNewVersionAvailable(wrapper);
       return {ok:true,source:'supabase',snapshot:wrapper,changed:changed};
     }catch(error){
       const cached=readCachedSnapshot();activeSnapshot=cached;

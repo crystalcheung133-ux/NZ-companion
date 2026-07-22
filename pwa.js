@@ -182,12 +182,12 @@
 
   if(supported() && global.navigator.serviceWorker){
     global.navigator.serviceWorker.addEventListener('controllerchange',function(){
-      try{
-        const reloadKey='travel_engine_sw_reloaded_'+(state.version || 'unversioned');
-        if(global.sessionStorage.getItem(reloadKey)==='1') return;
-        global.sessionStorage.setItem(reloadKey,'1');
-      }catch(error){}
-      global.location.reload();
+      // RC15.2 Fast Resume: a newly active worker must not tear down the page
+      // the traveller is currently using. The next navigation/cold launch will
+      // naturally use the new cache while this page remains instantly usable.
+      state.updateReady=false;
+      state.waitingWorker=null;
+      publishState('controller-changed-no-reload');
     });
   }
 

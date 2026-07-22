@@ -1274,12 +1274,12 @@ body:has(#dynamicDayRoot) .site-nav {margin-bottom:0!important;}#dynamicDayRoot.
   position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
   min-height:100dvh;overflow:hidden;padding:max(22px,env(safe-area-inset-top)) 18px max(28px,env(safe-area-inset-bottom));
   color:#12324a;background:var(--theme-splash);
-  transition:opacity .44s ease,visibility .44s ease;
+  transition:opacity .26s ease,visibility .26s ease;
 }#ccmvSplash * {box-sizing:border-box}#ccmvSplash.ccmv-splash-hide {opacity:0;visibility:hidden;pointer-events:none}#ccmvSplash .splash-paper, #ccmvSplash .splash-glow, #ccmvSplash .splash-fadeout {display:none}#ccmvSplash .splash-content {position:relative;width:min(94vw,620px);padding:12px 18px;text-align:center;overflow:visible}#ccmvSplash .splash-logo {
   display:block;width:min(68vw,410px);height:auto;max-height:52vh;margin:0 auto 18px;
   padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;object-fit:contain;overflow:visible;
-  filter:drop-shadow(0 16px 26px rgba(23,50,77,.16));opacity:0;animation:ccmvLogo421 5.2s cubic-bezier(.22,.8,.22,1) both;
-}#ccmvSplash .splash-line {margin:0 auto;color:#12324a;font-family:var(--font-sans);font-size:clamp(20px,5.3vw,30px);font-weight:950;letter-spacing:.11em;line-height:1.18;opacity:0;animation:ccmvSlogan421 5.2s cubic-bezier(.22,.8,.22,1) both}#ccmvSplash .splash-destination {margin-top:18px;color:#d76518;font-family:var(--font-sans);font-size:clamp(13px,3.4vw,18px);font-weight:900;letter-spacing:.18em;line-height:1;text-transform:uppercase;opacity:0;animation:ccmvVietnam421 5.2s cubic-bezier(.22,.8,.22,1) both}
+  filter:drop-shadow(0 16px 26px rgba(23,50,77,.16));opacity:0;animation:ccmvLogo421 1.05s cubic-bezier(.22,.8,.22,1) both;
+}#ccmvSplash .splash-line {margin:0 auto;color:#12324a;font-family:var(--font-sans);font-size:clamp(20px,5.3vw,30px);font-weight:950;letter-spacing:.11em;line-height:1.18;opacity:0;animation:ccmvSlogan421 1.05s cubic-bezier(.22,.8,.22,1) both}#ccmvSplash .splash-destination {margin-top:18px;color:#d76518;font-family:var(--font-sans);font-size:clamp(13px,3.4vw,18px);font-weight:900;letter-spacing:.18em;line-height:1;text-transform:uppercase;opacity:0;animation:ccmvVietnam421 1.05s cubic-bezier(.22,.8,.22,1) both}
 @media(max-width:600px){#ccmvSplash .splash-content {width:96vw;padding:10px 12px}#ccmvSplash .splash-logo {width:min(80vw,350px);max-height:48vh;margin-bottom:14px}#ccmvSplash .splash-destination {margin-top:14px}
 }
 @media(prefers-reduced-motion:reduce){#ccmvSplash .splash-logo, #ccmvSplash .splash-line, #ccmvSplash .splash-destination {animation:none;opacity:1}}body.home-bg main.dashboard.home-v37 {display:flex!important;justify-content:center!important;align-items:flex-start!important;height:auto!important;max-height:none!important;min-height:calc(100dvh - 66px)!important;overflow:visible!important;padding:16px 12px calc(88px + env(safe-area-inset-bottom))!important}body.home-bg section.home-brand-card.v37-dashboard-home {
