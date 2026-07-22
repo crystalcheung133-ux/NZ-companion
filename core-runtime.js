@@ -1,3 +1,62 @@
+/* RC15.1 — Master itinerary authority migration.
+   Saved Admin itinerary snapshots remain authoritative only while they belong
+   to the same bundled master itinerary. A changed master clears itinerary-only
+   overrides and pending itinerary edits, while preserving every other domain. */
+(function(root){
+  'use strict';
+
+  function stableStringify(value){
+    if(value===null||typeof value!=='object')return JSON.stringify(value);
+    if(Array.isArray(value))return '['+value.map(stableStringify).join(',')+']';
+    return '{'+Object.keys(value).sort().map(function(key){
+      return JSON.stringify(key)+':'+stableStringify(value[key]);
+    }).join(',')+'}';
+  }
+
+  function hash(text){
+    let h=2166136261;
+    for(let i=0;i<text.length;i++){
+      h^=text.charCodeAt(i);
+      h=Math.imul(h,16777619);
+    }
+    return ('00000000'+(h>>>0).toString(16)).slice(-8);
+  }
+
+  function migrate(){
+    if(!root.STORAGE_CONFIG||!root.STORAGE||typeof ITINERARY_DATA==='undefined')return;
+    const keys=root.STORAGE_CONFIG.keys||{};
+    const signatureKey=keys.itineraryMasterSignature||'travel_engine_itinerary_master_signature_v1';
+    const overridesKey=keys.itineraryOverrides||'travel_engine_itinerary_overrides_v1';
+    const draftKey=keys.adminDraft||'travel_engine_admin_draft_v1';
+    const signature='itinerary-v1:'+hash(stableStringify(ITINERARY_DATA));
+    const previous=root.STORAGE.local.get(signatureKey);
+
+    if(previous===signature)return;
+
+    /* First RC15.1 run is deliberately a migration: legacy snapshots have no
+       master signature, so they cannot safely override the current master. */
+    root.STORAGE.local.remove(overridesKey);
+
+    const draft=root.STORAGE.local.readJSON(draftKey,null);
+    if(draft&&draft.changes&&typeof draft.changes==='object'){
+      const nextChanges={};
+      Object.keys(draft.changes).forEach(function(key){
+        if(!/^itineraryDay\d+$/.test(key))nextChanges[key]=draft.changes[key];
+      });
+      draft.changes=nextChanges;
+      draft.updatedAt=new Date().toISOString();
+      root.STORAGE.local.writeJSON(draftKey,draft);
+    }
+
+    root.STORAGE.local.set(signatureKey,signature);
+    root.dispatchEvent(new CustomEvent('travelengine:itinerary-master-migrated',{
+      detail:{previous:previous||null,current:signature}
+    }));
+  }
+
+  migrate();
+})(globalThis);
+
 /* Travel Engine v1.0 — Stage 7M modular runtime. */
 function tripDateParts(date=new Date()){
   return FORMATTER.dateKey(date,TRIP_CONFIG.timeZone);

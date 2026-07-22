@@ -16,7 +16,7 @@
     guideNavContext:'ccmv_guide_nav_context',
     guideNavReopen:'ccmv_guide_nav_reopen',
     itineraryOverrides:'travel_engine_itinerary_overrides_v1',
-    itineraryMasterFingerprint:'travel_engine_itinerary_master_fingerprint_v1',
+    itineraryMasterSignature:'travel_engine_itinerary_master_signature_v1',
     tripCompletion:'travel_engine_trip_completion_v1',
     changedPlans:'travel_engine_changed_plans_v1',
     cloudSnapshot:'travel_engine_cloud_snapshot_v1',
@@ -33,7 +33,7 @@
     moments:Object.freeze({records:keys.momentsList,freeform:keys.momentsFreeform,legacyPrefix:keys.momentPrefix,latestPrefix:keys.latestMomentPrefix}),
     admin:Object.freeze({mode:keys.adminMode,draft:keys.adminDraft}),
     guide:Object.freeze({context:keys.guideNavContext,reopen:keys.guideNavReopen}),
-    itinerary:Object.freeze({overrides:keys.itineraryOverrides}),
+    itinerary:Object.freeze({overrides:keys.itineraryOverrides,masterSignature:keys.itineraryMasterSignature}),
     completion:Object.freeze({state:keys.tripCompletion}),
     journey:Object.freeze({changedPlans:keys.changedPlans}),
     sync:Object.freeze({snapshot:keys.cloudSnapshot,metadata:keys.cloudSyncMeta})
