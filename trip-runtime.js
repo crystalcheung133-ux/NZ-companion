@@ -78,6 +78,14 @@ function buildAccommodationListHTML(){
     return `<button class="accommodation-picker-row" type="button" role="listitem" onclick="openAccommodationDetail('${escapeTripHTML(booking.id)}')"><span class="accommodation-picker-icon" aria-hidden="true">🏨</span><span class="accommodation-picker-copy"><strong>${escapeTripHTML(booking.title)}</strong><small>${escapeTripHTML(booking.stayDates||booking.date||'')}</small><span class="accommodation-picker-price">${escapeTripHTML(price)}</span></span><span class="accommodation-picker-meta">${escapeTripHTML(nightsLabel)}<b aria-hidden="true">›</b></span></button>`;
   }).join('')+'</div>';
 }
+function accommodationDetailNavigationHTML(bookingId){
+  const bookings=getAccommodationBookings();
+  const index=bookings.findIndex(function(item){return item.id===bookingId;});
+  if(index<0||bookings.length<2)return '';
+  const previous=bookings[(index-1+bookings.length)%bookings.length];
+  const next=bookings[(index+1)%bookings.length];
+  return `<div class="guide-browse-meta">${index+1} / ${bookings.length}</div><div class="guide-next-row"><button class="pill" type="button" onclick="openAccommodationDetail('${escapeTripHTML(previous.id)}')">‹ Previous</button><button class="pill" type="button" onclick="openAccommodationDetail('${escapeTripHTML(next.id)}')">Next ›</button></div>`;
+}
 function buildAccommodationDetailHTML(booking){
   if(!booking)return '<p class="timestamp">Accommodation booking not found.</p>';
   const place=(typeof PLACES!=='undefined'&&booking.placeId)?PLACES[booking.placeId]:null;
@@ -101,7 +109,7 @@ function buildAccommodationDetailHTML(booking){
     address?`<button class="pill" type="button" onclick="navigator.clipboard&&navigator.clipboard.writeText(${JSON.stringify(address).replace(/"/g,'&quot;')})">Copy Address</button>`:'',
     phone?`<a class="pill" href="tel:${escapeTripHTML(phone.replace(/\s/g,''))}">Call</a>`:''
   ].join('');
-  return `<article class="fact stay-booking accommodation-detail-card"><div class="accommodation-detail-head"><div><strong>${escapeTripHTML(booking.title)}</strong><span>${escapeTripHTML(booking.stayDates||'')}</span></div><span class="accommodation-night-badge">${escapeTripHTML(nightsLabel)}</span></div><div class="accommodation-facts">${factHTML}</div><div class="accommodation-section"><h3>Address</h3><p>${escapeTripHTML(address||'Not added yet')}</p></div><div class="accommodation-section"><h3>Check-in instructions</h3><p>${escapeTripHTML(booking.checkInInstructions||'Not added yet')}</p></div>${actions?`<div class="trip-action-row">${actions}</div>`:''}</article>`;
+  return `<article class="fact stay-booking accommodation-detail-card"><div class="accommodation-detail-head"><div><strong>${escapeTripHTML(booking.title)}</strong><span>${escapeTripHTML(booking.stayDates||'')}</span></div><span class="accommodation-night-badge">${escapeTripHTML(nightsLabel)}</span></div><div class="accommodation-facts">${factHTML}</div><div class="accommodation-section"><h3>Address</h3><p>${escapeTripHTML(address||'Not added yet')}</p></div><div class="accommodation-section"><h3>Check-in instructions</h3><p>${escapeTripHTML(booking.checkInInstructions||'Not added yet')}</p></div>${actions?`<div class="trip-action-row">${actions}</div>`:''}${accommodationDetailNavigationHTML(booking.id)}</article>`;
 }
 function openAccommodationList(){
   openTripCard('stay');
