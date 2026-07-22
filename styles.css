@@ -1668,3 +1668,7 @@ body.admin-mode .app-nav .days-trigger small {color:#fff!important;opacity:.96!i
 .reference-viewer-next{right:12px;}
 .reference-viewer-nav[hidden]{display:none;}
 @media(max-width:600px){.reference-viewer-nav{width:44px;height:44px;font-size:24px;}}
+
+/* RC16.2 — restore visible trip-priority stars on Day cards */
+.timeline-worth{flex:0 0 auto;white-space:nowrap;font-size:14px;line-height:1.2;letter-spacing:-1px;color:#a66a00;background:rgba(255,247,223,.96);border:1px solid rgba(166,106,0,.24);border-radius:999px;padding:4px 7px;box-shadow:0 2px 8px rgba(42,54,47,.08)}
+@media(max-width:520px){.timeline-worth{font-size:13px;padding:3px 6px}}
