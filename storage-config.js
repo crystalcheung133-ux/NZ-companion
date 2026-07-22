@@ -16,6 +16,7 @@
     guideNavContext:'ccmv_guide_nav_context',
     guideNavReopen:'ccmv_guide_nav_reopen',
     itineraryOverrides:'travel_engine_itinerary_overrides_v1',
+    itineraryMasterFingerprint:'travel_engine_itinerary_master_fingerprint_v1',
     tripCompletion:'travel_engine_trip_completion_v1',
     changedPlans:'travel_engine_changed_plans_v1',
     cloudSnapshot:'travel_engine_cloud_snapshot_v1',

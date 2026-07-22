@@ -54,7 +54,7 @@
     splashSlogan: 'ADVENTURE AWAITS',
     splashDestination: 'NEW ZEALAND 2026',
     storageNamespace: 'nz-family-2026',
-    version: 'RC14A',
+    version: 'RC15',
     buildLabel: 'Travel Engine v1.0 · Trip Identity Extraction',
     theme: root.THEME_CONFIG.colors
   });

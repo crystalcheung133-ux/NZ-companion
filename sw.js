@@ -1,5 +1,5 @@
 importScripts('./theme-config.js', './asset-config.js', './locale-config.js', './formatter.js', './navigation-config.js', './storage-config.js', './trip-config.js');
-const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-rc14-live-weather-day-ux-simplification`;
+const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-rc15-itinerary-authority-reference-images`;
 const CRITICAL_EXTENSIONS = /\.(?:css|js)$/i;
 const ASSETS = [
   './',
@@ -38,6 +38,7 @@ const ASSETS = [
   './sync-runtime.js',
   './trip-config.js',
   './data.js',
+  './itinerary-authority.js',
   './place.html',
   './day.html',
   './offline.html',
@@ -56,6 +57,10 @@ const ASSETS = [
 
 self.addEventListener('message', event => {
   if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
+  if (event.data && event.data.type === 'CACHE_REFERENCE_IMAGES' && Array.isArray(event.data.urls)) {
+    const urls=event.data.urls.filter(url=>{try{return new URL(url,self.location.href).origin===self.location.origin;}catch(e){return false;}});
+    event.waitUntil(caches.open(CACHE_NAME).then(cache=>Promise.allSettled(urls.map(url=>cache.add(new Request(url,{cache:'reload'}))))));
+  }
 });
 
 self.addEventListener('install', event => {
