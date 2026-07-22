@@ -114,18 +114,26 @@
   function normaliseDayId(value){
     if(value == null) return null;
     const raw=String(value);
-    if(/^day[1-5]$/.test(raw)) return raw;
-    if(/^[1-5]$/.test(raw)) return 'day'+raw;
+    if(/^day(?:10|[1-9])$/.test(raw)) return raw;
+    if(/^(?:10|[1-9])$/.test(raw)) return 'day'+raw;
     return null;
   }
   function dayNumberFromId(dayId){
-    const match=String(dayId||'').match(/day([1-5])/);
+    const match=String(dayId||'').match(/day(10|[1-9])/);
     return match ? match[1] : null;
+  }
+  function currentDayItems(dayNumber){
+    const key=String(dayNumber);
+    const master=((typeof ITINERARY_DATA!=='undefined'&&ITINERARY_DATA)||{})[key];
+    if(window.ITINERARY_AUTHORITY&&typeof ITINERARY_AUTHORITY.resolveDayItems==='function'){
+      return ITINERARY_AUTHORITY.resolveDayItems(key,master?.items||[]);
+    }
+    return (master?.items||[]).map(item=>({...item}));
   }
   function itineraryItems(){
     const out=[];
-    Object.entries((typeof ITINERARY_DATA!=='undefined'&&ITINERARY_DATA)||{}).forEach(([dayNumber,day])=>{
-      (day?.items||[]).forEach(item=>out.push({...item,_dayNumber:String(dayNumber),dayId:normaliseDayId(item.dayId)||('day'+dayNumber)}));
+    Object.entries((typeof ITINERARY_DATA!=='undefined'&&ITINERARY_DATA)||{}).forEach(([dayNumber])=>{
+      currentDayItems(dayNumber).forEach(item=>out.push({...item,_dayNumber:String(dayNumber),dayId:normaliseDayId(item.dayId)||('day'+dayNumber)}));
     });
     return out;
   }
@@ -136,7 +144,7 @@
     const links=(typeof DAY_LINKS!=='undefined'&&DAY_LINKS[placeKey])||[];
     return links.map(link=>{
       const href=Array.isArray(link)?link[1]:'';
-      const dayMatch=String(href||'').match(/[?&]day=([1-5])/);
+      const dayMatch=String(href||'').match(/[?&]day=(10|[1-9])/);
       const idMatch=String(href||'').match(/#([^#?&]+)/);
       if(!dayMatch||!idMatch) return null;
       const item=itineraryItems().find(x=>x._dayNumber===dayMatch[1]&&x.id===decodeURIComponent(idMatch[1]));
@@ -194,13 +202,12 @@
   function renderPlannedActivityPicker(){
     const host=document.getElementById('momentPlannedPicker');
     if(!host) return;
-    const day=(typeof ITINERARY_DATA!=='undefined'?ITINERARY_DATA:null)?.[momentSelectorDay];
-    const chips=(day?.items||[]).map(item=>`<button type="button" class="moment-activity-chip" onclick="chooseMomentActivity('${momentSelectorDay}','${String(item.id).replace(/'/g,"\'")}')"><span>${stripMomentTitle(item.title)}</span><small>${item.time||''}</small></button>`).join('');
+    const chips=currentDayItems(momentSelectorDay).map(item=>`<button type="button" class="moment-activity-chip" onclick="chooseMomentActivity('${momentSelectorDay}','${String(item.id).replace(/'/g,"\'")}')"><span>${stripMomentTitle(item.title)}</span><small>${item.time||''}</small></button>`).join('');
     /* Stage 5B-2B2: the "Just this moment" chip is redundant when the composer was entered via the
        Planned activity card — returning to free capture is done by closing the composer and choosing
        the other card instead. Only render the chip for the general-entry "+Add planned activity" path. */
     const customChoiceHTML=momentEntryIsPlanned ? '' : `<button type="button" class="moment-custom-choice" onclick="clearMomentActivity()">✨ Just this moment</button>`;
-    host.innerHTML=`${customChoiceHTML}<div class="moment-day-tabs">${['1','2','3','4','5'].map(n=>`<button type="button" class="moment-day-tab ${n===momentSelectorDay?'active':''}" onclick="setMomentSelectorDay('${n}')">Day ${n}</button>`).join('')}</div><div class="moment-activity-grid">${chips}</div>`;
+    host.innerHTML=`${customChoiceHTML}<div class="moment-day-tabs">${Object.keys((typeof ITINERARY_DATA!=='undefined'&&ITINERARY_DATA)||{}).sort((a,b)=>Number(a)-Number(b)).map(n=>`<button type="button" class="moment-day-tab ${n===momentSelectorDay?'active':''}" onclick="setMomentSelectorDay('${n}')">Day ${n}</button>`).join('')}</div><div class="moment-activity-grid">${chips}</div>`;
   }
   function ensureMomentContextUI(){
     const form=document.querySelector('#momentsModal .moments-form');
@@ -232,7 +239,7 @@
   };
   window.setMomentSelectorDay=function(dayNumber){ momentSelectorDay=String(dayNumber); renderPlannedActivityPicker(); };
   window.chooseMomentActivity=function(dayNumber,activityId){
-    const item=((typeof ITINERARY_DATA!=='undefined'?ITINERARY_DATA:null)?.[String(dayNumber)]?.items||[]).find(x=>x.id===activityId);
+    const item=currentDayItems(dayNumber).find(x=>x.id===activityId);
     if(!item) return;
     currentMomentKey=item.id;
     currentMomentContext=plannedMomentContext(String(dayNumber),item);

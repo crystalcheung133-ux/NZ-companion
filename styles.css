@@ -1773,7 +1773,7 @@ body.admin-mode .app-nav .days-trigger small {color:#fff!important;opacity:.96!i
 }
 
 
-/* RC16.7 — One-screen Guide / Travel Info cards. */
+/* RC16.8 — One-screen Guide / Travel Info cards with clear Why Go context. */
 #guideModal .guide-sheet,
 #tripModal .trip-sheet {
   max-height:calc(100dvh - 10px)!important;
@@ -1821,3 +1821,7 @@ body.admin-mode .app-nav .days-trigger small {color:#fff!important;opacity:.96!i
   #guideModalContent .guide-onepage .quick-info-actions .map-button,
   #guideModalContent .guide-onepage .quick-info-actions .moment-button {font-size:11px!important;padding:6px 7px!important;}
 }
+
+
+/* RC16.9 — Keep real accommodation prices visible in the Trip Info overview. */
+.accommodation-picker-price{display:block;margin-top:3px;font-size:.78rem;line-height:1.25;color:var(--ink-soft,#5d665f);font-weight:650}

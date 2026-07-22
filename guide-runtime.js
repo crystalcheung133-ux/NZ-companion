@@ -173,12 +173,12 @@ function criticalGuideNotes(g){
 function compactGuideSections(g){
  const suggested=suggestedItems(g).map(x=>`<li>${x}</li>`).join('');
  const notes=criticalGuideNotes(g).map(x=>`<li>${x}</li>`).join('');
- return `${suggested?`<h3>Suggested Dishes</h3><ul>${suggested}</ul>`:''}${notes?`<h3>Practical</h3><ul>${notes}</ul>`:''}`;
+ return `${suggested?`<h3>Suggested Dishes</h3><ul>${suggested}</ul>`:''}${notes?`<h3>Before You Go</h3><ul>${notes}</ul>`:''}`;
 }
 
 function openGuideModal(key){
  const g=PLACES[key]; if(!g)return;
- $('guideModalContent').innerHTML=`<div class="guide-onepage"><p class="kicker">Guide</p><h2>${g.emoji} ${g.title}</h2><p class="guide-onepage-sub"><strong>${g.sub}</strong></p>${quickInfoHTML(g,key)}<p class="guide-onepage-desc">${g.desc}</p>${compactGuideSections(g)}${guideNavButtons(key)}</div>`;
+ $('guideModalContent').innerHTML=`<div class="guide-onepage"><p class="kicker">Guide</p><h2>${g.emoji} ${g.title}</h2><p class="guide-onepage-sub"><strong>${g.sub}</strong></p><p class="guide-onepage-desc">${g.desc}</p>${quickInfoHTML(g,key)}${compactGuideSections(g)}${guideNavButtons(key)}</div>`;
  $('guideModal').classList.add('show');
  const sheet=document.querySelector('#guideModal .guide-sheet');
  if(sheet) sheet.scrollTop=0;
@@ -200,8 +200,8 @@ function renderPlacePage(key){
   mount.innerHTML = `
 <button class="place-detail-close" type="button" aria-label="Close place detail" onclick="closePlaceDetail()">×</button>
 <div class="page-hero"><p class="kicker">Guide</p><h1>${g.emoji} ${g.title}</h1><p class="lead">${g.sub||''}</p></div>
+<section class="prose-block guide-overview"><h2>Why Go</h2><p>${g.desc||''}</p></section>
 <section aria-label="Quick Info" class="quick-info-card">${quickInfoInnerHTML(g,key)}</section>
-<section class="prose-block guide-overview"><h2>Overview</h2><p>${g.desc||''}</p></section>
 ${compactGuideSections(g)}${guideNavButtons(key,'page')}`;
   document.title = `${g.title} · ${TRIP_CONFIG.tripName}`;
 }
@@ -216,8 +216,8 @@ function renderPlaceGroupPage(keys){
     const g=PLACES[key];
     return `<article class="place-group-card" id="guide-${key}">
       <div class="page-hero place-group-hero"><p class="kicker">Option ${index+1}</p><h1>${g.emoji} ${g.title}</h1><p class="lead">${g.sub||''}</p></div>
+      <section class="prose-block guide-overview"><h2>Why Go</h2><p>${g.desc||''}</p></section>
       <section aria-label="Quick Info" class="quick-info-card">${quickInfoInnerHTML(g,key)}</section>
-      <section class="prose-block guide-overview"><h2>Overview</h2><p>${g.desc||''}</p></section>
       ${compactGuideSections(g)}
     </article>`;
   }).join('');
