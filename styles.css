@@ -1831,3 +1831,12 @@ body.admin-mode .app-nav .days-trigger small {color:#fff!important;opacity:.96!i
 .day-footer-nav>span:last-child,.day-footer-nav-link:last-child{text-align:right}
 .day-footer-nav-link{display:flex;align-items:center;justify-content:center;min-height:48px;padding:12px 16px;border:1px solid var(--line,#d8d1c5);border-radius:14px;background:var(--surface,#fff);font-weight:700;text-decoration:none}
 @media(max-width:640px){.day-footer-nav{gap:10px;margin-bottom:100px}.day-footer-nav-link{font-size:.94rem;padding:11px 10px}}
+
+/* RC17.3 — Trip Studio is an explicit Lee-only panel, not an automatic selector extension. */
+.trip-studio-entry{width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;margin:16px 0 2px;padding:14px 15px;border:1px solid rgba(31,78,63,.18);border-radius:16px;background:rgba(246,250,246,.96);color:#28483b;font:inherit;text-align:left;box-shadow:0 5px 14px rgba(26,62,68,.06);cursor:pointer}
+.trip-studio-entry[hidden]{display:none!important}
+.trip-studio-entry>span:first-child{display:grid;gap:3px}.trip-studio-entry strong{font-size:15px;font-weight:850}.trip-studio-entry small{color:#71847b;font-size:11px;font-weight:650;line-height:1.35}.trip-studio-entry>span:last-child{font-size:22px;font-weight:800}
+.trip-studio-close{display:grid;place-items:center;width:38px;height:38px;flex:0 0 38px;border:0;border-radius:50%;background:rgba(255,255,255,.82);color:#294c3d;font:inherit;font-size:27px;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(31,78,63,.10)}
+#mamaModal.studio-view .guide-sheet>.mama-close,#mamaModal.studio-view .guide-sheet>p.kicker,#mamaModal.studio-view .guide-sheet>h2,#mamaModal.studio-view .friend-choice-list,#mamaModal.studio-view #tripStudioEntry{display:none!important}
+#mamaModal.studio-view .guide-sheet{padding-top:12px}
+#mamaModal.studio-view #adminModeControl{display:block!important;margin-top:0}

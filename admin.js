@@ -22,18 +22,34 @@
   function scrollTripStudioToBottom(){
     const modal=document.getElementById('mamaModal');
     const sheet=modal&&modal.querySelector('.guide-sheet');
-    if(!modal||!sheet) return;
+    const studio=document.getElementById('adminModeControl');
+    if(!modal||!sheet||!studio) return;
     window.requestAnimationFrame(()=>window.requestAnimationFrame(()=>{
-      sheet.scrollTop=sheet.scrollHeight;
-      modal.scrollTop=modal.scrollHeight;
+      sheet.scrollTop=0;
+      modal.scrollTop=0;
+      studio.scrollIntoView({block:'start'});
     }));
   }
+  function closeTripStudioPanel(){
+    const modal=document.getElementById('mamaModal');
+    const studio=document.getElementById('adminModeControl');
+    if(studio) studio.hidden=true;
+    if(modal){
+      modal.classList.remove('studio-view');
+      modal.classList.remove('show');
+    }
+  }
   function openTripStudioPanel(){
+    if(!isAdminUser()){ alert('Trip Studio is available to Lee only.'); return false; }
     if(typeof renderFriendChoices==='function') renderFriendChoices();
     const modal=document.getElementById('mamaModal');
-    if(!modal) return;
+    const studio=document.getElementById('adminModeControl');
+    if(!modal||!studio) return false;
+    studio.hidden=false;
+    modal.classList.add('studio-view');
     modal.classList.add('show');
     scrollTripStudioToBottom();
+    return true;
   }
   function syncPinModalToVisualViewport(modal){
     if(!modal) return;
@@ -118,7 +134,9 @@
     document.body.classList.toggle('admin-mode',state.mode);
     document.body.classList.toggle('admin-dirty',state.mode&&state.dirty);
     const control=document.getElementById('adminModeControl');
-    if(control) control.hidden=!isAdminUser();
+    if(control && !document.getElementById('mamaModal')?.classList.contains('studio-view')) control.hidden=true;
+    const entry=document.getElementById('tripStudioEntry');
+    if(entry) entry.hidden=!isAdminUser();
     const toggle=document.getElementById('adminModeToggle');
     if(toggle){
       toggle.checked=state.mode;
@@ -144,10 +162,21 @@
   }
   function buildShell(){
     const familySheet=document.querySelector('#mamaModal .guide-sheet');
+    const familyList=familySheet&&familySheet.querySelector('.friend-choice-list');
+    if(familySheet && familyList && !document.getElementById('tripStudioEntry')){
+      const entry=document.createElement('button');
+      entry.id='tripStudioEntry';
+      entry.type='button';
+      entry.className='trip-studio-entry';
+      entry.innerHTML='<span><strong>⚙ Trip Studio</strong><small>Manage itinerary, exports and trip data</small></span><span aria-hidden="true">›</span>';
+      entry.addEventListener('click',openTripStudioPanel);
+      familyList.insertAdjacentElement('afterend',entry);
+    }
     if(familySheet && !document.getElementById('adminModeControl')){
       const block=document.createElement('section');
       block.id='adminModeControl';
       block.className='admin-mode-control trip-studio';
+      block.hidden=true;
       block.innerHTML=`
         <header class="trip-studio-head">
           <div>
@@ -155,7 +184,7 @@
             <h3>Trip Studio</h3>
             <small>Create, refine and manage this companion.</small>
           </div>
-          <span class="trip-studio-mark" aria-hidden="true">🧭</span>
+          <button type="button" class="trip-studio-close" aria-label="Close Trip Studio">×</button>
         </header>
         <div class="trip-studio-section trip-studio-mode">
           <div class="trip-studio-copy"><strong>Studio Mode</strong><small>Turn on editing tools for itinerary and trip data.</small></div>
@@ -174,6 +203,7 @@
           </button>
         </div>`;
       familySheet.appendChild(block);
+      block.querySelector('.trip-studio-close').addEventListener('click',closeTripStudioPanel);
       const input=block.querySelector('#adminModeToggle');
       input.addEventListener('change',()=>window.setAdminMode(input.checked));
       block.querySelector('#resetTripDataButton').addEventListener('click',window.resetTripData);
@@ -276,12 +306,17 @@
   };
 
   window.openTripStudioPanel=openTripStudioPanel;
+  window.closeTripStudioPanel=closeTripStudioPanel;
   window.scrollTripStudioToBottom=scrollTripStudioToBottom;
 
   const originalOpenFriendModal=window.openFriendModal||openFriendModal;
   window.openFriendModal=function(){
+    const modal=document.getElementById('mamaModal');
+    const studio=document.getElementById('adminModeControl');
+    if(modal) modal.classList.remove('studio-view');
+    if(studio) studio.hidden=true;
     originalOpenFriendModal();
-    if(state.mode&&isUnlocked()&&isAdminUser()) scrollTripStudioToBottom();
+    updateUI();
   };
 
   const originalSetFriend=window.setFriend||setFriend;
@@ -294,7 +329,6 @@
     updateUI();
     if(typeof window.refreshExpenseAdminUI==='function') window.refreshExpenseAdminUI();
     document.dispatchEvent(new CustomEvent('travelengine:adminmodechange',{detail:{enabled:state.mode}}));
-    if(key===ADMIN_USER&&state.mode) window.setTimeout(openTripStudioPanel,0);
   };
 
   /* Pending Admin changes are intentionally allowed to travel across pages.
