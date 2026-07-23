@@ -1811,7 +1811,11 @@ body.admin-mode .app-nav .days-trigger small {color:#fff!important;opacity:.96!i
 #tripModalContent .trip-onepage .trip-build-summary {display:none!important;}
 #tripModalContent .trip-onepage {gap:5px!important;}
 #tripModalContent .trip-onepage .fact-grid {gap:5px!important;}
-#tripModalContent .trip-onepage .fact {padding:7px 8px!important;}
+#tripModalContent .trip-onepage .fact {padding:7px 8px!important;min-width:0!important;overflow:visible!important;overflow-wrap:anywhere!important;word-break:break-word!important;}
+#tripModalContent .trip-onepage-vehicle .rental-depot-address,#tripModalContent .trip-onepage-vehicle .rental-office-card a{overflow-wrap:anywhere!important;word-break:break-word!important;}
+#tripModalContent .trip-onepage-vehicle .rental-depot-actions{margin:9px 0 0!important;}
+#tripModalContent .trip-onepage-vehicle .rental-depot-actions .pill{width:100%!important;white-space:normal!important;text-align:center!important;}
+@media(max-width:520px){#tripModalContent .trip-onepage-vehicle .rental-depot-grid{grid-template-columns:1fr!important;}}
 #tripModalContent .trip-onepage .guide-next-row {margin-top:2px!important;}
 @media(max-width:390px){
   #guideModalContent .guide-onepage > h2 {font-size:23px!important;}
