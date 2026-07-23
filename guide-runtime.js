@@ -135,7 +135,8 @@ function quickInfoInnerHTML(g,key){
  const addressRow=address?`<div class="quick-info-row"><span class="quick-info-icon">📍</span><span><span class="quick-info-label">Address</span><span class="quick-info-value">${address}</span></span></div>`:'';
  const copyButton=address?`<button class="utility-button" type="button" onclick="copyGuideAddress('${key}')">📍 Copy Address</button>`:'';
  const navButton=g.maps?`<a class="map-button" href="${g.maps}" target="_blank" rel="noopener">🧭 Navigate</a>`:'';
- return `<div class="quick-info-top"><span class="category-tag">${g.categoryLabel||g.cat||'Guide'}</span>${guideStatusHTML(g)}</div><div class="quick-info-grid">${addressRow}${phoneRow}${hoursRow}${priceRow}${visitDayHTML(key)}</div><div class="quick-info-actions">${copyButton}${navButton}${callButton}${websiteButton}<button class="moment-button" aria-label="Add Moment" onclick="openMomentsModal('${key}')">✨ Moment</button></div>`;
+ const roleBadge=g.itineraryRole?`<span class="itinerary-role-badge">${g.itineraryRole}</span>`:'';
+ return `<div class="quick-info-top"><span class="category-tag">${g.categoryLabel||g.cat||'Guide'}</span>${roleBadge}${guideStatusHTML(g)}</div><div class="quick-info-grid">${addressRow}${phoneRow}${hoursRow}${priceRow}${visitDayHTML(key)}</div><div class="quick-info-actions">${copyButton}${navButton}${callButton}${websiteButton}<button class="moment-button" aria-label="Add Moment" onclick="openMomentsModal('${key}')">✨ Moment</button></div>`;
 }
 
 function quickInfoHTML(g,key){

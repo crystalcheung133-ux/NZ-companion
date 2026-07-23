@@ -1840,3 +1840,7 @@ body.admin-mode .app-nav .days-trigger small {color:#fff!important;opacity:.96!i
 #mamaModal.studio-view .guide-sheet>.mama-close,#mamaModal.studio-view .guide-sheet>p.kicker,#mamaModal.studio-view .guide-sheet>h2,#mamaModal.studio-view .friend-choice-list,#mamaModal.studio-view #tripStudioEntry{display:none!important}
 #mamaModal.studio-view .guide-sheet{padding-top:12px}
 #mamaModal.studio-view #adminModeControl{display:block!important;margin-top:0}
+
+/* RC17.5 — itinerary role badge */
+.itinerary-role-badge{display:inline-flex;align-items:center;min-height:28px;padding:5px 10px;border-radius:999px;background:rgba(176,111,43,.12);border:1px solid rgba(176,111,43,.24);color:#6d421d;font-size:12px;font-weight:850;line-height:1.15;letter-spacing:.01em;}
+.quick-info-top{flex-wrap:wrap;}
