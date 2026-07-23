@@ -54,8 +54,8 @@
     splashSlogan: 'ADVENTURE AWAITS',
     splashDestination: 'NEW ZEALAND 2026',
     storageNamespace: 'nz-family-2026',
-    version: 'RC18.2',
-    buildLabel: 'Rental Depot Navigation Fix',
+    version: 'RC19',
+    buildLabel: 'Engine Integrity Layer E1–E5',
     theme: root.THEME_CONFIG.colors
   });
 

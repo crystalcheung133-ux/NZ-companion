@@ -1,5 +1,5 @@
 importScripts('./theme-config.js', './asset-config.js', './locale-config.js', './formatter.js', './navigation-config.js', './storage-config.js', './trip-config.js');
-const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-rental-depot-navigation-fix`;
+const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-engine-integrity-e1-e5`;
 const CRITICAL_EXTENSIONS = /\.(?:css|js)$/i;
 const ASSETS = [
   './',
@@ -37,6 +37,7 @@ const ASSETS = [
   './sync-config.js',
   './sync-runtime.js',
   './trip-config.js',
+  './engine-integrity.js',
   './data.js',
   './itinerary-authority.js',
   './place.html',
