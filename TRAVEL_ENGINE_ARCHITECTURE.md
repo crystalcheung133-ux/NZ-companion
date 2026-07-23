@@ -1,115 +1,143 @@
-# Travel Engine V2 Architecture — RC21
+# Travel Engine V2 Architecture — RC22
 
-## Authorities
-
-- `trip-config.js` owns trip and release identity.
-- `data.js` owns canonical places, itinerary, Guide relationships, bookings, Trip cards and navigation-bearing fields.
-- `engine-integrity.js` is the single E1–E5 and Planning Semantics validation authority.
-- `generation-selection-adapter.js` is the single production projection authority.
-
-No renderer owns planning selection rules. Canonical history remains available to Admin and sync; production consumers receive derived read-only views.
-
-## Acceptance and generation pipeline
+## Authority chain
 
 ```text
-Canonical trip data + configuration
-                  |
-                  v
-       Engine Integrity E1–E5
-                  |
-                  v
-       Planning Semantics (RC20)
-                  |
-             PASS only
-                  |
-                  v
-  Generation Selection Adapter (RC21)
-                  |
-        deeply frozen projection
-                  |
-       +----------+----------+
-       |     |       |       |
-     Guide  Trip  Bookings  Navigation
-       |     |       |       |
-       +-----+--- Export -----+
-                  |
-               Future AI
+Human Master File
+        |
+        v
+MasterFileImporter (RC22)
+        |
+        v
+Canonical Travel Data
+        |
+        v
+Engine Integrity E1–E5 (RC19)
+        |
+        v
+Planning Semantics (RC20)
+        |
+        v
+Generation Selection Adapter (RC21)
+        |
+        v
+Production Companion views
 ```
 
-`TravelEngineIntegrity.acceptTripData(data, config)` remains the acceptance entry point. The adapter calls it before creating any view.
+Each stage has one owner:
 
-## Planning semantics
+- `masterfile-importer.js` translates human Master File wording into canonical structures.
+- `data.js` remains the active shipped trip-data authority.
+- `engine-integrity.js` owns structural and planning acceptance.
+- `generation-selection-adapter.js` owns immutable production selection.
+- Renderers consume production views and do not import Master Files.
 
-The canonical optional field is `planningStatus`, with `confirmed`, `planned`, `backup`, `optional`, and `cancelled` as allowed values. Omission preserves pre-RC20 behavior. The adapter calls `isProductionEligible(record, 'selection')` and `filterProductionRecords(records, 'selection')`; it does not reproduce status decisions.
+The importer does not require, call, copy, or modify downstream authorities. A caller explicitly hands its output to `TravelEngineIntegrity.acceptTripData()` and, only after PASS, to `GenerationSelectionAdapter.rebuild()`.
 
-Production selection is therefore:
+## Importer stages
 
-- confirmed and planned: included;
-- backup and optional: excluded;
-- cancelled: always excluded;
-- omitted status: included for backward compatibility.
+### I — Parse
 
-## Generation Adapter API
+`parse(masterText)` recognizes destination-independent sections in flexible order:
+
+- Trip
+- Accommodation / Hotel / Stay
+- Restaurant / Café / Dining
+- Activity / Attraction / Tour
+- Rental / Rental Vehicle
+- Flight
+- Transport / Transfer
+- Notes
+- Day N
+- Unknown
+
+The dependency-free grammar accepts Markdown headings, plain section labels, `Field: value` lines, bullets, and `---` record separators. Unknown sections, fields, and raw wording are retained for review.
+
+### II — Normalize
+
+`normalize(parsed)` applies exported schema descriptors and aliases. It creates deterministic canonical IDs, normalizes only structural fields, and stores the original record text, fields, notes, tips, and unknown fields in `sourceWording`.
+
+Explicit `planningStatus`, `planningGroupId`, and `planningRole` fields are copied as stated. Planning language embedded in prose is not applied.
+
+### III — Relationship building
+
+`buildRelationships(normalized)` creates canonical collections:
 
 ```text
-GenerationSelectionAdapter.createProductionProjection(data, config)
-GenerationSelectionAdapter.validateProductionProjection(projection, data, config)
-GenerationSelectionAdapter.formatProjectionReport(result, options)
-GenerationSelectionAdapter.rebuild(data, config)
-GenerationSelectionAdapter.getCurrent()
-GenerationSelectionAdapter.requireCurrent()
-GenerationSelectionAdapter.view(name)
-GenerationSelectionAdapter.promoteAndRebuild(change)
+PLACES
+CATEGORIES
+GUIDE_ORDER
+DAY_LINKS
+ACTIVITIES
+BOOKINGS_DATA
+NAVIGATION_ACTIONS
+TRIP_DATA
+TRIP_ORDER
+ITINERARY_DATA
+NOTES
+CANONICAL_REFERENCES
+IMPORT_SOURCE
 ```
 
-The browser exposes the current frozen view as `PRODUCTION_PROJECTION`. A successful rebuild dispatches `travelengine:productionprojectionchange`.
+Accommodation creates a Guide place plus accommodation booking. Restaurants create Guide places. Activities remain activity entities and create a place only when the source supplies a location/address. Rental pickup and return bindings remain independent. Flights become standalone flight bookings. Scheduled records create Day relationships where structurally supported.
 
-## Projection model
+### IV — Question generation
+
+`generateQuestions(relationshipResult)` reports ambiguity without changing canonical output. Each question contains:
+
+- code and stage;
+- affected section/entity/field;
+- reason;
+- question;
+- suggested interpretation;
+- confidence.
+
+Question cases include ambiguous planning language, alternative choices, unresolved place classification, missing flight endpoints, missing rental navigation bindings, and unknown sections.
+
+## Public API
 
 ```text
-productionProjection
-├── guide
-│   ├── places
-│   ├── categories
-│   ├── order
-│   └── dayLinks
-├── itinerary
-│   └── days
-├── trip
-│   ├── cards
-│   ├── order
-│   └── places
-├── bookings
-│   ├── byId
-│   └── order
-├── navigation
-│   └── actions
-├── export
-├── ai
-└── acceptance
+MasterFileImporter.import(masterText)
+MasterFileImporter.parse(masterText)
+MasterFileImporter.normalize(parsed)
+MasterFileImporter.buildRelationships(normalized)
+MasterFileImporter.generateQuestions(relationshipResult)
+MasterFileImporter.formatReport(importResult, options)
 ```
 
-Every branch is cloned from canonical data and deeply frozen. Export and AI receive production-only copies, not canonical planning history.
+`import()` returns:
 
-## Promotion
+```text
+version
+canonicalData
+config
+questions
+warnings
+statistics
+stages
+```
 
-`promoteAndRebuild(change)` delegates the planning transition to RC20 `promotePlanningRecord`. A failed promotion leaves the registered canonical dataset and current projection unchanged. A successful promotion registers the accepted cloned dataset, rebuilds all consumer views, and emits one projection-change event. The caller’s original canonical object is never mutated.
+Statistics cover entities, bookings, Guide places, activities, itinerary days/items, unresolved questions, and warnings.
 
-## Projection validation
+## Wording preservation
 
-Blocking codes are:
+Display descriptions, notes, and travel tips are copied unchanged. Structural transformations—field aliases, booleans, day numbers, and canonical ID slugs—are deterministic. Explicit IDs that require normalization produce a warning. The importer never rewrites prose to improve tone or content.
 
-- `PROJECTION_DUPLICATE`
-- `PROJECTION_CANCELLED_VISIBLE`
-- `PROJECTION_BACKUP_VISIBLE`
-- `PROJECTION_SOURCE_MISSING`
-- `PROJECTION_INCONSISTENT`
-- `PROJECTION_MUTABLE`
+## Non-guessing policy
 
-Validation checks deep immutability, eligible-record completeness, canonical provenance, duplicate IDs/order entries, selection leakage, navigation ownership, and consistency between shared views.
+The importer never:
+
+- infers planning status from words such as “maybe,” “preferred,” or “backup”;
+- groups alternatives automatically;
+- converts named activities into fake places;
+- reuses pickup addresses as return navigation;
+- fabricates airport endpoints, booking references, addresses, dates, or times;
+- repairs data to make downstream validation pass.
+
+Ambiguity is represented by questions. Structural problems remain visible to RC19–20 validation.
 
 ## Runtime boundaries
 
-Guide, Trip, Day, Home day navigation, place details, Booking Pack accommodation data, and itinerary exports consume adapter views. `navigation.js` remains a generic URL/action utility; canonical destination selection occurs in the adapter’s navigation view. Admin, itinerary authority, sync, Expenses, Moments, Complete Trip, CSS, and service-worker strategy remain unchanged.
+The importer is a generation/tooling module and is not loaded by Companion pages. RC22 changes no Guide, Trip, Navigation, Booking, Export, Admin, Expenses, Moments, sync, CSS, manifest, or service-worker behavior.
 
-`freeze-validation.js` composes the existing Engine acceptance with adapter validation and package/runtime checks. The two dependency-free test suites are `engine-integrity.test.js` and `generation-selection-adapter.test.js`.
+`freeze-validation.js` confirms authority isolation and composes existing RC19–21 regression checks. `masterfile-importer.test.js` provides dependency-free translation and handoff tests.

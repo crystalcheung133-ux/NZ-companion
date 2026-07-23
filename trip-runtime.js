@@ -1,4 +1,4 @@
-﻿/* Travel Engine v1.0 â€” Stage 7M modular runtime. */
+/* Travel Engine v1.0 — Stage 7M modular runtime. */
 const PRODUCTION_TRIP=GenerationSelectionAdapter.view('trip');
 const PRODUCTION_BOOKINGS=GenerationSelectionAdapter.view('bookings');
 function saveChecklist(){const checks=[...document.querySelectorAll('[data-check]')].map(c=>c.checked);STORAGE.local.writeJSON(STORAGE_CONFIG.keys.checklist,checks);const done=checks.filter(Boolean).length;const total=checks.length;const ready=$('readyBox');if(ready)ready.classList.toggle('show',total>0&&checks.every(Boolean));const progress=$('checklistProgress');if(progress)progress.textContent=`${done} / ${total} Complete`;renderDashboard();}
@@ -34,10 +34,10 @@ function compactEmergencyHTML(html){
           const number=(link.getAttribute('href')||'').replace(/^tel:/,'');
           const visible=(link.textContent||'').trim();
           const label=/\d/.test(visible)?visible:(gridIndex===0&&index<2?'Call '+number:'Call');
-          link.innerHTML=`<span aria-hidden="true">â˜Ž</span><span>${label}</span>`;
+          link.innerHTML=`<span aria-hidden="true">☎</span><span>${label}</span>`;
         }else if((link.getAttribute('href')||'').includes('maps.google')){
           link.classList.add('emergency-navigate');
-          link.innerHTML='<span aria-hidden="true">â†—</span><span>Navigate</span>';
+          link.innerHTML='<span aria-hidden="true">↗</span><span>Navigate</span>';
         }
         actions.appendChild(link);
       });
@@ -51,8 +51,8 @@ function compactEmergencyHTML(html){
 function tripSyncSummary(){
   const state=(typeof TRIP_SYNC!=='undefined'&&TRIP_SYNC.getState)?TRIP_SYNC.getState():null;
   const status=(typeof TRIP_SYNC!=='undefined'&&TRIP_SYNC.statusLabel)?TRIP_SYNC.statusLabel():'Local data';
-  const version=state&&Number.isFinite(Number(state.remoteVersion))?' Â· Version '+Number(state.remoteVersion):'';
-  return `${TRIP_CONFIG.version} Â· ${status}${version}`;
+  const version=state&&Number.isFinite(Number(state.remoteVersion))?' · Version '+Number(state.remoteVersion):'';
+  return `${TRIP_CONFIG.version} · ${status}${version}`;
 }
 
 
@@ -77,7 +77,7 @@ function buildAccommodationListHTML(){
     const nights=Number(booking.nights||0);
     const nightsLabel=nights?`${nights} night${nights===1?'':'s'}`:'';
     const price=booking.price||'Price not added yet';
-    return `<button class="accommodation-picker-row" type="button" role="listitem" onclick="openAccommodationDetail('${escapeTripHTML(booking.id)}')"><span class="accommodation-picker-icon" aria-hidden="true">ðŸ¨</span><span class="accommodation-picker-copy"><strong>${escapeTripHTML(booking.title)}</strong><small>${escapeTripHTML(booking.stayDates||booking.date||'')}</small><span class="accommodation-picker-price">${escapeTripHTML(price)}</span></span><span class="accommodation-picker-meta">${escapeTripHTML(nightsLabel)}<b aria-hidden="true">â€º</b></span></button>`;
+    return `<button class="accommodation-picker-row" type="button" role="listitem" onclick="openAccommodationDetail('${escapeTripHTML(booking.id)}')"><span class="accommodation-picker-icon" aria-hidden="true">🏨</span><span class="accommodation-picker-copy"><strong>${escapeTripHTML(booking.title)}</strong><small>${escapeTripHTML(booking.stayDates||booking.date||'')}</small><span class="accommodation-picker-price">${escapeTripHTML(price)}</span></span><span class="accommodation-picker-meta">${escapeTripHTML(nightsLabel)}<b aria-hidden="true">›</b></span></button>`;
   }).join('')+'</div>';
 }
 function accommodationDetailNavigationHTML(bookingId){
@@ -86,7 +86,7 @@ function accommodationDetailNavigationHTML(bookingId){
   if(index<0||bookings.length<2)return '';
   const previous=bookings[(index-1+bookings.length)%bookings.length];
   const next=bookings[(index+1)%bookings.length];
-  return `<div class="guide-browse-meta">${index+1} / ${bookings.length}</div><div class="guide-next-row"><button class="pill" type="button" onclick="openAccommodationDetail('${escapeTripHTML(previous.id)}')">â€¹ Previous</button><button class="pill" type="button" onclick="openAccommodationDetail('${escapeTripHTML(next.id)}')">Next â€º</button></div>`;
+  return `<div class="guide-browse-meta">${index+1} / ${bookings.length}</div><div class="guide-next-row"><button class="pill" type="button" onclick="openAccommodationDetail('${escapeTripHTML(previous.id)}')">‹ Previous</button><button class="pill" type="button" onclick="openAccommodationDetail('${escapeTripHTML(next.id)}')">Next ›</button></div>`;
 }
 function buildAccommodationDetailHTML(booking){
   if(!booking)return '<p class="timestamp">Accommodation booking not found.</p>';
@@ -96,7 +96,7 @@ function buildAccommodationDetailHTML(booking){
   const map=address?accommodationMapURL(address):'';
   const nights=Number(booking.nights||0);
   const nightsLabel=nights?`${nights} night${nights===1?'':'s'}`:'';
-  const bookingStatus=booking.id==='archway-booking'?'BOOKED BACKUP Â· Free cancellation':(booking.status||'');
+  const bookingStatus=booking.id==='archway-booking'?'BOOKED BACKUP · Free cancellation':(booking.status||'');
   const facts=[
     ['Status',bookingStatus],
     ['Stay',booking.stayDates||booking.date||''],
@@ -125,7 +125,7 @@ function openAccommodationDetail(bookingId){
   const content=document.getElementById('tripModalContent');
   const modal=document.getElementById('tripModal');
   if(!content||!modal)return;
-  content.innerHTML=`<div class="trip-onepage trip-onepage-stay accommodation-onepage-detail"><button class="accommodation-back" type="button" onclick="openAccommodationList()">â€¹ All accommodation</button><p class="kicker">Trip Â· Accommodation</p><h2>${escapeTripHTML(booking?booking.title:'Accommodation')}</h2>${buildAccommodationDetailHTML(booking)}<p class="timestamp trip-build-summary">${tripSyncSummary()}</p></div>`;
+  content.innerHTML=`<div class="trip-onepage trip-onepage-stay accommodation-onepage-detail"><button class="accommodation-back" type="button" onclick="openAccommodationList()">‹ All accommodation</button><p class="kicker">Trip · Accommodation</p><h2>${escapeTripHTML(booking?booking.title:'Accommodation')}</h2>${buildAccommodationDetailHTML(booking)}<p class="timestamp trip-build-summary">${tripSyncSummary()}</p></div>`;
   modal.classList.add('show');
   const sheet=document.querySelector('#tripModal .trip-sheet');
   if(sheet)sheet.scrollTop=0;
@@ -142,7 +142,7 @@ function openTripCard(key) {
   const modal = document.getElementById('tripModal');
   if (!content || !modal) return;
   const body=key==='emergency'?compactEmergencyHTML(t.body):(key==='stay'?buildAccommodationListHTML():t.body);
-  content.innerHTML = `<div class="trip-onepage trip-onepage-${key}"><p class="kicker">Trip</p><h2>${t.title}</h2>${body}<div class="guide-next-row"><button class="pill" onclick="openTripCard('${prev}')">â€¹ Previous</button><button class="pill" onclick="openTripCard('${next}')">Next â€º</button></div><p class="timestamp trip-build-summary">${tripSyncSummary()}</p></div>`;
+  content.innerHTML = `<div class="trip-onepage trip-onepage-${key}"><p class="kicker">Trip</p><h2>${t.title}</h2>${body}<div class="guide-next-row"><button class="pill" onclick="openTripCard('${prev}')">‹ Previous</button><button class="pill" onclick="openTripCard('${next}')">Next ›</button></div><p class="timestamp trip-build-summary">${tripSyncSummary()}</p></div>`;
   modal.classList.add('show');
   const sheet=document.querySelector('#tripModal .trip-sheet');
   if(sheet) sheet.scrollTop=0;

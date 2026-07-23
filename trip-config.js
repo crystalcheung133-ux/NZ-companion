@@ -54,8 +54,8 @@
     splashSlogan: 'ADVENTURE AWAITS',
     splashDestination: 'NEW ZEALAND 2026',
     storageNamespace: 'nz-family-2026',
-    version: 'RC21',
-    buildLabel: 'Generation Selection Adapter',
+    version: 'RC22.1',
+    buildLabel: 'Unicode Mojibake Root Cause Repair',
     theme: root.THEME_CONFIG.colors
   });
 

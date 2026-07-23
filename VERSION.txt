@@ -1,1 +1,1 @@
-NZ Companion RC21 · Generation Selection Adapter
+NZ Companion RC22.1 · Unicode Mojibake Root Cause Repair
