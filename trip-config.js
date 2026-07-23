@@ -54,8 +54,8 @@
     splashSlogan: 'ADVENTURE AWAITS',
     splashDestination: 'NEW ZEALAND 2026',
     storageNamespace: 'nz-family-2026',
-    version: 'RC19',
-    buildLabel: 'Engine Integrity Layer E1–E5',
+    version: 'RC21',
+    buildLabel: 'Generation Selection Adapter',
     theme: root.THEME_CONFIG.colors
   });
 

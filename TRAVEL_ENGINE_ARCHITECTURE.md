@@ -1,87 +1,115 @@
-# Travel Engine V2 Architecture — RC19
+# Travel Engine V2 Architecture — RC21
 
-## Authority model
+## Authorities
 
-Trip-specific identity and content remain owned by the existing canonical files:
+- `trip-config.js` owns trip and release identity.
+- `data.js` owns canonical places, itinerary, Guide relationships, bookings, Trip cards and navigation-bearing fields.
+- `engine-integrity.js` is the single E1–E5 and Planning Semantics validation authority.
+- `generation-selection-adapter.js` is the single production projection authority.
 
-- `trip-config.js`: trip identity, dates, participants, release identity, Guide exclusions, and export labels.
-- `theme-config.js`, `asset-config.js`, `locale-config.js`, `money-config.js`: visual, asset, locale, and currency configuration.
-- `data.js`: canonical places, itinerary, Guide relationships, bookings, Trip cards, and navigation-bearing booking fields.
+No renderer owns planning selection rules. Canonical history remains available to Admin and sync; production consumers receive derived read-only views.
 
-The runtime modules remain trip-agnostic. A Vietnam or Japan Companion can replace the trip-owned data/configuration without copying validation rules.
-
-## Engine integrity flow
-
-```text
-Canonical trip data + trip configuration
-                    |
-                    v
-        engine-integrity.js
-   E1 -> E2 -> E3 -> E4 -> E5
-                    |
-          +---------+---------+
-          |                   |
-        PASS                 FAIL
-          |                   |
- structured result     structured result
- runtime acceptance    TravelEngineIntegrityError
- renderer/generator    readable failure report
-```
-
-`engine-integrity.js` is the single implementation of Engine structural rules. It has no DOM, storage, network, NZ-specific ID, venue, address, or day dependency.
-
-## Public API
+## Acceptance and generation pipeline
 
 ```text
-TravelEngineIntegrity.validateE1(data, config)
-TravelEngineIntegrity.validateE2(data, config)
-TravelEngineIntegrity.validateE3(data, config)
-TravelEngineIntegrity.validateE4(data, config)
-TravelEngineIntegrity.validateE5(data, config)
-TravelEngineIntegrity.validateTripData(data, config)
-TravelEngineIntegrity.acceptTripData(data, config)
-TravelEngineIntegrity.formatValidationReport(result, options)
+Canonical trip data + configuration
+                  |
+                  v
+       Engine Integrity E1–E5
+                  |
+                  v
+       Planning Semantics (RC20)
+                  |
+             PASS only
+                  |
+                  v
+  Generation Selection Adapter (RC21)
+                  |
+        deeply frozen projection
+                  |
+       +----------+----------+
+       |     |       |       |
+     Guide  Trip  Bookings  Navigation
+       |     |       |       |
+       +-----+--- Export -----+
+                  |
+               Future AI
 ```
 
-- `validateTripData` returns the machine-readable acceptance result.
-- `acceptTripData` returns that result on PASS and throws `TravelEngineIntegrityError` with the same structured result on FAIL.
-- `formatValidationReport` produces Markdown by default or plain text with `{format: 'text'}`.
+`TravelEngineIntegrity.acceptTripData(data, config)` remains the acceptance entry point. The adapter calls it before creating any view.
 
-## Runtime acceptance
+## Planning semantics
 
-Every production page that loads `data.js` first loads `engine-integrity.js`. After `data.js` constructs the existing `TRAVEL_DATASETS` authority, it calls `acceptTripData(TRAVEL_DATASETS, TRIP_CONFIG)`. Invalid structural data therefore produces a blocking error before downstream rendering/generation logic can treat the dataset as accepted.
+The canonical optional field is `planningStatus`, with `confirmed`, `planned`, `backup`, `optional`, and `cancelled` as allowed values. Omission preserves pre-RC20 behavior. The adapter calls `isProductionEligible(record, 'selection')` and `filterProductionRecords(records, 'selection')`; it does not reproduce status decisions.
 
-The successful result is exposed as `TRAVEL_ENGINE_ACCEPTANCE`. No second trip schema or repaired data copy is created.
+Production selection is therefore:
 
-## Node/static acceptance
+- confirmed and planned: included;
+- backup and optional: excluded;
+- cancelled: always excluded;
+- omitted status: included for backward compatibility.
 
-`freeze-validation.js` loads the same module and calls `validateTripData`. It adds only release/package/presentation gates, such as asset existence, RC19 release identity, manifest authority, Service Worker assets, renderer suppression, and protected entry points. It does not reimplement E1–E5.
+## Generation Adapter API
 
-`engine-integrity.test.js` is dependency-free and executes in Node.
+```text
+GenerationSelectionAdapter.createProductionProjection(data, config)
+GenerationSelectionAdapter.validateProductionProjection(projection, data, config)
+GenerationSelectionAdapter.formatProjectionReport(result, options)
+GenerationSelectionAdapter.rebuild(data, config)
+GenerationSelectionAdapter.getCurrent()
+GenerationSelectionAdapter.requireCurrent()
+GenerationSelectionAdapter.view(name)
+GenerationSelectionAdapter.promoteAndRebuild(change)
+```
 
-## Booking and navigation schema
+The browser exposes the current frozen view as `PRODUCTION_PROJECTION`. A successful rebuild dispatches `travelengine:productionprojectionchange`.
 
-Existing booking records remain canonical. Type-specific validators read the fields relevant to each booking type.
+## Projection model
 
-Rental bookings use independent canonical roles:
+```text
+productionProjection
+├── guide
+│   ├── places
+│   ├── categories
+│   ├── order
+│   └── dayLinks
+├── itinerary
+│   └── days
+├── trip
+│   ├── cards
+│   ├── order
+│   └── places
+├── bookings
+│   ├── byId
+│   └── order
+├── navigation
+│   └── actions
+├── export
+├── ai
+└── acceptance
+```
 
-- `pickupDepotAddress`
-- `pickupNavigationDestination`
-- `returnDepotAddress`
-- `returnNavigationDestination`
-- optional `shuttleCollectionAddress`
-- `sameDepot` or `oneWay` where applicable
+Every branch is cloned from canonical data and deeply frozen. Export and AI receive production-only copies, not canonical planning history.
 
-Legacy fields remain readable for backward compatibility, but validation never substitutes one role for another.
+## Promotion
 
-## Non-place records
+`promoteAndRebuild(change)` delegates the planning transition to RC20 `promotePlanningRecord`. A failed promotion leaves the registered canonical dataset and current projection unchanged. A successful promotion registers the accepted cloned dataset, rebuilds all consumer views, and emits one projection-change event. The caller’s original canonical object is never mutated.
 
-`nonPlace: true` is the canonical compatible classification mechanism. `nonPlaceRole` is an optional registered role that improves deterministic reporting without requiring a second hierarchy. Non-place records may retain instructions, time, notes, type, and route context, but cannot contain place/Guide/address/map/navigation actions.
+## Projection validation
 
-## Failure policy
+Blocking codes are:
 
-- `error`: blocking structural defect; overall acceptance is FAIL.
-- `warning`: non-blocking ambiguity or unsupported optional extension requiring review.
-- optional commercial booking details are not required unless the current type model declares them structural.
+- `PROJECTION_DUPLICATE`
+- `PROJECTION_CANCELLED_VISIBLE`
+- `PROJECTION_BACKUP_VISIBLE`
+- `PROJECTION_SOURCE_MISSING`
+- `PROJECTION_INCONSISTENT`
+- `PROJECTION_MUTABLE`
 
-Validation is read-only. It never fabricates fields, rewrites data, opens map services, creates places, or silently classifies descriptive text.
+Validation checks deep immutability, eligible-record completeness, canonical provenance, duplicate IDs/order entries, selection leakage, navigation ownership, and consistency between shared views.
+
+## Runtime boundaries
+
+Guide, Trip, Day, Home day navigation, place details, Booking Pack accommodation data, and itinerary exports consume adapter views. `navigation.js` remains a generic URL/action utility; canonical destination selection occurs in the adapter’s navigation view. Admin, itinerary authority, sync, Expenses, Moments, Complete Trip, CSS, and service-worker strategy remain unchanged.
+
+`freeze-validation.js` composes the existing Engine acceptance with adapter validation and package/runtime checks. The two dependency-free test suites are `engine-integrity.test.js` and `generation-selection-adapter.test.js`.

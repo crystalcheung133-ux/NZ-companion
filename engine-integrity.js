@@ -6,7 +6,10 @@
 })(typeof globalThis!=='undefined'?globalThis:this,function(){
   'use strict';
 
-  const STAGES=Object.freeze(['E1','E2','E3','E4','E5']);
+  const INTEGRITY_STAGES=Object.freeze(['E1','E2','E3','E4','E5']);
+  const STAGES=Object.freeze([...INTEGRITY_STAGES,'PLANNING']);
+  const PLANNING_STATUSES=Object.freeze(['confirmed','planned','backup','optional','cancelled']);
+  const PLANNING_ROLES=Object.freeze(['primary','alternative']);
   const NON_PLACE_ROLES=Object.freeze([
     'meal-choice','accommodation-meal','operator-meal','fuel-check','final-refuel',
     'comfort-stop','free-time','check-in','check-out','preparation','transfer-instruction'
@@ -270,7 +273,9 @@
     const actions=[];
     for(const [id,booking] of recordEntries(value(data,'BOOKINGS_DATA','bookings')||{})){
       const bookingId=text(booking&&booking.id)||text(id);
-      if(booking&&/^(?:rentalCar|rental-vehicle|rental)$/i.test(booking.type||'')){
+      const status=planningStatus(booking);
+      const inactiveCandidate=['cancelled','optional','backup'].includes(status)&&!activePlanningFlag(booking);
+      if(booking&&!inactiveCandidate&&/^(?:rentalCar|rental-vehicle|rental)$/i.test(booking.type||'')){
         actions.push({id:`${bookingId}:pickup`,ownerType:'booking',ownerId:bookingId,role:'rental-pickup',destinationSource:'pickupNavigationDestination',destination:booking.pickupNavigationDestination,label:'Navigate to pickup depot'});
         actions.push({id:`${bookingId}:return`,ownerType:'booking',ownerId:bookingId,role:'rental-return',destinationSource:'returnNavigationDestination',destination:booking.returnNavigationDestination,label:'Navigate to return depot'});
         if(text(booking.shuttleCollectionNavigationDestination))actions.push({id:`${bookingId}:shuttle`,ownerType:'booking',ownerId:bookingId,role:'shuttle-collection-point',destinationSource:'shuttleCollectionNavigationDestination',destination:booking.shuttleCollectionNavigationDestination,label:'Navigate to shuttle collection point'});
@@ -337,9 +342,14 @@
   function validateE4(data){
     const c=collector('E4');
     const bookings=recordMap(value(data,'BOOKINGS_DATA','bookings')||{});
-    const counts={accommodation:0,rentalVehicle:0,flight:0,activityTour:0,other:0};
+    const counts={accommodation:0,rentalVehicle:0,flight:0,activityTour:0,other:0,deferredCandidates:0};
     for(const [id,booking] of bookings){
       const type=text(booking.type);
+      const status=planningStatus(booking);
+      if(['cancelled','optional','backup'].includes(status)&&!activePlanningFlag(booking)){
+        counts.deferredCandidates++;
+        continue;
+      }
       if(type==='accommodation'){
         counts.accommodation++;
         required(c,booking,id,'title','BOOKING_ACCOMMODATION_PROPERTY_MISSING','Accommodation property name is required.');
@@ -421,13 +431,190 @@
     return c.result({placeLinked:place,nonPlace,ambiguous,registeredRoles:NON_PLACE_ROLES.length});
   }
 
+  function planningStatus(record){
+    return record&&Object.prototype.hasOwnProperty.call(record,'planningStatus')?record.planningStatus:undefined;
+  }
+  function planningEntries(data){
+    const entries=[];
+    for(const [id,record] of recordEntries(value(data,'PLACES','places')||{}))entries.push({entityType:'place',entityId:text(record&&record.id)||text(id),record});
+    for(const [id,record] of recordEntries(value(data,'BOOKINGS_DATA','bookings')||{}))entries.push({entityType:'booking',entityId:text(record&&record.id)||text(id),record});
+    for(const {item} of itineraryItems(data))entries.push({entityType:'itineraryItem',entityId:text(item&&item.id),record:item});
+    for(const [id,record] of recordEntries(value(data,'PLANNING_RECORDS','planningRecords')||{}))entries.push({
+      entityType:text(record&&record.entityType)||'planningRecord',
+      entityId:text(record&&record.id)||text(id),
+      record
+    });
+    return entries;
+  }
+  function activePlanningFlag(record){
+    return record&&(
+      record.active===true||record.selected===true||record.mandatory===true||
+      record.productionSelection===true||record.productionBooking===true||
+      record.productionGuide===true||record.includeInExport===true||record.exportAsConfirmed===true
+    );
+  }
+  function validatePlanning(data){
+    const c=collector('PLANNING');
+    const groups=recordMap(value(data,'PLANNING_GROUPS','planningGroups')||{});
+    const membersByGroup=new Map();
+    const entries=planningEntries(data);
+    let statusCount=0,groupedCount=0;
+
+    for(const [id,group] of groups){
+      if(!validId(id))c.error('PLANNING_GROUP_ID_INVALID',{
+        entityType:'planningGroup',entityId:id||null,field:'id',
+        message:'Planning group ID must be a stable canonical identifier.',
+        recommendation:'Replace it with a stable group ID and update member planningGroupId values.'
+      });
+      if(group&&group.primaryRequired!=null&&typeof group.primaryRequired!=='boolean')c.error('PLANNING_GROUP_PRIMARY_REQUIRED_INVALID',{
+        entityType:'planningGroup',entityId:id,field:'primaryRequired',
+        message:'primaryRequired must be boolean when supplied.'
+      });
+    }
+
+    for(const entry of entries){
+      const {entityType,entityId,record}=entry;
+      if(!record||typeof record!=='object')continue;
+      const status=planningStatus(record);
+      const groupId=text(record.planningGroupId);
+      const role=record.planningRole;
+      if(status!==undefined){
+        statusCount++;
+        if(typeof status!=='string'||!PLANNING_STATUSES.includes(status))c.error('PLANNING_INVALID_STATUS',{
+          entityType,entityId,field:'planningStatus',
+          message:`Invalid planning status: ${String(status)}.`,
+          recommendation:`Use one canonical value: ${PLANNING_STATUSES.join(', ')}.`
+        });
+      }
+      if(groupId){
+        groupedCount++;
+        if(!groups.has(groupId))c.error('PLANNING_GROUP_UNRESOLVED',{
+          entityType,entityId,field:'planningGroupId',relatedEntityId:groupId,
+          message:'Planning record references a missing planning group.',
+          recommendation:'Correct the group relationship or create the real generic planning decision group.'
+        });
+        if(!PLANNING_ROLES.includes(role))c.error('PLANNING_ROLE_INVALID',{
+          entityType,entityId,field:'planningRole',relatedEntityId:groupId,
+          message:'Grouped planning record must be primary or alternative.',
+          recommendation:'Assign the record role within its existing planning group.'
+        });
+        if(!membersByGroup.has(groupId))membersByGroup.set(groupId,[]);
+        membersByGroup.get(groupId).push(entry);
+      }else if(role!==undefined)c.error('PLANNING_ROLE_WITHOUT_GROUP',{
+        entityType,entityId,field:'planningRole',
+        message:'Planning role is present without a planningGroupId.',
+        recommendation:'Attach the record to its planning decision group or remove the orphan role.'
+      });
+
+      if(status==='cancelled'&&activePlanningFlag(record))c.error('PLANNING_CANCELLED_ACTIVE',{
+        entityType,entityId,field:'planningStatus',
+        message:'Cancelled record is marked for active production use.',
+        recommendation:'Keep it editable/searchable, but remove active, selection, Guide, booking, and export production flags.'
+      });
+      if(status==='optional'&&(record.mandatory===true||record.required===true||record.productionSelection===true))c.error('PLANNING_OPTIONAL_MANDATORY',{
+        entityType,entityId,field:'planningStatus',
+        message:'Optional record is being treated as mandatory.',
+        recommendation:'Remove the mandatory/required production selection flag or promote the status intentionally.'
+      });
+      if(status==='backup'&&(record.productionSelection===true||record.exportAsConfirmed===true||record.productionBooking===true))c.error('PLANNING_BACKUP_ACTIVE',{
+        entityType,entityId,field:'planningStatus',
+        message:'Backup record is being treated as the active or confirmed production selection.',
+        recommendation:'Promote the backup intentionally before production selection or export.'
+      });
+    }
+
+    for(const [groupId,members] of membersByGroup){
+      const selectable=members.filter(({record})=>planningStatus(record)!=='cancelled');
+      const primary=selectable.filter(({record})=>record.planningRole==='primary');
+      const confirmed=selectable.filter(({record})=>planningStatus(record)==='confirmed');
+      if(primary.length>1)c.error('PLANNING_DUPLICATE_PRIMARY',{
+        entityType:'planningGroup',entityId:groupId,field:'planningRole',
+        message:`Planning group has ${primary.length} primary records.`,
+        recommendation:'Keep exactly one primary and retain the other candidates as alternatives.'
+      });
+      if(confirmed.length>1)c.error('PLANNING_DUPLICATE_CONFIRMED',{
+        entityType:'planningGroup',entityId:groupId,field:'planningStatus',
+        message:`Planning group has ${confirmed.length} confirmed selections.`,
+        recommendation:'Keep one confirmed selection; retain other candidates as planned, backup, or optional according to authoritative intent.'
+      });
+      const group=groups.get(groupId);
+      if(group&&group.primaryRequired===true&&selectable.length>0&&primary.length===0)c.error('PLANNING_PRIMARY_MISSING',{
+        entityType:'planningGroup',entityId:groupId,field:'planningRole',
+        message:'Planning group requires a primary but has none.',
+        recommendation:'Promote one existing selectable candidate to primary.'
+      });
+    }
+    return c.result({
+      records:entries.length,
+      recordsWithStatus:statusCount,
+      groups:groups.size,
+      groupedRecords:groupedCount,
+      allowedStatuses:PLANNING_STATUSES.length
+    });
+  }
+
+  function isProductionEligible(record,channel){
+    const status=planningStatus(record);
+    const target=channel||'selection';
+    if(status===undefined)return true;
+    if(target==='edit'||target==='search')return true;
+    if(status==='cancelled')return false;
+    if(status==='backup')return !['selection','confirmed-export','production-booking'].includes(target);
+    if(status==='optional')return !['mandatory','selection'].includes(target);
+    return true;
+  }
+  function filterProductionRecords(records,channel){
+    return (Array.isArray(records)?records:[]).filter(record=>isProductionEligible(record,channel));
+  }
+  function cloneData(data){
+    if(typeof structuredClone==='function')return structuredClone(data);
+    return JSON.parse(JSON.stringify(data));
+  }
+  function mutablePlanningRecord(data,entityType,entityId){
+    const id=text(entityId);
+    const collectionName=entityType==='place'?(data.PLACES?'PLACES':'places'):
+      entityType==='booking'?(data.BOOKINGS_DATA?'BOOKINGS_DATA':'bookings'):null;
+    if(collectionName){
+      const collection=data[collectionName];
+      if(Array.isArray(collection))return collection.find(record=>text(record&&record.id)===id)||null;
+      return collection&&collection[id]||null;
+    }
+    if(entityType==='itineraryItem'){
+      for(const {item} of itineraryItems(data))if(text(item&&item.id)===id)return item;
+      return null;
+    }
+    const records=data.PLANNING_RECORDS||data.planningRecords;
+    if(Array.isArray(records))return records.find(record=>text(record&&record.id)===id)||null;
+    return records&&records[id]||null;
+  }
+  function promotePlanningRecord(data,change,config){
+    const candidate=cloneData(data);
+    const entityType=text(change&&change.entityType);
+    const entityId=text(change&&change.entityId);
+    const record=mutablePlanningRecord(candidate,entityType,entityId);
+    if(!record)throw new Error(`Planning record not found: ${entityType}/${entityId}`);
+    const groupId=text(record.planningGroupId);
+    if(change&&change.planningRole==='primary'&&groupId){
+      for(const entry of planningEntries(candidate)){
+        if(entry.record!==record&&text(entry.record&&entry.record.planningGroupId)===groupId&&entry.record.planningRole==='primary'){
+          entry.record.planningRole='alternative';
+        }
+      }
+    }
+    if(change&&change.planningStatus!==undefined)record.planningStatus=change.planningStatus;
+    if(change&&change.planningRole!==undefined)record.planningRole=change.planningRole;
+    const result=validateTripData(candidate,config);
+    return {accepted:result.valid,data:result.valid?candidate:data,candidate,result};
+  }
+
   function validateTripData(data,config){
     const stageResults={
       E1:validateE1(data,config),
       E2:validateE2(data,config),
       E3:validateE3(data,config),
       E4:validateE4(data,config),
-      E5:validateE5(data,config)
+      E5:validateE5(data,config),
+      PLANNING:validatePlanning(data,config)
     };
     const errors=STAGES.flatMap(stage=>stageResults[stage].errors);
     const warnings=STAGES.flatMap(stage=>stageResults[stage].warnings);
@@ -443,7 +630,8 @@
         relationshipCounts:stageResults.E2.summary,
         navigationCounts:stageResults.E3.summary,
         bookingCounts:stageResults.E4.summary,
-        nonPlaceCounts:stageResults.E5.summary
+        nonPlaceCounts:stageResults.E5.summary,
+        planningCounts:stageResults.PLANNING.summary
       }
     };
   }
@@ -479,9 +667,10 @@
   }
 
   return Object.freeze({
-    version:'2.0.0-e1-e5',
-    STAGES,NON_PLACE_ROLES,NAVIGATION_ROLES,
+    version:'2.1.0-planning-semantics',
+    STAGES,INTEGRITY_STAGES,PLANNING_STATUSES,PLANNING_ROLES,NON_PLACE_ROLES,NAVIGATION_ROLES,
     validateE1,validateE2,validateE3,validateE4,validateE5,
-    validateTripData,acceptTripData,formatValidationReport
+    validatePlanning,validateTripData,acceptTripData,formatValidationReport,
+    isProductionEligible,filterProductionRecords,promotePlanningRecord
   });
 });

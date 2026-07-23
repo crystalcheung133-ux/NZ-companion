@@ -1,17 +1,18 @@
-/* ============================================================================
-   TRAVEL ENGINE — GUIDE & PLACE MODULE
+﻿/* ============================================================================
+   TRAVEL ENGINE â€” GUIDE & PLACE MODULE
    Stage 7K-2D
    Owns Guide navigation context, category/place modal flow, shopping directory
    view, place page rendering and guide-specific copy/address behavior.
    Shared DOM/menu helpers remain in script.js and are available before this
    module loads.
    ============================================================================ */
+const PRODUCTION_GUIDE=GenerationSelectionAdapter.view('guide');
 
 function visitDayHTML(key){
-  const days=DAY_LINKS[key]||[];
+  const days=PRODUCTION_GUIDE.dayLinks[key]||[];
   if(!days.length) return '';
-  const buttons=days.map(([label,href])=>`<a class="day-jump-button" href="${href}">${label} →</a>`).join('');
-  return `<div class="quick-info-row visit-row"><span class="quick-info-icon">📅</span><span><span class="quick-info-label">Visit Day</span><span class="quick-info-value day-link-row">${buttons}</span></span></div>`;
+  const buttons=days.map(([label,href])=>`<a class="day-jump-button" href="${href}">${label} â†’</a>`).join('');
+  return `<div class="quick-info-row visit-row"><span class="quick-info-icon">ðŸ“…</span><span><span class="quick-info-label">Visit Day</span><span class="quick-info-value day-link-row">${buttons}</span></span></div>`;
 }
 
 
@@ -32,9 +33,9 @@ function saveGuideNavigationContext(category, options){
   }catch(e){}
 }
 function openGuideGroupFromDay(keys,itemId){
-  const clean=[...new Set((Array.isArray(keys)?keys:[]).filter(key=>key&&typeof PLACES!=='undefined'&&PLACES[key]))];
+  const clean=[...new Set((Array.isArray(keys)?keys:[]).filter(key=>key&&typeof PRODUCTION_GUIDE.places!=='undefined'&&PRODUCTION_GUIDE.places[key]))];
   if(!clean.length) return;
-  const first=PLACES[clean[0]]||{};
+  const first=PRODUCTION_GUIDE.places[clean[0]]||{};
   const sourceUrl=NAVIGATION.currentRelativeUrl({hash:itemId||null});
   saveGuideNavigationContext(first.cat||'GUIDE',{sourceUrl,sourceType:'day'});
   // RC11K: confirmed single destinations open immediately. Only genuine alternatives show a choice page.
@@ -81,12 +82,12 @@ document.addEventListener('DOMContentLoaded',applyGuideHashView);
 
 function guideCategoryItems(cat){
  if(cat==='EXPLORE'){
-  return [...(CATEGORIES.ATTRACTIONS||[]),...(CATEGORIES.ACTIVITIES||[])]
-   .map(item=>{const key=typeof item==='string'?item:item&&item.key;return key&&PLACES[key]?Object.assign({key},PLACES[key]):null;})
+  return [...(PRODUCTION_GUIDE.categories.ATTRACTIONS||[]),...(PRODUCTION_GUIDE.categories.ACTIVITIES||[])]
+   .map(item=>{const key=typeof item==='string'?item:item&&item.key;return key&&PRODUCTION_GUIDE.places[key]?Object.assign({key},PRODUCTION_GUIDE.places[key]):null;})
    .filter(item=>item&&!((TRIP_CONFIG.guide?.excludedPlaceIds||[]).includes(item.key)));
  }
- return (CATEGORIES[cat]||[])
-  .map(item=>{const key=typeof item==='string'?item:item&&item.key;return key&&PLACES[key]?Object.assign({key},PLACES[key]):null;})
+ return (PRODUCTION_GUIDE.categories[cat]||[])
+  .map(item=>{const key=typeof item==='string'?item:item&&item.key;return key&&PRODUCTION_GUIDE.places[key]?Object.assign({key},PRODUCTION_GUIDE.places[key]):null;})
   .filter(Boolean);
 }
 function guideCategoryHeading(cat){
@@ -96,12 +97,12 @@ function openGuideCategory(cat){
  saveGuideNavigationContext(cat);
  const list=guideCategoryItems(cat).slice().sort((a,b)=>String(a.title||'').localeCompare(String(b.title||'')));
  if(cat==='SHOP'){
-  const directoryRow=`<button onclick="openShoppingDirectoryView()"><span><span class="guide-list-title">🛍 Shopping Directory</span><span class="guide-list-sub">Optional shops · Near · Best with Day</span></span><span>↓</span></button>`;
-  const rows=directoryRow+list.map(i=>`<button onclick="openGuideModal('${i.key}')"><span><span class="guide-list-title">${i.emoji} ${i.title}</span><span class="guide-list-sub">${i.sub||''}</span></span><span class="guide-list-meta">${guideStatusHTML(PLACES[i.key]||{})}<span class="guide-list-chevron">›</span></span></button>`).join('');
+  const directoryRow=`<button onclick="openShoppingDirectoryView()"><span><span class="guide-list-title">ðŸ› Shopping Directory</span><span class="guide-list-sub">Optional shops Â· Near Â· Best with Day</span></span><span>â†“</span></button>`;
+  const rows=directoryRow+list.map(i=>`<button onclick="openGuideModal('${i.key}')"><span><span class="guide-list-title">${i.emoji} ${i.title}</span><span class="guide-list-sub">${i.sub||''}</span></span><span class="guide-list-meta">${guideStatusHTML(PRODUCTION_GUIDE.places[i.key]||{})}<span class="guide-list-chevron">â€º</span></span></button>`).join('');
   $('guideModalContent').innerHTML=`<p class="kicker">Guide</p><h2>SHOP</h2><div class="category-pop-list">${rows}</div>`;
   closeMiniMenus();$('guideModal').classList.add('show');return;
  }
- const rows=list.map(i=>`<button onclick="openGuideModal('${i.key}')"><span><span class="guide-list-title">${i.emoji} ${i.title}</span><span class="guide-list-sub">${i.sub||''}</span></span><span class="guide-list-meta">${guideStatusHTML(PLACES[i.key]||{})}<span class="guide-list-chevron">›</span></span></button>`).join('');
+ const rows=list.map(i=>`<button onclick="openGuideModal('${i.key}')"><span><span class="guide-list-title">${i.emoji} ${i.title}</span><span class="guide-list-sub">${i.sub||''}</span></span><span class="guide-list-meta">${guideStatusHTML(PRODUCTION_GUIDE.places[i.key]||{})}<span class="guide-list-chevron">â€º</span></span></button>`).join('');
  $('guideModalContent').innerHTML=`<p class="kicker">Guide</p><h2>${guideCategoryHeading(cat)}</h2><div class="category-pop-list">${rows}</div>`;
  closeMiniMenus();$('guideModal').classList.add('show');
 }
@@ -113,7 +114,7 @@ function guideStatusHTML(g){
  return `<span class="guide-status guide-status-${status.toLowerCase()}">${status}</span>`;
 }
 function copyGuideAddress(key){
- const g=PLACES[key]; if(!g?.address)return;
+ const g=PRODUCTION_GUIDE.places[key]; if(!g?.address)return;
  const text=`${g.title}\n${g.address}`;
  const done=()=>{if(typeof showToast==='function')showToast('Address copied');};
  if(navigator.clipboard?.writeText){navigator.clipboard.writeText(text).then(done).catch(()=>fallbackCopy(text,done));}
@@ -125,23 +126,23 @@ function usefulGoodToKnow(items){
  return (items||[]).filter(x=>x&&generic.every(rule=>!rule.test(x)));
 }
 function quickInfoInnerHTML(g,key){
- const phoneRow=g.phone?`<div class="quick-info-row"><span class="quick-info-icon">☎️</span><span><span class="quick-info-label">Phone</span><span class="quick-info-value">${g.phone}</span></span></div>`:'';
- const callButton=g.phone?`<a class="utility-button" href="tel:${String(g.phone).replace(/[^+\d]/g,'')}">☎️ Call</a>`:'';
- const websiteButton=g.website?`<a class="utility-button" href="${g.website}" target="_blank" rel="noopener">🌐 Website</a>`:'';
+ const phoneRow=g.phone?`<div class="quick-info-row"><span class="quick-info-icon">â˜Žï¸</span><span><span class="quick-info-label">Phone</span><span class="quick-info-value">${g.phone}</span></span></div>`:'';
+ const callButton=g.phone?`<a class="utility-button" href="tel:${String(g.phone).replace(/[^+\d]/g,'')}">â˜Žï¸ Call</a>`:'';
+ const websiteButton=g.website?`<a class="utility-button" href="${g.website}" target="_blank" rel="noopener">ðŸŒ Website</a>`:'';
  const price=String(g.price||'').trim();
  const unknown=/^(see|look at|refer to)\s+trip\s+info$|^check (current|live)|^prices? may vary$|^contact venue/i;
  const showPrice=price&&!unknown.test(price);
- const priceRow=showPrice?`<div class="quick-info-row"><span class="quick-info-icon">💰</span><span><span class="quick-info-label">Price</span><span class="quick-info-value">${price}</span></span></div>`:'';
+ const priceRow=showPrice?`<div class="quick-info-row"><span class="quick-info-icon">ðŸ’°</span><span><span class="quick-info-label">Price</span><span class="quick-info-value">${price}</span></span></div>`:'';
  const hours=String(g.hours||'').trim();
- const hoursRow=hours&&!unknown.test(hours)?`<div class="quick-info-row"><span class="quick-info-icon">🕘</span><span><span class="quick-info-label">Hours</span><span class="quick-info-value">${hours}</span></span></div>`:'';
+ const hoursRow=hours&&!unknown.test(hours)?`<div class="quick-info-row"><span class="quick-info-icon">ðŸ•˜</span><span><span class="quick-info-label">Hours</span><span class="quick-info-value">${hours}</span></span></div>`:'';
  const address=String(g.address||'').trim();
- const addressRow=address?`<div class="quick-info-row"><span class="quick-info-icon">📍</span><span><span class="quick-info-label">Address</span><span class="quick-info-value">${address}</span></span></div>`:'';
- const copyButton=address?`<button class="utility-button" type="button" onclick="copyGuideAddress('${key}')">📍 Copy Address</button>`:'';
- const navButton=g.maps?`<a class="map-button" href="${g.maps}" target="_blank" rel="noopener">🧭 Navigate</a>`:'';
+ const addressRow=address?`<div class="quick-info-row"><span class="quick-info-icon">ðŸ“</span><span><span class="quick-info-label">Address</span><span class="quick-info-value">${address}</span></span></div>`:'';
+ const copyButton=address?`<button class="utility-button" type="button" onclick="copyGuideAddress('${key}')">ðŸ“ Copy Address</button>`:'';
+ const navButton=g.maps?`<a class="map-button" href="${g.maps}" target="_blank" rel="noopener">ðŸ§­ Navigate</a>`:'';
  const roleBadge=g.itineraryRole?`<span class="itinerary-role-badge">${g.itineraryRole}</span>`:'';
  const reminder=String(g.visitorReminder||'').trim();
  const reminderRow=reminder?`<p class="visitor-reminder"><strong>Reminder:</strong> ${reminder}</p>`:'';
- return `<div class="quick-info-top"><span class="category-tag">${g.categoryLabel||g.cat||'Guide'}</span>${roleBadge}${guideStatusHTML(g)}</div><div class="quick-info-grid">${addressRow}${phoneRow}${hoursRow}${priceRow}${visitDayHTML(key)}</div>${reminderRow}<div class="quick-info-actions">${copyButton}${navButton}${callButton}${websiteButton}<button class="moment-button" aria-label="Add Moment" onclick="openMomentsModal('${key}')">✨ Moment</button></div>`;
+ return `<div class="quick-info-top"><span class="category-tag">${g.categoryLabel||g.cat||'Guide'}</span>${roleBadge}${guideStatusHTML(g)}</div><div class="quick-info-grid">${addressRow}${phoneRow}${hoursRow}${priceRow}${visitDayHTML(key)}</div>${reminderRow}<div class="quick-info-actions">${copyButton}${navButton}${callButton}${websiteButton}<button class="moment-button" aria-label="Add Moment" onclick="openMomentsModal('${key}')">âœ¨ Moment</button></div>`;
 }
 
 function quickInfoHTML(g,key){
@@ -149,13 +150,13 @@ function quickInfoHTML(g,key){
 }
 
 function guideCategoryKeys(key){
- const place=PLACES[key]||{};
+ const place=PRODUCTION_GUIDE.places[key]||{};
  const category=place.cat;
  const categoryItems=(category==='ATTRACTIONS'||category==='ACTIVITIES')
   ? guideCategoryItems('EXPLORE')
-  : ((category&&Array.isArray(CATEGORIES[category]))?CATEGORIES[category]:[]);
- const keys=categoryItems.map(item=>item&&item.key).filter(itemKey=>itemKey&&PLACES[itemKey]);
- return keys.length?keys:GUIDE_ORDER.filter(itemKey=>PLACES[itemKey]);
+  : ((category&&Array.isArray(PRODUCTION_GUIDE.categories[category]))?PRODUCTION_GUIDE.categories[category]:[]);
+ const keys=categoryItems.map(item=>item&&item.key).filter(itemKey=>itemKey&&PRODUCTION_GUIDE.places[itemKey]);
+ return keys.length?keys:PRODUCTION_GUIDE.order.filter(itemKey=>PRODUCTION_GUIDE.places[itemKey]);
 }
 function guideNavModel(key){
  const keys=guideCategoryKeys(key);
@@ -166,18 +167,18 @@ function guideNavButtons(key,mode){
  const nav=guideNavModel(key);
  if(nav.total<2||nav.idx<0)return '';
  const open=mode==='page'?'openAdjacentPlace':'openGuideModal';
- const prev=nav.prev?`<button class="pill" onclick="${open}('${nav.prev}')">‹ Previous</button>`:`<button class="pill" disabled aria-disabled="true">‹ Previous</button>`;
- const next=nav.next?`<button class="pill" onclick="${open}('${nav.next}')">Next ›</button>`:`<button class="pill" disabled aria-disabled="true">Next ›</button>`;
+ const prev=nav.prev?`<button class="pill" onclick="${open}('${nav.prev}')">â€¹ Previous</button>`:`<button class="pill" disabled aria-disabled="true">â€¹ Previous</button>`;
+ const next=nav.next?`<button class="pill" onclick="${open}('${nav.next}')">Next â€º</button>`:`<button class="pill" disabled aria-disabled="true">Next â€º</button>`;
  return `<div class="guide-browse-meta">${nav.position} / ${nav.total}</div><div class="guide-next-row">${prev}${next}</div>`;
 }
 function openAdjacentPlace(key){
- if(!PLACES[key])return;
+ if(!PRODUCTION_GUIDE.places[key])return;
  NAVIGATION.go(placeHref(key));
 }
 
 function suggestedItems(g){
  const items=(g.signature||g.highlights||[]);
- return items.map(x=>String(x)).filter(x=>/^TRY\s*[·:]/i.test(x)).map(x=>x.replace(/^TRY\s*[·:]\s*/i,''));
+ return items.map(x=>String(x)).filter(x=>/^TRY\s*[Â·:]/i.test(x)).map(x=>x.replace(/^TRY\s*[Â·:]\s*/i,''));
 }
 function criticalGuideNotes(g){
  const rules=/booking|book ahead|sell out|last entry|last order|queue|check-in|reception|closed|closure|fuel|height|age restriction|weather|road condition|mobile reception|no petrol|arrive early|order timing/i;
@@ -190,7 +191,7 @@ function compactGuideSections(g){
 }
 
 function openGuideModal(key){
- const g=PLACES[key]; if(!g)return;
+ const g=PRODUCTION_GUIDE.places[key]; if(!g)return;
  $('guideModalContent').innerHTML=`<div class="guide-onepage"><p class="kicker">Guide</p><h2>${g.emoji} ${g.title}</h2><p class="guide-onepage-sub"><strong>${g.sub}</strong></p><p class="guide-onepage-desc">${g.desc}</p>${quickInfoHTML(g,key)}${compactGuideSections(g)}${guideNavButtons(key)}</div>`;
  $('guideModal').classList.add('show');
  const sheet=document.querySelector('#guideModal .guide-sheet');
@@ -207,26 +208,26 @@ function closeGuideModal(){
 }
 
 function renderPlacePage(key){
-  const g = PLACES[key];
+  const g = PRODUCTION_GUIDE.places[key];
   const mount = document.getElementById('placeMain');
   if(!g || !mount) return;
   mount.innerHTML = `
-<button class="place-detail-close" type="button" aria-label="Close place detail" onclick="closePlaceDetail()">×</button>
+<button class="place-detail-close" type="button" aria-label="Close place detail" onclick="closePlaceDetail()">Ã—</button>
 <div class="page-hero"><p class="kicker">Guide</p><h1>${g.emoji} ${g.title}</h1><p class="lead">${g.sub||''}</p></div>
 <section class="prose-block guide-overview"><h2>Why Go</h2><p>${g.desc||''}</p></section>
 <section aria-label="Quick Info" class="quick-info-card">${quickInfoInnerHTML(g,key)}</section>
 ${compactGuideSections(g)}${guideNavButtons(key,'page')}`;
-  document.title = `${g.title} · ${TRIP_CONFIG.tripName}`;
+  document.title = `${g.title} Â· ${TRIP_CONFIG.tripName}`;
 }
 
 function renderPlaceGroupPage(keys){
-  const clean=[...new Set((Array.isArray(keys)?keys:[]).filter(key=>key&&PLACES[key]))];
+  const clean=[...new Set((Array.isArray(keys)?keys:[]).filter(key=>key&&PRODUCTION_GUIDE.places[key]))];
   const mount=document.getElementById('placeMain');
   if(!clean.length||!mount) return;
   // Defensive auto-routing for old/shared links containing a single id.
   if(clean.length===1){ renderPlacePage(clean[0]); return; }
   const cards=clean.map((key,index)=>{
-    const g=PLACES[key];
+    const g=PRODUCTION_GUIDE.places[key];
     return `<article class="place-group-card" id="guide-${key}">
       <div class="page-hero place-group-hero"><p class="kicker">Option ${index+1}</p><h1>${g.emoji} ${g.title}</h1><p class="lead">${g.sub||''}</p></div>
       <section class="prose-block guide-overview"><h2>Why Go</h2><p>${g.desc||''}</p></section>
@@ -234,6 +235,8 @@ function renderPlaceGroupPage(keys){
       ${compactGuideSections(g)}
     </article>`;
   }).join('');
-  mount.innerHTML=`<button class="place-detail-close" type="button" aria-label="Close guide options" onclick="closePlaceDetail()">×</button><div class="page-hero"><p class="kicker">Guide</p><h1>Choose an option</h1><p class="lead">Compare the planned choices, then use Navigate inside the restaurant card you choose.</p></div>${cards}`;
-  document.title=`Guide options · ${TRIP_CONFIG.tripName}`;
+  mount.innerHTML=`<button class="place-detail-close" type="button" aria-label="Close guide options" onclick="closePlaceDetail()">Ã—</button><div class="page-hero"><p class="kicker">Guide</p><h1>Choose an option</h1><p class="lead">Compare the planned choices, then use Navigate inside the restaurant card you choose.</p></div>${cards}`;
+  document.title=`Guide options Â· ${TRIP_CONFIG.tripName}`;
 }
+
+

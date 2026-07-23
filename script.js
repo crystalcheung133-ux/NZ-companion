@@ -1,22 +1,22 @@
-/* script.js — Stage 7K-2E compatibility entry and shared startup.
+﻿/* script.js â€” Stage 7K-2E compatibility entry and shared startup.
    Domain behavior lives in focused runtime modules. */
 function renderCanonicalDayNavigation(){
-  if(typeof ITINERARY_DATA==='undefined')return;
-  const days=Object.keys(ITINERARY_DATA).sort((a,b)=>Number(a)-Number(b));
+  const productionItinerary=GenerationSelectionAdapter.view('itinerary').days;
+  const days=Object.keys(productionItinerary).sort((a,b)=>Number(a)-Number(b));
   const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const model=days.map(number=>{
-    const day=ITINERARY_DATA[number]||{};
+    const day=productionItinerary[number]||{};
     const legend=Array.isArray(day.legend)?day.legend:[];
-    const icon=(String(legend[0]||'🗓').match(/^\S+/)||['🗓'])[0];
-    const date=String(day.kicker||'').split('·').slice(1).join('·').trim();
+    const icon=(String(legend[0]||'ðŸ—“').match(/^\S+/)||['ðŸ—“'])[0];
+    const date=String(day.kicker||'').split('Â·').slice(1).join('Â·').trim();
     const summary=legend.map(value=>String(value).replace(/^\S+\s*/,''));
     return {number,icon,date,heading:day.heading||`Day ${number}`,summary};
   });
   document.querySelectorAll('#daysMenu').forEach(menu=>{
-    menu.innerHTML=model.map(day=>`<a href="day.html?day=${encodeURIComponent(day.number)}"><span><span class="menu-title">${esc(day.icon)} Day ${esc(day.number)}</span><span class="menu-sub">${esc(day.heading)}<br/>${esc(day.date)}</span></span><span>›</span></a>`).join('');
+    menu.innerHTML=model.map(day=>`<a href="day.html?day=${encodeURIComponent(day.number)}"><span><span class="menu-title">${esc(day.icon)} Day ${esc(day.number)}</span><span class="menu-sub">${esc(day.heading)}<br/>${esc(day.date)}</span></span><span>â€º</span></a>`).join('');
   });
   document.querySelectorAll('#canonicalDaySummary').forEach(summary=>{
-    summary.innerHTML=model.map(day=>`<a href="day.html?day=${encodeURIComponent(day.number)}"><strong>Day ${esc(day.number)}</strong><span><span class="day-card-title">${esc(day.icon)} ${esc(day.heading)}</span><span class="day-card-meta">${esc(day.date)}${day.summary.length?`<br/>${esc(day.summary.join(' · '))}`:''}</span></span></a>`).join('');
+    summary.innerHTML=model.map(day=>`<a href="day.html?day=${encodeURIComponent(day.number)}"><strong>Day ${esc(day.number)}</strong><span><span class="day-card-title">${esc(day.icon)} ${esc(day.heading)}</span><span class="day-card-meta">${esc(day.date)}${day.summary.length?`<br/>${esc(day.summary.join(' Â· '))}`:''}</span></span></a>`).join('');
   });
 }
 document.addEventListener('DOMContentLoaded',()=>{
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 
 
-/* RC16.5 — Current bottom-navigation state. */
+/* RC16.5 â€” Current bottom-navigation state. */
 (function(){
   function markCurrentNav(){
     var nav=document.querySelector('.app-nav');
@@ -54,3 +54,5 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',markCurrentNav,{once:true});
   else markCurrentNav();
 })();
+
+

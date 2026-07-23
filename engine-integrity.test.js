@@ -144,6 +144,100 @@ test('E5','descriptive venue text is not silently auto-classified',()=>{
 });
 test('E5','clean dataset pass',()=>assert.equal(Engine.validateE5(cleanData()).valid,true));
 
+function planningData(records,group){
+  return {
+    PLANNING_GROUPS:{choice:Object.assign({id:'choice',type:'accommodation',primaryRequired:true},group||{})},
+    PLANNING_RECORDS:Object.fromEntries(records.map(record=>[record.id,Object.assign({
+      entityType:'planningCandidate',planningGroupId:'choice',planningRole:'alternative'
+    },record)]))
+  };
+}
+test('PLANNING','valid planning status',()=>{
+  const data=planningData([{id:'a',planningStatus:'planned',planningRole:'primary'}]);
+  assert.equal(Engine.validatePlanning(data).valid,true);
+});
+test('PLANNING','status omission retains RC19 behavior',()=>{
+  assert.equal(Engine.validatePlanning(cleanData()).valid,true);
+});
+test('PLANNING','invalid status',()=>{
+  const data=planningData([{id:'a',planningStatus:'maybe',planningRole:'primary'}]);
+  assert(has(Engine.validatePlanning(data),'PLANNING_INVALID_STATUS'));
+});
+test('PLANNING','duplicate primary',()=>{
+  const data=planningData([
+    {id:'a',planningStatus:'planned',planningRole:'primary'},
+    {id:'b',planningStatus:'backup',planningRole:'primary'}
+  ]);
+  assert(has(Engine.validatePlanning(data),'PLANNING_DUPLICATE_PRIMARY'));
+});
+test('PLANNING','duplicate confirmed',()=>{
+  const data=planningData([
+    {id:'a',planningStatus:'confirmed',planningRole:'primary'},
+    {id:'b',planningStatus:'confirmed'}
+  ]);
+  assert(has(Engine.validatePlanning(data),'PLANNING_DUPLICATE_CONFIRMED'));
+});
+test('PLANNING','required group missing primary',()=>{
+  const data=planningData([{id:'a',planningStatus:'planned'}]);
+  assert(has(Engine.validatePlanning(data),'PLANNING_PRIMARY_MISSING'));
+});
+test('PLANNING','optional record may retain Guide booking and navigation relationships',()=>{
+  const data=planningData([{id:'a',planningStatus:'optional',planningRole:'primary',guideIds:['guide'],bookingId:'booking',navigationDestination:'Destination'}]);
+  assert.equal(Engine.validatePlanning(data).valid,true);
+  assert.equal(Engine.isProductionEligible(data.PLANNING_RECORDS.a,'guide'),true);
+  assert.equal(Engine.isProductionEligible(data.PLANNING_RECORDS.a,'selection'),false);
+});
+test('PLANNING','unselected optional booking does not inherit active requirements',()=>{
+  const data={BOOKINGS_DATA:{option:{id:'option',type:'flight',planningStatus:'optional',standalone:true}}};
+  assert.equal(Engine.validateE4(data).valid,true);
+  assert.equal(Engine.validateE4(data).summary.deferredCandidates,1);
+});
+test('PLANNING','cancelled record stays editable but is excluded from production',()=>{
+  const data=planningData([{id:'a',planningStatus:'cancelled',planningRole:'primary'}],{primaryRequired:false});
+  assert.equal(Engine.validatePlanning(data).valid,true);
+  assert.equal(Engine.isProductionEligible(data.PLANNING_RECORDS.a,'guide'),false);
+  assert.equal(Engine.isProductionEligible(data.PLANNING_RECORDS.a,'confirmed-export'),false);
+  assert.equal(Engine.isProductionEligible(data.PLANNING_RECORDS.a,'search'),true);
+  assert.equal(Engine.isProductionEligible(data.PLANNING_RECORDS.a,'edit'),true);
+});
+test('PLANNING','cancelled active record fails',()=>{
+  const data=planningData([{id:'a',planningStatus:'cancelled',planningRole:'primary',includeInExport:true}],{primaryRequired:false});
+  assert(has(Engine.validatePlanning(data),'PLANNING_CANCELLED_ACTIVE'));
+});
+test('PLANNING','cancelled booking remains history rather than an active booking failure',()=>{
+  const data={BOOKINGS_DATA:{old:{id:'old',type:'rentalCar',planningStatus:'cancelled',standalone:true}}};
+  assert.equal(Engine.validateE4(data).valid,true);
+  assert.equal(Engine.validateE3(data).summary.actions,0);
+});
+test('PLANNING','backup promotion revalidates full acceptance',()=>{
+  const data=cleanData();
+  data.PLACES.p2={id:'p2',title:'Second Place',planningStatus:'planned',planningGroupId:'stay-choice',planningRole:'primary'};
+  Object.assign(data.PLACES.p1,{planningStatus:'backup',planningGroupId:'stay-choice',planningRole:'alternative'});
+  data.GUIDE_ORDER.push('p2');data.CATEGORIES.SIGHTS.push({key:'p2'});
+  data.PLANNING_GROUPS={'stay-choice':{id:'stay-choice',type:'accommodation',primaryRequired:true}};
+  const promotion=Engine.promotePlanningRecord(data,{entityType:'place',entityId:'p1',planningStatus:'confirmed'},config());
+  assert.equal(promotion.accepted,true);assert.equal(promotion.data.PLACES.p1.planningStatus,'confirmed');assert.equal(data.PLACES.p1.planningStatus,'backup');
+});
+test('PLANNING','alternative promotion changes primary without duplicates',()=>{
+  const data=cleanData();
+  data.PLACES.p2={id:'p2',title:'Second Place',planningStatus:'backup',planningGroupId:'stay-choice',planningRole:'alternative'};
+  Object.assign(data.PLACES.p1,{planningStatus:'planned',planningGroupId:'stay-choice',planningRole:'primary'});
+  data.GUIDE_ORDER.push('p2');data.CATEGORIES.SIGHTS.push({key:'p2'});
+  data.PLANNING_GROUPS={'stay-choice':{id:'stay-choice',type:'accommodation',primaryRequired:true}};
+  const promotion=Engine.promotePlanningRecord(data,{entityType:'place',entityId:'p2',planningRole:'primary'},config());
+  assert.equal(promotion.accepted,true);assert.equal(promotion.data.PLACES.p2.planningRole,'primary');assert.equal(promotion.data.PLACES.p1.planningRole,'alternative');
+});
+test('PLANNING','conflicting confirmed promotion is rejected transactionally',()=>{
+  const data=cleanData();
+  data.PLACES.p2={id:'p2',title:'Second Place',planningStatus:'backup',planningGroupId:'stay-choice',planningRole:'alternative'};
+  Object.assign(data.PLACES.p1,{planningStatus:'confirmed',planningGroupId:'stay-choice',planningRole:'primary'});
+  data.GUIDE_ORDER.push('p2');data.CATEGORIES.SIGHTS.push({key:'p2'});
+  data.PLANNING_GROUPS={'stay-choice':{id:'stay-choice',type:'accommodation',primaryRequired:true}};
+  const promotion=Engine.promotePlanningRecord(data,{entityType:'place',entityId:'p2',planningStatus:'confirmed'},config());
+  assert.equal(promotion.accepted,false);assert(has(promotion.result.stages.PLANNING,'PLANNING_DUPLICATE_CONFIRMED'));
+  assert.equal(promotion.data.PLACES.p2.planningStatus,'backup');
+});
+
 function loadProduction(){
   const context={console};context.globalThis=context;vm.createContext(context);
   for(const name of ['theme-config.js','asset-config.js','locale-config.js','trip-config.js','data.js']){
@@ -151,7 +245,7 @@ function loadProduction(){
   }
   return {data:context.TRAVEL_DATASETS,config:context.TRIP_CONFIG};
 }
-test('INTEGRATION','complete RC19 regression dataset passes',()=>{
+test('INTEGRATION','complete RC19 regression dataset passes with Planning Semantics',()=>{
   const production=loadProduction();
   const result=Engine.validateTripData(production.data,production.config);
   assert.equal(result.valid,true,Engine.formatValidationReport(result));
