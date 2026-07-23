@@ -1,5 +1,5 @@
 importScripts('./theme-config.js', './asset-config.js', './locale-config.js', './formatter.js', './navigation-config.js', './storage-config.js', './trip-config.js');
-const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-rc17-5-1-day2-route-action-fix`;
+const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-rc18-content-intelligence-launch-polish`;
 const CRITICAL_EXTENSIONS = /\.(?:css|js)$/i;
 const ASSETS = [
   './',
@@ -42,6 +42,7 @@ const ASSETS = [
   './place.html',
   './day.html',
   './offline.html',
+  './manifest.webmanifest',
   './' + ASSET_CONFIG.icons.icon192,
   './' + ASSET_CONFIG.icons.icon512,
   './' + ASSET_CONFIG.branding.secondaryMark,

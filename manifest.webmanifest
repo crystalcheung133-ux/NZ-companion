@@ -1,0 +1,13 @@
+{
+  "name": "New Zealand Companion",
+  "short_name": "NZ Companion",
+  "start_url": "./index.html?coldLaunch=1",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4eadb",
+  "theme_color": "#f4eadb",
+  "icons": [
+    {"src":"icon-192.png","sizes":"192x192","type":"image/png"},
+    {"src":"icon-512.png","sizes":"512x512","type":"image/png"}
+  ]
+}
