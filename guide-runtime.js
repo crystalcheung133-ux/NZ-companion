@@ -82,9 +82,12 @@ document.addEventListener('DOMContentLoaded',applyGuideHashView);
 function guideCategoryItems(cat){
  if(cat==='EXPLORE'){
   return [...(CATEGORIES.ATTRACTIONS||[]),...(CATEGORIES.ACTIVITIES||[])]
+   .map(item=>{const key=typeof item==='string'?item:item&&item.key;return key&&PLACES[key]?Object.assign({key},PLACES[key]):null;})
    .filter(item=>item&&!((TRIP_CONFIG.guide?.excludedPlaceIds||[]).includes(item.key)));
  }
- return CATEGORIES[cat]||[];
+ return (CATEGORIES[cat]||[])
+  .map(item=>{const key=typeof item==='string'?item:item&&item.key;return key&&PLACES[key]?Object.assign({key},PLACES[key]):null;})
+  .filter(Boolean);
 }
 function guideCategoryHeading(cat){
  return cat==='EXPLORE'?'SIGHTS & ACTIVITIES':cat;

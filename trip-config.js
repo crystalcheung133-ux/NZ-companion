@@ -54,38 +54,12 @@
     splashSlogan: 'ADVENTURE AWAITS',
     splashDestination: 'NEW ZEALAND 2026',
     storageNamespace: 'nz-family-2026',
-    version: 'RC15',
-    buildLabel: 'Travel Engine v1.0 · Trip Identity Extraction',
+    version: 'RC18.1',
+    buildLabel: 'Freeze Blocker Remediation',
     theme: root.THEME_CONFIG.colors
   });
 
   root.TRIP_CONFIG = config;
-
-  function createManifest(){
-    if(typeof document==='undefined') return;
-    const manifest = {
-      name: config.tripName,
-      short_name: config.shortName,
-      id: './',
-      start_url: './index.html?v=rc5-4&source=pwa',
-      scope: './',
-      display: 'standalone',
-      orientation: 'portrait',
-      background_color: config.theme.background,
-      theme_color: config.theme.primary,
-      icons: [
-        {src: root.ASSET_CONFIG.icons.icon192, sizes: '192x192', type: 'image/png', purpose: 'any maskable'},
-        {src: root.ASSET_CONFIG.icons.icon512, sizes: '512x512', type: 'image/png', purpose: 'any maskable'}
-      ],
-      description: config.tripName
-    };
-    const blob = new Blob([JSON.stringify(manifest)], {type:'application/manifest+json'});
-    const link = document.createElement('link');
-    link.rel = 'manifest';
-    link.href = URL.createObjectURL(blob);
-    link.dataset.tripManifest = 'true';
-    document.head.appendChild(link);
-  }
 
   function applyTripIdentity(){
     if(typeof document==='undefined') return;
@@ -126,7 +100,6 @@
 
   root.applyTripIdentity = applyTripIdentity;
   if(typeof document!=='undefined'){
-    createManifest();
     if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',applyTripIdentity);
     else applyTripIdentity();
   }
