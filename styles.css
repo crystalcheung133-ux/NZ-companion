@@ -1844,3 +1844,20 @@ body.admin-mode .app-nav .days-trigger small {color:#fff!important;opacity:.96!i
 /* RC17.5 — itinerary role badge */
 .itinerary-role-badge{display:inline-flex;align-items:center;min-height:28px;padding:5px 10px;border-radius:999px;background:rgba(176,111,43,.12);border:1px solid rgba(176,111,43,.24);color:#6d421d;font-size:12px;font-weight:850;line-height:1.15;letter-spacing:.01em;}
 .quick-info-top{flex-wrap:wrap;}
+
+/* RC17.5.1 · Keep two-action timeline rows readable on narrow mobile screens. */
+@media (max-width:720px){
+  .timeline-actions:has(> .timeline-action:nth-child(2):last-child){
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .timeline-actions:has(> .timeline-action:nth-child(2):last-child) .timeline-action{
+    min-height:44px!important;
+    height:auto!important;
+    padding:7px 8px!important;
+    font-size:12.5px!important;
+    line-height:1.12!important;
+    white-space:normal!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+  }
+}
