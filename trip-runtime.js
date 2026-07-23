@@ -94,14 +94,17 @@ function buildAccommodationDetailHTML(booking){
   const map=address?accommodationMapURL(address):'';
   const nights=Number(booking.nights||0);
   const nightsLabel=nights?`${nights} night${nights===1?'':'s'}`:'';
+  const bookingStatus=booking.id==='archway-booking'?'BOOKED BACKUP · Free cancellation':(booking.status||'');
   const facts=[
+    ['Status',bookingStatus],
     ['Stay',booking.stayDates||booking.date||''],
     ['Length',nightsLabel],
     ['Room',booking.roomType||booking.notes||'Not added yet'],
     ['Check-in',booking.checkIn||booking.time||'Not added yet'],
     ['Check-out',booking.checkOut||'Not added yet'],
     [accommodationReferenceLabel(booking),booking.reference||'Not added yet'],
-    ['Price',booking.price||'Not added yet']
+    ['Price',booking.price||'Not added yet'],
+    ['Cancellation',booking.cancellation||'']
   ].filter(function(row){return row[1];});
   const factHTML=facts.map(function(row){return `<div class="accommodation-fact"><small>${escapeTripHTML(row[0])}</small><strong>${escapeTripHTML(row[1])}</strong></div>`;}).join('');
   const actions=[
