@@ -28,6 +28,7 @@ function saveGuideNavigationContext(category, options){
       category,
       sourceUrl:opts.sourceUrl||NAVIGATION.currentAbsoluteUrl(),
       sourceType:opts.sourceType||'guide',
+      scrollY:Number.isFinite(Number(opts.scrollY))?Number(opts.scrollY):(window.scrollY||0),
       savedAt:Date.now()
     }));
   }catch(e){}
@@ -36,8 +37,8 @@ function openGuideGroupFromDay(keys,itemId){
   const clean=[...new Set((Array.isArray(keys)?keys:[]).filter(key=>key&&typeof PRODUCTION_GUIDE.places!=='undefined'&&PRODUCTION_GUIDE.places[key]))];
   if(!clean.length) return;
   const first=PRODUCTION_GUIDE.places[clean[0]]||{};
-  const sourceUrl=NAVIGATION.currentRelativeUrl({hash:itemId||null});
-  saveGuideNavigationContext(first.cat||'GUIDE',{sourceUrl,sourceType:'day'});
+  const sourceUrl=NAVIGATION.currentRelativeUrl({hash:null});
+  saveGuideNavigationContext(first.cat||'GUIDE',{sourceUrl,sourceType:'day',scrollY:window.scrollY||0});
   // RC11K: confirmed single destinations open immediately. Only genuine alternatives show a choice page.
   NAVIGATION.go(clean.length===1 ? placeHref(clean[0]) : NAVIGATION.build('place',{query:{placeIds:clean.join(',')}}));
 }
@@ -56,7 +57,10 @@ function closePlaceDetail(){
   const target=context?.sourceUrl
     ? NAVIGATION.permittedReturnTarget(context.sourceUrl,NAVIGATION_CONFIG.fallback.placeClose)
     : NAVIGATION.build(NAVIGATION_CONFIG.fallback.placeClose);
-  clearGuideNavigationContext();
+  try{
+    if(context?.sourceType==='day') STORAGE.session.set(GUIDE_NAV_REOPEN_KEY,JSON.stringify({scrollY:Number(context.scrollY)||0,savedAt:Date.now()}));
+  }catch(e){}
+  try{STORAGE.session.remove(GUIDE_NAV_CONTEXT_KEY);}catch(e){}
   NAVIGATION.go(target);
 }
 

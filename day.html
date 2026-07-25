@@ -78,7 +78,8 @@
     const booking=item.bookingId?DAY_BOOKINGS[item.bookingId]:null;
     const detailHtml=(item.details||[]).map(text=>`<p>${esc(text)}</p>`).join('');
     const routeHtml=item.route?`<div class="route-hint"><strong>Next leg</strong><br/>${esc(item.route)}</div>`:'';
-    const requested=nonPlace?[]:(Array.isArray(item.guideIds)&&item.guideIds.length?item.guideIds:[item.placeId||item.id]);
+    const guideExcludedPlaceIds=['rental-cars-247'];
+    const requested=nonPlace?[]:(Array.isArray(item.guideIds)&&item.guideIds.length?item.guideIds:(guideExcludedPlaceIds.includes(item.placeId)?[]:[item.placeId||item.id]));
     const guideIds=requested.filter(key=>key&&DAY_PLACES[key]);
     const multi=guideIds.length>1;
     const mapHtml=!nonPlace&&item.map?`<a class="timeline-action timeline-action--map" href="${esc(item.map)}" target="_blank" rel="noopener">🧭 Navigate</a>`:'';
@@ -117,6 +118,13 @@
     const nextDay=currentDay<10?`<a class="day-footer-nav-link" href="day.html?day=${currentDay+1}">Next Day →</a>`:'<span></span>';
     const footerNav=`<nav class="day-footer-nav" aria-label="Day navigation">${previousDay}${nextDay}</nav>`;
     root.innerHTML=`<div class="page-hero day-page-hero"><p class="kicker">${esc(data.kicker)}</p><h1>${esc(data.heading)}</h1></div>${buildDriveBriefing(data)}<section class="timeline" id="adminTimeline">${workingItems.map(itemHTML).join('')}</section>${addButton}${footerNav}`;
+    try{
+      const reopen=STORAGE.session.readJSON(STORAGE_CONFIG.keys.guideNavReopen,null);
+      if(reopen&&Number.isFinite(Number(reopen.scrollY))){
+        STORAGE.session.remove(STORAGE_CONFIG.keys.guideNavReopen);
+        requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo({top:Number(reopen.scrollY),left:0,behavior:'auto'})));
+      }
+    }catch(e){}
     loadDayWeather();
   }
 
