@@ -1889,3 +1889,9 @@ html{scrollbar-gutter:stable;}
 @media(max-width:760px){.timeline-item{grid-template-columns:76px minmax(0,1fr)!important;gap:10px!important}.timeline-time{font-size:13px!important;letter-spacing:0!important;}}
 /* Stage 3.2G — primary Guide and alternatives are separate timeline actions. */
 .timeline-action--alternative{border-color:rgba(217,119,6,.32)!important;background:#fff8e8!important;color:#8a4b00!important;}
+
+/* Stage 3.2H — Studio Mode lives directly inside the family selector. */
+.trip-studio-selector-toggle{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:16px 0 8px;padding:14px 15px;border:1px solid rgba(31,78,63,.18);border-radius:16px;background:rgba(246,250,246,.96);color:#28483b;box-shadow:0 5px 14px rgba(26,62,68,.06)}
+.trip-studio-selector-toggle>span:first-child{display:grid;gap:3px}.trip-studio-selector-toggle strong{font-size:15px;font-weight:850}.trip-studio-selector-toggle small{color:#71847b;font-size:11px;font-weight:650;line-height:1.35}
+#mamaModal #adminModeControl{margin-top:10px}
+#mamaModal #adminModeControl[hidden]{display:none!important}

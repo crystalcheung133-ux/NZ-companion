@@ -91,6 +91,7 @@
       sessionStorage.setItem(SESSION_KEY,'1');
       close();
       window.setAdminMode(true);
+      if(typeof window.openFriendModal==='function') window.openFriendModal();
     });
     return modal;
   }
@@ -134,14 +135,11 @@
     document.body.classList.toggle('admin-mode',state.mode);
     document.body.classList.toggle('admin-dirty',state.mode&&state.dirty);
     const control=document.getElementById('adminModeControl');
-    if(control && !document.getElementById('mamaModal')?.classList.contains('studio-view')) control.hidden=true;
-    const entry=document.getElementById('tripStudioEntry');
-    if(entry) entry.hidden=!isAdminUser();
-    const toggle=document.getElementById('adminModeToggle');
-    if(toggle){
+    if(control) control.hidden=!(isAdminUser() && state.mode);
+    [document.getElementById('studioSelectorToggleInput'),document.getElementById('adminModeToggle')].filter(Boolean).forEach(toggle=>{
       toggle.checked=state.mode;
       toggle.setAttribute('aria-checked',String(state.mode));
-    }
+    });
     const banner=document.getElementById('adminModeBanner');
     if(banner) banner.hidden=!state.mode;
     const bar=document.getElementById('adminSaveBar');
@@ -163,14 +161,17 @@
   function buildShell(){
     const familySheet=document.querySelector('#mamaModal .guide-sheet');
     const familyList=familySheet&&familySheet.querySelector('.friend-choice-list');
-    if(familySheet && familyList && !document.getElementById('tripStudioEntry')){
-      const entry=document.createElement('button');
-      entry.id='tripStudioEntry';
-      entry.type='button';
-      entry.className='trip-studio-entry';
-      entry.innerHTML='<span><strong>⚙ Trip Studio</strong><small>Manage itinerary, exports and trip data</small></span><span aria-hidden="true">›</span>';
-      entry.addEventListener('click',openTripStudioPanel);
-      familyList.insertAdjacentElement('afterend',entry);
+    if(familySheet && familyList && !document.getElementById('tripStudioSelectorToggle')){
+      const selectorToggle=document.createElement('div');
+      selectorToggle.id='tripStudioSelectorToggle';
+      selectorToggle.className='trip-studio-selector-toggle';
+      selectorToggle.innerHTML=`<span><strong>⚙ Studio Mode</strong><small>Editing, Complete Trip, Export Centre and trip controls</small></span><label class="admin-switch"><input id="studioSelectorToggleInput" type="checkbox" role="switch" aria-label="Toggle Studio Mode"><span></span></label>`;
+      familyList.insertAdjacentElement('afterend',selectorToggle);
+      selectorToggle.querySelector('#studioSelectorToggleInput').addEventListener('change',event=>{
+        const enabled=event.target.checked;
+        const changed=window.setAdminMode(enabled);
+        if(changed===false) event.target.checked=state.mode;
+      });
     }
     if(familySheet && !document.getElementById('adminModeControl')){
       const block=document.createElement('section');
@@ -186,10 +187,6 @@
           </div>
           <button type="button" class="trip-studio-close" aria-label="Close Trip Studio">×</button>
         </header>
-        <div class="trip-studio-section trip-studio-mode">
-          <div class="trip-studio-copy"><strong>Studio Mode</strong><small>Turn on editing tools for itinerary and trip data.</small></div>
-          <label class="admin-switch"><input id="adminModeToggle" type="checkbox" role="switch" aria-label="Toggle Trip Studio"><span></span></label>
-        </div>
         <div id="tripStudioManagement" class="trip-studio-group" hidden>
           <p class="trip-studio-label">TRIP MANAGEMENT</p>
         </div>
@@ -204,8 +201,6 @@
         </div>`;
       familySheet.appendChild(block);
       block.querySelector('.trip-studio-close').addEventListener('click',closeTripStudioPanel);
-      const input=block.querySelector('#adminModeToggle');
-      input.addEventListener('change',()=>window.setAdminMode(input.checked));
       block.querySelector('#resetTripDataButton').addEventListener('click',window.resetTripData);
     }
     if(!document.getElementById('adminModeBanner')){
@@ -258,7 +253,6 @@
     setStoredMode(enabled);
     if(!enabled) lockAdminSession();
     updateUI();
-    if(!enabled && typeof window.closeFriendModal==='function') window.closeFriendModal();
     if(typeof window.refreshExpenseAdminUI==='function') window.refreshExpenseAdminUI();
     document.dispatchEvent(new CustomEvent('travelengine:adminmodechange',{detail:{enabled:state.mode}}));
     return true;
@@ -312,11 +306,13 @@
   const originalOpenFriendModal=window.openFriendModal||openFriendModal;
   window.openFriendModal=function(){
     const modal=document.getElementById('mamaModal');
-    const studio=document.getElementById('adminModeControl');
     if(modal) modal.classList.remove('studio-view');
-    if(studio) studio.hidden=true;
     originalOpenFriendModal();
     updateUI();
+    if(state.mode && isAdminUser()){
+      const sheet=modal&&modal.querySelector('.guide-sheet');
+      if(sheet) window.requestAnimationFrame(()=>{ sheet.scrollTop=sheet.scrollHeight; });
+    }
   };
 
   const originalSetFriend=window.setFriend||setFriend;
