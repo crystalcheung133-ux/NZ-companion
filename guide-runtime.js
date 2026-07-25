@@ -139,8 +139,15 @@ function quickInfoInnerHTML(g,key){
  const phoneRow=g.phone?`<div class="quick-info-row"><span class="quick-info-icon">☎️</span><span><span class="quick-info-label">Phone</span><span class="quick-info-value">${g.phone}</span></span></div>`:'';
  const callButton=g.phone?`<a class="utility-button" href="tel:${String(g.phone).replace(/[^+\d]/g,'')}">☎️ Call</a>`:'';
  const websiteButton=g.website?`<a class="utility-button" href="${g.website}" target="_blank" rel="noopener">🌐 Website</a>`:'';
- const price=String(g.price||'').trim();
  const unknown=/^(see|look at|refer to)\s+trip\s+info$|^check (current|live)|^prices? may vary$|^contact venue/i;
+ const placePrice=String(g.price||'').trim();
+ const accommodationBooking=(g.cat==='STAY'&&typeof BOOKINGS_DATA==='object')
+  ?Object.values(BOOKINGS_DATA).find(booking=>booking&&booking.type==='accommodation'&&booking.placeId===key)
+  :null;
+ const bookingPrice=String(accommodationBooking?.price||'').trim();
+ // Accommodation commercial details have one canonical owner: BOOKINGS_DATA.
+ // This prevents Guide cards losing prices when place content is edited independently.
+ const price=(bookingPrice&&!unknown.test(bookingPrice))?bookingPrice:placePrice;
  const showPrice=price&&!unknown.test(price);
  const priceRow=showPrice?`<div class="quick-info-row"><span class="quick-info-icon">💰</span><span><span class="quick-info-label">Price</span><span class="quick-info-value">${price}</span></span></div>`:'';
  const hours=String(g.hours||'').trim();
