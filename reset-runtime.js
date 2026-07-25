@@ -99,6 +99,8 @@
       window.EXPENSE_SYNC.clearLocal();
       if(window.CCMV_CANONICAL_EXPENSE_LOCAL?.clearAll) window.CCMV_CANONICAL_EXPENSE_LOCAL.clearAll();
       else if(STORAGE_CONFIG.domains?.canonicalExpenses?.state) STORAGE.local.remove(STORAGE_CONFIG.domains.canonicalExpenses.state);
+      if(window.CCMV_EXPENSE_READ_SHADOW?.clearState) window.CCMV_EXPENSE_READ_SHADOW.clearState();
+      else if(STORAGE_CONFIG.domains?.expenseReadShadow?.state) STORAGE.local.remove(STORAGE_CONFIG.domains.expenseReadShadow.state);
       await window.MOMENT_SYNC.clearLocal();
       clearDeviceOnlyUiState();
 
