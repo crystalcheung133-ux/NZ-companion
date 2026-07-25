@@ -204,19 +204,60 @@ let editingExpenseIndex=null;
     }
     window.recalculateCustomSplit();
   };
+  function expenseVisibleBounds(){
+    const vv=window.visualViewport;
+    return {
+      top:vv?Math.max(0,vv.offsetTop):0,
+      bottom:vv?(vv.offsetTop+vv.height):window.innerHeight
+    };
+  }
+  function positionExpenseControlAboveKeyboard(element, preferredBlock){
+    if(!element) return;
+    const sheet=element.closest('#expenseModal .tools-sheet');
+    if(!sheet) return;
+    const bounds=expenseVisibleBounds();
+    const rect=element.getBoundingClientRect();
+    const topGuard=bounds.top+88;
+    const bottomGuard=bounds.bottom-28;
+    let delta=0;
+    if(rect.bottom>bottomGuard) delta=rect.bottom-bottomGuard+18;
+    else if(rect.top<topGuard) delta=rect.top-topGuard-14;
+    if(Math.abs(delta)>1){
+      sheet.scrollTop+=delta;
+      return;
+    }
+    if(preferredBlock==='start'&&rect.top>topGuard+70) sheet.scrollTop+=rect.top-(topGuard+20);
+  }
   function revealExpenseControl(element, block){
     if(!element) return;
     const align=block||'center';
-    const reveal=()=>{
-      try{element.scrollIntoView({behavior:'smooth',block:align,inline:'nearest'});}catch(e){element.scrollIntoView();}
+    const sheet=element.closest('#expenseModal .tools-sheet');
+    const initial=()=>{
+      try{element.scrollIntoView({behavior:'auto',block:align,inline:'nearest'});}catch(e){element.scrollIntoView();}
+      positionExpenseControlAboveKeyboard(element,align);
     };
-    requestAnimationFrame(reveal);
-    setTimeout(reveal,180);
-    setTimeout(reveal,420);
+    requestAnimationFrame(initial);
+    // Mobile keyboards animate over several frames. Re-check the nested modal scroller
+    // throughout the animation instead of relying on one visualViewport resize event.
+    const started=Date.now();
+    const timer=setInterval(()=>{
+      if(!document.body.contains(element)||Date.now()-started>1300){clearInterval(timer);return;}
+      positionExpenseControlAboveKeyboard(element,align);
+    },80);
+    const settle=()=>positionExpenseControlAboveKeyboard(element,align);
+    setTimeout(settle,40);setTimeout(settle,180);setTimeout(settle,360);setTimeout(settle,650);setTimeout(settle,1000);
     if(window.visualViewport){
-      const onResize=()=>{reveal();window.visualViewport.removeEventListener('resize',onResize);};
-      window.visualViewport.addEventListener('resize',onResize,{once:true});
-      setTimeout(()=>window.visualViewport.removeEventListener('resize',onResize),900);
+      const onViewport=()=>positionExpenseControlAboveKeyboard(element,align);
+      window.visualViewport.addEventListener('resize',onViewport);
+      window.visualViewport.addEventListener('scroll',onViewport);
+      setTimeout(()=>{
+        window.visualViewport.removeEventListener('resize',onViewport);
+        window.visualViewport.removeEventListener('scroll',onViewport);
+      },1500);
+    }
+    if(sheet){
+      const onSheet=()=>positionExpenseControlAboveKeyboard(element,align);
+      sheet.addEventListener('scroll',onSheet,{passive:true,once:true});
     }
   }
   window.revealExpenseControl=revealExpenseControl;
@@ -225,7 +266,9 @@ let editingExpenseIndex=null;
     if(!input) return;
     input.value='';
     input.dispatchEvent(new Event('input',{bubbles:true}));
-    input.focus({preventScroll:true});
+    // Focus first to trigger the keyboard, then actively scroll the modal's own
+    // tools-sheet until the field sits above the final visual viewport.
+    try{input.focus({preventScroll:true});}catch(e){input.focus();}
     revealExpenseControl(input,'center');
   };
   window.recalculateCustomSplit=function(){
