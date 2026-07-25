@@ -34,6 +34,29 @@
         yau: Object.freeze({code:'NTL',name:'Yau'})
       })
     }),
+    /* Stage 3.2B: additive Party directory. Existing participant selectors
+       remain the presentation compatibility surface during this slice. */
+    parties: Object.freeze({
+      defaultPartyId: 'party-lee',
+      order: Object.freeze(['party-lee','party-fowlers','party-yau']),
+      identities: Object.freeze({
+        'party-lee': Object.freeze({
+          partyId:'party-lee', displayName:'Lee', shortName:'MEL',
+          colour:'#1f766c', legacyAliases:Object.freeze(['lee']), ordering:1,
+          permissions:Object.freeze({adminEligible:true})
+        }),
+        'party-fowlers': Object.freeze({
+          partyId:'party-fowlers', displayName:'Fowlers', shortName:'SYD',
+          colour:'#2f6fa3', legacyAliases:Object.freeze(['fowlers']), ordering:2,
+          permissions:Object.freeze({adminEligible:false})
+        }),
+        'party-yau': Object.freeze({
+          partyId:'party-yau', displayName:'Yau', shortName:'NTL',
+          colour:'#aa6724', legacyAliases:Object.freeze(['yau']), ordering:3,
+          permissions:Object.freeze({adminEligible:false})
+        })
+      })
+    }),
     home: Object.freeze({
       ariaLabel: 'New Zealand Companion home',
       reunionStory: 'Three cities. One reunion.',
@@ -56,6 +79,10 @@
     storageNamespace: 'nz-family-2026',
     version: 'RC22.1',
     buildLabel: 'Unicode Mojibake Root Cause Repair',
+    features: Object.freeze({
+      /* Stage 3.2D validation flag. Legacy remains authoritative. */
+      expenseCanonicalDualWrite: false
+    }),
     theme: root.THEME_CONFIG.colors
   });
 

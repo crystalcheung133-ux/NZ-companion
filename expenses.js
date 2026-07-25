@@ -2,6 +2,16 @@
    Stage 7K-2A extracts the existing canonical Expenses workflow from script.js.
    Storage schema, global HTML handlers, calculations, copy and modal behavior remain unchanged. */
 
+/* Stage 3.2D: load the isolated canonical validation path only when the
+   default-off Trip Config flag is explicitly enabled. */
+if(globalThis.TRIP_CONFIG?.features?.expenseCanonicalDualWrite===true && !globalThis.CCMV_EXPENSE_DUAL_WRITE){
+  document.write([
+    'expense-calculator.js','legacy-expense-adapter.js',
+    'canonical-expense-repository.js','canonical-expense-core.js',
+    'canonical-expense-local-provider.js','expense-dual-write.js'
+  ].map(file=>`<script src="${file}?v=stage3-2d"><\/script>`).join(''));
+}
+
 function updateExpenseMode(){
   const personal = !!document.getElementById('expensePersonal')?.checked;
   document.querySelectorAll('[data-expense-type]').forEach(btn=>btn.classList.toggle('active',btn.dataset.expenseType===(personal?'personal':'shared')));
@@ -376,6 +386,9 @@ let editingExpenseIndex=null;
 
     const arr=readExpenses();
     const now=new Date().toISOString();
+    const operationIndex=editingExpenseIndex;
+    const operation=operationIndex!==null?'update':'create';
+    const previousRecord=operationIndex!==null&&arr[operationIndex]?Object.assign({},arr[operationIndex]):null;
     const data={item,details,category,total,paidBy,type:personal?'personal':'shared',split:personal?[consumedBy]:split,splitMode,shares:personal?null:shares,consumedBy:personal?consumedBy:null,createdAt:now,updatedAt:now};
     if(editingExpenseIndex!==null && arr[editingExpenseIndex]){
       data.id=arr[editingExpenseIndex].id;
@@ -389,6 +402,14 @@ let editingExpenseIndex=null;
     }
     writeExpenses(arr);
     window.EXPENSE_SYNC?.queueSync();
+    try{
+      window.CCMV_EXPENSE_DUAL_WRITE?.afterLegacyWrite({
+        action:operation,
+        legacyRecords:readExpenses(),
+        targetIndex:operationIndex!==null?operationIndex:arr.length-1,
+        previousRecord
+      });
+    }catch(error){}
     window.renderExpenses();
     resetExpenseForm();
     closeExpenseModal();
@@ -537,10 +558,16 @@ let editingExpenseIndex=null;
   window.deleteExpense=function(i){
     const arr=readExpenses();
     if(!arr[i]) return;
+    const previousRecord=Object.assign({},arr[i]);
     window.EXPENSE_SYNC?.markDeleted(arr[i]);
     arr.splice(i,1);
     writeExpenses(arr);
     window.EXPENSE_SYNC?.queueSync();
+    try{
+      window.CCMV_EXPENSE_DUAL_WRITE?.afterLegacyWrite({
+        action:'delete',legacyRecords:readExpenses(),targetIndex:i,previousRecord
+      });
+    }catch(error){}
     if(editingExpenseIndex===i) editingExpenseIndex=null;
     window.renderExpenses();
   };
@@ -566,4 +593,3 @@ let editingExpenseIndex=null;
     window.EXPENSE_SYNC?.syncNow();
   });
 })();
-

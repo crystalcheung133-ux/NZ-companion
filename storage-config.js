@@ -23,6 +23,7 @@
     cloudSyncMeta:'travel_engine_cloud_sync_meta_v1',
     expenseSyncTombstones:'travel_engine_expense_tombstones_v1',
     expenseSyncMeta:'travel_engine_expense_sync_meta_v1',
+    canonicalExpenseState:'nz-family-2026:canonical_expenses:stage_3_2d:v1',
     tripGeneration:'travel_engine_trip_generation_v1'
   });
 
@@ -30,6 +31,7 @@
     identity:Object.freeze({friend:keys.friend}),
     checklist:Object.freeze({state:keys.checklist}),
     expenses:Object.freeze({records:keys.expenses,tombstones:keys.expenseSyncTombstones,syncMetadata:keys.expenseSyncMeta}),
+    canonicalExpenses:Object.freeze({state:keys.canonicalExpenseState}),
     moments:Object.freeze({records:keys.momentsList,freeform:keys.momentsFreeform,legacyPrefix:keys.momentPrefix,latestPrefix:keys.latestMomentPrefix}),
     admin:Object.freeze({mode:keys.adminMode,draft:keys.adminDraft}),
     guide:Object.freeze({context:keys.guideNavContext,reopen:keys.guideNavReopen}),
