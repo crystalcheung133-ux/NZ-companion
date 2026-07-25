@@ -78,9 +78,9 @@
     const booking=item.bookingId?DAY_BOOKINGS[item.bookingId]:null;
     const detailHtml=(item.details||[]).map(text=>`<p>${esc(text)}</p>`).join('');
     const routeHtml=item.route?`<div class="route-hint"><strong>Next leg</strong><br/>${esc(item.route)}</div>`:'';
-    const guideExcludedPlaceIds=['rental-cars-247'];
-    const requested=nonPlace?[]:(Array.isArray(item.guideIds)&&item.guideIds.length?item.guideIds:(guideExcludedPlaceIds.includes(item.placeId)?[]:[item.placeId||item.id]));
-    const guideIds=requested.filter(key=>key&&DAY_PLACES[key]);
+    const guideExcludedPlaceIds=new Set(TRIP_CONFIG.guide?.excludedPlaceIds||[]);
+    const requested=nonPlace?[]:(Array.isArray(item.guideIds)&&item.guideIds.length?item.guideIds:(guideExcludedPlaceIds.has(item.placeId)?[]:[item.placeId||item.id]));
+    const guideIds=requested.filter(key=>key&&DAY_PLACES[key]&&!guideExcludedPlaceIds.has(key));
     const multi=guideIds.length>1;
     const mapHtml=!nonPlace&&item.map?`<a class="timeline-action timeline-action--map" href="${esc(item.map)}" target="_blank" rel="noopener">🧭 Navigate</a>`:'';
     const place=item.placeId?DAY_PLACES[item.placeId]:null;
