@@ -81,7 +81,7 @@
     buildLabel: 'Unicode Mojibake Root Cause Repair',
     features: Object.freeze({
       /* Stage 3.2D validation flag. Legacy remains authoritative. */
-      expenseCanonicalDualWrite: true
+      expenseCanonicalDualWrite: false
     }),
     theme: root.THEME_CONFIG.colors
   });
