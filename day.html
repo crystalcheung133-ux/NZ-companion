@@ -92,6 +92,8 @@
     const directoryHtml=!nonPlace&&item.showShoppingDirectory?`<button class="timeline-action timeline-action--directory" onclick="NAVIGATION.goPage('guide',{hash:'shoppingDirectory'})">🛍 Shopping List</button>`:'';
     const guideLabel=item.optionsLabel||(multi?(item.type==='meal'?`View ${guideIds.length} dining options`:'View options'):'Guide');
     const guideHtml=guideIds.length?`<button class="timeline-action timeline-action--guide" onclick='openGuideGroupFromDay(${JSON.stringify(guideIds)},${JSON.stringify(item.id)})'>📖 ${esc(guideLabel)}</button>`:'';
+    const parkingGuideId=!nonPlace&&item.parkingGuideId&&DAY_PLACES[item.parkingGuideId]?item.parkingGuideId:'';
+    const parkingHtml=parkingGuideId?`<button class="timeline-action timeline-action--parking" onclick='openGuideGroupFromDay(${JSON.stringify([parkingGuideId])},${JSON.stringify(item.id)})'>🚗 Parking</button>`:'';
     const tripInfoHtml=booking?`<button class="timeline-action timeline-action--trip" onclick="${booking.type==='accommodation'?`openAccommodationDetail('${esc(booking.id)}')`:`openTripCard('vehicle')`}">🧳 Trip Info</button>`:'';
     const admin=`<div class="timeline-admin-tools"><button class="timeline-admin-menu" onclick="openTimelineEditor(${index})" aria-label="Edit activity">Edit</button><button class="timeline-admin-more" onclick="toggleTimelineMenu(event,${index})" aria-label="More actions" aria-expanded="false">•••</button></div>`;
     const referenceImages=Array.isArray(item.referenceImages)?item.referenceImages.filter(image=>image&&image.src):[];
@@ -105,7 +107,7 @@
         referenceHtml=`<button type="button" class="timeline-reference-thumb" onclick="openReferenceViewer(${JSON.stringify(item.id)},${startIndex})" aria-label="View reference image${referenceImages.length>1?'s':''}${preview.caption?': '+esc(preview.caption):''}"><img src="${esc(preview.src)}" alt="${esc(preview.caption||'')}" loading="lazy"/>${referenceImages.length>1?`<span class="timeline-reference-count">1/${referenceImages.length}</span>`:''}</button>`;
       }
     }
-    return `<div class="timeline-item" id="${esc(item.id)}" data-index="${index}" draggable="false"><div class="timeline-time">${esc(item.time)}</div><div class="timeline-main"><div class="timeline-title-row"><h3>${esc(item.title)}</h3>${worthBadge?`<span class="timeline-worth" title="Trip priority">${esc(worthBadge)}</span>`:""}</div>${detailHtml}${referenceHtml}${routeHtml}<div class="timeline-actions">${mapHtml}${directoryHtml}${tripInfoHtml}${guideHtml}</div></div>${admin}</div>`;
+    return `<div class="timeline-item" id="${esc(item.id)}" data-index="${index}" draggable="false"><div class="timeline-time">${esc(item.time)}</div><div class="timeline-main"><div class="timeline-title-row"><h3>${esc(item.title)}</h3>${worthBadge?`<span class="timeline-worth" title="Trip priority">${esc(worthBadge)}</span>`:""}</div>${detailHtml}${referenceHtml}${routeHtml}<div class="timeline-actions">${mapHtml}${parkingHtml}${directoryHtml}${tripInfoHtml}${guideHtml}</div></div>${admin}</div>`;
   }
   function render(){
     Object.keys(referenceImageIndex).forEach(key=>delete referenceImageIndex[key]);

@@ -241,7 +241,7 @@ function renderPlaceGroupPage(keys){
       <div class="page-hero place-group-hero"><p class="kicker">Option ${index+1}</p><h1>${g.emoji} ${g.title}</h1><p class="lead">${g.sub||''}</p></div>
       <section class="prose-block guide-overview"><h2>Why Go</h2><p>${g.desc||''}</p></section>
       <section aria-label="Quick Info" class="quick-info-card">${quickInfoInnerHTML(g,key)}</section>
-      ${compactGuideSections(g)}
+      ${routeStopsHTML(g)}${compactGuideSections(g)}
     </article>`;
   }).join('');
   mount.innerHTML=`<button class="place-detail-close" type="button" aria-label="Close guide options" onclick="closePlaceDetail()">×</button><div class="page-hero"><p class="kicker">Guide</p><h1>Choose an option</h1><p class="lead">Compare the planned choices, then use Navigate inside the restaurant card you choose.</p></div>${cards}`;
