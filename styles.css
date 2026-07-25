@@ -1875,3 +1875,10 @@ body.admin-mode .app-nav .days-trigger small {color:#fff!important;opacity:.96!i
 
 /* RC17.5 — Timeline parking recommendation entry */
 .timeline-action--parking{background:#eef5f1;border-color:rgba(42,104,79,.28);color:#245c48}
+
+/* RC17.6 — stable Guide close/open: keep the fixed overlay out of document reflow. */
+html{scrollbar-gutter:stable;}
+.guide-modal{display:grid!important;place-items:center!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;overscroll-behavior:contain;transition:opacity .12s ease,visibility 0s linear .12s;}
+.guide-modal.show{visibility:visible!important;opacity:1!important;pointer-events:auto!important;transition-delay:0s;}
+.guide-sheet{transform:translateZ(0);backface-visibility:hidden;}
+@media (prefers-reduced-motion:reduce){.guide-modal,.guide-modal.show{transition:none!important;}}
