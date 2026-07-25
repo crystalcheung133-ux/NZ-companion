@@ -2,16 +2,6 @@
    Stage 7K-2A extracts the existing canonical Expenses workflow from script.js.
    Storage schema, global HTML handlers, calculations, copy and modal behavior remain unchanged. */
 
-/* Stage 3.2D: load the isolated canonical validation path only when the
-   default-off Trip Config flag is explicitly enabled. */
-if(globalThis.TRIP_CONFIG?.features?.expenseCanonicalDualWrite===true && !globalThis.CCMV_EXPENSE_DUAL_WRITE){
-  document.write([
-    'expense-calculator.js','legacy-expense-adapter.js',
-    'canonical-expense-repository.js','canonical-expense-core.js',
-    'canonical-expense-local-provider.js','expense-dual-write.js'
-  ].map(file=>`<script src="${file}?v=stage3-2d"><\/script>`).join(''));
-}
-
 function updateExpenseMode(){
   const personal = !!document.getElementById('expensePersonal')?.checked;
   document.querySelectorAll('[data-expense-type]').forEach(btn=>btn.classList.toggle('active',btn.dataset.expenseType===(personal?'personal':'shared')));
@@ -101,6 +91,10 @@ let editingExpenseIndex=null;
   function readExpenses(){
     try{return window.EXPENSE_SYNC?.readLocal ? window.EXPENSE_SYNC.readLocal() : STORAGE.local.readJSON(STORAGE_CONFIG.keys.expenses,[]);}
     catch(e){return [];}
+  }
+  function observeExpenseShadow(action,records){
+    try{window.CCMV_EXPENSE_READ_SHADOW?.observe({action,legacyRecords:records});}
+    catch(error){}
   }
   function writeExpenses(arr){
     const list=Array.isArray(arr)?arr:[];
@@ -210,12 +204,29 @@ let editingExpenseIndex=null;
     }
     window.recalculateCustomSplit();
   };
+  function revealExpenseControl(element, block){
+    if(!element) return;
+    const align=block||'center';
+    const reveal=()=>{
+      try{element.scrollIntoView({behavior:'smooth',block:align,inline:'nearest'});}catch(e){element.scrollIntoView();}
+    };
+    requestAnimationFrame(reveal);
+    setTimeout(reveal,180);
+    setTimeout(reveal,420);
+    if(window.visualViewport){
+      const onResize=()=>{reveal();window.visualViewport.removeEventListener('resize',onResize);};
+      window.visualViewport.addEventListener('resize',onResize,{once:true});
+      setTimeout(()=>window.visualViewport.removeEventListener('resize',onResize),900);
+    }
+  }
+  window.revealExpenseControl=revealExpenseControl;
   window.clearExpenseField=function(id){
     const input=document.getElementById(id);
     if(!input) return;
     input.value='';
     input.dispatchEvent(new Event('input',{bubbles:true}));
     input.focus({preventScroll:true});
+    revealExpenseControl(input,'center');
   };
   window.recalculateCustomSplit=function(){
     const panel=document.getElementById('customSplitPanel');
@@ -264,6 +275,10 @@ let editingExpenseIndex=null;
   window.setExpenseSplitMode=function(mode){
     expenseSplitMode=mode==='custom'?'custom':'equal';
     window.updateSplitUI();
+    if(expenseSplitMode==='custom'){
+      const panel=document.getElementById('customSplitPanel');
+      revealExpenseControl(panel,'start');
+    }
   };
   window.openExpenseCalculator=function(targetId){
     calculatorTargetId=targetId||'expenseTotal';
@@ -410,7 +425,7 @@ let editingExpenseIndex=null;
         previousRecord
       });
     }catch(error){}
-    window.renderExpenses();
+    window.renderExpenses(operation);
     resetExpenseForm();
     closeExpenseModal();
     setTimeout(()=>{
@@ -423,9 +438,10 @@ let editingExpenseIndex=null;
     },120);
   };
 
-  window.renderExpenses=function(){
+  window.renderExpenses=function(shadowAction){
     const pageBox=document.getElementById('expensePageList');
     const arr=readExpenses();
+    observeExpenseShadow(typeof shadowAction==='string'?shadowAction:'render',arr);
     const sorted=arr.map((e,i)=>({...e,_idx:i})).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||''))).map((e,i)=>({...e,_latest:i===0}));
     if(pageBox){
       const total=MONEY.sumAmounts(arr.map(e=>e.total));
@@ -526,6 +542,7 @@ let editingExpenseIndex=null;
 
   window.editExpense=function(i){
     const arr=readExpenses();
+    observeExpenseShadow('edit-load',arr);
     const e=arr[i]; if(!e) return;
     editingExpenseIndex=i;
     ensurePaidByUI();
@@ -569,7 +586,7 @@ let editingExpenseIndex=null;
       });
     }catch(error){}
     if(editingExpenseIndex===i) editingExpenseIndex=null;
-    window.renderExpenses();
+    window.renderExpenses('delete');
   };
 
   window.resetExpenseForm=resetExpenseForm;

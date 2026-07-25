@@ -1,5 +1,5 @@
 importScripts('./theme-config.js', './asset-config.js', './locale-config.js', './formatter.js', './navigation-config.js', './storage-config.js', './trip-config.js');
-const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-engine-integrity-e1-e5-rc17-11-accommodation-price-integrity`;
+const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-stage3-2e-read-shadow`;
 const CRITICAL_EXTENSIONS = /\.(?:css|js)$/i;
 const ASSETS = [
   './',
@@ -11,6 +11,14 @@ const ASSETS = [
   './currency-runtime.js',
   './script.js',
   './guide-runtime.js',
+  './expense-canonical-bootstrap.js',
+  './expense-calculator.js',
+  './legacy-expense-adapter.js',
+  './canonical-expense-repository.js',
+  './canonical-expense-core.js',
+  './canonical-expense-local-provider.js',
+  './expense-dual-write.js',
+  './expense-read-shadow.js',
   './expenses.js',
   './supabase-client-runtime.js',
   './expense-sync-runtime.js',
