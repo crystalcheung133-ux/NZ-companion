@@ -46,7 +46,7 @@
       welcomeMessage: 'Welcome to New Zealand',
       completedMessage: 'Thanks for the moments'
     }),
-    guide: Object.freeze({ excludedPlaceIds: Object.freeze(['airport-queenstown']) }),
+    guide: Object.freeze({ excludedPlaceIds: Object.freeze(['airport-queenstown','christchurch-airport','rental-cars-247','lake-tekapo','good-shepherd','firebirds','wolf-coffee']) }),
     exports: Object.freeze({ expenseSummaryTitle: 'CCMV NEW ZEALAND EXPENSE SUMMARY' }),
     heroLine1: 'New Zealand',
     heroEmphasis: 'Companion',

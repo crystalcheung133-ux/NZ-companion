@@ -39,7 +39,8 @@ function saveGuideNavigationContext(category, options){
   }catch(e){}
 }
 function openGuideGroupFromDay(keys,itemId){
-  const clean=[...new Set((Array.isArray(keys)?keys:[]).filter(key=>key&&typeof PRODUCTION_GUIDE.places!=='undefined'&&PRODUCTION_GUIDE.places[key]))];
+  const excluded=new Set(TRIP_CONFIG.guide?.excludedPlaceIds||[]);
+  const clean=[...new Set((Array.isArray(keys)?keys:[]).filter(key=>key&&typeof PRODUCTION_GUIDE.places!=='undefined'&&PRODUCTION_GUIDE.places[key]&&!excluded.has(key)))];
   if(!clean.length) return;
   const first=PRODUCTION_GUIDE.places[clean[0]]||{};
   const sourceUrl=NAVIGATION.currentRelativeUrl({hash:null});
