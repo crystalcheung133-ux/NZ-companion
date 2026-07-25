@@ -11,8 +11,13 @@ const PRODUCTION_GUIDE=GenerationSelectionAdapter.view('guide');
 function visitDayHTML(key){
   const days=PRODUCTION_GUIDE.dayLinks[key]||[];
   if(!days.length) return '';
+  const place=PRODUCTION_GUIDE.places[key]||{};
+  const isStay=place.cat==='STAY';
+  const booking=isStay?Object.values(BOOKINGS_DATA||{}).find(item=>item&&item.type==='accommodation'&&item.placeId===key):null;
   const buttons=days.map(([label,href])=>`<a class="day-jump-button" href="${href}">${label} →</a>`).join('');
-  return `<div class="quick-info-row visit-row"><span class="quick-info-icon">📅</span><span><span class="quick-info-label">Visit Day</span><span class="quick-info-value day-link-row">${buttons}</span></span></div>`;
+  const nights=Number(booking?.nights||0);
+  const stayLength=nights?`<span class="stay-length-note">Staying ${nights} night${nights===1?'':'s'}</span>`:'';
+  return `<div class="quick-info-row visit-row"><span class="quick-info-icon">📅</span><span><span class="quick-info-label">${isStay?'Check-in Day':'Visit Day'}</span><span class="quick-info-value day-link-row">${buttons}${stayLength}</span></span></div>`;
 }
 
 

@@ -110,6 +110,7 @@
     }
     return `<div class="timeline-item" id="${esc(item.id)}" data-index="${index}" draggable="false"><div class="timeline-time">${esc(item.time)}</div><div class="timeline-main"><div class="timeline-title-row"><h3>${esc(item.title)}</h3>${worthBadge?`<span class="timeline-worth" title="Trip priority">${esc(worthBadge)}</span>`:""}</div>${detailHtml}${referenceHtml}${routeHtml}<div class="timeline-actions">${mapHtml}${parkingHtml}${directoryHtml}${tripInfoHtml}${guideHtml}</div></div>${admin}</div>`;
   }
+  let suppressEntryAutoScroll=false;
   function render(){
     Object.keys(referenceImageIndex).forEach(key=>delete referenceImageIndex[key]);
     const addButton=`<button class="admin-add-activity" onclick="openTimelineEditor(-1)">＋ Add activity</button>`;
@@ -122,7 +123,9 @@
       const reopen=STORAGE.session.readJSON(STORAGE_CONFIG.keys.guideNavReopen,null);
       if(reopen&&Number.isFinite(Number(reopen.scrollY))){
         STORAGE.session.remove(STORAGE_CONFIG.keys.guideNavReopen);
+        suppressEntryAutoScroll=true;
         requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo({top:Number(reopen.scrollY),left:0,behavior:'auto'})));
+        setTimeout(()=>{suppressEntryAutoScroll=false;},500);
       }
     }catch(e){}
     loadDayWeather();
@@ -498,6 +501,7 @@
   });
   render();
   function restoreDayEntryPosition(){
+    if(suppressEntryAutoScroll)return;
     const id=NAVIGATION.getHash('');
     if(id){
       const target=document.getElementById(id);if(!target)return;
