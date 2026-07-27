@@ -1,1 +1,7 @@
-Stage 3.2H · FINAL FROZEN · 2026-07-26
+Stage 3.2H-PORT1-EXPCONSOL1 · NZ Export Centre Share/Printable Consolidation · 2026-07-27
+Baseline: Stage 3.2H-PORT1 (Engine Portability Extraction)
+Scope: Export Centre "Share Itinerary" + "Printable Itinerary" rows consolidated
+into one "Itinerary" group (2 actions), per approved
+NZ-SHARE-PRINTABLE-CONSOLIDATION-IMPLEMENTATION-SPEC.md. Only export-runtime.js
+and styles.css changed. No other behaviour, UI, Studio flow, Expense behaviour,
+Guide logic, Timeline behaviour, or data content changed.

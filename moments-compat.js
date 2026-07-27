@@ -86,14 +86,14 @@ document.addEventListener('DOMContentLoaded',()=>{
    Stage 4C-6 removed the expense open/save/edit wrappers from this block;
    Expense current-user defaults are handled by the Stage 4F-Q module. */
 (function(){
-  const DEFAULT_FRIEND = 'lee';
+  const DEFAULT_FRIEND = (typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.participants&&TRIP_CONFIG.participants.defaultKey)||'lee';
   function currentUser(){
     try { return (typeof getFriend === 'function' ? getFriend() : STORAGE.local.get(STORAGE_CONFIG.keys.friend)) || DEFAULT_FRIEND; }
     catch(e){ return DEFAULT_FRIEND; }
   }
   function friendLabel(k){
-    try { return (typeof FRIENDS !== 'undefined' && FRIENDS[k]) ? FRIENDS[k] : (FRIENDS?.[DEFAULT_FRIEND] || 'MEL · Lee'); }
-    catch(e){ return 'MEL · Lee'; }
+    try { return (typeof FRIENDS !== 'undefined' && FRIENDS[k]) ? FRIENDS[k] : (FRIENDS?.[DEFAULT_FRIEND] || ((typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.participants&&TRIP_CONFIG.participants.identities&&TRIP_CONFIG.participants.identities[DEFAULT_FRIEND])?`${TRIP_CONFIG.participants.identities[DEFAULT_FRIEND].code} · ${TRIP_CONFIG.participants.identities[DEFAULT_FRIEND].name}`:'MEL · Lee')); }
+    catch(e){ return ((typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.participants&&TRIP_CONFIG.participants.identities&&TRIP_CONFIG.participants.identities[DEFAULT_FRIEND])?`${TRIP_CONFIG.participants.identities[DEFAULT_FRIEND].code} · ${TRIP_CONFIG.participants.identities[DEFAULT_FRIEND].name}`:'MEL · Lee'); }
   }
   function simplifyMomentsAuthor(){
     const row=document.querySelector('#momentsModal p:has(#momentsFriend)');

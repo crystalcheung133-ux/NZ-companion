@@ -11,8 +11,8 @@
 (function(){
   const MODE_KEY=STORAGE_CONFIG.keys.adminMode;
   const DRAFT_KEY=STORAGE_CONFIG.keys.adminDraft;
-  const ADMIN_USER='lee';
-  const ADMIN_PIN='260922';
+  const ADMIN_USER=(typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.admin&&TRIP_CONFIG.admin.user)||'lee';
+  const ADMIN_PIN=(typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.admin&&TRIP_CONFIG.admin.pin)||'260922';
   const SESSION_KEY='travel_engine_admin_unlocked_v1';
   const state={mode:false,dirty:false,draft:null};
 
@@ -40,7 +40,7 @@
     }
   }
   function openTripStudioPanel(){
-    if(!isAdminUser()){ alert('Trip Studio is available to Lee only.'); return false; }
+    if(!isAdminUser()){ alert((typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.admin&&TRIP_CONFIG.admin.studioMessage)||'Trip Studio is available to Lee only.'); return false; }
     if(typeof renderFriendChoices==='function') renderFriendChoices();
     const modal=document.getElementById('mamaModal');
     const studio=document.getElementById('adminModeControl');
@@ -236,7 +236,7 @@
   window.setAdminMode=function(enabled){
     enabled=!!enabled;
     if(enabled && !isAdminUser()){
-      alert('Trip Studio is available to Lee only.');
+      alert((typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.admin&&TRIP_CONFIG.admin.studioMessage)||'Trip Studio is available to Lee only.');
       updateUI();
       return false;
     }

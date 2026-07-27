@@ -117,7 +117,7 @@
         throw new Error('Publication blocked: Trip or Guide dataset is incomplete. Reload the latest deploy before publishing.');
       }
       const result=await root.SUPABASE.getClient().rpc(rpcName,{
-        p_trip_id:cfg.tripId||'nz-family-2026',
+        p_trip_id:cfg.tripId||(typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.storageNamespace)||'nz-family-2026',
         p_schema_version:Number(cfg.schemaVersion)||1,
         p_payload:payload,
         p_admin_pin:credential

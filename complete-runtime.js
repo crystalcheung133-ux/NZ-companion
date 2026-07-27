@@ -2,7 +2,7 @@
 (function(){
   'use strict';
   const KEY=STORAGE_CONFIG.keys.tripCompletion;
-  const ADMIN_USER='lee';
+  const ADMIN_USER=(typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.admin&&TRIP_CONFIG.admin.user)||'lee';
   let completed=false;
   let record=null;
 
@@ -100,7 +100,7 @@
       alert('Save or discard the pending Admin changes before completing the trip.');
       return false;
     }
-    const ok=window.confirm('Complete this trip? All trip content will remain available to browse, but editing will be disabled until Lee reopens the trip.');
+    const ok=window.confirm((typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.admin&&TRIP_CONFIG.admin.completeMessage)||'Complete this trip? All trip content will remain available to browse, but editing will be disabled until Lee reopens the trip.');
     if(!ok) return false;
     const next={version:1,tripId:tripId(),completed:true,completedAt:new Date().toISOString(),completedBy:ADMIN_USER};
     persist(next);

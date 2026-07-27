@@ -2,6 +2,33 @@
 (function(root){
   'use strict';
 
+  const partyIdentities = {
+    'party-lee': Object.freeze({
+      partyId:'party-lee', displayName:'Lee', shortName:'MEL',
+      colour:'#1f766c', legacyAliases:Object.freeze(['lee']), ordering:1,
+      permissions:Object.freeze({adminEligible:true})
+    }),
+    'party-fowlers': Object.freeze({
+      partyId:'party-fowlers', displayName:'Fowlers', shortName:'SYD',
+      colour:'#2f6fa3', legacyAliases:Object.freeze(['fowlers']), ordering:2,
+      permissions:Object.freeze({adminEligible:false})
+    }),
+    'party-yau': Object.freeze({
+      partyId:'party-yau', displayName:'Yau', shortName:'NTL',
+      colour:'#aa6724', legacyAliases:Object.freeze(['yau']), ordering:3,
+      permissions:Object.freeze({adminEligible:false})
+    })
+  };
+  /* Portability Stage: admin identity used to be re-hardcoded as the literal
+     'lee' independently in admin.js, complete-runtime.js and export-runtime.js
+     (plus the user-facing "...available to Lee only." strings). The parties
+     directory already models who is admin-eligible, so this derives the one
+     canonical admin identity from it instead of leaving three more copies. */
+  const adminPartyId = Object.keys(partyIdentities).find(function(id){
+    return !!(partyIdentities[id].permissions && partyIdentities[id].permissions.adminEligible);
+  }) || 'party-lee';
+  const adminParty = partyIdentities[adminPartyId];
+
   const config = Object.freeze({
     tripName: 'New Zealand Family Companion',
     destination: 'New Zealand',
@@ -39,23 +66,17 @@
     parties: Object.freeze({
       defaultPartyId: 'party-lee',
       order: Object.freeze(['party-lee','party-fowlers','party-yau']),
-      identities: Object.freeze({
-        'party-lee': Object.freeze({
-          partyId:'party-lee', displayName:'Lee', shortName:'MEL',
-          colour:'#1f766c', legacyAliases:Object.freeze(['lee']), ordering:1,
-          permissions:Object.freeze({adminEligible:true})
-        }),
-        'party-fowlers': Object.freeze({
-          partyId:'party-fowlers', displayName:'Fowlers', shortName:'SYD',
-          colour:'#2f6fa3', legacyAliases:Object.freeze(['fowlers']), ordering:2,
-          permissions:Object.freeze({adminEligible:false})
-        }),
-        'party-yau': Object.freeze({
-          partyId:'party-yau', displayName:'Yau', shortName:'NTL',
-          colour:'#aa6724', legacyAliases:Object.freeze(['yau']), ordering:3,
-          permissions:Object.freeze({adminEligible:false})
-        })
-      })
+      identities: Object.freeze(partyIdentities)
+    }),
+    /* Single canonical admin identity — see partyIdentities/adminParty above.
+       admin.js / complete-runtime.js / export-runtime.js read this instead of
+       each hardcoding their own 'lee' literal. */
+    admin: Object.freeze({
+      user: (adminParty.legacyAliases && adminParty.legacyAliases[0]) || 'lee',
+      displayName: adminParty.displayName,
+      studioMessage: 'Trip Studio is available to ' + adminParty.displayName + ' only.',
+      completeMessage: 'Complete this trip? All trip content will remain available to browse, but editing will be disabled until ' + adminParty.displayName + ' reopens the trip.',
+      pin: '260922'
     }),
     home: Object.freeze({
       ariaLabel: 'New Zealand Companion home',

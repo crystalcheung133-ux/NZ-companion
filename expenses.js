@@ -69,11 +69,11 @@ let editingExpenseIndex=null;
    are unchanged from the deploy-tested Stage 4F-P baseline.
    ============================================================================ */
 (function(){
-  const FRIEND_ORDER=['lee','fowlers','yau'];
+  const FRIEND_ORDER=(TRIP_CONFIG.participants&&TRIP_CONFIG.participants.order)||['lee','fowlers','yau'];
   const FRIEND_FALLBACK=Object.fromEntries(Object.entries(TRIP_CONFIG.participants?.identities||{}).map(([key,value])=>[key,`${value.code} · ${value.name}`]));
 
   function currentUser(){
-    try{return (typeof getFriend==='function' ? getFriend() : STORAGE.local.get(STORAGE_CONFIG.keys.friend)) || 'lee';}
+    try{return (typeof getFriend==='function' ? getFriend() : STORAGE.local.get(STORAGE_CONFIG.keys.friend)) || (TRIP_CONFIG.participants&&TRIP_CONFIG.participants.defaultKey) || 'lee';}
     catch(e){return 'crystal';}
   }
   function labelFor(k){
@@ -293,7 +293,7 @@ let editingExpenseIndex=null;
     const selected=[...document.querySelectorAll('#expenseModal input[data-split]:checked')].map(input=>input.value);
     const summary=document.getElementById('splitPickerSummary');
     if(summary){
-      const names={lee:'Lee',fowlers:'Fowlers',yau:'Yau'};
+      const names=Object.fromEntries(Object.entries(TRIP_CONFIG.participants?.identities||{}).map(([key,value])=>[key,value.name]));
       summary.innerHTML=selected.length===3?'All':selected.length===0?'None':selected.map(key=>identityFor(key,true)).join('<span class="identity-plus">+</span>');
     }
     renderCustomSplitPanel();
@@ -488,8 +488,8 @@ let editingExpenseIndex=null;
     const sorted=arr.map((e,i)=>({...e,_idx:i})).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||''))).map((e,i)=>({...e,_latest:i===0}));
     if(pageBox){
       const total=MONEY.sumAmounts(arr.map(e=>e.total));
-      const personalSpend={lee:0,fowlers:0,yau:0};
-      const balance={lee:0,fowlers:0,yau:0};
+      const personalSpend=Object.fromEntries(FRIEND_ORDER.map(k=>[k,0]));
+      const balance=Object.fromEntries(FRIEND_ORDER.map(k=>[k,0]));
       arr.forEach(e=>{
         const amount=MONEY.normalizeAmount(e.total);
         if(!balance[e.paidBy]) balance[e.paidBy]=0;
@@ -512,13 +512,13 @@ let editingExpenseIndex=null;
   };
 
   window.exportExpenseData=function(){
-    if(currentUser()!=='lee' || typeof window.isAdminMode!=='function' || !window.isAdminMode()) return alert('Enter Admin Mode to export the complete expense data.');
+    if(currentUser()!==((TRIP_CONFIG.admin&&TRIP_CONFIG.admin.user)||'lee') || typeof window.isAdminMode!=='function' || !window.isAdminMode()) return alert('Enter Admin Mode to export the complete expense data.');
     const arr=readExpenses();
     if(!arr.length) return alert('No expense data to export yet.');
     const quote=value=>`"${String(value??'').replace(/"/g,'""')}"`;
     const total=MONEY.sumAmounts(arr.map(e=>e.total));
-    const personalSpend={lee:0,fowlers:0,yau:0};
-    const balance={lee:0,fowlers:0,yau:0};
+    const personalSpend=Object.fromEntries(FRIEND_ORDER.map(k=>[k,0]));
+    const balance=Object.fromEntries(FRIEND_ORDER.map(k=>[k,0]));
     arr.forEach(e=>{
       const amount=MONEY.normalizeAmount(e.total);
       if(!(e.paidBy in balance)) balance[e.paidBy]=0;

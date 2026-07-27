@@ -1,6 +1,6 @@
-PRODUCTION-FILE-MANIFEST.txt
-SHA256SUMS.txt
+GUIDE-ADDRESS-INTEGRITY-AUDIT.md
 VERSION.txt
+address-integrity-test.py
 admin.js
 app-runtime.js
 asset-config.js
@@ -24,6 +24,7 @@ export-runtime.js
 formatter.js
 generation-runtime.js
 generation-selection-adapter.js
+geo-config.js
 guide-runtime.js
 guide.html
 icon-192.png
@@ -46,6 +47,7 @@ navigation.js
 nz-adventure-logo.png
 nz-adventure-mark.png
 offline.html
+party-render-runtime.js
 place.html
 publication-runtime.js
 pwa.js
