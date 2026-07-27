@@ -1,10 +1,11 @@
-Stage 3.2H-PORT1-EXPCONSOL2 · NZ Export Centre Share/Printable Consolidation (Itinerary + Expenses) · 2026-07-27
-Baseline: Stage 3.2H-PORT1-EXPCONSOL1 (Itinerary Share/Printable consolidation)
-Scope: Export Centre "Expense Summary" CSV row replaced with an "Expenses"
-group offering Share + Printable actions, matching the Itinerary group's
-UI pattern per the approved reference screenshot. New self-contained
-expense-summary calculation added to export-runtime.js only (Expenses
-Engine file itself untouched). CSV export capability preserved as a
-"Download CSV" link inside the new Printable Expenses popup toolbar.
-No other behaviour, UI, Studio flow, Guide logic, Timeline behaviour,
-or data content changed.
+Stage 3.2H-PORT1-EXPCONSOL3 · NZ Export Centre — Return-to-Studio on Close · 2026-07-27
+Baseline: Stage 3.2H-PORT1-EXPCONSOL2 (Itinerary + Expenses Share/Printable consolidation)
+Scope: Closing Export Centre (the × button, tapping the backdrop, or a
+successful Share Itinerary/Share Expenses) now returns to Trip Studio,
+matching Printable Itinerary/Printable Expenses/Expense Summary's existing
+behaviour, instead of closing to nothing. The internal safety-close used
+when admin eligibility is lost elsewhere in the app still closes without
+force-reopening Studio. Only export-runtime.js changed (plus the usual
+cache-busting version bump in sw.js and the 9 HTML pages). No other
+behaviour, UI, Studio internals, Expenses Engine, Guide logic, Timeline
+behaviour, or data content changed.

@@ -18,6 +18,7 @@
     if(typeof window.openTripStudioPanel==='function') window.openTripStudioPanel();
     else if(typeof window.openFriendModal==='function') window.openFriendModal();
   }
+  window.returnToTripStudio=returnToTripStudio;
 
   function buildControl(){
     const host=document.getElementById('tripStudioExports') || document.querySelector('#mamaModal .guide-sheet');
@@ -29,8 +30,8 @@
   function buildModal(){
     if(document.getElementById('tripExportModal'))return;
     const modal=document.createElement('div');modal.id='tripExportModal';modal.className='trip-export-modal';modal.setAttribute('aria-hidden','true');
-    modal.innerHTML=`<div class="trip-export-sheet" role="dialog" aria-modal="true" aria-labelledby="tripExportTitle"><button class="trip-export-close" type="button" onclick="closeTripExportCenter()" aria-label="Close">×</button><p class="kicker">TRIP OUTPUTS</p><h2 id="tripExportTitle">Export Trip</h2><p class="lead">Share through the iPhone or Android share sheet, or create a printable copy.</p><div class="trip-export-list"><section class="trip-export-group" aria-labelledby="tripExportItineraryTitle"><div class="trip-export-group-head"><span class="trip-export-icon">🗓️</span><span><strong id="tripExportItineraryTitle">Itinerary</strong><small>Schedule, addresses and notes.</small></span></div><div class="trip-export-group-actions"><button type="button" onclick="shareItineraryNative()"><span aria-hidden="true">📤</span><strong>Share</strong></button><button type="button" onclick="exportFinalItinerary()"><span aria-hidden="true">📄</span><strong>Printable</strong></button></div></section><section class="trip-export-group" aria-labelledby="tripExportExpensesTitle"><div class="trip-export-group-head"><span class="trip-export-icon">🧾</span><span><strong id="tripExportExpensesTitle">Expenses</strong><small>Transactions, party totals and settlements.</small></span></div><div class="trip-export-group-actions"><button type="button" onclick="shareExpensesNative()"><span aria-hidden="true">📤</span><strong>Share</strong></button><button type="button" onclick="exportFinalExpenses()"><span aria-hidden="true">📄</span><strong>Printable</strong></button></div></section><button type="button" class="coming-soon" disabled><span class="trip-export-icon">📖</span><span><strong>Memory Book</strong><small>Coming Soon</small></span></button></div></div>`;
-    modal.addEventListener('click',event=>{if(event.target===modal)closeTripExportCenter();});document.body.appendChild(modal);
+    modal.innerHTML=`<div class="trip-export-sheet" role="dialog" aria-modal="true" aria-labelledby="tripExportTitle"><button class="trip-export-close" type="button" onclick="returnToTripStudio()" aria-label="Close">×</button><p class="kicker">TRIP OUTPUTS</p><h2 id="tripExportTitle">Export Trip</h2><p class="lead">Share through the iPhone or Android share sheet, or create a printable copy.</p><div class="trip-export-list"><section class="trip-export-group" aria-labelledby="tripExportItineraryTitle"><div class="trip-export-group-head"><span class="trip-export-icon">🗓️</span><span><strong id="tripExportItineraryTitle">Itinerary</strong><small>Schedule, addresses and notes.</small></span></div><div class="trip-export-group-actions"><button type="button" onclick="shareItineraryNative()"><span aria-hidden="true">📤</span><strong>Share</strong></button><button type="button" onclick="exportFinalItinerary()"><span aria-hidden="true">📄</span><strong>Printable</strong></button></div></section><section class="trip-export-group" aria-labelledby="tripExportExpensesTitle"><div class="trip-export-group-head"><span class="trip-export-icon">🧾</span><span><strong id="tripExportExpensesTitle">Expenses</strong><small>Transactions, party totals and settlements.</small></span></div><div class="trip-export-group-actions"><button type="button" onclick="shareExpensesNative()"><span aria-hidden="true">📤</span><strong>Share</strong></button><button type="button" onclick="exportFinalExpenses()"><span aria-hidden="true">📄</span><strong>Printable</strong></button></div></section><button type="button" class="coming-soon" disabled><span class="trip-export-icon">📖</span><span><strong>Memory Book</strong><small>Coming Soon</small></span></button></div></div>`;
+    modal.addEventListener('click',event=>{if(event.target===modal)returnToTripStudio();});document.body.appendChild(modal);
   }
   function render(){buildControl();buildModal();const control=document.getElementById('tripExportControl');if(control)control.hidden=!isExportAdmin();if(!isExportAdmin())closeTripExportCenter();}
   window.openTripExportCenter=function(){if(!isExportAdmin())return alert('Enter Admin Mode to export the trip.');if(typeof closeFriendModal==='function')closeFriendModal();buildModal();const modal=document.getElementById('tripExportModal');modal.classList.add('open');modal.setAttribute('aria-hidden','false');};
@@ -68,16 +69,16 @@
         const file=new File([text],filename,{type:'text/plain'});
         if(navigator.canShare&&navigator.canShare({files:[file]})) await navigator.share({title,text:`${title} itinerary`,files:[file]});
         else await navigator.share({title,text});
-        closeTripExportCenter();
+        returnToTripStudio();
         return;
       }
       if(navigator.clipboard&&navigator.clipboard.writeText){
         await navigator.clipboard.writeText(text);
         alert('Itinerary copied. Paste it into WhatsApp, Mail or Messages.');
-        closeTripExportCenter();
+        returnToTripStudio();
         return;
       }
-      const area=document.createElement('textarea');area.value=text;area.setAttribute('readonly','');area.style.position='fixed';area.style.opacity='0';document.body.appendChild(area);area.select();document.execCommand('copy');area.remove();alert('Itinerary copied. Paste it into WhatsApp, Mail or Messages.');closeTripExportCenter();
+      const area=document.createElement('textarea');area.value=text;area.setAttribute('readonly','');area.style.position='fixed';area.style.opacity='0';document.body.appendChild(area);area.select();document.execCommand('copy');area.remove();alert('Itinerary copied. Paste it into WhatsApp, Mail or Messages.');returnToTripStudio();
     }catch(error){
       if(error&&error.name==='AbortError')return;
       alert('Sharing is not available right now. Use Printable Itinerary instead.');
@@ -164,16 +165,16 @@
         const file=new File([text],filename,{type:'text/plain'});
         if(navigator.canShare&&navigator.canShare({files:[file]})) await navigator.share({title:`${title} expenses`,text:`${title} expense summary`,files:[file]});
         else await navigator.share({title:`${title} expenses`,text});
-        closeTripExportCenter();
+        returnToTripStudio();
         return;
       }
       if(navigator.clipboard&&navigator.clipboard.writeText){
         await navigator.clipboard.writeText(text);
         alert('Expense summary copied. Paste it into WhatsApp, Mail or Messages.');
-        closeTripExportCenter();
+        returnToTripStudio();
         return;
       }
-      const area=document.createElement('textarea');area.value=text;area.setAttribute('readonly','');area.style.position='fixed';area.style.opacity='0';document.body.appendChild(area);area.select();document.execCommand('copy');area.remove();alert('Expense summary copied. Paste it into WhatsApp, Mail or Messages.');closeTripExportCenter();
+      const area=document.createElement('textarea');area.value=text;area.setAttribute('readonly','');area.style.position='fixed';area.style.opacity='0';document.body.appendChild(area);area.select();document.execCommand('copy');area.remove();alert('Expense summary copied. Paste it into WhatsApp, Mail or Messages.');returnToTripStudio();
     }catch(error){
       if(error&&error.name==='AbortError')return;
       alert('Sharing is not available right now. Use Printable Expenses instead.');
