@@ -1,7 +1,10 @@
-Stage 3.2H-PORT1-EXPCONSOL1 · NZ Export Centre Share/Printable Consolidation · 2026-07-27
-Baseline: Stage 3.2H-PORT1 (Engine Portability Extraction)
-Scope: Export Centre "Share Itinerary" + "Printable Itinerary" rows consolidated
-into one "Itinerary" group (2 actions), per approved
-NZ-SHARE-PRINTABLE-CONSOLIDATION-IMPLEMENTATION-SPEC.md. Only export-runtime.js
-and styles.css changed. No other behaviour, UI, Studio flow, Expense behaviour,
-Guide logic, Timeline behaviour, or data content changed.
+Stage 3.2H-PORT1-EXPCONSOL2 · NZ Export Centre Share/Printable Consolidation (Itinerary + Expenses) · 2026-07-27
+Baseline: Stage 3.2H-PORT1-EXPCONSOL1 (Itinerary Share/Printable consolidation)
+Scope: Export Centre "Expense Summary" CSV row replaced with an "Expenses"
+group offering Share + Printable actions, matching the Itinerary group's
+UI pattern per the approved reference screenshot. New self-contained
+expense-summary calculation added to export-runtime.js only (Expenses
+Engine file itself untouched). CSV export capability preserved as a
+"Download CSV" link inside the new Printable Expenses popup toolbar.
+No other behaviour, UI, Studio flow, Guide logic, Timeline behaviour,
+or data content changed.
