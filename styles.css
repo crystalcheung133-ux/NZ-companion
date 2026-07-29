@@ -1913,3 +1913,27 @@ html.engine-layout-ready :where(.content-page,.section,.expense-page-shell){padd
 html.engine-layout-ready .app-nav{bottom:calc(var(--engine-bottom-nav-offset) + env(safe-area-inset-bottom))!important;min-height:var(--engine-bottom-nav-height)!important;}
 html.engine-layout-ready .mini-menu{bottom:calc(var(--engine-bottom-nav-height) + var(--engine-bottom-nav-offset) + 14px + env(safe-area-inset-bottom))!important;}
 html.engine-layout-ready body.home-bg main.dashboard.home-premium.home-v37{padding-bottom:var(--engine-page-bottom-safe)!important;}
+
+/* Stage 3.2H FRONT1.2 — Engine-owned Home Hero Shell.
+   The shell owns the outer rounded card, border, elevation and clipping.
+   Trip themes may change colours/content, but must not remove this geometry. */
+body.home-bg main.dashboard.home-v37{
+  padding-left:clamp(12px,3vw,28px)!important;
+  padding-right:clamp(12px,3vw,28px)!important;
+}
+body.home-bg section.home-brand-card.v37-dashboard-home{
+  width:min(1024px,calc(100vw - clamp(24px,6vw,56px)))!important;
+  margin:0 auto!important;
+  border:1.5px solid rgba(8,127,156,.20)!important;
+  border-radius:34px!important;
+  overflow:hidden!important;
+  box-shadow:0 18px 48px rgba(21,50,75,.10),inset 0 1px 0 rgba(255,255,255,.78)!important;
+  background:var(--theme-home-hero)!important;
+  background-image:var(--theme-home-hero)!important;
+}
+@media(max-width:620px){
+  body.home-bg section.home-brand-card.v37-dashboard-home{
+    width:calc(100vw - 20px)!important;
+    border-radius:28px!important;
+  }
+}
