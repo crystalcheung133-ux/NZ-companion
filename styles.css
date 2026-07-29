@@ -1937,3 +1937,18 @@ body.home-bg section.home-brand-card.v37-dashboard-home{
     border-radius:28px!important;
   }
 }
+
+/* Stage 3.2H FRONT1.3 — Desktop Hero Shell clipping fallback.
+   Some desktop browser/PWA combinations did not visually clip the themed
+   background with border-radius alone. Force the Engine-owned shell shape
+   without changing mobile geometry or internal dashboard layout. */
+@media(min-width:621px){
+  body.home-bg section.home-brand-card.v37-dashboard-home{
+    border-radius:34px!important;
+    overflow:hidden!important;
+    clip-path:inset(0 round 34px);
+    -webkit-clip-path:inset(0 round 34px);
+    background-clip:padding-box!important;
+    isolation:isolate!important;
+  }
+}
