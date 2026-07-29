@@ -156,7 +156,7 @@ function buildActivityBookingDetailHTML(booking){
     ['Status',String(booking.status||'').toUpperCase()],['Day','Day '+String(booking.dayId||'').replace('day','')],['Date',booking.date||''],['Time',booking.time||''],['Tour type',booking.tourType||''],['Guests',booking.guests?`${booking.guests} · ${booking.adults||0} adults · ${booking.children||0} children`:''],['Booking name',booking.bookingName||''],['Booking reference',booking.reference||''],['Booking way',booking.bookingWay||''],['Payment',booking.paymentStatus||''],['Original total',booking.originalTotal||''],['Discount',booking.discount||''],['Balance due',booking.price||'']
   ].filter(function(row){return row[1];});
   const factsHTML=facts.map(function(row){return `<div class="accommodation-fact"><small>${escapeTripHTML(row[0])}</small><strong>${escapeTripHTML(row[1])}</strong></div>`;}).join('');
-  const guideButton=booking.placeId?`<button class="pill" type="button" onclick="NAVIGATION.goPage('guide',{params:{place:'${escapeTripHTML(booking.placeId)}'}})">Guide</button>`:'';
+  const guideButton=booking.placeId?`<button class="pill" type="button" onclick="NAVIGATION.goPage('place',{query:{placeId:'${escapeTripHTML(booking.placeId)}'}})">Guide</button>`:'';
   const dayNumber=String(booking.dayId||'').replace('day','');
   const dayButton=dayNumber?`<a class="pill" href="day.html?day=${escapeTripHTML(dayNumber)}#${escapeTripHTML(booking.timelineItemId||'')}">Day ${escapeTripHTML(dayNumber)} Timeline</a>`:'';
   const phone=booking.phone?`<a class="pill" href="tel:${escapeTripHTML(String(booking.phone).replace(/\s/g,''))}">Call</a>`:'';

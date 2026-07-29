@@ -1,11 +1,1 @@
-Stage 3.2H-PORT1-EXPCONSOL3 · NZ Export Centre — Return-to-Studio on Close · 2026-07-27
-Baseline: Stage 3.2H-PORT1-EXPCONSOL2 (Itinerary + Expenses Share/Printable consolidation)
-Scope: Closing Export Centre (the × button, tapping the backdrop, or a
-successful Share Itinerary/Share Expenses) now returns to Trip Studio,
-matching Printable Itinerary/Printable Expenses/Expense Summary's existing
-behaviour, instead of closing to nothing. The internal safety-close used
-when admin eligibility is lost elsewhere in the app still closes without
-force-reopening Studio. Only export-runtime.js changed (plus the usual
-cache-busting version bump in sw.js and the 9 HTML pages). No other
-behaviour, UI, Studio internals, Expenses Engine, Guide logic, Timeline
-behaviour, or data content changed.
+NZ-Companion-Stage3.2H-PORT1-LUXE2
