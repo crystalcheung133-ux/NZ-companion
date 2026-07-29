@@ -14,7 +14,7 @@
     const target=document.getElementById('homeRoot');
     if(!target) return;
     const home=cfg(); const hero=home.hero||{};
-    target.innerHTML=`<section aria-label="${esc(home.ariaLabel)}" class="home-brand-card v37-dashboard-home engine-home-card"><p class="home-since">${esc(hero.eyebrow)}</p><h1><span>${esc(hero.line1)}</span><br/><em>${esc(hero.emphasis)}</em></h1><div class="home-reunion-story" aria-label="Trip story"><strong>${esc(hero.story)}</strong></div><div class="home-trip-line"><span>${esc(hero.dateLine)}</span><span>${esc(hero.regionLine)}</span></div><div aria-label="Live travel dashboard" class="home-live-grid">${(home.cards||[]).map(cardHTML).join('')}</div><a class="home-day-button" id="homeTodayButton" href="day.html?day=1">Let's go ✨</a></section>`;
+    target.innerHTML=`<section aria-label="${esc(home.ariaLabel)}" class="home-brand-card v37-dashboard-home"><p class="home-since">${esc(hero.eyebrow)}</p><h1><span>${esc(hero.line1)}</span><br/><em>${esc(hero.emphasis)}</em></h1><div class="home-reunion-story" aria-label="Trip story"><strong>${esc(hero.story)}</strong></div><div class="home-trip-line"><span>${esc(hero.dateLine)}</span><span>${esc(hero.regionLine)}</span></div><div aria-label="Live travel dashboard" class="home-live-grid">${(home.cards||[]).map(cardHTML).join('')}</div><a class="home-day-button" id="homeTodayButton" href="day.html?day=1">Let's go ✨</a></section>`;
     document.body.insertAdjacentHTML('beforeend',buildClockModal()+buildCurrencyModal());
   }
   function buildClockModal(){
