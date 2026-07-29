@@ -1898,3 +1898,69 @@ html{scrollbar-gutter:stable;}
 
 /* NZ Luxe Tours activity booking */
 .activity-status-badge,.activity-confirmed-badge{display:inline-flex;align-items:center;justify-content:center;padding:5px 8px;border-radius:999px;background:#e8f5e9;color:#246b38;font-size:11px;font-weight:900;letter-spacing:.04em}.activity-family-grid{display:grid;gap:8px}.activity-family-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid var(--surface-border);border-radius:12px;background:#fff}.activity-family-row span,.activity-family-row small{display:block}.activity-family-row small{margin-top:2px;font-size:12px;opacity:.72}.activity-family-row b{white-space:nowrap}.activity-booking-detail .accommodation-section p{white-space:normal}.activity-price-breakdown{margin-top:14px}@media(max-width:430px){.activity-family-row{align-items:flex-start}.activity-family-row b{font-size:14px}}
+
+/* Stage 3.2H FRONT1 — Engine-owned front-page geometry and bottom safe-area contract. */
+:root{
+  --engine-site-nav-height:68px;
+  --engine-bottom-nav-height:68px;
+  --engine-bottom-nav-offset:12px;
+  --engine-page-bottom-gap:24px;
+  --engine-page-bottom-safe:calc(104px + env(safe-area-inset-bottom));
+  --engine-home-card-max-width:820px;
+  --engine-home-card-radius:36px;
+  --engine-home-card-padding-desktop:36px;
+  --engine-home-card-padding-mobile:22px;
+  --engine-home-content-gap:18px;
+}
+html.engine-layout-ready body:not(.home-bg){padding-bottom:var(--engine-page-bottom-safe)!important;}
+html.engine-layout-ready :where(.content-page,.section,.dashboard,.expense-page-shell){padding-bottom:var(--engine-page-bottom-safe)!important;}
+html.engine-layout-ready .app-nav{bottom:calc(var(--engine-bottom-nav-offset) + env(safe-area-inset-bottom))!important;min-height:var(--engine-bottom-nav-height)!important;}
+html.engine-layout-ready .mini-menu{bottom:calc(var(--engine-bottom-nav-height) + var(--engine-bottom-nav-offset) + 14px + env(safe-area-inset-bottom))!important;}
+html.engine-layout-ready body.home-bg main.dashboard.home-premium.home-v37{
+  box-sizing:border-box!important;
+  width:100%!important;
+  max-width:var(--engine-home-card-max-width)!important;
+  min-height:calc(100dvh - var(--engine-site-nav-height))!important;
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+  padding:16px 16px var(--engine-page-bottom-safe)!important;
+  margin:0 auto!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+html.engine-layout-ready #homeRoot{width:100%;display:flex;justify-content:center;}
+html.engine-layout-ready .engine-home-card{
+  width:100%!important;
+  max-width:var(--engine-home-card-max-width)!important;
+  border-radius:var(--engine-home-card-radius)!important;
+  padding:var(--engine-home-card-padding-desktop)!important;
+  display:grid!important;
+  gap:var(--engine-home-content-gap)!important;
+}
+html.engine-layout-ready .engine-home-card .home-since,
+html.engine-layout-ready .engine-home-card h1,
+html.engine-layout-ready .engine-home-card .home-reunion-story,
+html.engine-layout-ready .engine-home-card .home-trip-line,
+html.engine-layout-ready .engine-home-card .home-live-grid,
+html.engine-layout-ready .engine-home-card .home-day-button{margin-top:0!important;margin-bottom:0!important;}
+html.engine-layout-ready .engine-home-card .home-day-button{min-height:50px!important;}
+@media(max-width:720px){
+  html.engine-layout-ready body.home-bg main.dashboard.home-premium.home-v37{
+    min-height:calc(100dvh - var(--engine-site-nav-height))!important;
+    padding:8px 12px var(--engine-page-bottom-safe)!important;
+    align-items:flex-start!important;
+  }
+  html.engine-layout-ready .engine-home-card{
+    border-radius:min(var(--engine-home-card-radius),30px)!important;
+    padding:var(--engine-home-card-padding-mobile)!important;
+    gap:14px!important;
+  }
+}
+@media(max-height:760px) and (max-width:720px){
+  html.engine-layout-ready .engine-home-card{padding:18px!important;gap:10px!important;}
+  html.engine-layout-ready .engine-home-card h1{font-size:clamp(42px,13vw,64px)!important;}
+  html.engine-layout-ready .engine-home-card .home-live-grid{gap:8px!important;}
+  html.engine-layout-ready .engine-home-card .live-card{min-height:72px!important;padding:8px 9px!important;}
+}
