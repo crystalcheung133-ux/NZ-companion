@@ -34,8 +34,8 @@
     modal.addEventListener('click',event=>{if(event.target===modal)returnToTripStudio();});document.body.appendChild(modal);
   }
   function render(){buildControl();buildModal();const control=document.getElementById('tripExportControl');if(control)control.hidden=!isExportAdmin();if(!isExportAdmin())closeTripExportCenter();}
-  window.openTripExportCenter=function(){if(!isExportAdmin())return alert('Enter Admin Mode to export the trip.');if(typeof closeFriendModal==='function')closeFriendModal();buildModal();const modal=document.getElementById('tripExportModal');modal.classList.add('open');modal.setAttribute('aria-hidden','false');};
-  window.closeTripExportCenter=function(){const modal=document.getElementById('tripExportModal');if(!modal)return;modal.classList.remove('open');modal.setAttribute('aria-hidden','true');};
+  window.openTripExportCenter=function(){if(!isExportAdmin())return alert('Enter Admin Mode to export the trip.');if(typeof closeFriendModal==='function')closeFriendModal();buildModal();CCMV_MODAL.setOpen('tripExportModal',true,{openClass:'open'});};
+  window.closeTripExportCenter=function(){CCMV_MODAL.setOpen('tripExportModal',false,{openClass:'open'});};
   window.exportExpenseSummary=function(){if(!isExportAdmin())return alert('Enter Admin Mode to export the trip.');if(typeof window.exportExpenseData!=='function')return alert('Expense export is not available on this page.');window.exportExpenseData();returnToTripStudio();};
 
   function itineraryShareText(){

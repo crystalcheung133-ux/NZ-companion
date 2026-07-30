@@ -56,16 +56,14 @@
   window.openCurrencyModal=function(){
     const modal=document.getElementById('currencyModal');
     if(!modal) return;
-    modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
-    document.body.classList.add('currency-modal-open');
+    CCMV_MODAL.setOpen(modal,true,{openClass:'open',bodyClass:'currency-modal-open'});
     updateCurrencyUI();
     setTimeout(()=>{const input=document.getElementById('currencyAmount'); if(input) input.focus({preventScroll:true});},80);
   };
   window.closeCurrencyModal=function(){
     const modal=document.getElementById('currencyModal');
     if(!modal) return;
-    modal.classList.remove('open'); modal.setAttribute('aria-hidden','true');
-    document.body.classList.remove('currency-modal-open');
+    CCMV_MODAL.setOpen(modal,false,{openClass:'open',bodyClass:'currency-modal-open'});
   };
   window.swapCurrencyDirection=function(){
     const old=state.base; state.base=state.quote; state.quote=old; updateCurrencyUI();

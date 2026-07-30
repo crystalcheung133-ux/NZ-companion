@@ -55,7 +55,7 @@
 })();
 
   // Home information modal controls (moved verbatim).
-  (function(){window.openHomeInfoModal=function(id){var modal=document.getElementById(id);if(!modal)return;modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.classList.add('home-info-modal-open');};window.closeHomeInfoModal=function(id){var modal=document.getElementById(id);if(!modal)return;modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.classList.remove('home-info-modal-open');};document.addEventListener('click',function(event){var modal=event.target.closest&&event.target.closest('.home-info-modal');if(modal&&event.target===modal)closeHomeInfoModal(modal.id);});document.addEventListener('keydown',function(event){if(event.key==='Escape')document.querySelectorAll('.home-info-modal.open').forEach(function(modal){closeHomeInfoModal(modal.id);});});})();
+  (function(){window.openHomeInfoModal=function(id){CCMV_MODAL.setOpen(id,true,{openClass:'open',bodyClass:'home-info-modal-open'});};window.closeHomeInfoModal=function(id){CCMV_MODAL.setOpen(id,false,{openClass:'open',bodyClass:'home-info-modal-open'});};document.addEventListener('click',function(event){var modal=event.target.closest&&event.target.closest('.home-info-modal');if(modal&&event.target===modal)closeHomeInfoModal(modal.id);});document.addEventListener('keydown',function(event){if(event.key==='Escape')document.querySelectorAll('.home-info-modal.open').forEach(function(modal){closeHomeInfoModal(modal.id);});});})();
 
   // Primary day action (moved verbatim).
   (function(){

@@ -87,6 +87,23 @@ window.tripDayNumber=tripDayNumber;
 /* Stage 7K-2D: Guide navigation context and place routing moved to guide.js. */
 
 function $(id){return document.getElementById(id);}
+/* Shared modal state helper. Presentation classes remain modal-specific; this
+   only centralises class, aria-hidden and optional body-lock bookkeeping. */
+(function(root){
+  'use strict';
+  function resolve(target){return typeof target==='string'?document.getElementById(target):target;}
+  function setOpen(target,open,options){
+    const modal=resolve(target);
+    if(!modal)return false;
+    const opts=options||{};
+    const openClass=opts.openClass||'show';
+    modal.classList.toggle(openClass,!!open);
+    if(opts.aria!==false)modal.setAttribute('aria-hidden',String(!open));
+    if(opts.bodyClass)document.body.classList.toggle(opts.bodyClass,!!open);
+    return true;
+  }
+  root.CCMV_MODAL=Object.freeze({resolve,setOpen});
+})(window);
 function escapeHTML(value){return String(value ?? '').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
 function closeMiniMenus(){document.querySelectorAll('.mini-menu').forEach(m=>m.classList.remove('show'));document.body.classList.remove('admin-overlay-open');}
 function clampMenuPosition(n,min,max){return Math.max(min,Math.min(max,n));}
