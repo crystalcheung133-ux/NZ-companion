@@ -220,12 +220,16 @@
         </div>
         <div id="tripStudioDanger" class="trip-studio-group trip-studio-danger" hidden>
           <p class="trip-studio-label">DATA CONTROL</p>
+          <button id="exitTripStudioButton" class="exit-trip-studio-btn" type="button">
+            <span><strong>Exit Studio Mode</strong><small>Return to traveller mode and hide all editing controls.</small></span><span aria-hidden="true">↩</span>
+          </button>
           <button id="resetTripDataButton" class="reset-trip-data-btn" type="button">
             <span><strong>Reset Trip Data</strong><small>Restore the original trip and remove all saved progress.</small></span><span aria-hidden="true">↺</span>
           </button>
         </div>`;
       familySheet.appendChild(block);
-      block.querySelector('.trip-studio-close').addEventListener('click',exitTripStudioMode);
+      block.querySelector('.trip-studio-close').addEventListener('click',closeTripStudioPanel);
+      block.querySelector('#exitTripStudioButton').addEventListener('click',exitTripStudioMode);
       block.querySelector('#resetTripDataButton').addEventListener('click',window.resetTripData);
     }
     if(!document.getElementById('adminModeBanner')){

@@ -170,12 +170,17 @@ function quickInfoHTML(g,key){
  return `<div class="quick-info-card">${quickInfoInnerHTML(g,key)}</div>`;
 }
 
+function guideCategoryForKey(key){
+ const categories=PRODUCTION_GUIDE.categories||{};
+ const preferred=['ATTRACTIONS','ACTIVITIES','DINING','STAY','SHOP','TRANSPORT'];
+ const ordered=[...preferred,...Object.keys(categories).filter(cat=>!preferred.includes(cat))];
+ return ordered.find(cat=>(categories[cat]||[]).some(item=>(typeof item==='string'?item:item&&item.key)===key))||'';
+}
 function guideCategoryKeys(key){
- const place=PRODUCTION_GUIDE.places[key]||{};
- const category=place.cat;
- const categoryItems=(category&&Array.isArray(PRODUCTION_GUIDE.categories[category]))?guideCategoryItems(category):[];
+ const category=guideCategoryForKey(key)||(PRODUCTION_GUIDE.places[key]||{}).cat;
+ const categoryItems=category?guideCategoryItems(category).slice().sort((a,b)=>String(a.title||'').localeCompare(String(b.title||''))):[];
  const keys=categoryItems.map(item=>item&&item.key).filter(itemKey=>itemKey&&PRODUCTION_GUIDE.places[itemKey]);
- return keys.length?keys:PRODUCTION_GUIDE.order.filter(itemKey=>PRODUCTION_GUIDE.places[itemKey]);
+ return keys.length>1?keys:PRODUCTION_GUIDE.order.filter(itemKey=>PRODUCTION_GUIDE.places[itemKey]&&!new Set(TRIP_CONFIG.guide?.excludedPlaceIds||[]).has(itemKey));
 }
 function guideNavModel(key){
  const keys=guideCategoryKeys(key);
@@ -221,7 +226,7 @@ function openGuideModal(key){
  $('guideModalContent').innerHTML=`<div class="guide-onepage"><p class="kicker">Guide</p><h2>${g.emoji} ${g.title}</h2><p class="guide-onepage-sub"><strong>${g.sub}</strong></p><p class="guide-onepage-desc">${g.desc}</p>${quickInfoHTML(g,key)}${routeStopsHTML(g)}${compactGuideSections(g)}${guideNavButtons(key)}</div>`;
  $('guideModal').classList.add('show');
  const sheet=document.querySelector('#guideModal .guide-sheet');
- if(sheet) sheet.scrollTop=0;
+ if(sheet){ sheet.scrollTop=0; if(typeof window.applyNearFitModal==='function') window.applyNearFitModal(sheet,'guide-near-fit'); }
 }
 function closeGuideModal(){
  const modal=$('guideModal');

@@ -56,3 +56,14 @@ document.addEventListener('DOMContentLoaded',()=>{
 })();
 
 
+
+/* UX-POLISH1 — compact modal cards only when they miss one-screen fit by a small amount. */
+function applyNearFitModal(sheet,className){
+  if(!sheet)return;
+  sheet.classList.remove('guide-near-fit','trip-near-fit');
+  requestAnimationFrame(()=>{
+    const overflow=Math.max(0,sheet.scrollHeight-sheet.clientHeight);
+    if(overflow>0&&overflow<=150)sheet.classList.add(className);
+  });
+}
+window.applyNearFitModal=applyNearFitModal;
