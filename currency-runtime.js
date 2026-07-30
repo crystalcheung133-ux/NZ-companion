@@ -1,5 +1,5 @@
 /* Travel Engine v1.0 — Stage 7M modular runtime. */
-/* NZ 0.6 RC11K — dashboard currency exchange */
+/* FRONT-INTERACTION1 — inline home currency converter. */
 (function(){
   if(typeof MONEY==='undefined') return;
   const tripCurrency=MONEY.getTripCurrency();
@@ -16,26 +16,43 @@
     state.source=record.source||'cached';
     return state.rate>0;
   }
+  function getAmountInput(){
+    return document.getElementById('currencyAmount');
+  }
+  function selectAll(input){
+    if(!input) return;
+    try{input.select();}catch(e){}
+    try{input.setSelectionRange(0,input.value.length);}catch(e){}
+  }
+  function settleInput(input){
+    if(!input) return;
+    input.blur();
+  }
+  function keepInputVisible(input){
+    if(!input||typeof input.scrollIntoView!=='function') return;
+    setTimeout(()=>{
+      try{input.scrollIntoView({block:'center',behavior:'smooth'});}catch(e){}
+    },120);
+  }
   function updateCurrencyUI(){
-    const amountInput=document.getElementById('currencyAmount');
+    const amountInput=getAmountInput();
     const amount=MONEY.normalizeAmount(amountInput&&amountInput.value);
     const result=MONEY.convert(amount,state.rate,state.base,state.quote);
-    const card=document.getElementById('currencyCardValue');
-    const meta=document.getElementById('currencyCardMeta');
     const inputCode=document.getElementById('currencyInputCode');
-    const inputLabel=document.getElementById('currencyInputLabel');
-    const outputLabel=document.getElementById('currencyOutputLabel');
+    const direction=document.getElementById('currencyDirectionLabel');
     const resultEl=document.getElementById('currencyResult');
-    const status=document.getElementById('currencyStatus');
-    if(card) card.textContent=state.rate?`${tripCurrency.code} 100 ≈ ${homeCurrency} ${formatMoney(MONEY.convertToHome(100,state.rate))}`:`${tripCurrency.code} 100 ≈ ${homeCurrency} --`;
-    if(meta) meta.textContent=state.rate?(state.source==='live'?`Rate date · ${state.date}`:`Last saved · ${state.date||'offline'}`):'Rate unavailable';
+    const meta=document.getElementById('currencyCardMeta');
     if(inputCode) inputCode.textContent=state.base;
-    if(inputLabel) inputLabel.textContent=state.base===tripCurrency.code?tripCurrency.name:'Australian dollar';
-    if(outputLabel) outputLabel.textContent=state.quote===homeCurrency?'Australian dollar':tripCurrency.name;
-    if(resultEl) resultEl.textContent=`${state.quote} ${result===null?'--':formatMoney(result)}`;
-    if(status){
-      if(state.rate) status.textContent=state.source==='live'?`Latest daily reference rate · ${state.date}`:`Offline rate saved from ${state.date||'the last update'}`;
-      else status.textContent='Connect to the internet to load the exchange rate.';
+    if(direction) direction.textContent=`${state.base} → ${state.quote}`;
+    if(resultEl) resultEl.textContent=`≈ ${result===null?'--':formatMoney(result)} ${state.quote}`;
+    if(meta){
+      if(state.rate){
+        const unit=MONEY.convert(1,state.rate,state.base,state.quote);
+        const freshness=state.source==='live'?'live':`saved ${state.date||'offline'}`;
+        meta.textContent=`1 ${state.base} ≈ ${formatMoney(unit)} ${state.quote} · ${freshness}`;
+      }else{
+        meta.textContent='Rate unavailable';
+      }
     }
   }
   async function loadCurrencyRate(){
@@ -53,44 +70,35 @@
       updateCurrencyUI();
     }
   }
-  window.openCurrencyModal=function(){
-    const modal=document.getElementById('currencyModal');
-    if(!modal) return;
-    CCMV_MODAL.setOpen(modal,true,{openClass:'open',bodyClass:'currency-modal-open'});
-    updateCurrencyUI();
-    setTimeout(()=>{
-      const input=document.getElementById('currencyAmount');
-      if(!input) return;
-      input.focus({preventScroll:true});
-      try{input.select();}catch(e){}
-      try{input.setSelectionRange(0,input.value.length);}catch(e){}
-    },80);
-  };
-  window.closeCurrencyModal=function(){
-    const modal=document.getElementById('currencyModal');
-    if(!modal) return;
-    CCMV_MODAL.setOpen(modal,false,{openClass:'open',bodyClass:'currency-modal-open'});
-  };
   window.swapCurrencyDirection=function(){
-    const old=state.base; state.base=state.quote; state.quote=old; updateCurrencyUI();
+    const old=state.base;
+    state.base=state.quote;
+    state.quote=old;
+    updateCurrencyUI();
+    const input=getAmountInput();
+    if(input){
+      input.focus({preventScroll:true});
+      selectAll(input);
+      keepInputVisible(input);
+    }
   };
   document.addEventListener('DOMContentLoaded',function(){
-    const input=document.getElementById('currencyAmount');
+    const input=getAmountInput();
     if(input){
-      const selectAll=function(){
-        try{input.select();}catch(e){}
-        try{input.setSelectionRange(0,input.value.length);}catch(e){}
-      };
-      input.addEventListener('focus',function(){setTimeout(selectAll,0);});
-      input.addEventListener('click',selectAll);
+      input.addEventListener('focus',function(){
+        setTimeout(()=>selectAll(input),0);
+        keepInputVisible(input);
+      });
+      input.addEventListener('click',function(){setTimeout(()=>selectAll(input),0);});
       input.addEventListener('input',updateCurrencyUI);
       input.addEventListener('keydown',function(event){
-        if(event.key==='Enter'){event.preventDefault();input.blur();}
+        if(event.key==='Enter'){
+          event.preventDefault();
+          settleInput(input);
+        }
       });
+      input.addEventListener('change',updateCurrencyUI);
     }
-    const modal=document.getElementById('currencyModal');
-    if(modal) modal.addEventListener('click',function(e){if(e.target===modal) window.closeCurrencyModal();});
     loadCurrencyRate();
   });
 })();
-
