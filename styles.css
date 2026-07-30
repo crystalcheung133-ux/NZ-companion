@@ -1898,3 +1898,68 @@ html{scrollbar-gutter:stable;}
 .trip-studio-selector-check>span{font-size:17px;font-weight:950;line-height:1}
 .trip-studio-selector-toggle.is-active .trip-studio-selector-check{border-color:#2f8054;background:#2f8054;color:#fff}
 @media(max-width:430px){.trip-studio-selector-toggle{padding:15px}.trip-studio-selector-check{flex-basis:30px;width:30px;height:30px}}
+
+
+/* STUDIO-UX2 — compact one-screen Studio panel and a real exit action. */
+#mamaModal.studio-view .guide-sheet{
+  max-height:min(88dvh,680px)!important;
+  overflow-y:auto!important;
+  padding:10px!important;
+}
+#mamaModal.studio-view .trip-studio{
+  margin:0!important;
+  border-radius:18px!important;
+}
+#mamaModal.studio-view .trip-studio-head{
+  align-items:center!important;
+  padding:11px 12px 10px!important;
+  gap:10px!important;
+}
+#mamaModal.studio-view .trip-studio-kicker{margin-bottom:2px!important;font-size:8px!important;}
+#mamaModal.studio-view .trip-studio-head h3{font-size:19px!important;line-height:1!important;}
+#mamaModal.studio-view .trip-studio-head small{margin-top:3px!important;font-size:10px!important;line-height:1.2!important;}
+#mamaModal.studio-view .trip-studio-close{
+  width:34px!important;
+  height:34px!important;
+  flex-basis:34px!important;
+  font-size:23px!important;
+}
+#mamaModal.studio-view .trip-studio-group{padding:8px 11px!important;}
+#mamaModal.studio-view .trip-studio-label{margin-bottom:5px!important;font-size:8px!important;}
+#mamaModal.studio-view .complete-trip-control{
+  flex-direction:row!important;
+  align-items:center!important;
+  gap:9px!important;
+  padding:8px 9px!important;
+  border-radius:13px!important;
+}
+#mamaModal.studio-view .trip-studio-copy{gap:1px!important;}
+#mamaModal.studio-view .trip-studio-copy strong,
+#mamaModal.studio-view .trip-export-launch strong,
+#mamaModal.studio-view .reset-trip-data-btn strong{font-size:13px!important;line-height:1.15!important;}
+#mamaModal.studio-view .trip-studio-copy small,
+#mamaModal.studio-view .trip-export-launch small,
+#mamaModal.studio-view .reset-trip-data-btn small{font-size:9px!important;line-height:1.2!important;}
+#mamaModal.studio-view .complete-trip-btn{
+  min-height:34px!important;
+  padding:7px 10px!important;
+  border-radius:10px!important;
+  font-size:11px!important;
+  white-space:nowrap!important;
+}
+#mamaModal.studio-view .trip-export-launch,
+#mamaModal.studio-view .reset-trip-data-btn{
+  min-height:48px!important;
+  padding:8px 10px!important;
+  border-radius:13px!important;
+  gap:9px!important;
+}
+#mamaModal.studio-view .trip-export-launch>span:last-child,
+#mamaModal.studio-view .reset-trip-data-btn>span:last-child{font-size:17px!important;}
+@media(max-width:560px){
+  #mamaModal.studio-view .guide-sheet{max-height:calc(100dvh - 24px)!important;}
+  #mamaModal.studio-view .trip-studio-head small{display:none!important;}
+  #mamaModal.studio-view .trip-studio-group{padding:7px 10px!important;}
+  #mamaModal.studio-view .complete-trip-control{flex-direction:row!important;}
+  #mamaModal.studio-view .complete-trip-btn{width:auto!important;flex:0 0 auto!important;}
+}

@@ -39,6 +39,12 @@
       modal.classList.remove('show');
     }
   }
+  function exitTripStudioMode(){
+    const disabled=window.setAdminMode(false);
+    if(disabled===false) return false;
+    closeTripStudioPanel();
+    return true;
+  }
   function openTripStudioPanel(){
     if(!isAdminUser()){ alert((typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.admin&&TRIP_CONFIG.admin.studioMessage)||'Trip Studio is available to Lee only.'); return false; }
     if(typeof renderFriendChoices==='function') renderFriendChoices();
@@ -220,7 +226,7 @@
           </button>
         </div>`;
       familySheet.appendChild(block);
-      block.querySelector('.trip-studio-close').addEventListener('click',closeTripStudioPanel);
+      block.querySelector('.trip-studio-close').addEventListener('click',exitTripStudioMode);
       block.querySelector('#resetTripDataButton').addEventListener('click',window.resetTripData);
     }
     if(!document.getElementById('adminModeBanner')){
@@ -321,6 +327,7 @@
 
   window.openTripStudioPanel=openTripStudioPanel;
   window.closeTripStudioPanel=closeTripStudioPanel;
+  window.exitTripStudioMode=exitTripStudioMode;
   window.scrollTripStudioToBottom=scrollTripStudioToBottom;
 
   const originalOpenFriendModal=window.openFriendModal||openFriendModal;
