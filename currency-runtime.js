@@ -1,5 +1,5 @@
 /* Travel Engine v1.0 — Stage 7M modular runtime. */
-/* FRONT-INTERACTION1 — inline home currency converter. */
+/* FRONT-INTERACTION1.1 — inline home currency converter with mobile viewport stability. */
 (function(){
   if(typeof MONEY==='undefined') return;
   const tripCurrency=MONEY.getTripCurrency();
@@ -24,15 +24,22 @@
     try{input.select();}catch(e){}
     try{input.setSelectionRange(0,input.value.length);}catch(e){}
   }
+  function restoreHorizontalPosition(){
+    const top=window.scrollY||document.documentElement.scrollTop||0;
+    try{window.scrollTo({left:0,top,behavior:'auto'});}catch(e){window.scrollTo(0,top);}
+    document.documentElement.scrollLeft=0;
+    document.body.scrollLeft=0;
+  }
   function settleInput(input){
     if(!input) return;
     input.blur();
+    requestAnimationFrame(restoreHorizontalPosition);
+    setTimeout(restoreHorizontalPosition,180);
   }
-  function keepInputVisible(input){
-    if(!input||typeof input.scrollIntoView!=='function') return;
-    setTimeout(()=>{
-      try{input.scrollIntoView({block:'center',behavior:'smooth'});}catch(e){}
-    },120);
+  function focusAmountInput(input){
+    if(!input) return;
+    try{input.focus({preventScroll:true});}catch(e){input.focus();}
+    selectAll(input);
   }
   function updateCurrencyUI(){
     const amountInput=getAmountInput();
@@ -76,20 +83,21 @@
     state.quote=old;
     updateCurrencyUI();
     const input=getAmountInput();
-    if(input){
-      input.focus({preventScroll:true});
-      selectAll(input);
-      keepInputVisible(input);
-    }
+    if(input) focusAmountInput(input);
   };
   document.addEventListener('DOMContentLoaded',function(){
     const input=getAmountInput();
     if(input){
-      input.addEventListener('focus',function(){
-        setTimeout(()=>selectAll(input),0);
-        keepInputVisible(input);
+      input.addEventListener('pointerdown',function(event){
+        event.preventDefault();
+        focusAmountInput(input);
       });
+      input.addEventListener('focus',function(){setTimeout(()=>selectAll(input),0);});
       input.addEventListener('click',function(){setTimeout(()=>selectAll(input),0);});
+      input.addEventListener('blur',function(){
+        requestAnimationFrame(restoreHorizontalPosition);
+        setTimeout(restoreHorizontalPosition,180);
+      });
       input.addEventListener('input',updateCurrencyUI);
       input.addEventListener('keydown',function(event){
         if(event.key==='Enter'){
@@ -98,6 +106,14 @@
         }
       });
       input.addEventListener('change',updateCurrencyUI);
+    }
+    if(window.visualViewport){
+      let lastWidth=window.visualViewport.width;
+      window.visualViewport.addEventListener('resize',function(){
+        const width=window.visualViewport.width;
+        if(width>=lastWidth) setTimeout(restoreHorizontalPosition,80);
+        lastWidth=width;
+      });
     }
     loadCurrencyRate();
   });
