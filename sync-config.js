@@ -28,9 +28,9 @@
     storage:Object.freeze({momentsBucket:'trip-moments'}),
     rpc:Object.freeze({resetTrip:'reset_trip',publishTrip:'publish_trip_snapshot'}),
     requestTimeoutMs:8000,
-    cacheKey:'travel_engine_cloud_snapshot_v1',
-    metadataKey:'travel_engine_cloud_sync_meta_v1',
-    reloadMarkerKey:'travel_engine_cloud_reload_version_v1',
+    cacheKey:(root.STORAGE_CONFIG&&root.STORAGE_CONFIG.keys.cloudSnapshot)||'travel_engine_cloud_snapshot_v1',
+    metadataKey:(root.STORAGE_CONFIG&&root.STORAGE_CONFIG.keys.cloudSyncMeta)||'travel_engine_cloud_sync_meta_v1',
+    reloadMarkerKey:(root.STORAGE_CONFIG&&root.STORAGE_CONFIG.keys.cloudReloadMarker)||'travel_engine_cloud_reload_version_v1',
     autoRead:true
   });
 

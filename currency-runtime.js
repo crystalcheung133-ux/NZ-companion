@@ -58,7 +58,13 @@
     if(!modal) return;
     CCMV_MODAL.setOpen(modal,true,{openClass:'open',bodyClass:'currency-modal-open'});
     updateCurrencyUI();
-    setTimeout(()=>{const input=document.getElementById('currencyAmount'); if(input) input.focus({preventScroll:true});},80);
+    setTimeout(()=>{
+      const input=document.getElementById('currencyAmount');
+      if(!input) return;
+      input.focus({preventScroll:true});
+      try{input.select();}catch(e){}
+      try{input.setSelectionRange(0,input.value.length);}catch(e){}
+    },80);
   };
   window.closeCurrencyModal=function(){
     const modal=document.getElementById('currencyModal');
@@ -70,7 +76,18 @@
   };
   document.addEventListener('DOMContentLoaded',function(){
     const input=document.getElementById('currencyAmount');
-    if(input) input.addEventListener('input',updateCurrencyUI);
+    if(input){
+      const selectAll=function(){
+        try{input.select();}catch(e){}
+        try{input.setSelectionRange(0,input.value.length);}catch(e){}
+      };
+      input.addEventListener('focus',function(){setTimeout(selectAll,0);});
+      input.addEventListener('click',selectAll);
+      input.addEventListener('input',updateCurrencyUI);
+      input.addEventListener('keydown',function(event){
+        if(event.key==='Enter'){event.preventDefault();input.blur();}
+      });
+    }
     const modal=document.getElementById('currencyModal');
     if(modal) modal.addEventListener('click',function(e){if(e.target===modal) window.closeCurrencyModal();});
     loadCurrencyRate();

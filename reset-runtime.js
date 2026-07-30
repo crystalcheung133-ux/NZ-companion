@@ -55,7 +55,7 @@
       STORAGE_CONFIG.keys.cloudSnapshot,
       STORAGE_CONFIG.keys.cloudSyncMeta,
       STORAGE_CONFIG.keys.tripCompletion+':notice',
-      'travel_engine_cloud_reload_version_v1'
+      STORAGE_CONFIG.keys.cloudReloadMarker
     ];
     exactKeys.forEach(k=>STORAGE.local.remove(k));
   }

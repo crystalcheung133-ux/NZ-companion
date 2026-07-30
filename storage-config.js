@@ -21,6 +21,7 @@
     changedPlans:'travel_engine_changed_plans_v1',
     cloudSnapshot:'travel_engine_cloud_snapshot_v1',
     cloudSyncMeta:'travel_engine_cloud_sync_meta_v1',
+    cloudReloadMarker:'travel_engine_cloud_reload_version_v1',
     expenseSyncTombstones:'travel_engine_expense_tombstones_v1',
     expenseSyncMeta:'travel_engine_expense_sync_meta_v1',
     canonicalExpenseState:'nz-family-2026:canonical_expenses:stage_3_2d:v1',
@@ -42,7 +43,7 @@
     bookings:Object.freeze({overrides:keys.bookingOverrides}),
     completion:Object.freeze({state:keys.tripCompletion}),
     journey:Object.freeze({changedPlans:keys.changedPlans}),
-    sync:Object.freeze({snapshot:keys.cloudSnapshot,metadata:keys.cloudSyncMeta})
+    sync:Object.freeze({snapshot:keys.cloudSnapshot,metadata:keys.cloudSyncMeta,reloadMarker:keys.cloudReloadMarker})
   });
 
   root.STORAGE_CONFIG=Object.freeze({
