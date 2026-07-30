@@ -90,8 +90,8 @@
       if(value!==ADMIN_PIN){ if(error) error.hidden=false; if(input){ input.value=''; input.focus(); } return; }
       sessionStorage.setItem(SESSION_KEY,'1');
       close();
-      window.setAdminMode(true);
-      if(typeof window.openFriendModal==='function') window.openFriendModal();
+      const activated=window.setAdminMode(true);
+      if(activated!==false) openTripStudioPanel();
     });
     return modal;
   }
@@ -140,6 +140,13 @@
       toggle.checked=state.mode;
       toggle.setAttribute('aria-checked',String(state.mode));
     });
+    const selectorCard=document.getElementById('tripStudioSelectorToggle');
+    if(selectorCard){
+      selectorCard.classList.toggle('is-active',state.mode);
+      selectorCard.setAttribute('aria-pressed',String(state.mode));
+      const status=selectorCard.querySelector('.trip-studio-selector-status');
+      if(status) status.textContent=state.mode?'Active':'PIN protected';
+    }
     const banner=document.getElementById('adminModeBanner');
     if(banner) banner.hidden=!state.mode;
     const bar=document.getElementById('adminSaveBar');
@@ -165,12 +172,25 @@
       const selectorToggle=document.createElement('div');
       selectorToggle.id='tripStudioSelectorToggle';
       selectorToggle.className='trip-studio-selector-toggle';
-      selectorToggle.innerHTML=`<span><strong>⚙ Studio Mode</strong><small>Editing, Complete Trip, Export Centre and trip controls</small></span><label class="admin-switch"><input id="studioSelectorToggleInput" type="checkbox" role="switch" aria-label="Toggle Studio Mode"><span></span></label>`;
+      selectorToggle.setAttribute('role','button');
+      selectorToggle.setAttribute('tabindex','0');
+      selectorToggle.setAttribute('aria-label','Open Studio Mode');
+      selectorToggle.setAttribute('aria-pressed','false');
+      selectorToggle.innerHTML=`<span class="trip-studio-selector-copy"><strong>⚙ Studio Mode</strong><small>Editing, Complete Trip, Export Centre and trip controls</small><em class="trip-studio-selector-status">PIN protected</em></span><span class="trip-studio-selector-check" aria-hidden="true"><input id="studioSelectorToggleInput" type="checkbox" tabindex="-1"><span>✓</span></span>`;
       familyList.insertAdjacentElement('afterend',selectorToggle);
-      selectorToggle.querySelector('#studioSelectorToggleInput').addEventListener('change',event=>{
-        const enabled=event.target.checked;
-        const changed=window.setAdminMode(enabled);
-        if(changed===false) event.target.checked=state.mode;
+      const activateStudio=()=>{
+        if(state.mode && isUnlocked() && isAdminUser()){
+          openTripStudioPanel();
+          return;
+        }
+        window.setAdminMode(true);
+      };
+      selectorToggle.addEventListener('click',activateStudio);
+      selectorToggle.addEventListener('keydown',event=>{
+        if(event.key==='Enter'||event.key===' '){
+          event.preventDefault();
+          activateStudio();
+        }
       });
     }
     if(familySheet && !document.getElementById('adminModeControl')){
