@@ -111,23 +111,6 @@ let editingExpenseIndex=null;
     Array.from(el.options||[]).forEach(opt=>{opt.selected=(opt.value===value);});
     try{el.dispatchEvent(new Event('change',{bubbles:true}));}catch(e){}
   }
-  function updatePaidByDisplay(){
-    const hidden=document.getElementById('expensePaidBy');
-    const paid=hidden?.value || currentUser();
-    const display=document.getElementById('paidByDisplayName');
-    if(display) display.innerHTML=identityFor(paid,true);
-    document.querySelectorAll('#paidByChoices button').forEach(btn=>{
-      btn.classList.toggle('active',btn.dataset.friend===paid);
-    });
-  }
-  function ensurePaidByUI(){
-    const select=document.getElementById('expensePaidBy');
-    if(!select) return;
-    document.getElementById('paidByDisplay')?.closest('.paid-by-panel')?.remove();
-    select.classList.remove('paid-by-hidden-select');
-    select.removeAttribute('aria-hidden');
-    select.tabIndex=0;
-  }
   let expenseSplitMode='equal';
   let calculatorTargetId='expenseTotal';
   let calculatorExpression='';
@@ -157,6 +140,25 @@ let editingExpenseIndex=null;
     if(e.shares && typeof e.shares==='object') return e.shares;
     const split=(e.split&&e.split.length)?e.split:[e.paidBy];
     return MONEY.equalShares(amount,split);
+  }
+  function expenseSummary(records){
+    const arr=Array.isArray(records)?records:[];
+    const personalSpend=Object.fromEntries(FRIEND_ORDER.map(k=>[k,0]));
+    const balance=Object.fromEntries(FRIEND_ORDER.map(k=>[k,0]));
+    arr.forEach(e=>{
+      const amount=MONEY.normalizeAmount(e.total);
+      if(!(e.paidBy in balance)) balance[e.paidBy]=0;
+      balance[e.paidBy]+=amount;
+      const shares=splitSharesForExpense(e);
+      Object.entries(shares).forEach(([partyId,share])=>{
+        if(!(partyId in personalSpend)) personalSpend[partyId]=0;
+        if(!(partyId in balance)) balance[partyId]=0;
+        const shareAmount=MONEY.normalizeAmount(share);
+        personalSpend[partyId]+=shareAmount;
+        balance[partyId]-=shareAmount;
+      });
+    });
+    return {total:MONEY.sumAmounts(arr.map(e=>e.total)),personalSpend,balance};
   }
   function calculatorIcon(){
     return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm0 2v4h12V4H6Zm2 7H6v2h2v-2Zm5 0h-2v2h2v-2Zm5 0h-2v2h2v-2ZM8 16H6v2h2v-2Zm5 0h-2v2h2v-2Zm5 0h-2v2h2v-2Z"/></svg>`;
@@ -374,8 +376,6 @@ let editingExpenseIndex=null;
     window.updateSplitUI();
     const title=document.getElementById('expenseModalTitle'); if(title) title.textContent='Add expense';
     const save=document.getElementById('expenseSaveButton'); if(save) save.textContent='Save';
-    ensurePaidByUI();
-    updatePaidByDisplay();
   }
   function expenseCard(e){
     const personal=e.type==='personal';
@@ -412,7 +412,6 @@ let editingExpenseIndex=null;
   });
 
   window.openExpenseModal=function(){
-    ensurePaidByUI();
     resetExpenseForm();
     lockExpensePage();
     const modal=document.getElementById('expenseModal');
@@ -420,7 +419,6 @@ let editingExpenseIndex=null;
   };
 
   window.saveExpense=function(){
-    ensurePaidByUI();
     const details=(document.getElementById('expenseItem')?.value||'').trim();
     const category=document.getElementById('expenseCategory')?.value || 'Other';
     const item=details || category;
@@ -487,24 +485,7 @@ let editingExpenseIndex=null;
     observeExpenseShadow(typeof shadowAction==='string'?shadowAction:'render',arr);
     const sorted=arr.map((e,i)=>({...e,_idx:i})).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||''))).map((e,i)=>({...e,_latest:i===0}));
     if(pageBox){
-      const total=MONEY.sumAmounts(arr.map(e=>e.total));
-      const personalSpend=Object.fromEntries(FRIEND_ORDER.map(k=>[k,0]));
-      const balance=Object.fromEntries(FRIEND_ORDER.map(k=>[k,0]));
-      arr.forEach(e=>{
-        const amount=MONEY.normalizeAmount(e.total);
-        if(!balance[e.paidBy]) balance[e.paidBy]=0;
-        balance[e.paidBy]+=amount;
-        if(e.type==='personal'){
-          const consumer=e.consumedBy || ((e.split||[])[0]) || e.paidBy;
-          if(!personalSpend[consumer]) personalSpend[consumer]=0;
-          if(!balance[consumer]) balance[consumer]=0;
-          personalSpend[consumer]+=amount;
-          balance[consumer]-=amount;
-        }else{
-          const shares=splitSharesForExpense(e);
-          Object.entries(shares).forEach(([k,share])=>{if(!personalSpend[k]) personalSpend[k]=0;if(!balance[k]) balance[k]=0;const shareAmount=MONEY.normalizeAmount(share);personalSpend[k]+=shareAmount;balance[k]-=shareAmount;});
-        }
-      });
+      const {total,personalSpend,balance}=expenseSummary(arr);
       const spendHtml=FRIEND_ORDER.map(k=>`<p data-family="${k}">${identityFor(k)}<strong>${FORMATTER.number(Math.round(personalSpend[k]||0))} ${MONEY.getTripCurrency().code}</strong></p>`).join('');
       const balanceHtml=FRIEND_ORDER.map(k=>{const v=balance[k]||0;return `<p data-family="${k}">${identityFor(k)}<strong>${v>=0?'Receive':'Owes'} ${FORMATTER.number(Math.abs(Math.round(v)))} ${MONEY.getTripCurrency().code}</strong></p>`;}).join('');
       pageBox.innerHTML=`<div class="expense-dashboard-v33 identity-dashboard"><div class="expense-total-card"><span>Trip Total</span><strong>${FORMATTER.number(total)} ${MONEY.getTripCurrency().code}</strong><small>Shared + personal expenses</small></div><div class="expense-focus-grid"><div class="expense-focus-card"><h3>Personal Spend</h3>${spendHtml}</div><div class="expense-focus-card"><h3>Settlement</h3>${balanceHtml}</div></div></div><div class="expense-history-block"><h3>Transaction History</h3><p class="timestamp">Newest transactions appear first.</p><div class="transaction-scroll">${sorted.length?sorted.map(expenseCard).join(''):'<p>No transactions yet.</p>'}</div></div>`;
@@ -516,30 +497,7 @@ let editingExpenseIndex=null;
     const arr=readExpenses();
     if(!arr.length) return alert('No expense data to export yet.');
     const quote=value=>`"${String(value??'').replace(/"/g,'""')}"`;
-    const total=MONEY.sumAmounts(arr.map(e=>e.total));
-    const personalSpend=Object.fromEntries(FRIEND_ORDER.map(k=>[k,0]));
-    const balance=Object.fromEntries(FRIEND_ORDER.map(k=>[k,0]));
-    arr.forEach(e=>{
-      const amount=MONEY.normalizeAmount(e.total);
-      if(!(e.paidBy in balance)) balance[e.paidBy]=0;
-      balance[e.paidBy]+=amount;
-      if(e.type==='personal'){
-        const consumer=e.consumedBy || ((e.split||[])[0]) || e.paidBy;
-        if(!(consumer in personalSpend)) personalSpend[consumer]=0;
-        if(!(consumer in balance)) balance[consumer]=0;
-        personalSpend[consumer]+=amount;
-        balance[consumer]-=amount;
-      }else{
-        const shares=splitSharesForExpense(e);
-        Object.entries(shares).forEach(([k,share])=>{
-          if(!(k in personalSpend)) personalSpend[k]=0;
-          if(!(k in balance)) balance[k]=0;
-          const shareAmount=MONEY.normalizeAmount(share);
-          personalSpend[k]+=shareAmount;
-          balance[k]-=shareAmount;
-        });
-      }
-    });
+    const {total,personalSpend,balance}=expenseSummary(arr);
     const rows=[
       [TRIP_CONFIG.exports?.expenseSummaryTitle||`${TRIP_CONFIG.tripName.toUpperCase()} EXPENSE SUMMARY`],
       [`Trip Total ${MONEY.getTripCurrency().code}`,Math.round(total)],
@@ -588,7 +546,6 @@ let editingExpenseIndex=null;
     observeExpenseShadow('edit-load',arr);
     const e=arr[i]; if(!e) return;
     editingExpenseIndex=i;
-    ensurePaidByUI();
     const item=document.getElementById('expenseItem'); if(item) item.value=e.details || (e.category ? '' : (e.item||''));
     window.setExpenseCategory(e.category || 'Other');
     const total=document.getElementById('expenseTotal'); if(total) total.value=e.total||'';
@@ -612,7 +569,6 @@ let editingExpenseIndex=null;
     const title=document.getElementById('expenseModalTitle'); if(title) title.textContent='✏️ Edit Expense';
     const save=document.getElementById('expenseSaveButton'); if(save) save.textContent='Update Expense';
     const modal=document.getElementById('expenseModal'); if(modal) modal.classList.add('show');
-    updatePaidByDisplay();
   };
 
   window.deleteExpense=function(i){
@@ -642,8 +598,6 @@ let editingExpenseIndex=null;
     badge.dataset.state=detail.status||'idle';
   });
   document.addEventListener('DOMContentLoaded',()=>{
-    ensurePaidByUI();
-    updatePaidByDisplay();
     setExportVisibility();
     window.updateSplitUI();
     window.renderExpenses();
