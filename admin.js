@@ -142,16 +142,15 @@
     document.body.classList.toggle('admin-dirty',state.mode&&state.dirty);
     const control=document.getElementById('adminModeControl');
     if(control) control.hidden=!(isAdminUser() && state.mode);
-    [document.getElementById('studioSelectorToggleInput'),document.getElementById('adminModeToggle')].filter(Boolean).forEach(toggle=>{
+    [document.getElementById('adminModeToggle')].filter(Boolean).forEach(toggle=>{
       toggle.checked=state.mode;
       toggle.setAttribute('aria-checked',String(state.mode));
     });
     const selectorCard=document.getElementById('tripStudioSelectorToggle');
     if(selectorCard){
-      selectorCard.classList.toggle('is-active',state.mode);
-      selectorCard.setAttribute('aria-pressed',String(state.mode));
+      selectorCard.setAttribute('aria-pressed','false');
       const status=selectorCard.querySelector('.trip-studio-selector-status');
-      if(status) status.textContent=state.mode?'Active':'PIN protected';
+      if(status) status.textContent='PIN protected · Lee only';
     }
     const banner=document.getElementById('adminModeBanner');
     if(banner) banner.hidden=!state.mode;
@@ -182,7 +181,7 @@
       selectorToggle.setAttribute('tabindex','0');
       selectorToggle.setAttribute('aria-label','Open Studio Mode');
       selectorToggle.setAttribute('aria-pressed','false');
-      selectorToggle.innerHTML=`<span class="trip-studio-selector-copy"><strong>⚙ Studio Mode</strong><small>Editing, Complete Trip, Export Centre and trip controls</small><em class="trip-studio-selector-status">PIN protected</em></span><span class="trip-studio-selector-check" aria-hidden="true"><input id="studioSelectorToggleInput" type="checkbox" tabindex="-1"><span>✓</span></span>`;
+      selectorToggle.innerHTML=`<span class="trip-studio-selector-copy"><strong>⚙ Studio Mode</strong><small>Editing, Complete Trip, Export Centre and trip controls</small><em class="trip-studio-selector-status">PIN protected · Lee only</em></span><span class="trip-studio-selector-arrow" aria-hidden="true">›</span>`;
       familyList.insertAdjacentElement('afterend',selectorToggle);
       const activateStudio=()=>{
         if(state.mode && isUnlocked() && isAdminUser()){
