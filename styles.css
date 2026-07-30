@@ -2021,3 +2021,28 @@ html{scrollbar-gutter:stable;}
 .guide-category-group{margin:0;padding:0}
 .guide-category-group+.guide-category-group{margin-top:16px;padding-top:12px;border-top:1px solid rgba(8,127,140,.18)}
 .guide-category-group-title{margin:0 0 4px;padding:0 4px;font-family:inherit;font-size:12px;line-height:1.3;letter-spacing:.11em;text-transform:uppercase;color:var(--nz-primary,#087f8c);font-weight:900}
+
+/* GUIDE-LIST-FULLROW1 — grouped Guide rows keep the original full-width list layout */
+#guideModalContent .guide-category-grouped,
+#guideModalContent .guide-category-group{
+  width:100%;
+  min-width:0;
+}
+#guideModalContent .guide-category-group{
+  display:block;
+}
+#guideModalContent .guide-category-group > button{
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  align-items:center!important;
+}
+#guideModalContent .guide-category-group > button > span:first-child{
+  min-width:0;
+}
+#guideModalContent .guide-list-meta{
+  margin-left:auto;
+  justify-self:end;
+  white-space:nowrap;
+}
