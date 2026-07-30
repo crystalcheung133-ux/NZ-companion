@@ -67,26 +67,60 @@
      render so openReferenceViewer() can navigate prev/next through it. No
      Admin upload UI yet; images only ever come from the Master File. */
   const referenceImageIndex={};
+  const guideExcludedPlaceIds=new Set(TRIP_CONFIG.guide?.excludedPlaceIds||[]);
+  const worthExcludedPlaceIds=new Set(['christchurch-airport','airport-queenstown','rental-cars-247']);
+  const dayNumbers=Object.keys(DAY_RENDER_DATA).map(Number).filter(Number.isFinite).sort((a,b)=>a-b);
+  const firstDayNumber=dayNumbers[0]||1;
+  const lastDayNumber=dayNumbers[dayNumbers.length-1]||firstDayNumber;
+
+  function resolveGuideButtons(item,nonPlace){
+    if(nonPlace)return {primaryGuideId:'',alternativeGuideIds:[]};
+    const requested=Array.isArray(item.guideIds)&&item.guideIds.length
+      ? item.guideIds
+      : (guideExcludedPlaceIds.has(item.placeId)?[]:[item.placeId||item.id]);
+    const guideIds=requested.filter(key=>key&&DAY_PLACES[key]&&!guideExcludedPlaceIds.has(key));
+    const primaryGuideId=item.placeId&&guideIds.includes(item.placeId)?item.placeId:(guideIds[0]||'');
+    return {primaryGuideId,alternativeGuideIds:guideIds.filter(key=>key!==primaryGuideId)};
+  }
+
+  function buildWorthBadge(item,place){
+    const eligible=place&&['DINING','ATTRACTIONS','ACTIVITIES'].includes(place.cat)&&!worthExcludedPlaceIds.has(item.placeId);
+    if(!eligible)return '';
+    const worthText=(Array.isArray(place.worth)?place.worth:[]).find(line=>/[★☆]{5}/.test(String(line||'')))||'';
+    const worthMatch=String(worthText).match(/[★☆]{5}/);
+    return worthMatch?worthMatch[0]:(place.status==='optional'?'★★★☆☆':'★★★★☆');
+  }
+
+  function buildTripInfoButton(booking){
+    if(!booking)return '';
+    if(booking.type==='accommodation'){
+      return `<button class="timeline-action timeline-action--trip" onclick="openAccommodationDetail('${esc(booking.id)}')">🧳 Trip Info</button>`;
+    }
+    if(booking.type==='activity'){
+      return `<button class="timeline-action timeline-action--trip" onclick="openActivityBookingDetail('${esc(booking.id)}')">🎟️ Booking</button>`;
+    }
+    return `<button class="timeline-action timeline-action--trip" onclick="openTripCard('vehicle')">🧳 Trip Info</button>`;
+  }
+
+  function buildReferencePreview(item){
+    const referenceImages=Array.isArray(item.referenceImages)?item.referenceImages.filter(image=>image&&image.src):[];
+    if(!referenceImages.length)return '';
+    referenceImageIndex[item.id]=referenceImages;
+    const startIndex=referenceImages.findIndex(image=>image.showOnCard);
+    if(startIndex<0)return '';
+    const preview=referenceImages[startIndex];
+    return `<button type="button" class="timeline-reference-thumb" onclick="openReferenceViewer(${JSON.stringify(item.id)},${startIndex})" aria-label="View reference image${referenceImages.length>1?'s':''}${preview.caption?': '+esc(preview.caption):''}"><img src="${esc(preview.src)}" alt="${esc(preview.caption||'')}" loading="lazy"/>${referenceImages.length>1?`<span class="timeline-reference-count">1/${referenceImages.length}</span>`:''}</button>`;
+  }
+
   function itemHTML(item,index){
     const nonPlace=item.nonPlace===true;
     const booking=item.bookingId?DAY_BOOKINGS[item.bookingId]:null;
     const detailHtml=(item.details||[]).map(text=>`<p>${esc(text)}</p>`).join('');
     const routeHtml=item.route?`<div class="route-hint"><strong>Next leg</strong><br/>${esc(item.route)}</div>`:'';
-    const guideExcludedPlaceIds=new Set(TRIP_CONFIG.guide?.excludedPlaceIds||[]);
-    const requested=nonPlace?[]:(Array.isArray(item.guideIds)&&item.guideIds.length?item.guideIds:(guideExcludedPlaceIds.has(item.placeId)?[]:[item.placeId||item.id]));
-    const guideIds=requested.filter(key=>key&&DAY_PLACES[key]&&!guideExcludedPlaceIds.has(key));
-    // Canonical alternatives UX: the primary choice always owns its own Guide button.
-    // The Alternative options button contains alternatives only — never the primary card again.
-    const primaryGuideId=(!nonPlace&&item.placeId&&guideIds.includes(item.placeId))?item.placeId:(guideIds[0]||'');
-    const alternativeGuideIds=guideIds.filter(key=>key!==primaryGuideId);
+    const {primaryGuideId,alternativeGuideIds}=resolveGuideButtons(item,nonPlace);
     const mapHtml=!nonPlace&&item.map?`<a class="timeline-action timeline-action--map" href="${esc(item.map)}" target="_blank" rel="noopener">🧭 Navigate</a>`:'';
     const place=item.placeId?DAY_PLACES[item.placeId]:null;
-    const worthEligible=place&&['DINING','ATTRACTIONS','ACTIVITIES'].includes(place.cat)&&!['christchurch-airport','airport-queenstown','rental-cars-247'].includes(item.placeId);
-    const worthLines=worthEligible&&Array.isArray(place.worth)?place.worth:[];
-    const worthText=worthLines.find(line=>/[★☆]{5}/.test(String(line||'')))||'';
-    const worthMatch=String(worthText).match(/[★☆]{5}/);
-    const fallbackStars=worthEligible?(place.status==='optional'?'★★★☆☆':'★★★★☆'):'';
-    const worthBadge=worthMatch?worthMatch[0]:fallbackStars;
+    const worthBadge=buildWorthBadge(item,place);
     const directoryHtml=!nonPlace&&item.showShoppingDirectory?`<button class="timeline-action timeline-action--directory" onclick="NAVIGATION.goPage('guide',{hash:'shoppingDirectory'})">🛍 Shopping List</button>`:'';
     const primaryGuideHtml=primaryGuideId?`<button class="timeline-action timeline-action--guide" onclick='openGuideGroupFromDay(${JSON.stringify([primaryGuideId])},${JSON.stringify(item.id)})'>📖 Guide</button>`:'';
     const alternativeLabel=item.optionsLabel||'Alternative options';
@@ -94,19 +128,9 @@
     const guideHtml=primaryGuideHtml+alternativeGuideHtml;
     const parkingGuideId=!nonPlace&&item.parkingGuideId&&DAY_PLACES[item.parkingGuideId]?item.parkingGuideId:'';
     const parkingHtml=parkingGuideId?`<button class="timeline-action timeline-action--parking" onclick='openGuideGroupFromDay(${JSON.stringify([parkingGuideId])},${JSON.stringify(item.id)})'>🚗 Parking</button>`:'';
-    const tripInfoHtml=booking?`<button class="timeline-action timeline-action--trip" onclick="${booking.type==='accommodation'?`openAccommodationDetail('${esc(booking.id)}')`:(booking.type==='activity'?`openActivityBookingDetail('${esc(booking.id)}')`:`openTripCard('vehicle')`)}">${booking.type==='activity'?'🎟️ Booking':'🧳 Trip Info'}</button>`:'';
+    const tripInfoHtml=buildTripInfoButton(booking);
     const admin=`<div class="timeline-admin-tools"><button class="timeline-admin-menu" onclick="openTimelineEditor(${index})" aria-label="Edit activity">Edit</button><button class="timeline-admin-more" onclick="toggleTimelineMenu(event,${index})" aria-label="More actions" aria-expanded="false">•••</button></div>`;
-    const referenceImages=Array.isArray(item.referenceImages)?item.referenceImages.filter(image=>image&&image.src):[];
-    let referenceHtml='';
-    if(referenceImages.length){
-      referenceImageIndex[item.id]=referenceImages;
-      const previewAt=Math.max(0,referenceImages.findIndex(image=>image.showOnCard));
-      const preview=referenceImages[previewAt===-1?0:previewAt]||referenceImages[0];
-      const startIndex=referenceImages.indexOf(preview);
-      if(preview&&preview.showOnCard){
-        referenceHtml=`<button type="button" class="timeline-reference-thumb" onclick="openReferenceViewer(${JSON.stringify(item.id)},${startIndex})" aria-label="View reference image${referenceImages.length>1?'s':''}${preview.caption?': '+esc(preview.caption):''}"><img src="${esc(preview.src)}" alt="${esc(preview.caption||'')}" loading="lazy"/>${referenceImages.length>1?`<span class="timeline-reference-count">1/${referenceImages.length}</span>`:''}</button>`;
-      }
-    }
+    const referenceHtml=buildReferencePreview(item);
     return `<div class="timeline-item" id="${esc(item.id)}" data-index="${index}" draggable="false"><div class="timeline-time">${esc(item.time)}</div><div class="timeline-main"><div class="timeline-title-row"><h3>${esc(item.title)}</h3>${worthBadge?`<span class="timeline-worth" title="Trip priority">${esc(worthBadge)}</span>`:""}</div>${detailHtml}${referenceHtml}${routeHtml}<div class="timeline-actions">${mapHtml}${parkingHtml}${directoryHtml}${tripInfoHtml}${guideHtml}</div></div>${admin}</div>`;
   }
   let suppressEntryAutoScroll=false;
@@ -114,8 +138,8 @@
     Object.keys(referenceImageIndex).forEach(key=>delete referenceImageIndex[key]);
     const addButton=`<button class="admin-add-activity" onclick="openTimelineEditor(-1)">＋ Add activity</button>`;
     const currentDay=Number(day);
-    const previousDay=currentDay>1?`<a class="day-footer-nav-link" href="day.html?day=${currentDay-1}">← Previous Day</a>`:'<span></span>';
-    const nextDay=currentDay<10?`<a class="day-footer-nav-link" href="day.html?day=${currentDay+1}">Next Day →</a>`:'<span></span>';
+    const previousDay=currentDay>firstDayNumber?`<a class="day-footer-nav-link" href="day.html?day=${currentDay-1}">← Previous Day</a>`:'<span></span>';
+    const nextDay=currentDay<lastDayNumber?`<a class="day-footer-nav-link" href="day.html?day=${currentDay+1}">Next Day →</a>`:'<span></span>';
     const footerNav=`<nav class="day-footer-nav" aria-label="Day navigation">${previousDay}${nextDay}</nav>`;
     root.innerHTML=`<div class="page-hero day-page-hero"><p class="kicker">${esc(data.kicker)}</p><h1>${esc(data.heading)}</h1></div>${buildDriveBriefing(data)}<section class="timeline" id="adminTimeline">${workingItems.map(itemHTML).join('')}</section>${addButton}${footerNav}`;
     try{
