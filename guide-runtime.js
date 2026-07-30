@@ -91,17 +91,15 @@ window.addEventListener('hashchange',applyGuideHashView);
 document.addEventListener('DOMContentLoaded',applyGuideHashView);
 
 function guideCategoryItems(cat){
- if(cat==='EXPLORE'){
-  return [...(PRODUCTION_GUIDE.categories.ATTRACTIONS||[]),...(PRODUCTION_GUIDE.categories.ACTIVITIES||[])]
-   .map(item=>{const key=typeof item==='string'?item:item&&item.key;return key&&PRODUCTION_GUIDE.places[key]?Object.assign({key},PRODUCTION_GUIDE.places[key]):null;})
-   .filter(item=>item&&!((TRIP_CONFIG.guide?.excludedPlaceIds||[]).includes(item.key)));
- }
+ const excluded=new Set(TRIP_CONFIG.guide?.excludedPlaceIds||[]);
  return (PRODUCTION_GUIDE.categories[cat]||[])
   .map(item=>{const key=typeof item==='string'?item:item&&item.key;return key&&PRODUCTION_GUIDE.places[key]?Object.assign({key},PRODUCTION_GUIDE.places[key]):null;})
-  .filter(Boolean);
+  .filter(item=>item&&!excluded.has(item.key));
 }
 function guideCategoryHeading(cat){
- return cat==='EXPLORE'?'SIGHTS & ACTIVITIES':cat;
+ if(cat==='ATTRACTIONS') return 'SIGHTS';
+ if(cat==='ACTIVITIES') return 'ACTIVITIES';
+ return cat;
 }
 function openGuideCategory(cat){
  saveGuideNavigationContext(cat);
@@ -171,9 +169,7 @@ function quickInfoHTML(g,key){
 function guideCategoryKeys(key){
  const place=PRODUCTION_GUIDE.places[key]||{};
  const category=place.cat;
- const categoryItems=(category==='ATTRACTIONS'||category==='ACTIVITIES')
-  ? guideCategoryItems('EXPLORE')
-  : ((category&&Array.isArray(PRODUCTION_GUIDE.categories[category]))?PRODUCTION_GUIDE.categories[category]:[]);
+ const categoryItems=(category&&Array.isArray(PRODUCTION_GUIDE.categories[category]))?guideCategoryItems(category):[];
  const keys=categoryItems.map(item=>item&&item.key).filter(itemKey=>itemKey&&PRODUCTION_GUIDE.places[itemKey]);
  return keys.length?keys:PRODUCTION_GUIDE.order.filter(itemKey=>PRODUCTION_GUIDE.places[itemKey]);
 }
