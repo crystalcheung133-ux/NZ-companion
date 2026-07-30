@@ -1875,3 +1875,6 @@ html{scrollbar-gutter:stable;}
 .trip-studio-selector-toggle>span:first-child{display:grid;gap:3px}.trip-studio-selector-toggle strong{font-size:15px;font-weight:850}.trip-studio-selector-toggle small{color:#71847b;font-size:11px;font-weight:650;line-height:1.35}
 #mamaModal #adminModeControl{margin-top:10px}
 #mamaModal #adminModeControl[hidden]{display:none!important}
+
+/* NZ Luxe Tours activity booking */
+.activity-status-badge,.activity-confirmed-badge{display:inline-flex;align-items:center;justify-content:center;padding:5px 8px;border-radius:999px;background:#e8f5e9;color:#246b38;font-size:11px;font-weight:900;letter-spacing:.04em}.activity-family-grid{display:grid;gap:8px}.activity-family-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid var(--surface-border);border-radius:12px;background:#fff}.activity-family-row span,.activity-family-row small{display:block}.activity-family-row small{margin-top:2px;font-size:12px;opacity:.72}.activity-family-row b{white-space:nowrap}.activity-booking-detail .accommodation-section p{white-space:normal}.activity-price-breakdown{margin-top:14px}@media(max-width:430px){.activity-family-row{align-items:flex-start}.activity-family-row b{font-size:14px}}
