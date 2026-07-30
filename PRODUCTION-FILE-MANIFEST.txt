@@ -1,4 +1,7 @@
+FRONT-PAGE-CLEANUP-PHASE1-REGRESSION-REPORT.md
+FRONT-PAGE-CLEANUP-PHASE1-REPORT.md
 GUIDE-ADDRESS-INTEGRITY-AUDIT.md
+PRODUCTION-FILE-MANIFEST.txt
 VERSION.txt
 address-integrity-test.py
 admin.js
@@ -27,6 +30,7 @@ generation-selection-adapter.js
 geo-config.js
 guide-runtime.js
 guide.html
+home-runtime.js
 icon-192.png
 icon-512.png
 index.html

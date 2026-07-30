@@ -1,1 +1,7 @@
-NZ-Companion-Stage3.2H-PORT1-LUXE2
+Stage 3.2H-PORT1-FRONT-CLEANUP1 · Front Page Cleanup Phase 1 · 2026-07-30
+Baseline: NZ-companion-main (5)(2).zip
+Scope: audit-led, behaviour-preserving cleanup only. Removed confirmed-dead
+.home-tagline CSS (zero DOM/runtime references) and moved existing Home config,
+dashboard, clock-modal and Today-button inline JavaScript verbatim into
+home-runtime.js. Hero shell, overflow rules, desktop/mobile geometry, bottom
+navigation, visible content and all trip data remain unchanged.
