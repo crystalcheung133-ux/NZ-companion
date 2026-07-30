@@ -101,17 +101,51 @@ function guideCategoryHeading(cat){
  if(cat==='ACTIVITIES') return 'ACTIVITIES';
  return cat;
 }
+
+function guideDayNumber(item){
+ const links=PRODUCTION_GUIDE.dayLinks[item.key]||[];
+ const numbers=links.map(link=>{const match=String(link&&link[0]||'').match(/Day\s*(\d+)/i);return match?Number(match[1]):null;}).filter(Number.isFinite);
+ return numbers.length?Math.min(...numbers):999;
+}
+function guideActivityGroup(item){
+ const text=`${item.title||''} ${item.sub||''} ${item.categoryLabel||''}`.toLowerCase();
+ if(/cruise|tour|4wd|glowworm|milford|doubtful|gold panning/.test(text)) return 'Tours & Cruises';
+ if(/track|hike|walk|blue lakes|deer park/.test(text)) return 'Walks & Outdoor';
+ return 'Experiences & Attractions';
+}
+function guideSortedCategoryItems(cat){
+ const items=guideCategoryItems(cat).slice();
+ if(cat==='ATTRACTIONS') return items.sort((a,b)=>guideDayNumber(a)-guideDayNumber(b)||String(a.title||'').localeCompare(String(b.title||'')));
+ if(cat==='ACTIVITIES') return items.sort((a,b)=>guideActivityGroup(a).localeCompare(guideActivityGroup(b))||String(a.title||'').localeCompare(String(b.title||'')));
+ return items.sort((a,b)=>String(a.title||'').localeCompare(String(b.title||'')));
+}
+function guideListRow(item){
+ return `<button onclick="openGuideModal('${item.key}')"><span><span class="guide-list-title">${item.emoji} ${item.title}</span><span class="guide-list-sub">${item.sub||''}</span></span><span class="guide-list-meta">${guideStatusHTML(PRODUCTION_GUIDE.places[item.key]||{})}<span class="guide-list-chevron">›</span></span></button>`;
+}
+function groupedGuideRows(cat,list){
+ if(cat==='ATTRACTIONS'){
+  const groups=new Map();
+  list.forEach(item=>{const day=guideDayNumber(item);const label=day===999?'Optional / Flexible':`Day ${day}`;(groups.get(label)||groups.set(label,[]).get(label)).push(item);});
+  return [...groups.entries()].map(([label,items])=>`<section class="guide-category-group"><h3 class="guide-category-group-title">${label}</h3>${items.map(guideListRow).join('')}</section>`).join('');
+ }
+ if(cat==='ACTIVITIES'){
+  const groups=new Map();
+  list.forEach(item=>{const label=guideActivityGroup(item);(groups.get(label)||groups.set(label,[]).get(label)).push(item);});
+  return [...groups.entries()].map(([label,items])=>`<section class="guide-category-group"><h3 class="guide-category-group-title">${label}</h3>${items.map(guideListRow).join('')}</section>`).join('');
+ }
+ return list.map(guideListRow).join('');
+}
 function openGuideCategory(cat){
  saveGuideNavigationContext(cat);
- const list=guideCategoryItems(cat).slice().sort((a,b)=>String(a.title||'').localeCompare(String(b.title||'')));
+ const list=guideSortedCategoryItems(cat);
  if(cat==='SHOP'){
   const directoryRow=`<button onclick="openShoppingDirectoryView()"><span><span class="guide-list-title">🛍 Shopping Directory</span><span class="guide-list-sub">Optional shops · Near · Best with Day</span></span><span>↓</span></button>`;
   const rows=directoryRow+list.map(i=>`<button onclick="openGuideModal('${i.key}')"><span><span class="guide-list-title">${i.emoji} ${i.title}</span><span class="guide-list-sub">${i.sub||''}</span></span><span class="guide-list-meta">${guideStatusHTML(PRODUCTION_GUIDE.places[i.key]||{})}<span class="guide-list-chevron">›</span></span></button>`).join('');
   $('guideModalContent').innerHTML=`<p class="kicker">Guide</p><h2>SHOP</h2><div class="category-pop-list">${rows}</div>`;
   closeMiniMenus();$('guideModal').classList.add('show');return;
  }
- const rows=list.map(i=>`<button onclick="openGuideModal('${i.key}')"><span><span class="guide-list-title">${i.emoji} ${i.title}</span><span class="guide-list-sub">${i.sub||''}</span></span><span class="guide-list-meta">${guideStatusHTML(PRODUCTION_GUIDE.places[i.key]||{})}<span class="guide-list-chevron">›</span></span></button>`).join('');
- $('guideModalContent').innerHTML=`<p class="kicker">Guide</p><h2>${guideCategoryHeading(cat)}</h2><div class="category-pop-list">${rows}</div>`;
+ const rows=groupedGuideRows(cat,list);
+ $('guideModalContent').innerHTML=`<p class="kicker">Guide</p><h2>${guideCategoryHeading(cat)}</h2><div class="category-pop-list guide-category-grouped">${rows}</div>`;
  closeMiniMenus();$('guideModal').classList.add('show');
 }
 
@@ -178,7 +212,7 @@ function guideCategoryForKey(key){
 }
 function guideCategoryKeys(key){
  const category=guideCategoryForKey(key)||(PRODUCTION_GUIDE.places[key]||{}).cat;
- const categoryItems=category?guideCategoryItems(category).slice().sort((a,b)=>String(a.title||'').localeCompare(String(b.title||''))):[];
+ const categoryItems=category?guideSortedCategoryItems(category):[];
  const keys=categoryItems.map(item=>item&&item.key).filter(itemKey=>itemKey&&PRODUCTION_GUIDE.places[itemKey]);
  return keys.length>1?keys:PRODUCTION_GUIDE.order.filter(itemKey=>PRODUCTION_GUIDE.places[itemKey]&&!new Set(TRIP_CONFIG.guide?.excludedPlaceIds||[]).has(itemKey));
 }

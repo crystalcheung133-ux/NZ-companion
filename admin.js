@@ -148,9 +148,14 @@
     });
     const selectorCard=document.getElementById('tripStudioSelectorToggle');
     if(selectorCard){
-      selectorCard.setAttribute('aria-pressed','false');
+      const active=state.mode && isUnlocked() && isAdminUser();
+      selectorCard.classList.toggle('is-active',active);
+      selectorCard.setAttribute('aria-pressed',String(active));
+      selectorCard.setAttribute('aria-label',active?'Exit Studio Mode':'Open Studio Mode');
       const status=selectorCard.querySelector('.trip-studio-selector-status');
-      if(status) status.textContent='PIN protected · Lee only';
+      if(status) status.textContent=active?'Studio active · Press × to exit':'PIN protected · Lee only';
+      const arrow=selectorCard.querySelector('.trip-studio-selector-arrow');
+      if(arrow) arrow.textContent=active?'×':'›';
     }
     const banner=document.getElementById('adminModeBanner');
     if(banner) banner.hidden=!state.mode;
@@ -185,10 +190,10 @@
       familyList.insertAdjacentElement('afterend',selectorToggle);
       const activateStudio=()=>{
         if(state.mode && isUnlocked() && isAdminUser()){
-          openTripStudioPanel();
+          exitTripStudioMode();
           return;
         }
-        window.setAdminMode(true);
+        if(window.setAdminMode(true)!==false) openTripStudioPanel();
       };
       selectorToggle.addEventListener('click',activateStudio);
       selectorToggle.addEventListener('keydown',event=>{
@@ -220,16 +225,12 @@
         </div>
         <div id="tripStudioDanger" class="trip-studio-group trip-studio-danger" hidden>
           <p class="trip-studio-label">DATA CONTROL</p>
-          <button id="exitTripStudioButton" class="exit-trip-studio-btn" type="button">
-            <span><strong>Exit Studio Mode</strong><small>Return to traveller mode and hide all editing controls.</small></span><span aria-hidden="true">↩</span>
-          </button>
           <button id="resetTripDataButton" class="reset-trip-data-btn" type="button">
             <span><strong>Reset Trip Data</strong><small>Restore the original trip and remove all saved progress.</small></span><span aria-hidden="true">↺</span>
           </button>
         </div>`;
       familySheet.appendChild(block);
       block.querySelector('.trip-studio-close').addEventListener('click',closeTripStudioPanel);
-      block.querySelector('#exitTripStudioButton').addEventListener('click',exitTripStudioMode);
       block.querySelector('#resetTripDataButton').addEventListener('click',window.resetTripData);
     }
     if(!document.getElementById('adminModeBanner')){
