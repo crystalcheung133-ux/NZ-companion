@@ -1,5 +1,5 @@
 /* Travel Engine v1.0 — Stage 7M modular runtime. */
-/* FRONT-INTERACTION1.1 — inline home currency converter with mobile viewport stability. */
+/* FRONT-INTERACTION1.2 — inline currency input with keyboard-safe vertical visibility and exact viewport restoration. */
 (function(){
   if(typeof MONEY==='undefined') return;
   const tripCurrency=MONEY.getTripCurrency();
@@ -24,22 +24,61 @@
     try{input.select();}catch(e){}
     try{input.setSelectionRange(0,input.value.length);}catch(e){}
   }
-  function restoreHorizontalPosition(){
-    const top=window.scrollY||document.documentElement.scrollTop||0;
-    try{window.scrollTo({left:0,top,behavior:'auto'});}catch(e){window.scrollTo(0,top);}
+  let focusOrigin=null;
+  let visibilityTimers=[];
+  function clearVisibilityTimers(){
+    visibilityTimers.forEach(timer=>clearTimeout(timer));
+    visibilityTimers=[];
+  }
+  function captureFocusOrigin(){
+    if(focusOrigin) return;
+    focusOrigin={
+      top:window.scrollY||document.documentElement.scrollTop||0,
+      left:window.scrollX||document.documentElement.scrollLeft||0
+    };
+  }
+  function setViewportPosition(top){
+    const targetTop=Number.isFinite(top)?Math.max(0,top):(window.scrollY||0);
+    try{window.scrollTo({left:0,top:targetTop,behavior:'auto'});}catch(e){window.scrollTo(0,targetTop);}
     document.documentElement.scrollLeft=0;
     document.body.scrollLeft=0;
   }
+  function restoreViewportPosition(){
+    const top=focusOrigin?focusOrigin.top:(window.scrollY||document.documentElement.scrollTop||0);
+    setViewportPosition(top);
+  }
+  function ensureInputVisibleVertically(input){
+    if(!input||document.activeElement!==input) return;
+    const viewport=window.visualViewport;
+    const rect=input.getBoundingClientRect();
+    const visibleTop=(viewport?viewport.offsetTop:0)+12;
+    const visibleBottom=(viewport?viewport.offsetTop+viewport.height:window.innerHeight)-18;
+    let delta=0;
+    if(rect.bottom>visibleBottom) delta=rect.bottom-visibleBottom;
+    else if(rect.top<visibleTop) delta=rect.top-visibleTop;
+    const currentTop=window.scrollY||document.documentElement.scrollTop||0;
+    setViewportPosition(currentTop+delta);
+  }
+  function scheduleInputVisibility(input){
+    clearVisibilityTimers();
+    [60,160,280,420].forEach(delay=>{
+      visibilityTimers.push(setTimeout(()=>ensureInputVisibleVertically(input),delay));
+    });
+  }
   function settleInput(input){
     if(!input) return;
+    clearVisibilityTimers();
     input.blur();
-    requestAnimationFrame(restoreHorizontalPosition);
-    setTimeout(restoreHorizontalPosition,180);
+    requestAnimationFrame(restoreViewportPosition);
+    setTimeout(restoreViewportPosition,120);
+    setTimeout(()=>{restoreViewportPosition();focusOrigin=null;},320);
   }
   function focusAmountInput(input){
     if(!input) return;
+    captureFocusOrigin();
     try{input.focus({preventScroll:true});}catch(e){input.focus();}
     selectAll(input);
+    scheduleInputVisibility(input);
   }
   function updateCurrencyUI(){
     const amountInput=getAmountInput();
@@ -92,11 +131,20 @@
         event.preventDefault();
         focusAmountInput(input);
       });
-      input.addEventListener('focus',function(){setTimeout(()=>selectAll(input),0);});
-      input.addEventListener('click',function(){setTimeout(()=>selectAll(input),0);});
+      input.addEventListener('focus',function(){
+        captureFocusOrigin();
+        setTimeout(()=>selectAll(input),0);
+        scheduleInputVisibility(input);
+      });
+      input.addEventListener('click',function(){
+        setTimeout(()=>selectAll(input),0);
+        scheduleInputVisibility(input);
+      });
       input.addEventListener('blur',function(){
-        requestAnimationFrame(restoreHorizontalPosition);
-        setTimeout(restoreHorizontalPosition,180);
+        clearVisibilityTimers();
+        requestAnimationFrame(restoreViewportPosition);
+        setTimeout(restoreViewportPosition,120);
+        setTimeout(()=>{restoreViewportPosition();focusOrigin=null;},320);
       });
       input.addEventListener('input',updateCurrencyUI);
       input.addEventListener('keydown',function(event){
@@ -108,12 +156,20 @@
       input.addEventListener('change',updateCurrencyUI);
     }
     if(window.visualViewport){
-      let lastWidth=window.visualViewport.width;
-      window.visualViewport.addEventListener('resize',function(){
-        const width=window.visualViewport.width;
-        if(width>=lastWidth) setTimeout(restoreHorizontalPosition,80);
-        lastWidth=width;
-      });
+      let lastHeight=window.visualViewport.height;
+      const handleViewportChange=function(){
+        const active=getAmountInput();
+        const height=window.visualViewport.height;
+        if(active&&document.activeElement===active){
+          scheduleInputVisibility(active);
+        }else if(height>=lastHeight){
+          requestAnimationFrame(restoreViewportPosition);
+          setTimeout(restoreViewportPosition,120);
+        }
+        lastHeight=height;
+      };
+      window.visualViewport.addEventListener('resize',handleViewportChange);
+      window.visualViewport.addEventListener('scroll',handleViewportChange);
     }
     loadCurrencyRate();
   });
