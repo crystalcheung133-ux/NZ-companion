@@ -157,9 +157,13 @@ function quickInfoInnerHTML(g,key){
  const roleBadge=g.itineraryRole?`<span class="itinerary-role-badge">${g.itineraryRole}</span>`:'';
  const reminder=String(g.visitorReminder||'').trim();
  const reminderRow=reminder?`<p class="visitor-reminder"><strong>Reminder:</strong> ${reminder}</p>`:'';
+ const linkedBooking=(typeof BOOKINGS_DATA==='object')?Object.values(BOOKINGS_DATA).find(booking=>booking&&booking.placeId===key):null;
+ const bookingStatus=linkedBooking?String(linkedBooking.displayStatus||linkedBooking.status||'').toUpperCase():'';
+ const bookingRow=linkedBooking?`<div class="quick-info-row"><span class="quick-info-icon">🎟️</span><span><span class="quick-info-label">Booking</span><span class="quick-info-value">${bookingStatus||'DETAILS AVAILABLE'}</span></span></div>`:'';
+ const bookingButton=linkedBooking?`<button class="utility-button" type="button" onclick="${linkedBooking.type==='activity'?'openActivityBookingDetail':'openAccommodationDetail'}('${linkedBooking.id}')">🎟️ Booking Details</button>`:'';
  const parking=g.parking;
  const parkingHTML=parking?`<div class="recommended-parking"><div class="recommended-parking-head"><span>🚗</span><span><strong>Recommended Parking</strong><small>${parking.name||''}</small></span></div><div class="recommended-parking-grid"><p><span>📍</span><span>${parking.address||''}</span></p><p><span>🚶</span><span>${parking.walk||''}</span></p><p><span>💰</span><span>${parking.fee||''}</span></p></div>${parking.note?`<p class="recommended-parking-note">${parking.note}</p>`:''}${parking.maps?`<a class="map-button recommended-parking-nav" href="${parking.maps}" target="_blank" rel="noopener">🧭 Navigate to Parking</a>`:''}</div>`:'';
- return `<div class="quick-info-top"><span class="category-tag">${g.categoryLabel||g.cat||'Guide'}</span>${roleBadge}${guideStatusHTML(g)}</div><div class="quick-info-grid">${addressRow}${phoneRow}${hoursRow}${priceRow}${visitDayHTML(key)}</div>${reminderRow}${parkingHTML}<div class="quick-info-actions">${copyButton}${navButton}${callButton}${websiteButton}</div>`;
+ return `<div class="quick-info-top"><span class="category-tag">${g.categoryLabel||g.cat||'Guide'}</span>${roleBadge}${guideStatusHTML(g)}</div><div class="quick-info-grid">${addressRow}${phoneRow}${hoursRow}${priceRow}${bookingRow}${visitDayHTML(key)}</div>${reminderRow}${parkingHTML}<div class="quick-info-actions">${copyButton}${navButton}${bookingButton}${callButton}${websiteButton}</div>`;
 }
 
 function quickInfoHTML(g,key){

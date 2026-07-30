@@ -1969,3 +1969,22 @@ html{scrollbar-gutter:stable;}
 .trip-action-row .trip-action-btn--contact{background:#fffaf2!important;border-color:var(--line)!important;color:var(--ink)!important}
 .activity-status-badge,.activity-confirmed-badge{min-height:25px;padding:5px 9px}
 @media(max-width:430px){.trip-action-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.trip-action-row .trip-action-btn{width:100%;white-space:normal;text-align:center}.activity-booking-detail .trip-action-row .trip-action-btn:last-child:nth-child(odd){grid-column:1/-1}}
+
+/* Booking Engine — Studio-gated edit flow */
+.booking-edit-btn{background:linear-gradient(135deg,#6f8d72,#516f58);color:#fff;border-color:transparent}
+.booking-edit-onepage{padding-bottom:8px}
+.booking-edit-form{display:flex;flex-direction:column;gap:14px}
+.booking-edit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.booking-edit-field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.booking-edit-field--wide{grid-column:1/-1}
+.booking-edit-field>span{font-size:.72rem;font-weight:800;letter-spacing:.035em;color:#657268;text-transform:uppercase}
+.booking-edit-field input,.booking-edit-field select,.booking-edit-field textarea{width:100%;box-sizing:border-box;border:1px solid rgba(70,91,74,.22);border-radius:13px;background:#fff;padding:10px 11px;font:inherit;color:#25342b;outline:none}
+.booking-edit-field textarea{resize:vertical;min-height:72px}
+.booking-edit-field input:focus,.booking-edit-field select:focus,.booking-edit-field textarea:focus{border-color:#6f8d72;box-shadow:0 0 0 3px rgba(111,141,114,.14)}
+.booking-edit-actions{display:flex;justify-content:flex-end;gap:9px;position:sticky;bottom:0;padding:9px 0 3px;background:linear-gradient(to bottom,rgba(249,250,247,0),#f9faf7 28%)}
+.booking-edit-save{background:linear-gradient(135deg,#6f8d72,#516f58)!important;color:#fff!important;border-color:transparent!important}
+.timeline-booking-status{display:inline-flex;align-items:center;min-height:20px;padding:2px 7px;border-radius:999px;font-size:.62rem;font-weight:900;letter-spacing:.045em;background:#e9efe9;color:#46614c;white-space:nowrap}
+.timeline-booking-status--pending{background:#fff1d8;color:#8b611d}
+.timeline-booking-status--cancelled{background:#f8e1e1;color:#8b3939}
+.timeline-booking-status--waitlist{background:#ece7f7;color:#65548c}
+@media(max-width:640px){.booking-edit-grid{grid-template-columns:1fr}.booking-edit-field--wide{grid-column:auto}.booking-edit-actions .pill{flex:1}.timeline-title-row{flex-wrap:wrap}}

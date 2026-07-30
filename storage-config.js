@@ -25,7 +25,8 @@
     expenseSyncMeta:'travel_engine_expense_sync_meta_v1',
     canonicalExpenseState:'nz-family-2026:canonical_expenses:stage_3_2d:v1',
     expenseReadShadowState:'nz-family-2026:canonical_expense_read_shadow:stage_3_2e:v1',
-    tripGeneration:'travel_engine_trip_generation_v1'
+    tripGeneration:'travel_engine_trip_generation_v1',
+    bookingOverrides:'travel_engine_booking_overrides_v1'
   });
 
   const domains=Object.freeze({
@@ -38,6 +39,7 @@
     admin:Object.freeze({mode:keys.adminMode,draft:keys.adminDraft}),
     guide:Object.freeze({context:keys.guideNavContext,reopen:keys.guideNavReopen}),
     itinerary:Object.freeze({overrides:keys.itineraryOverrides,masterSignature:keys.itineraryMasterSignature}),
+    bookings:Object.freeze({overrides:keys.bookingOverrides}),
     completion:Object.freeze({state:keys.tripCompletion}),
     journey:Object.freeze({changedPlans:keys.changedPlans}),
     sync:Object.freeze({snapshot:keys.cloudSnapshot,metadata:keys.cloudSyncMeta})

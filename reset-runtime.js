@@ -49,6 +49,7 @@
       STORAGE_CONFIG.keys.guideNavContext,
       STORAGE_CONFIG.keys.guideNavReopen,
       STORAGE_CONFIG.keys.itineraryOverrides,
+      STORAGE_CONFIG.keys.bookingOverrides,
       STORAGE_CONFIG.keys.tripCompletion,
       STORAGE_CONFIG.keys.changedPlans,
       STORAGE_CONFIG.keys.cloudSnapshot,
