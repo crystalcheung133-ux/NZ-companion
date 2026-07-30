@@ -1,5 +1,5 @@
 importScripts('./theme-config.js', './asset-config.js', './locale-config.js', './formatter.js', './navigation-config.js', './storage-config.js', './trip-config.js');
-const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-stage3-2h-portability-1-luxe1`;
+const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-stage3-2h-trip-cleanup1`;
 const CRITICAL_EXTENSIONS = /\.(?:css|js)$/i;
 const ASSETS = [
   './',
@@ -9,6 +9,7 @@ const ASSETS = [
   './trip-runtime.js',
   './moments-compat.js',
   './currency-runtime.js',
+  './home-runtime.js',
   './script.js',
   './guide-runtime.js',
   './expense-canonical-bootstrap.js',

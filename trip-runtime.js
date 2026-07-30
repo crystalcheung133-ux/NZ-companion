@@ -62,13 +62,19 @@ function escapeTripHTML(value){
 function accommodationMapURL(address){
   return 'https://maps.google.com/?q='+encodeURIComponent(address||'');
 }
-function accommodationReferenceLabel(booking){
-  return booking.id==='queenstown-booking'?'Airbnb reference':(booking.id==='lakefront-booking'?'Luxury Escapes reference':'Booking reference');
+function getBookingById(bookingId){
+  return (PRODUCTION_BOOKINGS&&PRODUCTION_BOOKINGS.byId)?PRODUCTION_BOOKINGS.byId[bookingId]||null:null;
+}
+function getBookingsByType(type){
+  return (PRODUCTION_BOOKINGS&&PRODUCTION_BOOKINGS.byId?Object.values(PRODUCTION_BOOKINGS.byId):[])
+    .filter(function(booking){return booking&&booking.type===type;})
+    .sort(function(a,b){return String(a.date||'').localeCompare(String(b.date||''));});
+}
+function bookingReferenceLabel(booking){
+  return booking&&booking.referenceLabel?booking.referenceLabel:'Booking reference';
 }
 function getAccommodationBookings(){
-  return (typeof PRODUCTION_BOOKINGS.byId==='undefined'?[]:Object.values(PRODUCTION_BOOKINGS.byId))
-    .filter(function(booking){return booking&&booking.type==='accommodation';})
-    .sort(function(a,b){return String(a.date||'').localeCompare(String(b.date||''));});
+  return getBookingsByType('accommodation');
 }
 function buildAccommodationListHTML(){
   const bookings=getAccommodationBookings();
@@ -96,7 +102,7 @@ function buildAccommodationDetailHTML(booking){
   const map=address?accommodationMapURL(address):'';
   const nights=Number(booking.nights||0);
   const nightsLabel=nights?`${nights} night${nights===1?'':'s'}`:'';
-  const bookingStatus=booking.id==='archway-booking'?'BOOKED BACKUP · Free cancellation':(booking.status||'');
+  const bookingStatus=booking.displayStatus||booking.status||'';
   const facts=[
     ['Status',bookingStatus],
     ['Stay',booking.stayDates||booking.date||''],
@@ -104,7 +110,7 @@ function buildAccommodationDetailHTML(booking){
     ['Room',booking.roomType||booking.notes||'Not added yet'],
     ['Check-in',booking.checkIn||booking.time||'Not added yet'],
     ['Check-out',booking.checkOut||'Not added yet'],
-    [accommodationReferenceLabel(booking),booking.reference||'Not added yet'],
+    [bookingReferenceLabel(booking),booking.reference||'Not added yet'],
     ['Price',booking.price||'Not added yet'],
     ['Cancellation',booking.cancellation||'']
   ].filter(function(row){return row[1];});
@@ -121,7 +127,7 @@ function openAccommodationList(){
 }
 function openAccommodationDetail(bookingId){
   closeMiniMenus();
-  const booking=(typeof PRODUCTION_BOOKINGS.byId==='undefined')?null:PRODUCTION_BOOKINGS.byId[bookingId];
+  const booking=getBookingById(bookingId);
   const content=document.getElementById('tripModalContent');
   const modal=document.getElementById('tripModal');
   if(!content||!modal)return;
@@ -133,9 +139,7 @@ function openAccommodationDetail(bookingId){
 
 
 function getActivityBookings(){
-  return (typeof PRODUCTION_BOOKINGS.byId==='undefined'?[]:Object.values(PRODUCTION_BOOKINGS.byId))
-    .filter(function(booking){return booking&&booking.type==='activity';})
-    .sort(function(a,b){return String(a.date||'').localeCompare(String(b.date||''));});
+  return getBookingsByType('activity');
 }
 function buildActivityBookingListHTML(){
   const bookings=getActivityBookings();
@@ -166,7 +170,7 @@ function buildActivityBookingDetailHTML(booking){
 }
 function openActivityBookingDetail(bookingId){
   closeMiniMenus();
-  const booking=(typeof PRODUCTION_BOOKINGS.byId==='undefined')?null:PRODUCTION_BOOKINGS.byId[bookingId];
+  const booking=getBookingById(bookingId);
   const content=document.getElementById('tripModalContent');const modal=document.getElementById('tripModal');if(!content||!modal)return;
   content.innerHTML=`<div class="trip-onepage accommodation-onepage-detail"><button class="accommodation-back" type="button" onclick="openTripCard('activities')">‹ All activities</button><p class="kicker">Trip · Activities</p><h2>${escapeTripHTML(booking?booking.title:'Activity Booking')}</h2>${buildActivityBookingDetailHTML(booking)}<p class="timestamp trip-build-summary">${tripSyncSummary()}</p></div>`;
   modal.classList.add('show');const sheet=document.querySelector('#tripModal .trip-sheet');if(sheet)sheet.scrollTop=0;
