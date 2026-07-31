@@ -1,5 +1,5 @@
 importScripts('./theme-config.js', './asset-config.js', './locale-config.js', './formatter.js', './navigation-config.js', './storage-config.js', './trip-config.js');
-const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-stage3-2h-precert-data3`;
+const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-deployment-safety1`;
 const CRITICAL_EXTENSIONS = /\.(?:css|js)$/i;
 const ASSETS = [
   './',
@@ -88,6 +88,70 @@ self.addEventListener('activate', event => {
   );
 });
 
+function looksLikeHtmlDocument(text) {
+  const sample = String(text || '').replace(/^\uFEFF/, '').trimStart().slice(0, 512).toLowerCase();
+  return sample.startsWith('<!doctype html') || sample.startsWith('<html') || sample.includes('<html ');
+}
+
+async function validateHtmlResponse(response) {
+  if (!response || !response.ok) return false;
+  try {
+    const body = await response.clone().text();
+    return looksLikeHtmlDocument(body);
+  } catch (error) {
+    return false;
+  }
+}
+
+async function fetchValidHtml(request) {
+  try {
+    const response = await fetch(request, { cache: 'no-store', redirect: 'follow' });
+    return await validateHtmlResponse(response) ? response : null;
+  } catch (error) {
+    return null;
+  }
+}
+
+async function cachedValidHtml(request) {
+  const candidates = [
+    request,
+    new Request('./index.html', { headers: { accept: 'text/html' } }),
+    new Request('./offline.html', { headers: { accept: 'text/html' } })
+  ];
+  for (const candidate of candidates) {
+    const response = await caches.match(candidate, { ignoreSearch: true });
+    if (await validateHtmlResponse(response)) return response;
+  }
+  return null;
+}
+
+async function navigationResponse(request) {
+  const cache = await caches.open(CACHE_NAME);
+  const direct = await fetchValidHtml(request);
+  if (direct) {
+    await cache.put(request, direct.clone());
+    return direct;
+  }
+
+  const indexRequest = new Request(new URL('./index.html', self.location.href), {
+    method: 'GET',
+    headers: { accept: 'text/html' },
+    cache: 'no-store',
+    credentials: 'same-origin',
+    redirect: 'follow'
+  });
+  const indexResponse = await fetchValidHtml(indexRequest);
+  if (indexResponse) {
+    await cache.put('./index.html', indexResponse.clone());
+    return indexResponse;
+  }
+
+  return await cachedValidHtml(request) || new Response(
+    '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Offline</title></head><body><p>This page is temporarily unavailable.</p></body></html>',
+    { status: 503, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
+  );
+}
+
 async function networkFirst(request) {
   const cache = await caches.open(CACHE_NAME);
   try {
@@ -125,7 +189,7 @@ self.addEventListener('fetch', event => {
 
   const acceptsHtml = event.request.headers.get('accept')?.includes('text/html');
   if (event.request.mode === 'navigate' || acceptsHtml) {
-    event.respondWith(networkFirst(event.request));
+    event.respondWith(navigationResponse(event.request));
   } else if (CRITICAL_EXTENSIONS.test(url.pathname)) {
     event.respondWith(networkFirst(event.request));
   } else {
