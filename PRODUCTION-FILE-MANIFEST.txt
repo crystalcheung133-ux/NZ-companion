@@ -1,114 +1,76 @@
-BOOKING-CARD-STANDARDISATION-REGRESSION-REPORT.md
-BOOKING-CARD-STANDARDISATION-REPORT.md
-BOOKING-ENGINE-ADMIN-EDIT-REGRESSION-REPORT.md
-BOOKING-ENGINE-CLEANUP-AND-ADMIN-EDIT-REPORT.md
-EXPENSE-CLEANUP-PHASE1-REGRESSION-REPORT.md
-EXPENSE-CLEANUP-PHASE1-REPORT.md
-FRONT-CURRENCY-MOBILE-KEYBOARD-FIX-REPORT.md
-FRONT-CURRENCY-MOBILE-KEYBOARD-REGRESSION-REPORT.md
-FRONT-CURRENCY-MOBILE-STABILITY-REGRESSION-REPORT.md
-FRONT-CURRENCY-MOBILE-STABILITY-REPORT.md
-FRONT-PAGE-INTERACTION-CLEANUP-REPORT.md
-FRONT-PAGE-INTERACTION-REGRESSION-REPORT.md
-GUIDE-ADDRESS-INTEGRITY-AUDIT.md
-GUIDE-CARD-AUDIT-LUXE2.md
-GUIDE-LIST-FULLROW1-CHANGE-REPORT.md
-GUIDE-LIST-FULLROW1-REGRESSION-REPORT.md
-GUIDE-STUDIO-POLISH2-CHANGE-REPORT.md
-GUIDE-STUDIO-POLISH2-REGRESSION-REPORT.md
-GUIDE-TABS-AND-CLEANUP-REPORT.md
-GUIDE-TABS-REGRESSION-REPORT.md
-MODAL-CLEANUP-PHASE1-REGRESSION-REPORT.md
-MODAL-CLEANUP-PHASE1-REPORT.md
-NZ-LUXE-BOOKING-CHANGE-REPORT.md
-NZ-LUXE-BOOKING-REGRESSION-REPORT.md
-NZ-LUXE-RESTORE-AFTER-CLEANUP-REPORT.md
-NZ-LUXE-RESTORE-REGRESSION-REPORT.md
-NZ-LUXE2-REGRESSION-REPORT.md
-PRECERT-DATA-SPRINT1-REPORT.md
-PRECERT-DATA2-REPAIR-REPORT.md
-PRECERT-DATA3-AUTHORITY-REPAIR-REPORT.md
-PRODUCTION-FILE-MANIFEST.txt
-STORAGE-SYNC-CURRENCY-CHANGE-REPORT.md
-STORAGE-SYNC-CURRENCY-REGRESSION-REPORT.md
-STUDIO-CARD-DIRECT-ACCESS-REGRESSION-REPORT.md
-STUDIO-CARD-DIRECT-ACCESS-REPORT.md
-STUDIO-GUIDE-POLISH1-CHANGE-REPORT.md
-STUDIO-GUIDE-POLISH1-REGRESSION-REPORT.md
-STUDIO-UX-BATCH2-CHANGE-REPORT.md
-STUDIO-UX-BATCH2-REGRESSION-REPORT.md
-STUDIO-UX2-CHANGE-REPORT.md
-STUDIO-UX2-REGRESSION-REPORT.md
-TIMELINE-CLEANUP-PHASE1-REGRESSION-REPORT.md
-TIMELINE-CLEANUP-PHASE1-REPORT.md
-TRIP-DATA-CLEANUP-PHASE1-REGRESSION-REPORT.md
-TRIP-DATA-CLEANUP-PHASE1-REPORT.md
-TRIP-INFO-CLEANUP-PHASE1-REGRESSION-REPORT.md
-TRIP-INFO-CLEANUP-PHASE1-REPORT.md
-VERSION.txt
-address-integrity-test.py
-admin.js
-app-runtime.js
-asset-config.js
-booking-authority.js
-canonical-expense-core.js
-canonical-expense-local-provider.js
-canonical-expense-repository.js
-complete-runtime.js
-core-runtime.js
-currency-runtime.js
-data.js
-day.html
-engine-integrity.js
-expense-calculator.js
-expense-canonical-bootstrap.js
-expense-dual-write.js
-expense-read-shadow.js
-expense-sync-runtime.js
-expenses.html
-expenses.js
-export-runtime.js
-formatter.js
-generation-runtime.js
-generation-selection-adapter.js
-geo-config.js
-guide-runtime.js
-guide.html
-home-runtime.js
-icon-192.png
-icon-512.png
-index.html
-itinerary-authority.js
-itinerary.html
-legacy-expense-adapter.js
-locale-config.js
-manifest.webmanifest
-memory.html
-moment-sync-runtime.js
-moments-compat.js
-moments.html
-moments.js
-money-config.js
-money.js
-navigation-config.js
-navigation.js
-nz-adventure-logo.png
-nz-adventure-mark.png
-offline.html
-party-render-runtime.js
-place.html
-publication-runtime.js
-pwa.js
-reset-runtime.js
-script.js
-storage-config.js
-storage.js
-styles.css
-supabase-client-runtime.js
-sw.js
-sync-config.js
-sync-runtime.js
-theme-config.js
-trip-config.js
-trip-runtime.js
-trip.html
+CCMV Travel Engine Production File Manifest
+Release: Stage3.2H-PORT1-CERT-FINAL-FIX1
+Generated: 2026-07-31
+
+Production root files:
+- VERSION.txt
+- address-integrity-test.py
+- admin.js
+- app-runtime.js
+- asset-config.js
+- booking-authority.js
+- canonical-expense-core.js
+- canonical-expense-local-provider.js
+- canonical-expense-repository.js
+- complete-runtime.js
+- core-runtime.js
+- currency-runtime.js
+- data.js
+- day.html
+- engine-integrity.js
+- expense-calculator.js
+- expense-canonical-bootstrap.js
+- expense-dual-write.js
+- expense-read-shadow.js
+- expense-sync-runtime.js
+- expenses.html
+- expenses.js
+- export-runtime.js
+- formatter.js
+- generation-runtime.js
+- generation-selection-adapter.js
+- geo-config.js
+- guide-navigation-runtime.js
+- guide-runtime.js
+- guide.html
+- home-runtime.js
+- icon-192.png
+- icon-512.png
+- index.html
+- itinerary-authority.js
+- itinerary.html
+- legacy-expense-adapter.js
+- locale-config.js
+- manifest.webmanifest
+- memory.html
+- moment-sync-runtime.js
+- moments-compat.js
+- moments.html
+- moments.js
+- money-config.js
+- money.js
+- navigation-config.js
+- navigation.js
+- nz-adventure-logo.png
+- nz-adventure-mark.png
+- offline.html
+- party-render-runtime.js
+- place.html
+- publication-runtime.js
+- pwa.js
+- reset-runtime.js
+- script.js
+- storage-config.js
+- storage.js
+- styles.css
+- supabase-client-runtime.js
+- sw.js
+- sync-config.js
+- sync-runtime.js
+- theme-config.js
+- trip-config.js
+- trip-runtime.js
+- trip.html
+- vercel.json
+
+Total production files excluding manifest/checksum: 69

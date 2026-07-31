@@ -3,6 +3,9 @@
 (function(root){
   'use strict';
 
+  const namespace=String(root.TRIP_CONFIG&&root.TRIP_CONFIG.storageNamespace||'').trim();
+  if(!namespace) throw new Error('TRIP_CONFIG.storageNamespace is required before storage-config.js');
+
   const keys=Object.freeze({
     checklist:'checklist',
     expenses:'expenses',
@@ -24,8 +27,8 @@
     cloudReloadMarker:'travel_engine_cloud_reload_version_v1',
     expenseSyncTombstones:'travel_engine_expense_tombstones_v1',
     expenseSyncMeta:'travel_engine_expense_sync_meta_v1',
-    canonicalExpenseState:'nz-family-2026:canonical_expenses:stage_3_2d:v1',
-    expenseReadShadowState:'nz-family-2026:canonical_expense_read_shadow:stage_3_2e:v1',
+    canonicalExpenseState:namespace+':canonical_expenses:stage_3_2d:v1',
+    expenseReadShadowState:namespace+':canonical_expense_read_shadow:stage_3_2e:v1',
     tripGeneration:'travel_engine_trip_generation_v1',
     bookingOverrides:'travel_engine_booking_overrides_v1'
   });

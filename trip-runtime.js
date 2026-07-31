@@ -288,8 +288,9 @@ function saveBookingEdit(event,bookingId){
   next.updatedBy=(window.getFriend&&window.getFriend())||'admin';next.updatedAt=new Date().toISOString();
   const result=BOOKING_AUTHORITY.save(bookingId,next);
   if(!result.ok){alert('Could not save the booking. Please try again.');return false;}
-  STORAGE.session.writeJSON('travel_engine_booking_reopen_v1',{bookingId:bookingId});
-  window.location.reload();return false;
+  document.dispatchEvent(new CustomEvent('travelengine:bookingchange',{detail:{bookingId:bookingId,booking:result.booking}}));
+  returnToBookingDetail(bookingId);
+  return false;
 }
 function reopenSavedBooking(){
   const marker=STORAGE.session.readJSON('travel_engine_booking_reopen_v1',null);if(!marker||!marker.bookingId)return;

@@ -84,6 +84,7 @@
       dateLine: '22 Sep — 1 Oct 2026',
       regionLine: 'South Island',
       clockLabel: 'New Zealand',
+      homeCities: 'Melbourne · Sydney · Newcastle',
       clockSuffix: 'NZ',
       seasonLabel: 'Spring road trip',
       seasonNote: 'Alpine weather varies',
