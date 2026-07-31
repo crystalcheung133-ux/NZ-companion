@@ -147,10 +147,19 @@
      content-derived check (see itinerary-authority.js), not a build-version
      or one-time-clear check, so it stays correct across every future deploy. */
   function isCompatiblePublication(wrapper){
-    const authority=root.ITINERARY_AUTHORITY;
-    if(!authority||typeof authority.isCompatibleSnapshotPayload!=='function')return true;
     const payload=wrapper&&wrapper.payload;
-    return authority.isCompatibleSnapshotPayload(payload);
+    const currentRevision=root.MASTER_ITINERARY_REVISION||null;
+    if(currentRevision){
+      return !!(payload&&typeof payload==='object'&&payload.masterRevision===currentRevision);
+    }
+    const authority=root.ITINERARY_AUTHORITY;
+    if(authority&&typeof authority.isCompatibleSnapshotPayload==='function'){
+      return authority.isCompatibleSnapshotPayload(payload);
+    }
+    /* Never hydrate a publication before the shipped master revision is
+       available. Accepting it here can let an older cached itinerary replace
+       data.js before ItineraryAuthority has loaded. */
+    return false;
   }
   function discardIncompatibleSnapshot(){
     const cfg=config(),storage=store();
