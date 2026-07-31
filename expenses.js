@@ -493,7 +493,7 @@ let editingExpenseIndex=null;
   };
 
   window.exportExpenseData=function(){
-    if(currentUser()!==TRIP_CONFIG.admin.user || typeof window.isAdminMode!=='function' || !window.isAdminMode()) return alert('Enter Admin Mode to export the complete expense data.');
+    if(currentUser()!==((TRIP_CONFIG.admin&&TRIP_CONFIG.admin.user)||'lee') || typeof window.isAdminMode!=='function' || !window.isAdminMode()) return alert('Enter Admin Mode to export the complete expense data.');
     const arr=readExpenses();
     if(!arr.length) return alert('No expense data to export yet.');
     const quote=value=>`"${String(value??'').replace(/"/g,'""')}"`;
