@@ -155,11 +155,11 @@
       const active=state.mode && isUnlocked() && isAdminUser();
       selectorCard.classList.toggle('is-active',active);
       selectorCard.setAttribute('aria-pressed',String(active));
-      selectorCard.setAttribute('aria-label',active?'Open Trip Studio':'Open Studio Mode');
+      selectorCard.setAttribute('aria-label',active?'Exit Studio Mode':'Open Studio Mode');
       const status=selectorCard.querySelector('.trip-studio-selector-status');
-      if(status) status.textContent=active?'Studio active · Open workspace':'PIN protected · '+ADMIN_CONFIG.displayName+' only';
+      if(status) status.textContent=active?'Studio active · Press × to exit':'PIN protected · '+ADMIN_CONFIG.displayName+' only';
       const arrow=selectorCard.querySelector('.trip-studio-selector-arrow');
-      if(arrow) arrow.textContent='›';
+      if(arrow) arrow.textContent=active?'×':'›';
     }
     const banner=document.getElementById('adminModeBanner');
     if(banner) banner.hidden=!state.mode;
@@ -194,7 +194,7 @@
       familyList.insertAdjacentElement('afterend',selectorToggle);
       const activateStudio=()=>{
         if(state.mode && isUnlocked() && isAdminUser()){
-          openTripStudioPanel();
+          exitTripStudioMode();
           return;
         }
         if(window.setAdminMode(true)!==false) openTripStudioPanel();
@@ -232,14 +232,10 @@
           <button id="resetTripDataButton" class="reset-trip-data-btn" type="button">
             <span><strong>Reset Trip Data</strong><small>Restore the original trip and remove all saved progress.</small></span><span aria-hidden="true">↺</span>
           </button>
-          <button id="exitTripStudioButton" class="exit-trip-studio-btn" type="button">
-            <span><strong>Exit Studio Mode</strong><small>Return to normal traveller mode and hide all editing controls.</small></span><span aria-hidden="true">Leave</span>
-          </button>
         </div>`;
       familySheet.appendChild(block);
       block.querySelector('.trip-studio-close').addEventListener('click',closeTripStudioPanel);
       block.querySelector('#resetTripDataButton').addEventListener('click',window.resetTripData);
-      block.querySelector('#exitTripStudioButton').addEventListener('click',exitTripStudioMode);
     }
     if(!document.getElementById('adminModeBanner')){
       const banner=document.createElement('div');

@@ -43,8 +43,6 @@
     state.updatedAt=new Date().toISOString();
     if(!write(state))return {ok:false,reason:'storage-failed'};
     source[id]=clone(complete);
-    const base=master();
-    if(base&&base!==source&&base[id])base[id]=clone(complete);
     return {ok:true,booking:clone(complete),updatedAt:state.updatedAt};
   }
   function clear(){return !!(store()&&store().remove(KEY));}

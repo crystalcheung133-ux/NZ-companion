@@ -174,7 +174,6 @@ function openFriendModal(){renderFriendChoices();$('mamaModal').classList.add('s
 document.addEventListener('click', function(e){
   const modal = e.target.closest('.guide-modal,.moments-modal,.unexpected-modal,.tools-modal,.mama-modal,.trip-modal');
   if(!modal || e.target !== modal) return;
-  if(modal.id==='tripModal' && typeof window.isBookingEditActive==='function' && window.isBookingEditActive()) return;
   if(modal.id==='tripModal' && typeof closeTripModal==='function') closeTripModal();
   else if(modal.id==='guideModal' && typeof closeGuideModal==='function') closeGuideModal();
   else modal.classList.remove('show');
@@ -183,7 +182,6 @@ document.addEventListener('keydown', function(e){
   if(e.key === 'Escape'){
     const tripModal=document.getElementById('tripModal');
     const guideModal=document.getElementById('guideModal');
-    if(tripModal?.classList.contains('show') && typeof window.isBookingEditActive==='function' && window.isBookingEditActive()) return;
     if(tripModal?.classList.contains('show') && typeof closeTripModal==='function') closeTripModal();
     else if(guideModal?.classList.contains('show') && typeof closeGuideModal==='function') closeGuideModal();
     else document.querySelectorAll('.moments-modal,.unexpected-modal,.tools-modal,.mama-modal').forEach(m=>m.classList.remove('show'));
