@@ -1,0 +1,11 @@
+ROLLBACK TARGET: FRONT-INTERACTION1.2
+
+Copy/overwrite every file in this ZIP into the deployed repository root, preserving paths.
+This restores all files changed or removed by PRE-CERT-FIX1/FIX2 to the last confirmed working build.
+
+Optional cleanup after rollback (not required for runtime):
+- PRE-CERT-FIX2-NAVIGATION-RECOVERY-REPORT.md
+- tests/README.md
+- tests/production-regression.js
+
+Those three PRE-CERT-only files may remain without affecting the application, but remove them for an exact repository rollback.

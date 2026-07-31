@@ -1,5 +1,5 @@
 importScripts('./theme-config.js', './asset-config.js', './locale-config.js', './formatter.js', './navigation-config.js', './storage-config.js', './trip-config.js');
-const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-stage3-2h-pre-cert-fix2-navigation-guard`;
+const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-stage3-2h-front-interaction1-2`;
 const CRITICAL_EXTENSIONS = /\.(?:css|js)$/i;
 const ASSETS = [
   './',
@@ -104,25 +104,6 @@ async function networkFirst(request) {
   }
 }
 
-async function navigationNetworkFirst(request) {
-  const cache = await caches.open(CACHE_NAME);
-  try {
-    const response = await fetch(request);
-    const contentType = response && response.headers ? (response.headers.get('content-type') || '') : '';
-    if (response && response.ok && contentType.includes('text/html')) {
-      cache.put(request, response.clone());
-      return response;
-    }
-    const indexResponse = await caches.match('./index.html', { ignoreSearch: true });
-    return indexResponse || caches.match('./offline.html');
-  } catch (error) {
-    const direct = await caches.match(request, { ignoreSearch: true });
-    const directType = direct && direct.headers ? (direct.headers.get('content-type') || '') : '';
-    if (direct && directType.includes('text/html')) return direct;
-    return (await caches.match('./index.html', { ignoreSearch: true })) || caches.match('./offline.html');
-  }
-}
-
 async function cacheFirstMedia(request) {
   const cache = await caches.open(CACHE_NAME);
   const cached = await cache.match(request, {ignoreSearch:true});
@@ -144,7 +125,7 @@ self.addEventListener('fetch', event => {
 
   const acceptsHtml = event.request.headers.get('accept')?.includes('text/html');
   if (event.request.mode === 'navigate' || acceptsHtml) {
-    event.respondWith(navigationNetworkFirst(event.request));
+    event.respondWith(networkFirst(event.request));
   } else if (CRITICAL_EXTENSIONS.test(url.pathname)) {
     event.respondWith(networkFirst(event.request));
   } else {
