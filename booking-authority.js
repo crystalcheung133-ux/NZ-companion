@@ -23,12 +23,22 @@
     return target;
   }
   function master(){try{return typeof BOOKINGS_DATA!=='undefined'?BOOKINGS_DATA:(root.BOOKINGS_DATA||{});}catch(error){return root.BOOKINGS_DATA||{};}}
-  function all(target){
+  function resolvedSource(target){
     const source=target||master();
-    return Object.values(source||{}).filter(Boolean).map(clone);
+    const output={};
+    Object.keys(source||{}).forEach(function(id){output[id]=clone(source[id]);});
+    const state=read();
+    Object.keys(state.overrides).forEach(function(id){
+      if(!output[id]||!state.overrides[id]||typeof state.overrides[id]!=='object')return;
+      output[id]=Object.assign({},output[id],clone(state.overrides[id]),{id:id});
+    });
+    return output;
+  }
+  function all(target){
+    return Object.values(resolvedSource(target)).filter(Boolean).map(clone);
   }
   function get(id,target){
-    const source=target||master();
+    const source=resolvedSource(target);
     return source[id]?clone(source[id]):null;
   }
   function byType(type,target){return all(target).filter(function(item){return item&&item.type===type;});}
@@ -42,9 +52,9 @@
     state.overrides[id]=complete;
     state.updatedAt=new Date().toISOString();
     if(!write(state))return {ok:false,reason:'storage-failed'};
-    source[id]=clone(complete);
+    try{source[id]=clone(complete);}catch(error){}
     const base=master();
-    if(base&&base!==source&&base[id])base[id]=clone(complete);
+    if(base&&base!==source&&base[id]){try{base[id]=clone(complete);}catch(error){}}
     return {ok:true,booking:clone(complete),updatedAt:state.updatedAt};
   }
   function clear(){return !!(store()&&store().remove(KEY));}
