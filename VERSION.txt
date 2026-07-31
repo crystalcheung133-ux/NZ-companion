@@ -1,5 +1,1 @@
-CCMV Travel Engine — New Zealand Companion
-Release: Stage3.2H-PORT1-CERT-FINAL-FIX1
-Engine baseline: OWNERSHIP1
-Release date: 2026-07-31
-Status: Final certification candidate
+NZ-Companion-Stage3.2H-PORT1-CERT-UX-SAFETY1

@@ -225,6 +225,35 @@ function openActivityBookingDetail(bookingId){
 }
 
 
+let bookingEditSession=null;
+function bookingEditFormSnapshot(form){
+  if(!form) return '';
+  const data=new FormData(form);
+  return Array.from(data.entries()).map(function(entry){return String(entry[0])+'='+String(entry[1]);}).join('\n');
+}
+function isBookingEditActive(){
+  return !!bookingEditSession && !!document.getElementById('bookingEditForm');
+}
+function isBookingEditDirty(){
+  const form=document.getElementById('bookingEditForm');
+  return isBookingEditActive() && bookingEditFormSnapshot(form)!==bookingEditSession.initialSnapshot;
+}
+function confirmDiscardBookingEdit(){
+  if(!isBookingEditDirty()) return true;
+  return window.confirm('Discard unsaved booking changes?');
+}
+function clearBookingEditSession(){ bookingEditSession=null; }
+function requestBookingEditClose(bookingId){
+  if(!confirmDiscardBookingEdit()) return false;
+  clearBookingEditSession();
+  returnToBookingDetail(bookingId);
+  return true;
+}
+window.isBookingEditActive=isBookingEditActive;
+window.isBookingEditDirty=isBookingEditDirty;
+window.requestBookingEditClose=requestBookingEditClose;
+
+
 function bookingEditButtonHTML(booking){
   return booking&&window.isAdminMode&&window.isAdminMode()
     ?`<button class="pill trip-action-btn booking-edit-btn" type="button" onclick="openBookingEdit('${escapeTripHTML(booking.id)}')">Edit Booking</button>`:'';
@@ -270,8 +299,11 @@ function openBookingEdit(bookingId){
   const booking=getBookingById(bookingId);if(!booking)return;
   const content=document.getElementById('tripModalContent');const modal=document.getElementById('tripModal');if(!content||!modal)return;
   activeBookingDetail={type:booking.type,id:bookingId};
-  content.innerHTML=`<div class="trip-onepage booking-edit-onepage"><button class="accommodation-back" type="button" onclick="returnToBookingDetail('${escapeTripHTML(bookingId)}')">‹ Booking details</button><p class="kicker">Trip Studio · Booking</p><h2>Edit ${escapeTripHTML(booking.title)}</h2><form id="bookingEditForm" class="booking-edit-form" onsubmit="saveBookingEdit(event,'${escapeTripHTML(bookingId)}')"><div class="booking-edit-grid">${bookingEditFields(booking)}</div><div class="booking-edit-actions"><button class="pill" type="button" onclick="returnToBookingDetail('${escapeTripHTML(bookingId)}')">Cancel</button><button class="pill booking-edit-save" type="submit">Save Booking</button></div><p class="timestamp">Saving replaces the existing details for this booking ID. Guide and Timeline links are preserved.</p></form></div>`;
-  modal.classList.add('show');const sheet=document.querySelector('#tripModal .trip-sheet');if(sheet)sheet.scrollTop=0;
+  content.innerHTML=`<div class="trip-onepage booking-edit-onepage"><button class="accommodation-back" type="button" onclick="requestBookingEditClose('${escapeTripHTML(bookingId)}')">‹ Booking details</button><p class="kicker">Trip Studio · Booking</p><h2>Edit ${escapeTripHTML(booking.title)}</h2><form id="bookingEditForm" class="booking-edit-form" onsubmit="saveBookingEdit(event,'${escapeTripHTML(bookingId)}')"><div class="booking-edit-grid">${bookingEditFields(booking)}</div><div class="booking-edit-actions"><button class="pill" type="button" onclick="requestBookingEditClose('${escapeTripHTML(bookingId)}')">Cancel</button><button class="pill booking-edit-save" type="submit">Save Booking</button></div><p class="timestamp">Saving replaces the existing details for this booking ID. Guide and Timeline links are preserved.</p></form></div>`;
+  modal.classList.add('show');
+  const form=document.getElementById('bookingEditForm');
+  bookingEditSession={bookingId:bookingId,initialSnapshot:bookingEditFormSnapshot(form)};
+  const sheet=document.querySelector('#tripModal .trip-sheet');if(sheet)sheet.scrollTop=0;
 }
 function returnToBookingDetail(bookingId){
   const booking=getBookingById(bookingId);if(!booking)return;
@@ -289,6 +321,7 @@ function saveBookingEdit(event,bookingId){
   const result=BOOKING_AUTHORITY.save(bookingId,next);
   if(!result.ok){alert('Could not save the booking. Please try again.');return false;}
   document.dispatchEvent(new CustomEvent('travelengine:bookingchange',{detail:{bookingId:bookingId,booking:result.booking}}));
+  clearBookingEditSession();
   returnToBookingDetail(bookingId);
   return false;
 }
@@ -323,12 +356,15 @@ function openTripCard(key) {
 }
 
 function closeTripModal() {
+  if(isBookingEditActive() && !confirmDiscardBookingEdit()) return false;
+  clearBookingEditSession();
   const modal = document.getElementById('tripModal');
   if (modal) modal.classList.remove('show');
   const guideModal=document.getElementById('guideModal');
   if(guideModal) guideModal.classList.remove('show');
   closeMiniMenus();
   document.body.classList.remove('admin-overlay-open');
+  return true;
 }
 
 
