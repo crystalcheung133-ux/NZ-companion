@@ -1,86 +1,40 @@
-/* party-render-runtime.js — Portability Stage compatibility shim.
-
-   Everywhere else in the engine, party identity already flows from
-   TRIP_CONFIG.participants (FRIEND_IDENTITY, FRIEND_ORDER, DEFAULT_FRIEND,
-   renderFriendChoices(), updateFriendLabels(), admin identity — see
-   core-runtime.js / expenses.js / moments-compat.js / trip-config.js).
-
-   The one place that was still authored as static per-party markup is the
-   "Paid by" / "Consumed by" <select> options and the expense split-picker
-   checkboxes: 3 hardcoded <option>/checkbox elements per control, one per
-   legacy party (lee/fowlers/yau). Everything else adapts to config
-   automatically; these controls would not, and would either break or
-   silently keep showing the NZ trio for a different trip's participant list.
-
-   GUARDED NO-OP: if the active config's participant keys are exactly the
-   legacy ['lee','fowlers','yau'] set (i.e. current NZ production), this
-   module does nothing at all, synchronously and unconditionally — current
-   markup, DOM structure and behaviour are untouched. It only regenerates
-   these controls when the config supplies a different participant list. */
+/* party-render-runtime.js — config-owned party control renderer. */
 (function(root){
   'use strict';
-
-  function ready(fn){
-    if (typeof document === 'undefined') return;
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
-    else fn();
+  function ready(fn){ if(typeof document==='undefined')return; if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fn); else fn(); }
+  function esc(v){ return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+  function model(){
+    const p=root.TRIP_CONFIG&&root.TRIP_CONFIG.participants;
+    if(!p||!Array.isArray(p.order)||!p.order.length)return null;
+    return {order:p.order.slice(),identities:p.identities||{},defaultKey:p.order.indexOf(p.defaultKey)>=0?p.defaultKey:p.order[0]};
   }
-
-  const LEGACY_ORDER = ['lee','fowlers','yau'];
-
-  function sameAsLegacy(order){
-    return Array.isArray(order) && order.length===LEGACY_ORDER.length && order.every((k,i)=>k===LEGACY_ORDER[i]);
+  function ident(m,key){ const x=m.identities[key]||{}; return {code:x.code||String(key).slice(0,3).toUpperCase(),name:x.name||key}; }
+  function label(m,key){ const x=ident(m,key); return x.code+' · '+x.name; }
+  function valid(m,key){ return m.order.indexOf(key)>=0?key:m.defaultKey; }
+  function renderSelect(el,m){
+    const selected=valid(m,el.value||m.defaultKey);
+    el.innerHTML=m.order.map(function(key){return '<option value="'+esc(key)+'"'+(key===selected?' selected':'')+'>'+esc(label(m,key))+'</option>';}).join('');
   }
-
-  function labelFor(identities, key){
-    const id = identities[key] || {};
-    const code = id.code || String(key).slice(0,3).toUpperCase();
-    const name = id.name || key;
-    return code + ' · ' + name;
+  function renderFriends(m){
+    const list=document.querySelector('#mamaModal .friend-choice-list'); if(!list)return;
+    const current=typeof root.getFriend==='function'?valid(m,root.getFriend()):m.defaultKey;
+    list.innerHTML=m.order.map(function(key){const x=ident(m,key);return '<button type="button" class="family-choice'+(key===current?' active':'')+'" data-family="'+esc(key)+'" onclick="setFriend(\''+esc(key)+'\')"><span class="family-identity family-'+esc(key)+'"><span class="family-code">'+esc(x.code)+'</span><span class="family-name">'+esc(x.name)+'</span></span></button>';}).join('');
   }
-
+  function splitLabel(m,key,onchange,wrap){
+    return '<label><input checked data-split type="checkbox" value="'+esc(key)+'"'+(onchange?' onchange="'+esc(onchange)+'"':'')+'/>'+(wrap?'<span>'+esc(label(m,key))+'</span>':esc(label(m,key)))+'</label>';
+  }
+  function renderSplits(m){
+    document.querySelectorAll('[data-party-split-options]').forEach(function(holder){
+      const picker=holder.id==='splitPickerMenu'||holder.classList.contains('split-picker-menu');
+      holder.innerHTML=m.order.map(function(key){return splitLabel(m,key,picker?'updateSplitUI()':'',picker);}).join(picker?'':'<br/>');
+    });
+  }
   function run(){
-    const cfg = root.TRIP_CONFIG;
-    if (!cfg || !cfg.participants || !Array.isArray(cfg.participants.order)) return;
-    const order = cfg.participants.order;
-    if (sameAsLegacy(order)) return; // current NZ production: no-op
-    const identities = cfg.participants.identities || {};
-
-    // 1. Party <select> pickers — any <select> whose full option-value set
-    //    is exactly the legacy trio, in any order, is treated as a party
-    //    picker and regenerated from the active config.
-    document.querySelectorAll('select').forEach(function(select){
-      const values = Array.from(select.options || []).map(function(o){ return o.value; });
-      if (values.length !== LEGACY_ORDER.length) return;
-      if (!LEGACY_ORDER.every(function(k){ return values.indexOf(k) !== -1; })) return;
-      const previousIndex = values.indexOf(select.value);
-      select.innerHTML = order.map(function(key, i){
-        const selected = (previousIndex !== -1 ? i === previousIndex : i === 0) ? ' selected' : '';
-        return '<option value="' + key + '"' + selected + '>' + labelFor(identities, key) + '</option>';
-      }).join('');
-    });
-
-    // 2. Split-picker checkbox groups — containers whose data-split
-    //    checkboxes cover exactly the legacy trio.
-    const containers = new Set();
-    document.querySelectorAll('input[data-split]').forEach(function(input){
-      const label = input.closest('label');
-      const container = label && label.parentElement;
-      if (container) containers.add(container);
-    });
-    containers.forEach(function(container){
-      const inputs = Array.from(container.querySelectorAll('input[data-split]'));
-      const values = inputs.map(function(i){ return i.value; });
-      if (values.length !== LEGACY_ORDER.length) return;
-      if (!LEGACY_ORDER.every(function(k){ return values.indexOf(k) !== -1; })) return;
-      const onchange = inputs[0].getAttribute('onchange') || '';
-      container.innerHTML = order.map(function(key){
-        return '<label><input checked data-split type="checkbox" value="' + key + '"' +
-          (onchange ? ' onchange="' + onchange + '"' : '') + '/><span>' + labelFor(identities, key) + '</span></label>';
-      }).join('');
-    });
+    const m=model(); if(!m)return;
+    document.querySelectorAll('select[data-party-options]').forEach(function(el){renderSelect(el,m);});
+    renderFriends(m); renderSplits(m);
+    if(typeof root.updateFriendLabels==='function')root.updateFriendLabels();
+    if(typeof root.updateSplitUI==='function'&&document.getElementById('splitPickerSummary'))root.updateSplitUI();
   }
-
-  ready(run);
-  root.__partyRenderRuntimeRun = run; // exposed for the regression harness
+  ready(run); root.__partyRenderRuntimeRun=run;
 })(globalThis);
