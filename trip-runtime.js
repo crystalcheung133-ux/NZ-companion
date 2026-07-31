@@ -63,12 +63,11 @@ function accommodationMapURL(address){
   return 'https://maps.google.com/?q='+encodeURIComponent(address||'');
 }
 function getBookingById(bookingId){
-  return (PRODUCTION_BOOKINGS&&PRODUCTION_BOOKINGS.byId)?PRODUCTION_BOOKINGS.byId[bookingId]||null:null;
+  return window.BOOKING_AUTHORITY?BOOKING_AUTHORITY.get(bookingId,PRODUCTION_BOOKINGS&&PRODUCTION_BOOKINGS.byId):null;
 }
 function getBookingsByType(type){
-  return (PRODUCTION_BOOKINGS&&PRODUCTION_BOOKINGS.byId?Object.values(PRODUCTION_BOOKINGS.byId):[])
-    .filter(function(booking){return booking&&booking.type===type;})
-    .sort(function(a,b){return String(a.date||'').localeCompare(String(b.date||''));});
+  const items=window.BOOKING_AUTHORITY?BOOKING_AUTHORITY.byType(type,PRODUCTION_BOOKINGS&&PRODUCTION_BOOKINGS.byId):[];
+  return items.sort(function(a,b){return String(a.date||'').localeCompare(String(b.date||''));});
 }
 let activeBookingDetail=null;
 function bookingReferenceLabel(booking){

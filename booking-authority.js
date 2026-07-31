@@ -23,10 +23,17 @@
     return target;
   }
   function master(){try{return typeof BOOKINGS_DATA!=='undefined'?BOOKINGS_DATA:(root.BOOKINGS_DATA||{});}catch(error){return root.BOOKINGS_DATA||{};}}
+  function all(target){
+    const source=target||master();
+    return Object.values(source||{}).filter(Boolean).map(clone);
+  }
   function get(id,target){
     const source=target||master();
     return source[id]?clone(source[id]):null;
   }
+  function byType(type,target){return all(target).filter(function(item){return item&&item.type===type;});}
+  function byPlace(placeId,target){return all(target).find(function(item){return item&&item.placeId===placeId;})||null;}
+  function byDay(dayId,target){return all(target).filter(function(item){return item&&item.dayId===dayId;});}
   function save(id,record,target){
     const source=target||master();
     if(!id||!source[id]||!record||typeof record!=='object')return {ok:false,reason:'invalid-booking'};
@@ -39,6 +46,6 @@
     return {ok:true,booking:clone(complete),updatedAt:state.updatedAt};
   }
   function clear(){return !!(store()&&store().remove(KEY));}
-  root.BOOKING_AUTHORITY=Object.freeze({key:KEY,read:read,apply:apply,get:get,save:save,clear:clear});
+  root.BOOKING_AUTHORITY=Object.freeze({key:KEY,read:read,apply:apply,all:all,get:get,byType:byType,byPlace:byPlace,byDay:byDay,save:save,clear:clear});
   apply(master());
 })(globalThis);

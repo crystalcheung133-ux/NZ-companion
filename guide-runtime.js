@@ -9,11 +9,11 @@
 const PRODUCTION_GUIDE=GenerationSelectionAdapter.view('guide');
 
 function visitDayHTML(key){
-  const days=PRODUCTION_GUIDE.dayLinks[key]||[];
+  const days=GUIDE_NAVIGATION.dayLinks(key);
   if(!days.length) return '';
   const place=PRODUCTION_GUIDE.places[key]||{};
   const isStay=place.cat==='STAY';
-  const booking=isStay?Object.values(BOOKINGS_DATA||{}).find(item=>item&&item.type==='accommodation'&&item.placeId===key):null;
+  const booking=isStay&&window.BOOKING_AUTHORITY?BOOKING_AUTHORITY.byPlace(key):null;
   const buttons=days.map(([label,href])=>`<a class="day-jump-button" href="${href}">${label} →</a>`).join('');
   const nights=Number(booking?.nights||0);
   const stayLength=nights?`<span class="stay-length-note">Staying ${nights} night${nights===1?'':'s'}</span>`:'';
@@ -173,9 +173,7 @@ function quickInfoInnerHTML(g,key){
  const websiteButton=g.website?`<a class="utility-button" href="${g.website}" target="_blank" rel="noopener">🌐 Website</a>`:'';
  const unknown=/^(see|look at|refer to)\s+trip\s+info$|^check (current|live)|^prices? may vary$|^contact venue/i;
  const placePrice=String(g.price||'').trim();
- const accommodationBooking=(g.cat==='STAY'&&typeof BOOKINGS_DATA==='object')
-  ?Object.values(BOOKINGS_DATA).find(booking=>booking&&booking.type==='accommodation'&&booking.placeId===key)
-  :null;
+ const accommodationBooking=(g.cat==='STAY'&&window.BOOKING_AUTHORITY)?BOOKING_AUTHORITY.byPlace(key):null;
  const bookingPrice=String(accommodationBooking?.price||'').trim();
  // Accommodation commercial details have one canonical owner: BOOKINGS_DATA.
  // This prevents Guide cards losing prices when place content is edited independently.
@@ -191,7 +189,7 @@ function quickInfoInnerHTML(g,key){
  const roleBadge=g.itineraryRole?`<span class="itinerary-role-badge">${g.itineraryRole}</span>`:'';
  const reminder=String(g.visitorReminder||'').trim();
  const reminderRow=reminder?`<p class="visitor-reminder"><strong>Reminder:</strong> ${reminder}</p>`:'';
- const linkedBooking=(typeof BOOKINGS_DATA==='object')?Object.values(BOOKINGS_DATA).find(booking=>booking&&booking.placeId===key):null;
+ const linkedBooking=window.BOOKING_AUTHORITY?BOOKING_AUTHORITY.byPlace(key):null;
  const bookingStatus=linkedBooking?String(linkedBooking.displayStatus||linkedBooking.status||'').toUpperCase():'';
  const bookingRow=linkedBooking?`<div class="quick-info-row"><span class="quick-info-icon">🎟️</span><span><span class="quick-info-label">Booking</span><span class="quick-info-value">${bookingStatus||'DETAILS AVAILABLE'}</span></span></div>`:'';
  const bookingButton=linkedBooking?`<button class="utility-button" type="button" onclick="${linkedBooking.type==='activity'?'openActivityBookingDetail':'openAccommodationDetail'}('${linkedBooking.id}')">🎟️ Booking Details</button>`:'';
@@ -204,22 +202,11 @@ function quickInfoHTML(g,key){
  return `<div class="quick-info-card">${quickInfoInnerHTML(g,key)}</div>`;
 }
 
-function guideCategoryForKey(key){
- const categories=PRODUCTION_GUIDE.categories||{};
- const preferred=['ATTRACTIONS','ACTIVITIES','DINING','STAY','SHOP','TRANSPORT'];
- const ordered=[...preferred,...Object.keys(categories).filter(cat=>!preferred.includes(cat))];
- return ordered.find(cat=>(categories[cat]||[]).some(item=>(typeof item==='string'?item:item&&item.key)===key))||'';
-}
-function guideCategoryKeys(key){
- const category=guideCategoryForKey(key)||(PRODUCTION_GUIDE.places[key]||{}).cat;
- const categoryItems=category?guideSortedCategoryItems(category):[];
- const keys=categoryItems.map(item=>item&&item.key).filter(itemKey=>itemKey&&PRODUCTION_GUIDE.places[itemKey]);
- return keys.length>1?keys:PRODUCTION_GUIDE.order.filter(itemKey=>PRODUCTION_GUIDE.places[itemKey]&&!new Set(TRIP_CONFIG.guide?.excludedPlaceIds||[]).has(itemKey));
-}
+function guideCategoryForKey(key){return GUIDE_NAVIGATION.categoryFor(key);}
+function guideCategoryKeys(key){return GUIDE_NAVIGATION.sequenceFor(key);}
 function guideNavModel(key){
- const keys=guideCategoryKeys(key);
- const idx=keys.indexOf(key);
- return {keys,idx,prev:idx>0?keys[idx-1]:'',next:idx>=0&&idx<keys.length-1?keys[idx+1]:'',position:idx>=0?idx+1:0,total:keys.length};
+ const nav=GUIDE_NAVIGATION.neighbours(key);
+ return {keys:nav.sequence,idx:nav.position?nav.position-1:-1,prev:nav.previous||'',next:nav.next||'',position:nav.position,total:nav.total};
 }
 function guideNavButtons(key,mode){
  const nav=guideNavModel(key);
