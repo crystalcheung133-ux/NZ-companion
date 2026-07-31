@@ -101,6 +101,11 @@
     storageNamespace: 'nz-family-2026',
     version: 'RC22.1',
     buildLabel: 'Unicode Mojibake Root Cause Repair',
+    features: Object.freeze({
+      /* Stage 3.2D validation flag. Legacy remains authoritative. */
+      expenseCanonicalDualWrite: false,
+      expenseCanonicalReadShadow: false
+    }),
     theme: root.THEME_CONFIG.colors
   });
 

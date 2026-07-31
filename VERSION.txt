@@ -1,9 +1,1 @@
-CCMV Travel Engine — New Zealand Companion
-Release: Stage3.2H-PORT1-CERT-FINAL-FIX2
-Engine baseline: CERT-FINAL-FIX1 (certified)
-Release date: 2026-07-31
-Status: Post-certification maintenance release
-Changes: retired dormant canonical-expense-* subsystem (8 files, both feature
-flags were false with no activation plan); added a CI regression test suite
-under /ci-tests (outside the production deploy root); regenerated
-VERSION.txt / SHA256SUMS.txt / PRODUCTION-FILE-MANIFEST.txt accordingly.
+NZ-Companion-Stage3.2H-PORT1-BOOKING-SAVE-RESPONSE1
