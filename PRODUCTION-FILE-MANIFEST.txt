@@ -1,8 +1,9 @@
 CCMV Travel Engine Production File Manifest
-Release: Stage3.2H-PORT1-BOOKING-AUDIT2
+Release: Stage3.2H-PORT1-BOOKING-HOTFIX1
 Generated: 2026-08-01
 
 Production root files:
+- PRODUCTION-FILE-MANIFEST.txt
 - VERSION.txt
 - address-integrity-test.py
 - admin.js
@@ -72,5 +73,3 @@ Production root files:
 - trip-runtime.js
 - trip.html
 - vercel.json
-
-Total production files excluding manifest/checksum: 69
