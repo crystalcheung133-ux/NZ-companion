@@ -1,6 +1,6 @@
 CCMV Travel Engine Production File Manifest
-Release: Stage3.2H-PORT1-CERT-UX-SAFETY1
-Generated: 2026-07-31
+Release: Stage3.2H-PORT1-BOOKING-AUDIT2
+Generated: 2026-08-01
 
 Production root files:
 - VERSION.txt

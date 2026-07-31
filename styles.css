@@ -2070,3 +2070,16 @@ body.home-bg .live-currency-card #currencyCardMeta{position:relative;z-index:2;w
 .exit-trip-studio-btn span:first-child{display:grid;gap:3px}.exit-trip-studio-btn strong{font-size:14px;font-weight:850}.exit-trip-studio-btn small{font-size:11px;line-height:1.4;color:#8b655f}.exit-trip-studio-btn>span:last-child{padding:6px 9px;border-radius:9px;background:rgba(143,47,37,.09);font-size:10px;font-weight:900;letter-spacing:.04em;text-transform:uppercase}
 .exit-trip-studio-btn:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(143,47,37,.15)}
 .trip-studio-selector-toggle.is-active .trip-studio-selector-arrow{background:rgba(31,78,63,.08);color:#315f4e;font-size:23px}
+
+/* BOOKING-AUDIT-v2 — compact, coherent booking edit/details */
+.booking-edit-field[hidden]{display:none!important}
+.booking-edit-onepage .booking-edit-grid{align-items:start}
+.accommodation-fact strong{white-space:pre-line}
+@media(max-width:520px){
+  .accommodation-detail-card{padding:13px}
+  .accommodation-facts{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+  .accommodation-fact{padding:9px}
+  .accommodation-fact strong{font-size:.84rem}
+  .accommodation-section{margin-top:9px}
+}
+@media(max-width:370px){.accommodation-facts{grid-template-columns:1fr}}
