@@ -11,8 +11,12 @@
 (function(){
   const MODE_KEY=STORAGE_CONFIG.keys.adminMode;
   const DRAFT_KEY=STORAGE_CONFIG.keys.adminDraft;
-  const ADMIN_USER=(typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.admin&&TRIP_CONFIG.admin.user)||'lee';
-  const ADMIN_PIN=(typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.admin&&TRIP_CONFIG.admin.pin)||'260922';
+  const ADMIN_CONFIG=(typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.admin)||null;
+  if(!ADMIN_CONFIG||!ADMIN_CONFIG.user||!ADMIN_CONFIG.pin){
+    throw new Error('Trip Studio requires TRIP_CONFIG.admin.user and TRIP_CONFIG.admin.pin.');
+  }
+  const ADMIN_USER=ADMIN_CONFIG.user;
+  const ADMIN_PIN=ADMIN_CONFIG.pin;
   const SESSION_KEY='travel_engine_admin_unlocked_v1';
   const state={mode:false,dirty:false,draft:null};
 
@@ -46,7 +50,7 @@
     return true;
   }
   function openTripStudioPanel(){
-    if(!isAdminUser()){ alert((typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.admin&&TRIP_CONFIG.admin.studioMessage)||'Trip Studio is available to Lee only.'); return false; }
+    if(!isAdminUser()){ alert(ADMIN_CONFIG.studioMessage||('Trip Studio is available to '+ADMIN_CONFIG.displayName+' only.')); return false; }
     if(typeof renderFriendChoices==='function') renderFriendChoices();
     const modal=document.getElementById('mamaModal');
     const studio=document.getElementById('adminModeControl');
@@ -153,7 +157,7 @@
       selectorCard.setAttribute('aria-pressed',String(active));
       selectorCard.setAttribute('aria-label',active?'Exit Studio Mode':'Open Studio Mode');
       const status=selectorCard.querySelector('.trip-studio-selector-status');
-      if(status) status.textContent=active?'Studio active · Press × to exit':'PIN protected · Lee only';
+      if(status) status.textContent=active?'Studio active · Press × to exit':'PIN protected · '+ADMIN_CONFIG.displayName+' only';
       const arrow=selectorCard.querySelector('.trip-studio-selector-arrow');
       if(arrow) arrow.textContent=active?'×':'›';
     }
@@ -186,7 +190,7 @@
       selectorToggle.setAttribute('tabindex','0');
       selectorToggle.setAttribute('aria-label','Open Studio Mode');
       selectorToggle.setAttribute('aria-pressed','false');
-      selectorToggle.innerHTML=`<span class="trip-studio-selector-copy"><strong>⚙ Studio Mode</strong><small>Editing, Complete Trip, Export Centre and trip controls</small><em class="trip-studio-selector-status">PIN protected · Lee only</em></span><span class="trip-studio-selector-arrow" aria-hidden="true">›</span>`;
+      selectorToggle.innerHTML=`<span class="trip-studio-selector-copy"><strong>⚙ Studio Mode</strong><small>Editing, Complete Trip, Export Centre and trip controls</small><em class="trip-studio-selector-status">PIN protected · ${ADMIN_CONFIG.displayName} only</em></span><span class="trip-studio-selector-arrow" aria-hidden="true">›</span>`;
       familyList.insertAdjacentElement('afterend',selectorToggle);
       const activateStudio=()=>{
         if(state.mode && isUnlocked() && isAdminUser()){
@@ -266,7 +270,7 @@
   window.setAdminMode=function(enabled){
     enabled=!!enabled;
     if(enabled && !isAdminUser()){
-      alert((typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.admin&&TRIP_CONFIG.admin.studioMessage)||'Trip Studio is available to Lee only.');
+      alert(ADMIN_CONFIG.studioMessage||('Trip Studio is available to '+ADMIN_CONFIG.displayName+' only.'));
       updateUI();
       return false;
     }

@@ -2,7 +2,11 @@
 (function(){
   'use strict';
   const KEY=STORAGE_CONFIG.keys.tripCompletion;
-  const ADMIN_USER=(typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.admin&&TRIP_CONFIG.admin.user)||'lee';
+  const ADMIN_CONFIG=(typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.admin)||null;
+  if(!ADMIN_CONFIG||!ADMIN_CONFIG.user){
+    throw new Error('Complete Trip requires TRIP_CONFIG.admin.user.');
+  }
+  const ADMIN_USER=ADMIN_CONFIG.user;
   let completed=false;
   let record=null;
 
