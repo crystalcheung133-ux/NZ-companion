@@ -11,7 +11,7 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 
-const dataPath = path.join(__dirname, '..', 'prod', 'data.js');
+const dataPath = path.join(__dirname, '..', 'data.js');
 const source = fs.readFileSync(dataPath, 'utf8');
 
 const exportNames = ['PLACES', 'CATEGORIES', 'GUIDE_ORDER', 'DAY_LINKS', 'FRIENDS', 'BOOKINGS_DATA', 'TRIP_DATA', 'TRIP_ORDER', 'ITINERARY_DATA'];

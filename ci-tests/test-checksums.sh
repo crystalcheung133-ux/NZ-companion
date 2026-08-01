@@ -1,37 +1,66 @@
 #!/bin/sh
-# CCMV Travel Engine — release integrity gate. Verifies every file listed in
-# SHA256SUMS.txt matches its checksum, and that no shipped file is missing
-# from the manifest/checksum list. Run from repo root: sh ci-tests/test-checksums.sh
-cd "$(dirname "$0")/../prod"
+# CCMV Travel Engine — release integrity gate.
+# Production files live at the repository root. Repository-only folders such as
+# ci-tests/ and .github/ are intentionally outside the production manifest.
+
+set -eu
+
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+REPO_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)
+cd "$REPO_ROOT"
 
 if [ ! -f SHA256SUMS.txt ]; then
-  echo "CHECKSUMS: FAILED — SHA256SUMS.txt is missing from this build"
+  echo "CHECKSUMS: FAILED — SHA256SUMS.txt is missing from the repository root"
   exit 1
 fi
 
-if ! sha256sum -c SHA256SUMS.txt > /tmp/checksum-out-$$ 2>&1; then
+if [ ! -f PRODUCTION-FILE-MANIFEST.txt ]; then
+  echo "MANIFEST: FAILED — PRODUCTION-FILE-MANIFEST.txt is missing from the repository root"
+  exit 1
+fi
+
+checksum_output=$(mktemp)
+manifest_list=$(mktemp)
+checksum_list=$(mktemp)
+cleanup() {
+  rm -f "$checksum_output" "$manifest_list" "$checksum_list"
+}
+trap cleanup EXIT HUP INT TERM
+
+if ! sha256sum -c SHA256SUMS.txt > "$checksum_output" 2>&1; then
   echo "CHECKSUMS: FAILED"
-  grep -v ": OK$" /tmp/checksum-out-$$
-  rm -f /tmp/checksum-out-$$
+  grep -v ': OK$' "$checksum_output" || cat "$checksum_output"
   exit 1
 fi
-count=$(wc -l < SHA256SUMS.txt | tr -d ' ')
-rm -f /tmp/checksum-out-$$
-echo "CHECKSUMS: PASS — $count/$count files verified against SHA256SUMS.txt"
 
-if [ -f PRODUCTION-FILE-MANIFEST.txt ]; then
-  grep '^- ' PRODUCTION-FILE-MANIFEST.txt | sed 's/^- //' | sort > /tmp/manifest-$$.txt
-  ls -1 | grep -v '^PRODUCTION-FILE-MANIFEST.txt$' | grep -v '^SHA256SUMS.txt$' | sort > /tmp/actual-$$.txt
-  if ! diff -q /tmp/manifest-$$.txt /tmp/actual-$$.txt > /dev/null 2>&1; then
-    echo "MANIFEST: FAILED — PRODUCTION-FILE-MANIFEST.txt does not match shipped files"
-    diff /tmp/manifest-$$.txt /tmp/actual-$$.txt
-    rm -f /tmp/manifest-$$.txt /tmp/actual-$$.txt
+checksum_count=$(wc -l < SHA256SUMS.txt | tr -d ' ')
+echo "CHECKSUMS: PASS — $checksum_count/$checksum_count files verified against SHA256SUMS.txt"
+
+# Manifest entries define the production runtime file set. SHA256SUMS.txt must
+# contain exactly that set plus PRODUCTION-FILE-MANIFEST.txt itself.
+grep '^- ' PRODUCTION-FILE-MANIFEST.txt | sed 's/^- //' | sort > "$manifest_list"
+awk '{print $2}' SHA256SUMS.txt   | grep -v '^PRODUCTION-FILE-MANIFEST\.txt$'   | sort > "$checksum_list"
+
+# Explicit guard: repository-only/development artifacts must never be declared
+# as production files.
+if grep -E '^(ci-tests/|\.github/|reports?/|implementation-reports?/|changed-files/|Changed-Files/)' "$manifest_list" "$checksum_list" > /dev/null 2>&1; then
+  echo "MANIFEST: FAILED — repository-only or development artifacts are listed as production files"
+  grep -E '^(ci-tests/|\.github/|reports?/|implementation-reports?/|changed-files/|Changed-Files/)' "$manifest_list" "$checksum_list" || true
+  exit 1
+fi
+
+if ! diff -u "$manifest_list" "$checksum_list"; then
+  echo "MANIFEST: FAILED — production manifest and checksum production file set differ"
+  exit 1
+fi
+
+while IFS= read -r file; do
+  if [ ! -f "$file" ]; then
+    echo "MANIFEST: FAILED — listed production file is missing: $file"
     exit 1
   fi
-  rm -f /tmp/manifest-$$.txt /tmp/actual-$$.txt
-  echo "MANIFEST: PASS — matches shipped file set exactly"
-else
-  echo "MANIFEST: FAILED — PRODUCTION-FILE-MANIFEST.txt is missing from this build"
-  exit 1
-fi
+done < "$manifest_list"
+
+manifest_count=$(wc -l < "$manifest_list" | tr -d ' ')
+echo "MANIFEST: PASS — $manifest_count production files match the checksum file set exactly"
 exit 0

@@ -1,5 +1,5 @@
 import json,re,pathlib
-DATA_JS=pathlib.Path(__file__).resolve().parent.parent / "prod" / "data.js"
+DATA_JS=pathlib.Path(__file__).resolve().parent.parent / "data.js"
 s=DATA_JS.read_text(encoding="utf-8")
 a=s.index("const PLACES=")+len("const PLACES="); b=s.index("\n\nconst CATEGORIES=",a)
 p=json.loads(s[a:b].rstrip(";"))
