@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  ci-suite:
+    name: Production CI Suite
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: JS syntax gate
+        run: sh ci-tests/test-syntax.sh
+
+      - name: Release integrity (checksums + manifest)
+        run: sh ci-tests/test-checksums.sh
+
+      - name: HTML structure
+        run: sh ci-tests/test-html-structure.sh
+
+      - name: Entity linkage (places/bookings/itinerary/parties)
+        run: node ci-tests/test-entity-integrity.js
+
+      - name: Guide address integrity
+        run: python3 ci-tests/address-integrity-test.py

@@ -1,28 +1,19 @@
 CCMV Travel Engine Production File Manifest
-Release: Stage3.2H-PORT1-BOOKING-SAVE-ROOTFIX1
-Generated: 2026-08-01
-
+Generated: 2026-07-31
+Release: Stage3.2H-PORT1-BOOKING-SAVE-ROOTFIX1-EXPENSE-CLEANUP1
 Production root files:
-- PRODUCTION-FILE-MANIFEST.txt
+
 - VERSION.txt
-- address-integrity-test.py
 - admin.js
 - app-runtime.js
 - asset-config.js
 - booking-authority.js
-- canonical-expense-core.js
-- canonical-expense-local-provider.js
-- canonical-expense-repository.js
 - complete-runtime.js
 - core-runtime.js
 - currency-runtime.js
 - data.js
 - day.html
 - engine-integrity.js
-- expense-calculator.js
-- expense-canonical-bootstrap.js
-- expense-dual-write.js
-- expense-read-shadow.js
 - expense-sync-runtime.js
 - expenses.html
 - expenses.js
@@ -40,7 +31,6 @@ Production root files:
 - index.html
 - itinerary-authority.js
 - itinerary.html
-- legacy-expense-adapter.js
 - locale-config.js
 - manifest.webmanifest
 - memory.html
@@ -73,3 +63,5 @@ Production root files:
 - trip-runtime.js
 - trip.html
 - vercel.json
+
+Total production files excluding manifest/checksum: 60
