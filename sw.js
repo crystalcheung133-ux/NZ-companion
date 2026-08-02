@@ -1,10 +1,14 @@
 importScripts('./theme-config.js', './asset-config.js', './locale-config.js', './formatter.js', './navigation-config.js', './trip-config.js', './storage-config.js');
-const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-booking-save-rootfix1-expense-cleanup1`;
+const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-booking-save-rootfix1-theme-preview-v1`;
 const CRITICAL_EXTENSIONS = /\.(?:css|js)$/i;
 const ASSETS = [
   './',
   './index.html',
   './styles.css',
+  './theme-preview.css',
+  './theme-preview-runtime.js',
+  './theme-preview-assets/registry.js',
+  './theme-preview-assets/japan-warm-editorial-canvas.svg',
   './core-runtime.js',
   './trip-runtime.js',
   './moments-compat.js',

@@ -174,7 +174,7 @@
       exportButton.setAttribute('aria-hidden',String(!showExport));
       exportButton.style.display=showExport?'inline-flex':'none';
     }
-    ['tripStudioManagement','tripStudioExports','tripStudioDanger'].forEach(id=>{
+    ['tripStudioManagement','tripStudioExports','tripStudioThemePreview','tripStudioDanger'].forEach(id=>{
       const group=document.getElementById(id);
       if(group) group.hidden=!state.mode;
     });
@@ -226,6 +226,9 @@
         </div>
         <div id="tripStudioExports" class="trip-studio-group" hidden>
           <p class="trip-studio-label">EXPORT CENTRE</p>
+        </div>
+        <div id="tripStudioThemePreview" class="trip-studio-group" hidden>
+          <p class="trip-studio-label">🎨 THEME PREVIEW</p>
         </div>
         <div id="tripStudioDanger" class="trip-studio-group trip-studio-danger" hidden>
           <p class="trip-studio-label">DATA CONTROL</p>

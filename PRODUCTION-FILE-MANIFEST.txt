@@ -1,8 +1,11 @@
-CCMV Travel Engine Production File Manifest
-Generated: 2026-07-31
-Release: Stage3.2H-PORT1-BOOKING-SAVE-ROOTFIX1-EXPENSE-CLEANUP1
+Travel Engine Production File Manifest
+Generated: 2026-08-02
+Release: Stage3.2H-PORT1-THEME-PREVIEW-STUDIO-V1
 Production root files:
 
+- CI-PATH-FIX-REPORT.md
+- THEME-PREVIEW-STUDIO-IMPLEMENTATION-REPORT.md
+- THEME-PREVIEW-STUDIO-REGRESSION-CI-REPORT.md
 - VERSION.txt
 - admin.js
 - app-runtime.js
@@ -59,9 +62,11 @@ Production root files:
 - sync-config.js
 - sync-runtime.js
 - theme-config.js
+- theme-preview-assets/japan-warm-editorial-canvas.svg
+- theme-preview-assets/registry.js
+- theme-preview-runtime.js
+- theme-preview.css
 - trip-config.js
 - trip-runtime.js
 - trip.html
 - vercel.json
-
-Total production files excluding manifest/checksum: 60
