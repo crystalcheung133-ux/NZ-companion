@@ -1,36 +1,32 @@
-# Theme Preview Studio v1 — Regression / CI Report
+# Theme Preview Studio v2.1 — Regression / CI Report
+
+## Scope
+
+This release corrects the Theme Preview workflow only. It does not change Engine layout, trip content, navigation, expenses, booking, moments, party handling, exports, Supabase, or canonical storage.
+
+## Functional checks
+
+- Trip Studio contains a compact Theme Preview launcher rather than the full control list.
+- Open Inspector enables the overlay and closes Trip Studio.
+- Inspector remains available after Trip Studio closes.
+- Collapse leaves a `🎨` launcher.
+- Close removes the floating UI without changing trip data.
+- Inspector defaults to the left side to avoid Vercel Toolbar overlap.
+- Mobile rules keep the floating window above bottom navigation and internally scrollable.
+- Theme JSON and theme-preview storage namespaces remain isolated from production data.
+- Local assets and system/local font stacks only; no new external theme dependency.
 
 ## Automated validation
 
-- Existing full CI suite: PASS after release manifest/checksum regeneration.
-- JavaScript syntax: PASS for all project JavaScript files, including the new preview runtime and asset registry.
-- HTML structure: PASS for all HTML files.
-- Entity linkage: PASS; places, bookings, itinerary, parties and family breakdown unchanged.
-- Guide address integrity: PASS.
-- Manifest/checksum integrity: PASS after regeneration.
+The release was checked with the existing repository CI suite, JavaScript syntax validation, HTML structure validation, production manifest validation, and checksum validation. Final command output is included in the delivery summary.
 
-## Browser verification
+## Manual deployment checks required
 
-The actual project was served locally and all target routes returned valid project HTML. Automated headless Chromium screenshot capture was attempted in this container but the browser process did not complete reliably, so visual interaction verification should be repeated after opening the Full Deploy locally or on Vercel. No concept-art or generated UI image was used.
+After Vercel preview deployment, verify on desktop and mobile:
 
-Route/load checks completed for:
-
-- Homepage
-- Timeline / Day
-- Guide
-- Trip / Booking surface
-- Expenses
-- Moments
-- Trip Essentials / Days
-- Studio host page
-
-## Safety checks
-
-- Reset removes only `travelEngine.themePreview.v1` and reapplies Frozen NZ values.
-- JSON export/import uses schema `travelEngine.themePreview.v1`; no trip data is included.
-- No new external image URL or external font dependency was added.
-- Preview asset registry resolves local project paths only.
-- No production theme save/publish action exists.
-- No expense, booking, moment, party, export, Supabase or canonical storage code was modified.
-- Title, logo and radius controls are clamped to safe bounds.
-- Studio controls remain scrollable and include mobile safe-area bottom padding.
+1. Hard-refresh once so the `theme-preview-v2-1` cache replaces v2.
+2. Open Studio and confirm Theme Preview is one compact launcher card.
+3. Press Open Inspector and confirm Studio closes.
+4. Confirm the inspector appears on the left side, not under the Vercel Toolbar.
+5. Change a colour while viewing the real Companion.
+6. Collapse to `🎨`, reopen, and close with `×`.

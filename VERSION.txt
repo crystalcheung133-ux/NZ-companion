@@ -1,24 +1,4 @@
-Travel Engine — New Zealand Companion
-Release: Stage3.2H-PORT1-THEME-PREVIEW-STUDIO-V2-FLOATING-INSPECTOR
-Engine baseline: Stage3.2H-PORT1-THEME-PREVIEW-STUDIO-V1
-Release date: 2026-08-02
-Status: Production implementation — Floating Theme Inspector
-
-Theme Preview Studio now runs as a floating live inspector over the actual
-Frozen Travel Engine interface. Once Studio Mode is unlocked, the inspector
-can remain open while the user views and navigates Homepage, Timeline, Guide,
-Trip, Expenses, Moments and Days.
-
-Desktop:
-- Fixed corner inspector
-- Draggable by its header
-- Collapsible to a compact paint-palette button
-
-Mobile:
-- Safe floating panel above bottom navigation
-- Scrollable controls
-- Collapsible to a compact paint-palette button
-
-Theme settings remain isolated in travelEngine.themePreview.v1.
-Inspector position and collapsed state use travelEngine.themePreview.ui.v2.
-No production theme publishing or trip-data writes are included.
+Travel Engine — Theme Preview Studio v2.1 Floating Inspector Fix
+Build: theme-preview-v2-1
+Date: 2026-08-02
+Baseline: NZ Companion Frozen Engine with CI tests

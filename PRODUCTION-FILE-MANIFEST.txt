@@ -1,6 +1,6 @@
 Travel Engine Production File Manifest
 Generated: 2026-08-02
-Release: Stage3.2H-PORT1-THEME-PREVIEW-STUDIO-V2-FLOATING-INSPECTOR
+Release: Stage3.2H-PORT1-THEME-PREVIEW-STUDIO-V2-1-FLOATING-INSPECTOR-FIX
 Production root files:
 
 - CI-PATH-FIX-REPORT.md

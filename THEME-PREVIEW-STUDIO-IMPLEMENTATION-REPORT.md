@@ -1,57 +1,56 @@
-# Theme Preview Studio v1 — Implementation Report
+# Theme Preview Studio v2.1 — Floating Inspector Fix
 
-## Baseline audit
+## Baseline
 
-Baseline: `NZ Companion with CI test(1).zip`.
+Travel Engine NZ Frozen Companion with the existing CI suite, continuing from Theme Preview Studio v2.
 
-The safest integration point was the dynamic Trip Studio shell created by `admin.js`. A new `tripStudioThemePreview` group is inserted beside the existing management/export/data-control groups without changing the family selector, Studio modal hierarchy, page layout, navigation, or production data modules.
+## Corrected workflow
 
-The visual preview layer is isolated in `theme-preview.css` and `theme-preview-runtime.js`. It uses CSS custom properties and state classes on the document root. Standard colour, opacity, font, decorative visibility, logo, canvas, radius and title-scale changes apply immediately without reload.
+The Theme Preview area inside Trip Studio is now a compact launcher card only. It no longer renders the complete theme-control list inside Studio.
 
-## Implementation
+The launcher provides two explicit actions:
 
-- Added compact mobile-friendly Theme Preview controls inside Trip Studio.
-- Added Current NZ, Neutral / Reset, Custom Preview and Japan Warm Editorial preview presets.
-- Added live page background, primary, secondary, accent, card colour and opacity controls.
-- Added local canvas registry, enable toggle, opacity, cover/contain and top/center controls.
-- Added hero asset and logo asset controls using local registry assets only.
-- Added safe system/local font-stack presets; no font files were added.
-- Added safe title scale (0.88–1.08), hero radius (20–40 px), logo size (36–84 px), watermark and decorative pseudo-element toggles.
-- Added page links to inspect the real Homepage, Timeline, Guide, Trip/Booking, Expenses, Moments and Days/Essentials pages.
-- Added preview-only JSON export/import using schema `travelEngine.themePreview.v1`.
-- Added reset to the Frozen NZ preview values.
-- Added service-worker cache entries/version bump for the new runtime assets only.
+- **Open Inspector** — enables the floating inspector, closes Trip Studio, and opens the live controls over the real Companion page.
+- **Close Inspector** — removes the floating inspector from the Companion without resetting the selected preview theme.
+
+The floating inspector itself provides:
+
+- collapse to a small `🎨` button;
+- reopen from the `🎨` button;
+- close with an explicit `×` button;
+- desktop dragging;
+- mobile-safe placement above the bottom navigation;
+- left-side default placement to avoid the Vercel Toolbar on preview deployments.
+
+## Reliability fixes
+
+- Inspector visibility now follows its own preview-only UI state instead of the transient `admin-mode` body class.
+- UI state is stored separately in `travelEngine.themePreview.ui.v2.1`.
+- The launcher is mounted when the dynamically generated Trip Studio DOM becomes available.
+- A DOM observer handles Studio shells created after page load.
+- Asset query strings and the service-worker cache identifier were bumped to `theme-preview-v2-1` to prevent the previous long-form Studio UI from remaining in cache.
 
 ## Storage safety
 
-Theme settings are stored only at:
+Theme settings remain isolated in `travelEngine.themePreview.v1`. Inspector open/collapse/position state is isolated in `travelEngine.themePreview.ui.v2.1`. No trip, expense, booking, moment, Supabase, production theme, or canonical storage is modified.
 
-`travelEngine.themePreview.v1`
+## Files changed in v2.1
 
-The runtime does not import or call trip, expense, booking, moments, Supabase, canonical storage, publication or export data APIs. Theme JSON contains only the preview schema and theme settings.
-
-## Added files
-
-- `theme-preview.css`
 - `theme-preview-runtime.js`
-- `theme-preview-assets/registry.js`
-- `theme-preview-assets/japan-warm-editorial-canvas.svg`
+- `theme-preview.css`
+- `sw.js`
+- `index.html`
+- `day.html`
+- `guide.html`
+- `trip.html`
+- `expenses.html`
+- `moments.html`
+- `itinerary.html`
+- `place.html`
+- `memory.html`
+- `offline.html`
+- `VERSION.txt`
 - `THEME-PREVIEW-STUDIO-IMPLEMENTATION-REPORT.md`
 - `THEME-PREVIEW-STUDIO-REGRESSION-CI-REPORT.md`
-
-## Modified files
-
-- `admin.js`
-- `day.html`
-- `expenses.html`
-- `index.html`
-- `itinerary.html`
-- `memory.html`
-- `moments.html`
-- `offline.html`
-- `place.html`
-- `trip.html`
-- `sw.js`
-- `VERSION.txt`
-- `SHA256SUMS.txt`
 - `PRODUCTION-FILE-MANIFEST.txt`
+- `SHA256SUMS.txt`
