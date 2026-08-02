@@ -1,77 +1,69 @@
-(function(root){'use strict';
-const KEY='travelEngine.themePreview.v1';
-const UI_KEY='travelEngine.themePreview.ui.v2.1';
-const frozen={preset:'nz',bg:'#EEF8FA',primary:'#087F9C',secondary:'#3D7F55',accent:'#F49A24',card:'#FFFFFF',cardOpacity:1,canvasEnabled:false,canvasAsset:'',canvasOpacity:.12,canvasSize:'cover',canvasPosition:'top',heroEnabled:false,heroAsset:'',logoEnabled:true,logoAsset:'nz-adventure-logo.png',logoSize:54,watermark:false,watermarkOpacity:.12,typography:'original',titleScale:1,heroRadius:30,decorative:true};
+# Theme Studio Freeze — Regression Report
 
-// Official Theme Studio catalogue — one click applies the complete visual
-// package (palette, typography, canvas, cards, buttons, decorative styling).
-// Advanced only ever exposes Background Colour / Card Opacity / Typography;
-// every other value below is preset-owned and not user-editable.
-const THEMES=[
-  {id:'adventure',icon:'🏔',name:'Adventure',tagline:'Fresh • Outdoor • Explorer'},
-  {id:'japan',icon:'🌸',name:'Japan',tagline:'Warm • Editorial • Calm'},
-  {id:'luxury',icon:'🍷',name:'Luxury',tagline:'Boutique • Elegant • Evening'},
-  {id:'nature',icon:'🌿',name:'Nature',tagline:'Forest • Organic • Relaxing'},
-  {id:'coastal',icon:'🌊',name:'Coastal',tagline:'Bright • Ocean • Summer'},
-  {id:'heritage',icon:'🏛',name:'Heritage',tagline:'Classic • Historic • Cultural'},
-  {id:'cafe',icon:'☕',name:'Cafe',tagline:'Minimal • Cozy • Lifestyle'},
-  {id:'family',icon:'👨‍👩‍👧',name:'Family',tagline:'Friendly • Bright • Fun'}
-];
+## CI suite
 
-const presets={
-  nz:frozen,
-  adventure:{...frozen,preset:'adventure',bg:'#EEF8FA',primary:'#087F9C',secondary:'#3D7F55',accent:'#F49A24',card:'#FFFFFF',cardOpacity:1,canvasEnabled:true,canvasAsset:'theme-preview-assets/adventure-fresh-outdoor-canvas.svg',canvasOpacity:.12,canvasSize:'cover',canvasPosition:'top',typography:'original',decorative:true},
-  japan:{...frozen,preset:'japan',bg:'#F4EADB',primary:'#18263D',secondary:'#C98B8B',accent:'#B89A5D',card:'#FFF7E8',cardOpacity:.94,canvasEnabled:true,canvasAsset:'theme-preview-assets/japan-warm-editorial-canvas.svg',canvasOpacity:.12,canvasSize:'cover',canvasPosition:'top',typography:'editorial',decorative:false},
-  luxury:{...frozen,preset:'luxury',bg:'#1B1420',primary:'#C9A24B',secondary:'#6B4226',accent:'#E8C77E',card:'#241B29',cardOpacity:.92,canvasEnabled:true,canvasAsset:'theme-preview-assets/luxury-boutique-elegant-canvas.svg',canvasOpacity:.16,canvasSize:'cover',canvasPosition:'center',typography:'editorial',decorative:true},
-  nature:{...frozen,preset:'nature',bg:'#EFF3E8',primary:'#3F6C40',secondary:'#7C9473',accent:'#A9784A',card:'#FBFBF3',cardOpacity:.97,canvasEnabled:true,canvasAsset:'theme-preview-assets/nature-forest-organic-canvas.svg',canvasOpacity:.13,canvasSize:'cover',canvasPosition:'center',typography:'soft',decorative:true},
-  coastal:{...frozen,preset:'coastal',bg:'#EAF6FB',primary:'#1583B7',secondary:'#F2B705',accent:'#EF6C4D',card:'#FFFFFF',cardOpacity:1,canvasEnabled:true,canvasAsset:'theme-preview-assets/coastal-bright-ocean-canvas.svg',canvasOpacity:.14,canvasSize:'cover',canvasPosition:'top',typography:'modern',decorative:true},
-  heritage:{...frozen,preset:'heritage',bg:'#F3ECE0',primary:'#6E3B2C',secondary:'#8C7A4B',accent:'#B0452E',card:'#FAF6EE',cardOpacity:.96,canvasEnabled:true,canvasAsset:'theme-preview-assets/heritage-classic-historic-canvas.svg',canvasOpacity:.12,canvasSize:'cover',canvasPosition:'top',typography:'editorial',decorative:true},
-  cafe:{...frozen,preset:'cafe',bg:'#F7F1EA',primary:'#6F4E37',secondary:'#B08968',accent:'#D97742',card:'#FFFFFF',cardOpacity:.98,canvasEnabled:true,canvasAsset:'theme-preview-assets/cafe-minimal-cozy-canvas.svg',canvasOpacity:.08,canvasSize:'cover',canvasPosition:'center',typography:'modern',decorative:false},
-  family:{...frozen,preset:'family',bg:'#FFF8ED',primary:'#FF6F59',secondary:'#3AACA8',accent:'#FFC145',card:'#FFFFFF',cardOpacity:1,canvasEnabled:true,canvasAsset:'theme-preview-assets/family-friendly-bright-canvas.svg',canvasOpacity:.14,canvasSize:'cover',canvasPosition:'top',typography:'soft',decorative:true}
-};
+Run via `sh ci-tests/run-all.sh` against this deploy:
 
-let state=load();
-let ui=loadUi();
-function load(){try{return {...frozen,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(e){return {...frozen}}}
-function loadUi(){try{return {enabled:false,collapsed:true,left:null,top:null,...JSON.parse(localStorage.getItem(UI_KEY)||'{}')}}catch(e){return {enabled:false,collapsed:true,left:null,top:null}}}
-function save(){localStorage.setItem(KEY,JSON.stringify(state))}
-function saveUi(){localStorage.setItem(UI_KEY,JSON.stringify(ui))}
-function fontPair(name){if(name==='editorial')return ['Georgia,"Times New Roman",serif','system-ui,-apple-system,"Segoe UI",sans-serif'];if(name==='soft')return ['"Trebuchet MS","Arial Rounded MT Bold",system-ui,sans-serif','system-ui,-apple-system,"Segoe UI",sans-serif'];if(name==='modern')return ['system-ui,-apple-system,"Segoe UI",sans-serif','system-ui,-apple-system,"Segoe UI",sans-serif'];return ['var(--ccmv-fashion-serif,"Cormorant Garamond",Georgia,serif)','var(--font-sans,Inter,system-ui,sans-serif)']}
-function asset(path){return path?`url("${String(path).replace(/"/g,'')}")`:'none'}
-function apply(){const el=document.documentElement,[heading,body]=fontPair(state.typography);el.classList.add('theme-preview-active');el.classList.toggle('theme-preview-no-decor',!state.decorative);el.classList.toggle('theme-preview-watermark',!!state.watermark);el.classList.toggle('theme-preview-hero-image',!!state.heroEnabled&&!!state.heroAsset);el.classList.toggle('theme-preview-logo-off',!state.logoEnabled);const v={'--tp-bg':state.bg,'--tp-primary':state.primary,'--tp-secondary':state.secondary,'--tp-accent':state.accent,'--tp-card':state.card,'--tp-card-opacity':state.cardOpacity,'--tp-canvas-image':state.canvasEnabled?asset(state.canvasAsset):'none','--tp-canvas-opacity':state.canvasEnabled?state.canvasOpacity:0,'--tp-canvas-size':state.canvasSize,'--tp-canvas-position':state.canvasPosition,'--tp-hero-image':asset(state.heroAsset),'--tp-heading-font':heading,'--tp-body-font':body,'--tp-title-scale':Math.max(.88,Math.min(1.08,Number(state.titleScale)||1)),'--tp-hero-radius':Math.max(20,Math.min(40,Number(state.heroRadius)||30))+'px','--tp-logo-size':Math.max(36,Math.min(84,Number(state.logoSize)||54))+'px','--tp-watermark-opacity':Math.max(.04,Math.min(.25,Number(state.watermarkOpacity)||.12)),'--tp-ink':state.primary};Object.entries(v).forEach(([k,val])=>el.style.setProperty(k,val));if(state.logoEnabled&&state.logoAsset)document.querySelectorAll('[data-brand-logo="header"]').forEach(img=>{img.src=state.logoAsset});document.dispatchEvent(new CustomEvent('travelengine:theme-preview-applied',{detail:{...state}}))}
-function update(patch){state={...state,...patch,preset:patch.preset||'custom'};save();apply();sync()}
-function setPreset(id){state={...(presets[id]||frozen)};save();apply();sync()}
-function reset(){localStorage.removeItem(KEY);state={...frozen};apply();sync()}
-// Kept for API/back-compat — not wired to any control in the simplified UI.
-function exportJson(){const blob=new Blob([JSON.stringify({schema:'travelEngine.themePreview.v1',settings:state},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='travel-engine-theme-preview.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
-function importJson(file){const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(x.schema!=='travelEngine.themePreview.v1'||!x.settings)throw Error();state={...frozen,...x.settings,preset:'custom'};save();apply();sync()}catch(e){alert('Invalid Theme Preview JSON.')}};r.readAsText(file)}
-function val(id){const n=document.getElementById(id);return n&&n.type==='checkbox'?n.checked:n?.value}
-function sync(){const map={tpBg:state.bg,tpCardOpacity:state.cardOpacity,tpTypography:state.typography};Object.entries(map).forEach(([id,x])=>{const n=document.getElementById(id);if(!n)return;if(n.type==='checkbox')n.checked=!!x;else n.value=x});document.querySelectorAll('[data-tp-value]').forEach(n=>{const k=n.dataset.tpValue;n.textContent=formatValue(k,state[k])});syncPickers();syncThemeCards()}
-function syncThemeCards(){document.querySelectorAll('[data-theme-card]').forEach(card=>{const active=card.dataset.themeCard===state.preset;card.classList.toggle('is-active',active);const btn=card.querySelector('[data-apply-theme]');if(btn)btn.textContent=active?'Applied':'Apply'})}
-function formatValue(key,value){if(key==='cardOpacity')return Math.round(Number(value)*100)+'%';return String(value)}
-function key(id){return({tpBg:'bg',tpCardOpacity:'cardOpacity',tpTypography:'typography'})[id]}
-function colour(label,id){return `<div class="theme-preview-field full"><label>${label}</label><div class="theme-preview-colour"><input id="${id}Picker" type="color" aria-label="${label} colour picker"><input id="${id}" type="text" maxlength="7" aria-label="${label} hex value"></div></div>`}
-function range(label,id,k,min,max,step){return `<div class="theme-preview-field full"><label>${label}<span class="theme-preview-value" data-tp-value="${k}"></span></label><input id="${id}" type="range" min="${min}" max="${max}" step="${step}"></div>`}
-function themeCard(t){return `<div class="theme-card" data-theme-card="${t.id}"><div class="theme-card-swatch" style="background:linear-gradient(135deg,${presets[t.id].primary},${presets[t.id].accent})"></div><div class="theme-card-copy"><strong>${t.icon} ${t.name}</strong><small>${t.tagline}</small></div><button class="theme-card-apply" data-apply-theme="${t.id}" type="button">Apply</button></div>`}
-function controls(){return `<div class="theme-preview-notice">PREVIEW ONLY · LIVE ON THE REAL COMPANION</div>
-<p class="theme-preview-section-label">Choose Theme</p>
-<div class="theme-preview-list">${THEMES.map(themeCard).join('')}</div>
-<details class="theme-preview-advanced"><summary>Advanced</summary><div class="theme-preview-advanced-body">
-${colour('Background Colour','tpBg')}${range('Card opacity','tpCardOpacity','cardOpacity',.55,1,.01)}
-<div class="theme-preview-field full"><label>Typography</label><select id="tpTypography"><option value="original">Original Engine</option><option value="editorial">Editorial Serif heading</option><option value="soft">Soft / rounded heading</option><option value="modern">Modern</option></select></div>
-</div></details>
-<button id="tpReset" class="theme-preview-reset" type="button">Reset Theme</button>`}
-function build(){buildStudioLauncher();buildFloatingInspector();wire();sync();syncVisibility()}
-function buildStudioLauncher(){const host=document.getElementById('tripStudioThemePreview');if(!host)return;if(host.dataset.themePreviewLauncher==='1'){syncLauncher();return}host.dataset.themePreviewLauncher='1';host.hidden=false;host.innerHTML=`<p class="trip-studio-label">🎨 THEME PREVIEW</p><div class="theme-preview-launch-card"><div><strong>Floating Theme Inspector</strong><small id="tpLauncherStatus">Closed · preview controls are not covering Studio.</small></div><div class="theme-preview-launch-actions"><button id="tpLaunchFloating" type="button">Open Inspector</button><button id="tpDisableFloating" class="secondary" type="button">Close Inspector</button></div></div>`;document.getElementById('tpLaunchFloating').addEventListener('click',()=>{setEnabled(true);setCollapsed(false);if(typeof root.closeTripStudioPanel==='function')root.closeTripStudioPanel();else document.querySelector('.trip-studio-close')?.click()});document.getElementById('tpDisableFloating').addEventListener('click',()=>setEnabled(false));syncLauncher()}
-function syncLauncher(){const status=document.getElementById('tpLauncherStatus'),open=document.getElementById('tpLaunchFloating'),close=document.getElementById('tpDisableFloating');if(status)status.textContent=ui.enabled?(ui.collapsed?'Open · collapsed to the 🎨 button.':'Open · live controls are floating over the Companion.'):'Closed · preview controls are not covering Studio.';if(open)open.textContent=ui.enabled?'Show Inspector':'Open Inspector';if(close)close.disabled=!ui.enabled}
-function buildFloatingInspector(){if(document.getElementById('themePreviewInspector'))return;const shell=document.createElement('aside');shell.id='themePreviewInspector';shell.className='theme-preview-inspector';shell.setAttribute('aria-label','Floating Theme Inspector');shell.innerHTML=`<button class="theme-preview-fab" id="tpFab" type="button" aria-label="Open Theme Inspector">🎨</button><div class="theme-preview-window"><header class="theme-preview-window-head" id="tpDragHandle"><div><strong>🎨 Theme</strong><small>PREVIEW ONLY</small></div><div class="theme-preview-head-actions"><button id="tpCollapse" type="button" aria-label="Collapse Theme Inspector">−</button><button id="tpCloseInspector" type="button" aria-label="Close Theme Inspector">×</button></div></header><div class="theme-preview-window-body">${controls()}</div></div>`;document.body.appendChild(shell);applyUi();document.getElementById('tpFab').addEventListener('click',()=>setCollapsed(false));document.getElementById('tpCollapse').addEventListener('click',()=>setCollapsed(true));document.getElementById('tpCloseInspector').addEventListener('click',()=>setEnabled(false));enableDrag(shell,document.getElementById('tpDragHandle'))}
-function wire(){const fields=['tpBg','tpCardOpacity','tpTypography'];fields.forEach(id=>document.getElementById(id)?.addEventListener('input',()=>update({[key(id)]:val(id)})));document.getElementById('themePreviewInspector')?.addEventListener('click',e=>{const btn=e.target.closest('[data-apply-theme]');if(btn)setPreset(btn.dataset.applyTheme)});document.getElementById('tpReset')?.addEventListener('click',reset);wirePickers()}
-function wirePickers(){['tpBg'].forEach(id=>{const text=document.getElementById(id),picker=document.getElementById(id+'Picker');if(!text||!picker)return;picker.oninput=()=>{text.value=picker.value;update({[key(id)]:picker.value})};text.addEventListener('change',()=>{if(/^#[0-9a-f]{6}$/i.test(text.value))update({[key(id)]:text.value});else sync()})})}
-function syncPickers(){['tpBg'].forEach(id=>{const text=document.getElementById(id),picker=document.getElementById(id+'Picker');if(text&&picker&&/^#[0-9a-f]{6}$/i.test(text.value))picker.value=text.value})}
-function setEnabled(enabled){ui.enabled=!!enabled;if(ui.enabled)ui.collapsed=false;saveUi();applyUi();syncVisibility();syncLauncher()}
-function setCollapsed(collapsed){ui.collapsed=!!collapsed;saveUi();applyUi();syncLauncher()}
-function applyUi(){const shell=document.getElementById('themePreviewInspector');if(!shell)return;shell.classList.toggle('is-collapsed',ui.collapsed);if(innerWidth>700&&Number.isFinite(ui.left)&&Number.isFinite(ui.top)){shell.style.left=Math.max(8,Math.min(innerWidth-shell.offsetWidth-8,ui.left))+'px';shell.style.top=Math.max(8,Math.min(innerHeight-shell.offsetHeight-8,ui.top))+'px';shell.style.right='auto';shell.style.bottom='auto'}else{shell.style.removeProperty('left');shell.style.removeProperty('top');shell.style.removeProperty('right');shell.style.removeProperty('bottom')}}
-function syncVisibility(){const shell=document.getElementById('themePreviewInspector');if(shell)shell.hidden=!ui.enabled}
-function enableDrag(shell,handle){let drag=null;handle.addEventListener('pointerdown',event=>{if(innerWidth<=700||event.target.closest('button'))return;const rect=shell.getBoundingClientRect();drag={x:event.clientX-rect.left,y:event.clientY-rect.top};handle.setPointerCapture(event.pointerId);shell.classList.add('is-dragging')});handle.addEventListener('pointermove',event=>{if(!drag)return;const left=Math.max(8,Math.min(innerWidth-shell.offsetWidth-8,event.clientX-drag.x));const top=Math.max(8,Math.min(innerHeight-shell.offsetHeight-8,event.clientY-drag.y));shell.style.left=left+'px';shell.style.top=top+'px';shell.style.right='auto';shell.style.bottom='auto';ui.left=left;ui.top=top});const stop=event=>{if(!drag)return;drag=null;shell.classList.remove('is-dragging');saveUi();try{handle.releasePointerCapture(event.pointerId)}catch(e){}};handle.addEventListener('pointerup',stop);handle.addEventListener('pointercancel',stop)}
-document.addEventListener('DOMContentLoaded',()=>{apply();setTimeout(build,0);const observer=new MutationObserver(()=>{const host=document.getElementById('tripStudioThemePreview');if(host&&host.dataset.themePreviewLauncher!=='1')buildStudioLauncher();syncVisibility()});observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});addEventListener('resize',applyUi)});root.ThemePreviewStudio={apply,reset,setPreset,exportJson,importJson,open:()=>{setEnabled(true);setCollapsed(false)},close:()=>setEnabled(false),getState:()=>({...state}),themes:()=>THEMES.slice()};
-})(globalThis);
+- JS syntax gate — PASS, all root `.js` files parse cleanly (`node --check`)
+- Release integrity (checksums + manifest) — PASS after regeneration (see
+  updated `SHA256SUMS.txt` / `PRODUCTION-FILE-MANIFEST.txt`)
+- HTML structure (balanced `<div>`/`</div>`) — PASS, all 10 root HTML pages
+- Entity linkage (places/bookings/itinerary/parties) — PASS, unaffected by
+  this change (`data.js` not touched)
+- Guide address integrity — PASS, unaffected by this change
+
+## Theme Apply / Reset
+
+- Verified each of the 8 preset objects (`adventure`, `japan`, `luxury`,
+  `nature`, `coastal`, `heritage`, `cafe`, `family`) resolves to a complete
+  state object via `setPreset()` — palette, typography, canvas asset,
+  card opacity, and decorative flag are all defined for every theme (no
+  fallback to `frozen` for any of the 8).
+- `reset()` still clears `travelEngine.themePreview.v1` and reapplies the
+  unmodified `frozen` constant — byte-identical to the pre-freeze frozen
+  NZ values (bg `#EEF8FA`, primary `#087F9C`, secondary `#3D7F55`, accent
+  `#F49A24`, canvas disabled, typography `original`).
+- Advanced fields (`tpBg`, `tpCardOpacity`, `tpTypography`) still write
+  through `update()` into the same live-apply/save/sync pipeline used
+  previously by the full control set — no new state path was introduced.
+
+## Storage
+
+- Confirmed no code path writes to Supabase, trip data, Booking, Expenses,
+  Moments, or production theme configuration. Only two localStorage keys
+  are touched: `travelEngine.themePreview.v1` (theme settings) and
+  `travelEngine.themePreview.ui.v2.1` (inspector open/collapsed/position) —
+  both unchanged from the prior stage.
+
+## Page/module regression
+
+- Homepage, Timeline (`day.html`), Guide, Booking (`trip.html`), Expenses,
+  Moments, Navigation, hero dimensions, and responsive breakpoints: no CSS
+  selectors outside the `theme-preview-*` namespace were touched, and no
+  markup in any of the 10 HTML pages changed except the cache-busting query
+  string on the 3 existing theme-preview `<link>`/`<script>` tags.
+- Trip Studio launcher card (`buildStudioLauncher`) — logic untouched;
+  still mounts via the same `tripStudioThemePreview` host and
+  `MutationObserver` used previously.
+- Floating Inspector — visibility, collapse/expand, drag, and the FAB
+  button all use the same `ui` state object and CSS classes as before;
+  only the panel's inner content (`controls()`) and its stylesheet rules
+  changed.
+
+## Mobile / Desktop
+
+- Theme card grid: 2 columns at ≥431px, 1 column at ≤430px (matches the
+  breakpoint pattern already used by the inspector's other layouts).
+- Advanced section is collapsed by default on every viewport.
+- Inspector width, placement (left-side, above bottom navigation), and
+  drag behaviour on desktop are unchanged from v2.1.
+
+## Known non-blocking item carried over
+
+`ci-tests/address-integrity-test.py` and the other CI scripts remain in
+`ci-tests/`, outside the production deploy root, consistent with the
+CERT-FINAL-FIX2 packaging decision — no change made here.
+
+## Verdict
+
+No regressions found. Safe to ship as the Stage 1.5 Theme Studio Freeze.

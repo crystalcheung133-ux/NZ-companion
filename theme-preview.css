@@ -1,202 +1,48 @@
-importScripts('./theme-config.js', './asset-config.js', './locale-config.js', './formatter.js', './navigation-config.js', './trip-config.js', './storage-config.js');
-const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-booking-save-rootfix1-theme-studio-freeze-1`;
-const CRITICAL_EXTENSIONS = /\.(?:css|js)$/i;
-const ASSETS = [
-  './',
-  './index.html',
-  './styles.css',
-  './theme-preview.css',
-  './theme-preview-runtime.js',
-  './theme-preview-assets/registry.js',
-  './theme-preview-assets/adventure-fresh-outdoor-canvas.svg',
-  './theme-preview-assets/japan-warm-editorial-canvas.svg',
-  './theme-preview-assets/luxury-boutique-elegant-canvas.svg',
-  './theme-preview-assets/nature-forest-organic-canvas.svg',
-  './theme-preview-assets/coastal-bright-ocean-canvas.svg',
-  './theme-preview-assets/heritage-classic-historic-canvas.svg',
-  './theme-preview-assets/cafe-minimal-cozy-canvas.svg',
-  './theme-preview-assets/family-friendly-bright-canvas.svg',
-  './core-runtime.js',
-  './trip-runtime.js',
-  './moments-compat.js',
-  './currency-runtime.js',
-  './home-runtime.js',
-  './script.js',
-  './guide-runtime.js',
-  './guide-navigation-runtime.js',
-  './expenses.js',
-  './supabase-client-runtime.js',
-  './expense-sync-runtime.js',
-  './moment-sync-runtime.js',
-  './generation-runtime.js',
-  './moments.js',
-  './admin.js',
-  './reset-runtime.js',
-  './publication-runtime.js',
-  './complete-runtime.js',
-  './export-runtime.js',
-  './pwa.js',
-  './app-runtime.js',
-  './theme-config.js',
-  './asset-config.js',
-  './locale-config.js',
-  './geo-config.js',
-  './party-render-runtime.js',
-  './formatter.js',
-  './money-config.js',
-  './money.js',
-  './navigation-config.js',
-  './navigation.js',
-  './storage-config.js',
-  './storage.js',
-  './sync-config.js',
-  './sync-runtime.js',
-  './trip-config.js',
-  './engine-integrity.js',
-  './data.js',
-  './booking-authority.js',
-  './itinerary-authority.js',
-  './place.html',
-  './day.html',
-  './offline.html',
-  './manifest.webmanifest',
-  './' + ASSET_CONFIG.icons.icon192,
-  './' + ASSET_CONFIG.icons.icon512,
-  './' + ASSET_CONFIG.branding.secondaryMark,
-  './' + ASSET_CONFIG.branding.splashLogo,
-  './guide.html',
-  './itinerary.html',
-  './memory.html',
-  './moments.html',
-  './expenses.html',
-  './trip.html'
-];
+/* Theme Preview Studio v1 — preview-only skin overrides. */
+html.theme-preview-active body{background-color:var(--tp-bg)!important;background-image:linear-gradient(rgba(255,255,255,0),rgba(255,255,255,0)),var(--tp-canvas-image,none)!important;background-size:var(--tp-canvas-size,cover)!important;background-position:var(--tp-canvas-position,center)!important;background-repeat:no-repeat!important;background-attachment:fixed!important;color:var(--tp-ink)!important;font-family:var(--tp-body-font)!important}
+html.theme-preview-active body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:var(--tp-canvas-image,none) var(--tp-canvas-position,center)/var(--tp-canvas-size,cover) no-repeat;opacity:var(--tp-canvas-opacity,0)}
+html.theme-preview-active .home-brand-card,html.theme-preview-active .page-hero,html.theme-preview-active .module-hero,html.theme-preview-active .prose-block,html.theme-preview-active .timeline-item,html.theme-preview-active .day-summary a,html.theme-preview-active .quick-info-card,html.theme-preview-active .expense-card,html.theme-preview-active .moments-entry,html.theme-preview-active .expense-total-card,html.theme-preview-active .expense-focus-card,html.theme-preview-active .guide-sheet,html.theme-preview-active .moments-sheet,html.theme-preview-active .unexpected-sheet,html.theme-preview-active .tools-sheet,html.theme-preview-active .trip-sheet,html.theme-preview-active .mini-menu{background-color:color-mix(in srgb,var(--tp-card) calc(var(--tp-card-opacity)*100%),transparent)!important;color:var(--tp-ink)!important}
+html.theme-preview-active .site-nav{background:color-mix(in srgb,var(--tp-card) 88%,transparent)!important}
+html.theme-preview-active h1,html.theme-preview-active h2,html.theme-preview-active .home-brand-card h1,html.theme-preview-active .page-hero h1,html.theme-preview-active .module-hero h1{font-family:var(--tp-heading-font)!important;color:var(--tp-ink)!important;transform:scale(var(--tp-title-scale));transform-origin:left center}
+html.theme-preview-active .home-brand-card h1{transform-origin:center center}
+html.theme-preview-active .kicker,html.theme-preview-active .status-badge,html.theme-preview-active .home-since,html.theme-preview-active .quick-info-label{color:var(--tp-primary)!important}
+html.theme-preview-active .btn,html.theme-preview-active .home-day-button{background:var(--tp-primary)!important;border-color:var(--tp-primary)!important}
+html.theme-preview-active .pill,html.theme-preview-active .mini-btn,html.theme-preview-active .friend-pill,html.theme-preview-active .timeline-actions button,html.theme-preview-active .timeline-actions a{border-color:var(--tp-accent)!important}
+html.theme-preview-active .page-hero,html.theme-preview-active .module-hero,html.theme-preview-active .home-brand-card{border-radius:var(--tp-hero-radius)!important}
+html.theme-preview-active .home-live-grid .live-card{background:color-mix(in srgb,var(--tp-card) calc(var(--tp-card-opacity)*100%),transparent)!important}
+html.theme-preview-active.theme-preview-no-decor .live-card::after,html.theme-preview-active.theme-preview-no-decor .quick-info-card::after,html.theme-preview-active.theme-preview-no-decor .moments-entry::after,html.theme-preview-active.theme-preview-no-decor .page-hero::after,html.theme-preview-active.theme-preview-no-decor .module-hero::after{display:none!important;content:none!important}
+html.theme-preview-active.theme-preview-watermark body::after{content:"PREVIEW ONLY";position:fixed;inset:auto 12px 86px auto;z-index:999;pointer-events:none;font:800 11px/1 system-ui,sans-serif;letter-spacing:.16em;color:var(--tp-ink);opacity:var(--tp-watermark-opacity);transform:rotate(-8deg)}
+html.theme-preview-active.theme-preview-hero-image .home-brand-card{background-image:linear-gradient(rgba(255,255,255,.18),rgba(255,255,255,.18)),var(--tp-hero-image)!important;background-size:cover!important;background-position:center!important}
+html.theme-preview-active.theme-preview-logo-off [data-brand-logo="header"]{visibility:hidden!important}
+html.theme-preview-active [data-brand-logo="header"]{width:var(--tp-logo-size)!important;height:auto!important;max-width:100%!important}
 
-
-self.addEventListener('message', event => {
-  if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
-});
-
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => Promise.all(ASSETS.map(asset => cache.add(new Request(asset,{cache:'reload'})))))
-  );
-});
-
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys()
-      .then(keys => Promise.all(keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))))
-      .then(() => self.clients.claim())
-  );
-});
-
-function looksLikeHtmlDocument(text) {
-  const sample = String(text || '').replace(/^\uFEFF/, '').trimStart().slice(0, 512).toLowerCase();
-  return sample.startsWith('<!doctype html') || sample.startsWith('<html') || sample.includes('<html ');
-}
-
-async function validateHtmlResponse(response) {
-  if (!response || !response.ok) return false;
-  try {
-    const body = await response.clone().text();
-    return looksLikeHtmlDocument(body);
-  } catch (error) {
-    return false;
-  }
-}
-
-async function fetchValidHtml(request) {
-  try {
-    const response = await fetch(request, { cache: 'no-store', redirect: 'follow' });
-    return await validateHtmlResponse(response) ? response : null;
-  } catch (error) {
-    return null;
-  }
-}
-
-async function cachedValidHtml(request) {
-  const candidates = [
-    request,
-    new Request('./index.html', { headers: { accept: 'text/html' } }),
-    new Request('./offline.html', { headers: { accept: 'text/html' } })
-  ];
-  for (const candidate of candidates) {
-    const response = await caches.match(candidate, { ignoreSearch: true });
-    if (await validateHtmlResponse(response)) return response;
-  }
-  return null;
-}
-
-async function navigationResponse(request) {
-  const cache = await caches.open(CACHE_NAME);
-  const direct = await fetchValidHtml(request);
-  if (direct) {
-    await cache.put(request, direct.clone());
-    return direct;
-  }
-
-  const indexRequest = new Request(new URL('./index.html', self.location.href), {
-    method: 'GET',
-    headers: { accept: 'text/html' },
-    cache: 'no-store',
-    credentials: 'same-origin',
-    redirect: 'follow'
-  });
-  const indexResponse = await fetchValidHtml(indexRequest);
-  if (indexResponse) {
-    await cache.put('./index.html', indexResponse.clone());
-    return indexResponse;
-  }
-
-  return await cachedValidHtml(request) || new Response(
-    '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Offline</title></head><body><p>This page is temporarily unavailable.</p></body></html>',
-    { status: 503, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
-  );
-}
-
-async function networkFirst(request) {
-  const cache = await caches.open(CACHE_NAME);
-  try {
-    const response = await fetch(request);
-    if (response && response.ok) cache.put(request, response.clone());
-    return response;
-  } catch (error) {
-    let cached = await caches.match(request, { ignoreSearch: true });
-    if (!cached) {
-      const url = new URL(request.url);
-      cached = await caches.match(url.pathname.split('/').pop() || './index.html', { ignoreSearch: true });
-    }
-    return cached || caches.match('./offline.html');
-  }
-}
-
-async function cacheFirstMedia(request) {
-  const cache = await caches.open(CACHE_NAME);
-  const cached = await cache.match(request, {ignoreSearch:true});
-  if (cached) return cached;
-  try {
-    const response = await fetch(request);
-    if (response && response.ok) cache.put(request, response.clone());
-    return response;
-  } catch (error) {
-    return caches.match('./offline.html');
-  }
-}
-
-self.addEventListener('fetch', event => {
-  if (event.request.method !== 'GET') return;
-
-  const url = new URL(event.request.url);
-  if (url.origin !== self.location.origin) return;
-
-  const acceptsHtml = event.request.headers.get('accept')?.includes('text/html');
-  if (event.request.mode === 'navigate' || acceptsHtml) {
-    event.respondWith(navigationResponse(event.request));
-  } else if (CRITICAL_EXTENSIONS.test(url.pathname)) {
-    event.respondWith(networkFirst(event.request));
-  } else {
-    event.respondWith(cacheFirstMedia(event.request));
-  }
-});
+/* Floating Theme Inspector v2 */
+.theme-preview-inspector[hidden]{display:none!important}
+.theme-preview-inspector{position:fixed;left:16px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:12000;width:min(360px,calc(100vw - 24px));font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#243f35;filter:drop-shadow(0 18px 34px rgba(18,42,34,.24))}
+.theme-preview-window{overflow:hidden;border:1px solid rgba(31,78,63,.2);border-radius:20px;background:rgba(250,253,251,.97);backdrop-filter:blur(16px)}
+.theme-preview-window-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;background:#eef6f1;cursor:grab;touch-action:none;user-select:none}
+.theme-preview-inspector.is-dragging .theme-preview-window-head{cursor:grabbing}
+.theme-preview-window-head div{display:grid}.theme-preview-window-head strong{font-size:13px}.theme-preview-window-head small{font-size:9px;font-weight:850;letter-spacing:.12em;color:#6a8076}
+.theme-preview-head-actions{display:flex;align-items:center;gap:6px}.theme-preview-window-head button{width:32px;height:32px;border:0;border-radius:10px;background:#fff;color:#28483b;font-size:20px;line-height:1}
+.theme-preview-window-body{max-height:min(68vh,650px);overflow:auto;overscroll-behavior:contain;padding:12px;padding-bottom:18px}
+.theme-preview-fab{display:none;width:52px;height:52px;margin-left:auto;border:1px solid rgba(31,78,63,.18);border-radius:50%;background:#fff;font-size:22px;box-shadow:0 12px 28px rgba(18,42,34,.22)}
+.theme-preview-inspector.is-collapsed{width:52px;filter:none}.theme-preview-inspector.is-collapsed .theme-preview-window{display:none}.theme-preview-inspector.is-collapsed .theme-preview-fab{display:block}
+.theme-preview-notice{padding:9px 10px;border:1px solid rgba(139,75,29,.2);border-radius:12px;background:#fff8e9;color:#7b4b21;font-size:9px;font-weight:850;letter-spacing:.07em;text-align:center}
+.theme-preview-section-label{margin:10px 2px 6px;font-size:10px;font-weight:850;letter-spacing:.1em;text-transform:uppercase;color:#405f52}
+.theme-preview-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.theme-card{display:grid;grid-template-columns:34px 1fr;grid-template-rows:auto auto;column-gap:8px;align-items:center;padding:8px;border:1px solid rgba(31,78,63,.16);border-radius:12px;background:#fff}
+.theme-card-swatch{grid-row:1/3;width:34px;height:34px;border-radius:9px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.theme-card-copy{min-width:0;display:grid;gap:1px}.theme-card-copy strong{font-size:11.5px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.theme-card-copy small{font-size:9px;color:#657b70;line-height:1.25;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.theme-card-apply{grid-column:1/-1;margin-top:7px;min-height:32px;border:0;border-radius:9px;background:#285e4a;color:#fff;font:inherit;font-size:10.5px;font-weight:850}
+.theme-card.is-active{border-color:#285e4a;box-shadow:0 0 0 1px #285e4a inset}.theme-card.is-active .theme-card-apply{background:#eef6f1;color:#285e4a;border:1px solid #285e4a}
+.theme-preview-advanced{margin-top:12px;border:1px solid rgba(31,78,63,.16);border-radius:12px;overflow:hidden;background:#fbfdfb}
+.theme-preview-advanced summary{list-style:none;cursor:pointer;padding:9px 10px;font-size:10.5px;font-weight:850;letter-spacing:.06em;color:#405f52;display:flex;align-items:center;justify-content:space-between}
+.theme-preview-advanced summary::after{content:'▾';font-size:10px}
+.theme-preview-advanced[open] summary::after{content:'▴'}
+.theme-preview-advanced summary::-webkit-details-marker{display:none}
+.theme-preview-advanced-body{padding:2px 10px 10px;display:grid;gap:9px}
+.theme-preview-field{display:grid;gap:4px;min-width:0}.theme-preview-field.full{grid-column:1/-1}.theme-preview-field label{display:flex;justify-content:space-between;gap:8px;font-size:10px;font-weight:800;color:#405f52}.theme-preview-field input,.theme-preview-field select{width:100%;min-height:36px;border:1px solid rgba(31,78,63,.18);border-radius:10px;background:#fff;padding:6px 8px;font:inherit;font-size:12px}.theme-preview-field input[type=range]{min-height:24px;padding:0}.theme-preview-colour{display:grid;grid-template-columns:40px 1fr;gap:6px}.theme-preview-colour input[type=color]{padding:3px}.theme-preview-value{font-size:9px;color:#71847b;text-align:right;font-weight:700}
+.theme-preview-reset{width:100%;min-height:38px;margin-top:11px;border:1px solid rgba(31,78,63,.18);border-radius:10px;background:#fff;color:#28483b;font:inherit;font-size:11px;font-weight:850}
+.theme-preview-launch-card{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid rgba(31,78,63,.16);border-radius:16px;background:#f5faf7}.theme-preview-launch-card div{display:grid;gap:3px}.theme-preview-launch-card strong{font-size:13px}.theme-preview-launch-card small{font-size:10px;color:#657b70}.theme-preview-launch-actions{display:flex;flex:0 0 auto;gap:8px}.theme-preview-launch-card button{flex:0 0 auto;min-height:40px;border:0;border-radius:12px;background:#285e4a;color:#fff;padding:8px 12px;font:inherit;font-size:11px;font-weight:850}.theme-preview-launch-card button.secondary{background:#fff;color:#285e4a;border:1px solid rgba(31,78,63,.22)}.theme-preview-launch-card button:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:700px){.theme-preview-inspector{left:10px;bottom:calc(78px + env(safe-area-inset-bottom));width:calc(100vw - 20px)}.theme-preview-window{border-radius:18px}.theme-preview-window-head{cursor:default}.theme-preview-window-body{max-height:58vh}}
+@media(max-width:430px){.theme-preview-window-body{max-height:56vh;padding:10px}.theme-preview-list{grid-template-columns:1fr}.theme-preview-launch-card{align-items:flex-start;flex-direction:column}.theme-preview-launch-actions{width:100%;display:grid;grid-template-columns:1fr 1fr}.theme-preview-launch-card button{width:100%}}
