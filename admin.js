@@ -43,6 +43,7 @@
       modal.classList.remove('show');
     }
   }
+  window.closeTripStudioPanel=closeTripStudioPanel;
   function exitTripStudioMode(){
     const disabled=window.setAdminMode(false);
     if(disabled===false) return false;
@@ -178,6 +179,7 @@
       const group=document.getElementById(id);
       if(group) group.hidden=!state.mode;
     });
+    document.dispatchEvent(new CustomEvent('travelengine:studio-mode-change',{detail:{enabled:state.mode}}));
   }
   function buildShell(){
     const familySheet=document.querySelector('#mamaModal .guide-sheet');

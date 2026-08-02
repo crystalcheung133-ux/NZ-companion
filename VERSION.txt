@@ -1,16 +1,24 @@
 Travel Engine — New Zealand Companion
-Release: Stage3.2H-PORT1-THEME-PREVIEW-STUDIO-V1
-Engine baseline: Stage3.2H-PORT1-BOOKING-SAVE-ROOTFIX1-EXPENSE-CLEANUP1
+Release: Stage3.2H-PORT1-THEME-PREVIEW-STUDIO-V2-FLOATING-INSPECTOR
+Engine baseline: Stage3.2H-PORT1-THEME-PREVIEW-STUDIO-V1
 Release date: 2026-08-02
-Status: Production implementation — Theme Preview Studio v1
+Status: Production implementation — Floating Theme Inspector
 
-Added a preview-only Theme Preview Studio inside the existing Trip Studio.
-The implementation preserves the Frozen NZ layout, navigation, data model,
-storage architecture and business logic. Theme preview settings use the
-isolated localStorage namespace travelEngine.themePreview.v1 and are applied
-live through CSS custom properties and a dedicated runtime stylesheet.
+Theme Preview Studio now runs as a floating live inspector over the actual
+Frozen Travel Engine interface. Once Studio Mode is unlocked, the inspector
+can remain open while the user views and navigates Homepage, Timeline, Guide,
+Trip, Expenses, Moments and Days.
 
-Included preset:
-- Japan Warm Editorial — Preview Only
+Desktop:
+- Fixed corner inspector
+- Draggable by its header
+- Collapsible to a compact paint-palette button
 
-No production Save Theme or publishing action is included.
+Mobile:
+- Safe floating panel above bottom navigation
+- Scrollable controls
+- Collapsible to a compact paint-palette button
+
+Theme settings remain isolated in travelEngine.themePreview.v1.
+Inspector position and collapsed state use travelEngine.themePreview.ui.v2.
+No production theme publishing or trip-data writes are included.
