@@ -16,6 +16,90 @@ html.theme-preview-active.theme-preview-hero-image .home-brand-card{background-i
 html.theme-preview-active.theme-preview-logo-off [data-brand-logo="header"]{visibility:hidden!important}
 html.theme-preview-active [data-brand-logo="header"]{width:var(--tp-logo-size)!important;height:auto!important;max-width:100%!important}
 
+/* ==========================================================================
+   OFFICIAL THEME STUDIO — full visual package for the 8 official Themes.
+   Scoped to html.theme-preview-active[data-theme-preset] and explicitly
+   excludes "nz" (Frozen NZ baseline) and "custom" (Advanced panel tweaks),
+   so switching Themes is the only thing that can trigger these rules —
+   the frozen production look and the Advanced-only fields are untouched.
+   Covers: Hero gradient, primary/secondary/CTA buttons, active bottom-nav,
+   active tabs, card accent + border, icon accent, hyperlink colour and the
+   Timeline highlight stripe — everywhere those elements appear (Home,
+   Timeline/Days, Guide, Booking, Expenses, Moments).
+   ========================================================================== */
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .page-hero,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .module-hero,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .home-brand-card{background-color:transparent!important;background-image:linear-gradient(var(--tp-hero-scrim),var(--tp-hero-scrim)),var(--tp-hero-gradient)!important;background-size:cover!important;background-position:center!important;border-color:var(--tp-border)!important}
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .page-hero h1,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .module-hero h1,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .home-brand-card h1,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .page-hero .lead,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .module-hero .lead,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .home-brand-card .home-trip-line,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .home-since{color:var(--tp-hero-ink)!important}
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .page-hero .kicker,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .module-hero .kicker,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .home-brand-card .kicker,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .page-hero .status-badge,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .module-hero .status-badge{color:var(--tp-hero-ink)!important;opacity:.86!important}
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .btn,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .home-day-button{background:linear-gradient(135deg,var(--tp-primary),color-mix(in srgb,var(--tp-primary) 68%,black))!important;border-color:var(--tp-primary)!important;color:var(--tp-primary-ink)!important;box-shadow:0 10px 22px color-mix(in srgb,var(--tp-primary) 32%,transparent)!important}
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .pill,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .mini-btn,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .friend-pill,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .timeline-actions button,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .timeline-actions a{background:color-mix(in srgb,var(--tp-secondary) 15%,var(--tp-card))!important;border-color:var(--tp-secondary)!important;color:var(--tp-ink)!important}
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .primary-action,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .page-action-row .primary-action,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) button.primary-action{background:linear-gradient(135deg,var(--tp-cta),color-mix(in srgb,var(--tp-cta) 68%,black))!important;border-color:var(--tp-cta)!important;color:var(--tp-cta-ink)!important;box-shadow:0 10px 24px color-mix(in srgb,var(--tp-cta) 34%,transparent)!important}
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .app-nav .is-active{background:var(--tp-nav-active)!important;box-shadow:0 6px 16px color-mix(in srgb,var(--tp-nav-active) 45%,transparent)!important}
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .app-nav .is-active span,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .app-nav .is-active small{color:var(--tp-nav-active-ink)!important}
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) #momentsModal .moment-day-tab.active,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .expense-type-btn.active,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .expense-category-btn.active,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .split-mode-btn.active{background:var(--tp-primary)!important;border-color:var(--tp-primary)!important;color:var(--tp-primary-ink)!important;box-shadow:0 5px 14px color-mix(in srgb,var(--tp-primary) 38%,transparent)!important}
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .quick-info-card,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .prose-block,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .timeline-item,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .expense-card,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .moments-entry,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .expense-total-card,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .expense-focus-card,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .guide-sheet,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .moments-sheet,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .unexpected-sheet,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .tools-sheet,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .trip-sheet,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .mini-menu,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .day-summary a{border-color:var(--tp-border)!important}
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .quick-info-card,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .expense-card,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .moments-entry,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .expense-total-card,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .expense-focus-card{box-shadow:inset 0 4px 0 0 var(--tp-accent),0 11px 26px rgba(0,0,0,.07)!important}
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .quick-info-icon,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .calc-open-btn,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .calc-open-btn svg{color:var(--tp-accent)!important}
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .category-tag{background:color-mix(in srgb,var(--tp-accent) 22%,var(--tp-card))!important;color:var(--tp-ink)!important}
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .prose-block a,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .guide-sheet a,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .trip-sheet a,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .moments-sheet a,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .quick-info-value a{color:var(--tp-link)!important;text-decoration:underline!important;text-decoration-color:color-mix(in srgb,var(--tp-link) 55%,transparent)!important;text-underline-offset:2px!important}
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .site-nav{border-bottom-color:var(--tp-border)!important}
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) p,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) li,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .lead,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .timeline-main p,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .guide-list-sub,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .quick-info-value,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .menu-sub,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .timestamp{color:var(--tp-muted)!important}
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .timeline-item:before{background:var(--tp-timeline-1)!important}
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .timeline-item:nth-child(3n+2):before{background:var(--tp-timeline-2)!important}
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .timeline-item:nth-child(3n):before{background:var(--tp-timeline-3)!important}
+
 /* Floating Theme Inspector v2 */
 .theme-preview-inspector[hidden]{display:none!important}
 .theme-preview-inspector{position:fixed;left:16px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:12000;width:min(360px,calc(100vw - 24px));font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#243f35;filter:drop-shadow(0 18px 34px rgba(18,42,34,.24))}

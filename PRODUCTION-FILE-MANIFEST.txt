@@ -1,11 +1,13 @@
 Travel Engine Production File Manifest
-Generated: 2026-08-02
-Release: Stage1.5-THEME-STUDIO-FREEZE
+Generated: 2026-08-03
+Release: Stage1.5.1-THEME-STUDIO-VISUAL-POLISH
 Production root files:
 
 - CI-PATH-FIX-REPORT.md
 - THEME-STUDIO-FREEZE-REGRESSION-REPORT.md
 - THEME-STUDIO-FREEZE-REPORT.md
+- THEME-VISUAL-POLISH-REGRESSION-REPORT.md
+- THEME-VISUAL-POLISH-REPORT.md
 - VERSION.txt
 - admin.js
 - app-runtime.js

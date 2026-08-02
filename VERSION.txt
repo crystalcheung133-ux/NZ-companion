@@ -1,4 +1,4 @@
-Travel Engine — Theme Studio Freeze (Stage 1.5)
-Build: theme-studio-freeze-1
-Date: 2026-08-02
-Baseline: NZ Companion Frozen Engine with CI tests + Theme Preview Studio v2.1
+Travel Engine — Theme Studio Visual Identity Polish (Stage 1.5.1)
+Build: theme-studio-visual-polish-1
+Date: 2026-08-03
+Baseline: Theme Studio Freeze 1.5 (theme-studio-freeze-1)
