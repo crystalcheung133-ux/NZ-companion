@@ -1,114 +1,58 @@
-/* supabase-client-runtime.js — Stage 10A Root Cause Fix
-   Single shared Supabase client built on the OFFICIAL @supabase/supabase-js SDK.
-   Replaces supabase-auth-runtime.js (removed), which hand-rolled raw POST requests
-   to /auth/v1/signup and /auth/v1/token — an unofficial reimplementation of GoTrue's
-   auth protocol that produced 422 Unprocessable Content and never yielded a session.
-
-   Contract:
-     createClient()  → one client, reused by Expenses and Moments
-       ↓
-     auth.getSession()   → returns existing session if still valid
-       ↓ (none)
-     auth.signInAnonymously()
-       ↓
-     session persisted by the SDK itself (localStorage), reused on next call
-
-   Expenses and Moments both call SUPABASE.getSession() before every request.
-   Neither module talks to GoTrue directly — the SDK owns that entirely. */
-(function (root) {
+/* storage-config.js — Stage 7F canonical browser-storage key ownership.
+   Existing key values are intentionally preserved so deployed user data remains compatible. */
+(function(root){
   'use strict';
 
-  const config = root.SYNC_CONFIG || {};
-  const LOG = '[Supabase]';
-  const state = { client: null, sessionPromise: null, lastError: null };
+  const namespace=String(root.TRIP_CONFIG&&root.TRIP_CONFIG.storageNamespace||'').trim();
+  if(!namespace) throw new Error('TRIP_CONFIG.storageNamespace is required before storage-config.js');
 
-  function configured() {
-    return !!(
-      config.enabled &&
-      config.url &&
-      config.anonKey &&
-      typeof config.hasCredentials === 'function' &&
-      config.hasCredentials()
-    );
-  }
-
-  function getClient() {
-    if (state.client) return state.client;
-
-    if (!configured()) {
-      throw new Error('Supabase sync is not configured (missing url/anonKey)');
-    }
-    if (typeof root.supabase?.createClient !== 'function') {
-      // The official SDK (loaded via CDN <script> before this file) did not load.
-      const err = new Error(
-        'Supabase JS SDK not found on window.supabase — check the CDN <script> tag and network access'
-      );
-      console.error(LOG, err.message);
-      throw err;
-    }
-
-    state.client = root.supabase.createClient(config.url, config.anonKey, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: false,
-        storageKey: 'travel_engine_supabase_auth_v1'
-      }
-    });
-    console.log(LOG, 'Client created for', config.url);
-    return state.client;
-  }
-
-  async function getSession() {
-    // De-duplicate concurrent callers (Expenses + Moments may both ask at once).
-    if (state.sessionPromise) return state.sessionPromise;
-
-    state.sessionPromise = (async () => {
-      const client = getClient();
-      try {
-        const { data, error } = await client.auth.getSession();
-        if (error) throw error;
-
-        if (data?.session) {
-          console.log(LOG, 'Session restored');
-          state.lastError = null;
-          return data.session;
-        }
-
-        console.log(LOG, 'No existing session — requesting anonymous sign-in');
-        const { data: signInData, error: signInError } = await client.auth.signInAnonymously();
-
-        if (signInError) {
-          console.error(LOG, 'Anonymous sign-in failed:', signInError.message, signInError);
-          throw signInError;
-        }
-        if (!signInData?.session) {
-          const err = new Error('Anonymous sign-in returned no session');
-          console.error(LOG, err.message);
-          throw err;
-        }
-
-        console.log(LOG, 'Anonymous session created', signInData.session.user?.id || '');
-        state.lastError = null;
-        return signInData.session;
-      } catch (error) {
-        state.lastError = error;
-        throw error;
-      } finally {
-        state.sessionPromise = null;
-      }
-    })();
-
-    return state.sessionPromise;
-  }
-
-  root.SUPABASE = Object.freeze({
-    getClient,
-    getSession,
-    isConfigured: configured,
-    getLastError: () => state.lastError
+  const keys=Object.freeze({
+    checklist:'checklist',
+    expenses:'expenses',
+    momentPrefix:'moment_',
+    latestMomentPrefix:'moment_latest_',
+    momentsFreeform:'moments_freeform',
+    momentsList:'moments_list',
+    friend:'nz_friend',
+    adminMode:'travel_engine_admin_mode_v1',
+    adminDraft:'travel_engine_admin_draft_v1',
+    guideNavContext:'ccmv_guide_nav_context',
+    guideNavReopen:'ccmv_guide_nav_reopen',
+    itineraryOverrides:'travel_engine_itinerary_overrides_v1',
+    itineraryMasterSignature:'travel_engine_itinerary_master_signature_v1',
+    tripCompletion:'travel_engine_trip_completion_v1',
+    changedPlans:'travel_engine_changed_plans_v1',
+    cloudSnapshot:'travel_engine_cloud_snapshot_v1',
+    cloudSyncMeta:'travel_engine_cloud_sync_meta_v1',
+    cloudReloadMarker:'travel_engine_cloud_reload_version_v1',
+    expenseSyncTombstones:'travel_engine_expense_tombstones_v1',
+    expenseSyncMeta:'travel_engine_expense_sync_meta_v1',
+    canonicalExpenseState:namespace+':canonical_expenses:stage_3_2d:v1',
+    expenseReadShadowState:namespace+':canonical_expense_read_shadow:stage_3_2e:v1',
+    tripGeneration:'travel_engine_trip_generation_v1',
+    bookingOverrides:'travel_engine_booking_overrides_v1'
   });
 
-  // Back-compat alias only — no separate login logic, same object.
-  root.SUPABASE_AUTH = root.SUPABASE;
+  const domains=Object.freeze({
+    identity:Object.freeze({friend:keys.friend}),
+    checklist:Object.freeze({state:keys.checklist}),
+    expenses:Object.freeze({records:keys.expenses,tombstones:keys.expenseSyncTombstones,syncMetadata:keys.expenseSyncMeta}),
+    canonicalExpenses:Object.freeze({state:keys.canonicalExpenseState}),
+    expenseReadShadow:Object.freeze({state:keys.expenseReadShadowState}),
+    moments:Object.freeze({records:keys.momentsList,freeform:keys.momentsFreeform,legacyPrefix:keys.momentPrefix,latestPrefix:keys.latestMomentPrefix}),
+    admin:Object.freeze({mode:keys.adminMode,draft:keys.adminDraft}),
+    guide:Object.freeze({context:keys.guideNavContext,reopen:keys.guideNavReopen}),
+    itinerary:Object.freeze({overrides:keys.itineraryOverrides,masterSignature:keys.itineraryMasterSignature}),
+    bookings:Object.freeze({overrides:keys.bookingOverrides}),
+    completion:Object.freeze({state:keys.tripCompletion}),
+    journey:Object.freeze({changedPlans:keys.changedPlans}),
+    sync:Object.freeze({snapshot:keys.cloudSnapshot,metadata:keys.cloudSyncMeta,reloadMarker:keys.cloudReloadMarker})
+  });
+
+  root.STORAGE_CONFIG=Object.freeze({
+    appPrefix:'travel_engine',
+    version:1,
+    keys,
+    domains
+  });
 })(globalThis);
