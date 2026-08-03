@@ -1,6 +1,6 @@
 CCMV Travel Engine Production File Manifest
 Generated: 2026-08-04
-Release: NZ-RC22.3-DATA-PRICE-TIMELINE-FIX
+Release: NZ-RC22.4-ACCOMMODATION-STATUS-ALPINE-NOTICES
 Production root files:
 
 - VERSION.txt

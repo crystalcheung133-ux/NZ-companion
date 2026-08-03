@@ -1,2 +1,2 @@
-NZ-RC22.3
-Day 3 price correction + Sudima price + timeline overlap fix
+RC22.4
+Accommodation status badges + Sudima price + Alpine timeline notices
