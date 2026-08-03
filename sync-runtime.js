@@ -1,202 +1,318 @@
-importScripts('./theme-config.js', './asset-config.js', './locale-config.js', './formatter.js', './navigation-config.js', './trip-config.js', './storage-config.js');
-const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-booking-save-rootfix1-theme-studio-freeze-1`;
-const CRITICAL_EXTENSIONS = /\.(?:css|js)$/i;
-const ASSETS = [
-  './',
-  './index.html',
-  './styles.css',
-  './theme-preview.css',
-  './theme-preview-runtime.js',
-  './theme-preview-assets/registry.js',
-  './theme-preview-assets/adventure-fresh-outdoor-canvas.svg',
-  './theme-preview-assets/japan-warm-editorial-canvas.svg',
-  './theme-preview-assets/luxury-boutique-elegant-canvas.svg',
-  './theme-preview-assets/nature-forest-organic-canvas.svg',
-  './theme-preview-assets/coastal-bright-ocean-canvas.svg',
-  './theme-preview-assets/heritage-classic-historic-canvas.svg',
-  './theme-preview-assets/cafe-minimal-cozy-canvas.svg',
-  './theme-preview-assets/family-friendly-bright-canvas.svg',
-  './core-runtime.js',
-  './trip-runtime.js',
-  './moments-compat.js',
-  './currency-runtime.js',
-  './home-runtime.js',
-  './script.js',
-  './guide-runtime.js',
-  './guide-navigation-runtime.js',
-  './expenses.js',
-  './supabase-client-runtime.js',
-  './expense-sync-runtime.js',
-  './moment-sync-runtime.js',
-  './generation-runtime.js',
-  './moments.js',
-  './admin.js',
-  './reset-runtime.js',
-  './publication-runtime.js',
-  './complete-runtime.js',
-  './export-runtime.js',
-  './pwa.js',
-  './app-runtime.js',
-  './theme-config.js',
-  './asset-config.js',
-  './locale-config.js',
-  './geo-config.js',
-  './party-render-runtime.js',
-  './formatter.js',
-  './money-config.js',
-  './money.js',
-  './navigation-config.js',
-  './navigation.js',
-  './storage-config.js',
-  './storage.js',
-  './sync-config.js',
-  './sync-runtime.js',
-  './trip-config.js',
-  './engine-integrity.js',
-  './data.js',
-  './booking-authority.js',
-  './itinerary-authority.js',
-  './place.html',
-  './day.html',
-  './offline.html',
-  './manifest.webmanifest',
-  './' + ASSET_CONFIG.icons.icon192,
-  './' + ASSET_CONFIG.icons.icon512,
-  './' + ASSET_CONFIG.branding.secondaryMark,
-  './' + ASSET_CONFIG.branding.splashLogo,
-  './guide.html',
-  './itinerary.html',
-  './memory.html',
-  './moments.html',
-  './expenses.html',
-  './trip.html'
-];
+/* sync-runtime.js — Stage 9A-2 read-only published snapshot hydration.
+   Reads Supabase, caches the newest valid publication and hydrates static trip datasets.
+   It never uploads itinerary, Admin drafts, Expenses or Moments. */
+(function(root){
+  'use strict';
 
+  const EVENTS=Object.freeze({
+    stateChange:'travelengine:sync-state-change',
+    snapshot:'travelengine:sync-snapshot',
+    hydrated:'travelengine:sync-hydrated',
+    error:'travelengine:sync-error'
+  });
+  const state={
+    status:'initialising', configured:false,
+    online:root.navigator ? root.navigator.onLine!==false : true,
+    source:'local', lastSyncedAt:null, remoteVersion:null,
+    activeVersion:null, hydrated:false, error:null
+  };
+  let activeSnapshot=null;
+  let autoReadStarted=false;
 
-self.addEventListener('message', event => {
-  if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
-});
-
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => Promise.all(ASSETS.map(asset => cache.add(new Request(asset,{cache:'reload'})))))
-  );
-});
-
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys()
-      .then(keys => Promise.all(keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))))
-      .then(() => self.clients.claim())
-  );
-});
-
-function looksLikeHtmlDocument(text) {
-  const sample = String(text || '').replace(/^\uFEFF/, '').trimStart().slice(0, 512).toLowerCase();
-  return sample.startsWith('<!doctype html') || sample.startsWith('<html') || sample.includes('<html ');
-}
-
-async function validateHtmlResponse(response) {
-  if (!response || !response.ok) return false;
-  try {
-    const body = await response.clone().text();
-    return looksLikeHtmlDocument(body);
-  } catch (error) {
+  function emit(name,detail){
+    if(!root.document || typeof root.CustomEvent!=='function') return;
+    root.document.dispatchEvent(new root.CustomEvent(name,{detail:detail||{}}));
+  }
+  function snapshot(){
+    return Object.freeze({
+      status:state.status,configured:state.configured,online:state.online,
+      source:state.source,lastSyncedAt:state.lastSyncedAt,
+      remoteVersion:state.remoteVersion,activeVersion:state.activeVersion,
+      hydrated:state.hydrated,error:state.error
+    });
+  }
+  function reflect(){
+    const el=root.document&&root.document.documentElement;
+    if(!el||!el.dataset)return;
+    el.dataset.syncStatus=state.status;
+    el.dataset.syncConfigured=state.configured?'true':'false';
+    el.dataset.syncSource=state.source;
+    el.dataset.syncVersion=state.activeVersion==null?'':String(state.activeVersion);
+  }
+  function publish(reason){reflect();emit(EVENTS.stateChange,{reason:reason||'state',state:snapshot()});}
+  function setState(next,reason){
+    Object.keys(next||{}).forEach(function(key){
+      if(Object.prototype.hasOwnProperty.call(state,key))state[key]=next[key];
+    });
+    publish(reason);return snapshot();
+  }
+  function config(){return root.SYNC_CONFIG||null;}
+  function store(){return root.STORAGE&&root.STORAGE.local?root.STORAGE.local:null;}
+  function configured(){
+    const cfg=config();return !!(cfg&&typeof cfg.hasCredentials==='function'&&cfg.hasCredentials());
+  }
+  function readCachedSnapshot(){
+    const cfg=config(),storage=store();
+    if(!cfg||!storage)return null;
+    const cached=storage.readJSON(cfg.cacheKey,null);
+    return validateWrapper(cached)?cached:null;
+  }
+  function validateWrapper(wrapper){
+    const cfg=config();
+    return !!(cfg&&wrapper&&wrapper.tripId===cfg.tripId&&
+      Number(wrapper.schemaVersion)===Number(cfg.schemaVersion)&&
+      wrapper.payload&&typeof wrapper.payload==='object');
+  }
+  function normaliseRow(row){
+    if(!row||typeof row!=='object')return null;
+    const wrapper={
+      tripId:String(row.trip_id||''),schemaVersion:Number(row.schema_version),
+      version:Number(row.version),publishedAt:row.published_at||null,
+      savedAt:new Date().toISOString(),payload:row.payload
+    };
+    return validateWrapper(wrapper)&&Number.isFinite(wrapper.version)?wrapper:null;
+  }
+  function writeCache(wrapper){
+    const cfg=config(),storage=store();
+    if(!cfg||!storage||!validateWrapper(wrapper))return false;
+    const savedAt=new Date().toISOString();
+    const saved=Object.assign({},wrapper,{savedAt:savedAt});
+    const ok=storage.writeJSON(cfg.cacheKey,saved);
+    if(ok)storage.writeJSON(cfg.metadataKey,{
+      lastSyncedAt:savedAt,remoteVersion:saved.version,publishedAt:saved.publishedAt||null
+    });
+    return ok;
+  }
+  function endpoint(){
+    const cfg=config();
+    return cfg.url.replace(/\/$/,'')+'/rest/v1/'+encodeURIComponent(cfg.tables.publications)
+      +'?trip_id=eq.'+encodeURIComponent(cfg.tripId)
+      +'&schema_version=eq.'+encodeURIComponent(cfg.schemaVersion)
+      +'&select=trip_id,schema_version,version,published_at,payload'
+      +'&order=version.desc&limit=1';
+  }
+  function fetchWithTimeout(url,options,timeoutMs){
+    const controller=typeof AbortController==='function'?new AbortController():null;
+    const timer=controller?root.setTimeout(function(){controller.abort();},timeoutMs):null;
+    const opts=Object.assign({},options||{},controller?{signal:controller.signal}:{});
+    return root.fetch(url,opts).finally(function(){if(timer)root.clearTimeout(timer);});
+  }
+  function payloadData(wrapper){
+    const payload=wrapper&&wrapper.payload;
+    if(!payload||typeof payload!=='object')return null;
+    return payload.data&&typeof payload.data==='object'?payload.data:payload;
+  }
+  function replaceObject(target,next){
+    if(!target||typeof target!=='object'||Array.isArray(target)||!next||typeof next!=='object'||Array.isArray(next))return false;
+    Object.keys(target).forEach(function(key){delete target[key];});
+    Object.keys(next).forEach(function(key){target[key]=next[key];});
+    return true;
+  }
+  function replaceArray(target,next){
+    if(!Array.isArray(target)||!Array.isArray(next))return false;
+    target.splice.apply(target,[0,target.length].concat(next));return true;
+  }
+  function select(data,names){
+    for(let i=0;i<names.length;i+=1){
+      if(Object.prototype.hasOwnProperty.call(data,names[i]))return data[names[i]];
+    }
+    return undefined;
+  }
+  function collectionSize(value){
+    if(Array.isArray(value))return value.length;
+    if(value&&typeof value==='object')return Object.keys(value).length;
+    return 0;
+  }
+  function validateHydrationData(data,targets){
+    const critical=[
+      ['PLACES',['places','PLACES']],
+      ['GUIDE_ORDER',['guideOrder','GUIDE_ORDER']],
+      ['TRIP_DATA',['tripData','TRIP_DATA']],
+      ['TRIP_ORDER',['tripOrder','TRIP_ORDER']],
+      ['ITINERARY_DATA',['itineraryData','itinerary','ITINERARY_DATA']]
+    ];
+    const missing=[];
+    critical.forEach(function(entry){
+      const local=targets&&targets[entry[0]],remote=select(data,entry[1]);
+      if(collectionSize(local)>0&&collectionSize(remote)===0)missing.push(entry[0]);
+    });
+    return {ok:missing.length===0,missing:missing};
+  }
+  /* RC15: a cached/fetched publication is only trustworthy if it was built
+     FROM the master-itinerary revision currently shipped on this device. A
+     publication produced before this deploy's data.js changed carries the
+     old masterRevision (or none, if published before RC15) and must never be
+     allowed to silently overwrite a newer local master — that was the root
+     cause of stale itinerary titles surviving a master-file fix. This is a
+     content-derived check (see itinerary-authority.js), not a build-version
+     or one-time-clear check, so it stays correct across every future deploy. */
+  function isCompatiblePublication(wrapper){
+    const payload=wrapper&&wrapper.payload;
+    const currentRevision=root.MASTER_ITINERARY_REVISION||null;
+    if(currentRevision){
+      return !!(payload&&typeof payload==='object'&&payload.masterRevision===currentRevision);
+    }
+    const authority=root.ITINERARY_AUTHORITY;
+    if(authority&&typeof authority.isCompatibleSnapshotPayload==='function'){
+      return authority.isCompatibleSnapshotPayload(payload);
+    }
+    /* Never hydrate a publication before the shipped master revision is
+       available. Accepting it here can let an older cached itinerary replace
+       data.js before ItineraryAuthority has loaded. */
     return false;
   }
-}
-
-async function fetchValidHtml(request) {
-  try {
-    const response = await fetch(request, { cache: 'no-store', redirect: 'follow' });
-    return await validateHtmlResponse(response) ? response : null;
-  } catch (error) {
-    return null;
+  function discardIncompatibleSnapshot(){
+    const cfg=config(),storage=store();
+    if(cfg&&storage){storage.remove(cfg.cacheKey);storage.remove(cfg.metadataKey);}
+    activeSnapshot=null;
   }
-}
-
-async function cachedValidHtml(request) {
-  const candidates = [
-    request,
-    new Request('./index.html', { headers: { accept: 'text/html' } }),
-    new Request('./offline.html', { headers: { accept: 'text/html' } })
-  ];
-  for (const candidate of candidates) {
-    const response = await caches.match(candidate, { ignoreSearch: true });
-    if (await validateHtmlResponse(response)) return response;
-  }
-  return null;
-}
-
-async function navigationResponse(request) {
-  const cache = await caches.open(CACHE_NAME);
-  const direct = await fetchValidHtml(request);
-  if (direct) {
-    await cache.put(request, direct.clone());
-    return direct;
-  }
-
-  const indexRequest = new Request(new URL('./index.html', self.location.href), {
-    method: 'GET',
-    headers: { accept: 'text/html' },
-    cache: 'no-store',
-    credentials: 'same-origin',
-    redirect: 'follow'
-  });
-  const indexResponse = await fetchValidHtml(indexRequest);
-  if (indexResponse) {
-    await cache.put('./index.html', indexResponse.clone());
-    return indexResponse;
-  }
-
-  return await cachedValidHtml(request) || new Response(
-    '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Offline</title></head><body><p>This page is temporarily unavailable.</p></body></html>',
-    { status: 503, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
-  );
-}
-
-async function networkFirst(request) {
-  const cache = await caches.open(CACHE_NAME);
-  try {
-    const response = await fetch(request);
-    if (response && response.ok) cache.put(request, response.clone());
-    return response;
-  } catch (error) {
-    let cached = await caches.match(request, { ignoreSearch: true });
-    if (!cached) {
-      const url = new URL(request.url);
-      cached = await caches.match(url.pathname.split('/').pop() || './index.html', { ignoreSearch: true });
+  function hydrateStaticData(targets){
+    const wrapper=activeSnapshot||readCachedSnapshot();
+    if(!wrapper)return {ok:false,reason:'no-snapshot',applied:[]};
+    if(!isCompatiblePublication(wrapper)){
+      discardIncompatibleSnapshot();
+      setState({hydrated:false,source:'local',activeVersion:null,error:null},'master-revision-mismatch');
+      return {ok:false,reason:'master-revision-mismatch',applied:[]};
     }
-    return cached || caches.match('./offline.html');
+    const data=payloadData(wrapper);
+    if(!data)return {ok:false,reason:'invalid-payload',applied:[]};
+    const integrity=validateHydrationData(data,targets);
+    if(!integrity.ok){
+      const entry={message:'Published snapshot is incomplete: '+integrity.missing.join(', '),time:new Date().toISOString()};
+      setState({hydrated:false,error:entry},'hydrate-rejected');
+      emit(EVENTS.error,{error:entry,state:snapshot()});
+      return {ok:false,reason:'incomplete-payload',missing:integrity.missing,applied:[]};
+    }
+    const map=[
+      ['PLACES',['places','PLACES']],['CATEGORIES',['categories','CATEGORIES']],
+      ['GUIDE_ORDER',['guideOrder','GUIDE_ORDER']],['DAY_LINKS',['dayLinks','DAY_LINKS']],
+      ['FRIENDS',['friends','FRIENDS']],['BOOKINGS_DATA',['bookingsData','bookings','BOOKINGS_DATA']],
+      ['TRIP_DATA',['tripData','TRIP_DATA']],['TRIP_ORDER',['tripOrder','TRIP_ORDER']],
+      ['ITINERARY_DATA',['itineraryData','itinerary','ITINERARY_DATA']]
+    ];
+    const applied=[];
+    map.forEach(function(entry){
+      const target=targets&&targets[entry[0]],next=select(data,entry[1]);
+      if(next===undefined)return;
+      const changed=Array.isArray(target)?replaceArray(target,next):replaceObject(target,next);
+      if(changed)applied.push(entry[0]);
+    });
+    activeSnapshot=wrapper;
+    setState({source:state.source==='supabase'?'supabase':'cache',activeVersion:wrapper.version,
+      hydrated:applied.length>0,error:null},'hydrate');
+    emit(EVENTS.hydrated,{version:wrapper.version,applied:applied.slice(),state:snapshot()});
+    return {ok:true,version:wrapper.version,applied:applied};
   }
-}
-
-async function cacheFirstMedia(request) {
-  const cache = await caches.open(CACHE_NAME);
-  const cached = await cache.match(request, {ignoreSearch:true});
-  if (cached) return cached;
-  try {
-    const response = await fetch(request);
-    if (response && response.ok) cache.put(request, response.clone());
-    return response;
-  } catch (error) {
-    return caches.match('./offline.html');
+  function markNewVersionAvailable(wrapper){
+    if(!wrapper)return false;
+    const cfg=config(),version=String(wrapper.version);
+    try{
+      if(root.sessionStorage&&cfg&&cfg.reloadMarkerKey){
+        root.sessionStorage.setItem(cfg.reloadMarkerKey,version);
+      }
+    }catch(error){}
+    // RC15.2 Fast Resume: never destroy the visible page for a routine cloud
+    // publication. The compatible snapshot is cached now and will hydrate on
+    // the next normal document navigation or genuine launch.
+    emit(EVENTS.snapshot,{snapshot:wrapper,deferredApply:true,state:snapshot()});
+    return true;
   }
-}
-
-self.addEventListener('fetch', event => {
-  if (event.request.method !== 'GET') return;
-
-  const url = new URL(event.request.url);
-  if (url.origin !== self.location.origin) return;
-
-  const acceptsHtml = event.request.headers.get('accept')?.includes('text/html');
-  if (event.request.mode === 'navigate' || acceptsHtml) {
-    event.respondWith(navigationResponse(event.request));
-  } else if (CRITICAL_EXTENSIONS.test(url.pathname)) {
-    event.respondWith(networkFirst(event.request));
-  } else {
-    event.respondWith(cacheFirstMedia(event.request));
+  async function fetchLatestPublished(options){
+    const opts=options||{};
+    state.online=root.navigator?root.navigator.onLine!==false:true;
+    state.configured=configured();
+    if(!state.configured){
+      const cached=readCachedSnapshot();
+      activeSnapshot=cached;
+      setState({status:'local-only',source:cached?'cache':'local',activeVersion:cached?cached.version:null,error:null},'not-configured');
+      return {ok:true,source:cached?'cache':'local',snapshot:cached,reason:'not-configured'};
+    }
+    if(!state.online){
+      const cached=readCachedSnapshot();activeSnapshot=cached;
+      setState({status:'offline',source:cached?'cache':'local',activeVersion:cached?cached.version:null,error:null},'offline');
+      return {ok:!!cached,source:cached?'cache':'local',snapshot:cached,reason:'offline'};
+    }
+    setState({status:'syncing',error:null},'fetch-start');
+    const cfg=config();
+    try{
+      const response=await fetchWithTimeout(endpoint(),{
+        method:'GET',headers:{apikey:cfg.anonKey,Authorization:'Bearer '+cfg.anonKey,Accept:'application/json'},cache:'no-store'
+      },cfg.requestTimeoutMs);
+      if(!response.ok)throw new Error('Supabase read failed ('+response.status+')');
+      const rows=await response.json();
+      const wrapper=normaliseRow(Array.isArray(rows)&&rows.length?rows[0]:null);
+      if(!wrapper){
+        const cached=readCachedSnapshot();activeSnapshot=cached;
+        setState({status:'ready',source:cached?'cache':'local',remoteVersion:null,
+          activeVersion:cached?cached.version:null,error:null},'no-publication');
+        return {ok:true,source:cached?'cache':'local',snapshot:cached,reason:'no-publication'};
+      }
+      /* RC15.1: a publication fetched fresh from Supabase must pass the SAME
+         master-revision compatibility check as a cached one before it is
+         ever written to cache or allowed to trigger a reload. Without this,
+         an old publication (published before this deploy's master changed)
+         would still be cached and still trigger a full-page version refresh
+         purely because its version *number* differs from whatever was
+         previously cached — reloading the page, briefly showing the correct
+         master again, then hydrateStaticData() discarding it a moment later.
+         That discard-after-reload was correct, but the reload itself was an
+         avoidable, confusing flash. Treating an incompatible publication as
+         "nothing new" here stops the flash and the reload loop at the source. */
+      if(!isCompatiblePublication(wrapper)){
+        const cached=readCachedSnapshot();activeSnapshot=cached;
+        setState({status:'ready',source:cached?'cache':'local',remoteVersion:wrapper.version,
+          activeVersion:cached?cached.version:null,error:null},'incompatible-publication');
+        return {ok:true,source:cached?'cache':'local',snapshot:cached,reason:'incompatible-publication'};
+      }
+      const previous=readCachedSnapshot();
+      writeCache(wrapper);activeSnapshot=wrapper;
+      setState({status:'synced',source:'supabase',lastSyncedAt:new Date().toISOString(),
+        remoteVersion:wrapper.version,activeVersion:wrapper.version,error:null},'fetch-success');
+      emit(EVENTS.snapshot,{snapshot:wrapper,state:snapshot()});
+      const changed=!previous||Number(previous.version)!==Number(wrapper.version);
+      if(changed)markNewVersionAvailable(wrapper);
+      return {ok:true,source:'supabase',snapshot:wrapper,changed:changed};
+    }catch(error){
+      const cached=readCachedSnapshot();activeSnapshot=cached;
+      const entry={message:error&&error.message?String(error.message):String(error),time:new Date().toISOString()};
+      setState({status:cached?'cached':'error',source:cached?'cache':'local',activeVersion:cached?cached.version:null,error:entry},'fetch-error');
+      emit(EVENTS.error,{error:entry,state:snapshot()});
+      if(opts.throwOnError)throw error;
+      return {ok:!!cached,source:cached?'cache':'local',snapshot:cached,error:entry};
+    }
   }
-});
+  function statusLabel(){
+    const labels={initialising:'Initialising',syncing:'Checking cloud',synced:'Synced',cached:'Cached',offline:'Offline',ready:'Local data',error:'Sync unavailable','local-only':'Local only'};
+    const base=labels[state.status]||state.status;
+    return state.activeVersion==null?base:base+' · v'+state.activeVersion;
+  }
+  function bindConnection(){
+    if(typeof root.addEventListener!=='function')return;
+    root.addEventListener('online',function(){state.online=true;publish('online');fetchLatestPublished();});
+    root.addEventListener('offline',function(){state.online=false;setState({status:'offline'},'offline');});
+  }
+  function startAutoRead(){
+    const cfg=config();
+    if(autoReadStarted||!cfg||cfg.autoRead!==true)return;
+    autoReadStarted=true;fetchLatestPublished();
+  }
+  function initialise(){
+    state.configured=configured();
+    const cached=readCachedSnapshot();activeSnapshot=cached;
+    const meta=config()&&store()?store().readJSON(config().metadataKey,null):null;
+    if(meta){state.lastSyncedAt=meta.lastSyncedAt||null;state.remoteVersion=meta.remoteVersion||null;}
+    setState({status:state.configured?(state.online?'ready':'offline'):'local-only',
+      source:cached?'cache':'local',activeVersion:cached?cached.version:null,error:null},'initialise');
+    return snapshot();
+  }
+
+  bindConnection();
+  const API=Object.freeze({events:EVENTS,getState:snapshot,isConfigured:configured,
+    readCachedSnapshot,fetchLatestPublished,hydrateStaticData,statusLabel,startAutoRead,initialise});
+  root.TRIP_SYNC=API;
+  initialise();
+  if(root.document){
+    if(root.document.readyState==='loading')root.document.addEventListener('DOMContentLoaded',startAutoRead,{once:true});
+    else root.setTimeout(startAutoRead,0);
+  }
+})(globalThis);

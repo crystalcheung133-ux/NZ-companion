@@ -1,19 +1,114 @@
-<!DOCTYPE html>
+/* Travel Engine v1.0 — Stage 7M modular runtime. */
+let currentMomentKey='';
+function closeMomentsModal(){$('momentsModal').classList.remove('show')}
+function setStars(n){document.querySelectorAll('.star').forEach((el,i)=>el.classList.toggle('active',i<n));$('momentsRating').value=n;}
 
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><script src="app-runtime.js?v=nz1.0-rc22-1"></script><script src="theme-config.js"></script><script src="asset-config.js"></script><script src="locale-config.js"></script><script src="geo-config.js?v=stage3-2h-port1"></script><script src="formatter.js"></script><script src="money-config.js"></script><script src="navigation-config.js?v=nz1.0-rc22-1"></script><script src="navigation.js?v=nz1.0-rc22-1"></script><script src="trip-config.js?v=stage3-2h-cert-final-fix1"></script><script src="storage-config.js?v=stage3-2h-cert-final-fix1"></script><script src="storage.js"></script><script src="sync-config.js?v=stage3-2h-storage-currency1"></script><script src="sync-runtime.js?v=stage3-2h-precert-data3"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-client-runtime.js?v=nz1.0-rc22-1"></script><script src="expense-sync-runtime.js?v=stage3-2h-precert-data3"></script><script src="moment-sync-runtime.js?v=stage3-2h-precert-data3"></script><script src="generation-runtime.js?v=nz1.0-rc22-1"></script><script src="party-render-runtime.js?v=stage3-2h-party-config2"></script><script src="money.js"></script><title data-trip-page-title="Moments">Moments</title><meta content="" data-trip-theme-color="" name="theme-color"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="" data-trip-apple-title="" name="apple-mobile-web-app-title"/><link data-trip-icon="icon192" rel="apple-touch-icon"/><link href="styles.css?v=stage3-2h-booking-audit2" rel="stylesheet"/><link href="theme-preview.css?v=theme-studio-visual-polish-1" rel="stylesheet"/></head><body class="moments-page"><nav class="site-nav"><a class="brand" href="index.html"><span class="brand-mark"><img alt="" data-brand-logo="header"/></span><span data-brand-text="navLabel"></span></a><button class="friend-pill" onclick="openFriendModal()"><span data-friend-label="" data-family=""></span></button></nav><main class="content-page"><div class="page-hero module-hero"><p class="kicker">MEMORY BOOK</p><h1>✨ Moments</h1><p class="lead">Keep the moments you’ll want to remember long after New Zealand.</p><div class="page-action-row moments-capture-choices" data-v35="moment-action">
-<button class="btn primary-action" onclick="openMomentsModal('general')" type="button">✨ Just this moment</button>
-<button class="btn moments-planned-entry" onclick="openPlannedMomentCapture()" type="button">📍 Planned activity</button>
-</div></div><section class="prose-block"><h2>Saved Moments</h2><div id="momentsTimeline"></div></section></main><div class="mini-menu" id="guideMenu"><button onclick="openGuideCategory('ATTRACTIONS')"><span><span class="menu-title">🍃 SIGHTS</span></span><span>›</span></button><button onclick="openGuideCategory('ACTIVITIES')"><span><span class="menu-title">🎟️ ACTIVITIES</span></span><span>›</span></button><button onclick="openGuideCategory('DINING')"><span><span class="menu-title">🍽 DINING</span></span><span>›</span></button><button onclick="openGuideCategory('STAY')"><span><span class="menu-title">🏨 STAY</span></span><span>›</span></button></div><div class="mini-menu" id="tripMenu"><a href="#" onclick="openTripCard('flights');return false;"><span><span class="menu-title">✈️ Flights</span><span class="menu-sub">MEL · CHC · ZQN</span></span><span>›</span></a><a href="#" onclick="openTripCard('vehicle');return false;"><span><span class="menu-title">🚙 Rental Car</span><span class="menu-sub">Rental Cars 247 · ASX</span></span><span>›</span></a><a href="#" onclick="openTripCard('stay');return false;"><span><span class="menu-title">🏨 Accommodation</span><span class="menu-sub">Bookings & addresses</span></span><span>›</span></a><a href="#" onclick="openTripCard('activities');return false;"><span><span class="menu-title">🎟️ Activities</span><span class="menu-sub">Confirmed tours & experiences</span></span><span>›</span></a><a href="#" onclick="openTripCard('checklist');return false;"><span><span class="menu-title">✅ Checklist</span><span class="menu-sub">Before the Trip</span></span><span>›</span></a><a href="#" onclick="openTripCard('emergency');return false;"><span><span class="menu-title">☎️ Emergency</span><span class="menu-sub">Contacts & medical care</span></span><span>›</span></a></div><div class="mini-menu" id="daysMenu"></div><nav class="app-nav">
-<button class="trip-trigger" onclick="toggleTripMenu()" type="button"><span>🧳</span><small>Trip</small></button>
-<button class="guide-trigger" onclick="toggleGuideMenu()" type="button"><span>📖</span><small>Guide</small></button>
-<button class="days-trigger" onclick="toggleDays()" type="button"><span>🗓</span><small>Days</small></button>
-<a class="summary-link" href="moments.html"><span>✨</span><small>Moments</small></a>
-<a class="summary-link" href="expenses.html"><span>💸</span><small>Expenses</small></a>
-</nav>
-<script src="engine-integrity.js?v=nz1.0-rc22-1"></script><script src="data.js?v=stage3-2h-precert-data3"></script><script src="booking-authority.js?v=booking-save-rootfix1"></script><script src="generation-selection-adapter.js?v=nz1.0-rc22-1"></script><script src="guide-navigation-runtime.js?v=stage3-2h-ownership1"></script><script src="itinerary-authority.js?v=nz1.0-rc22-1"></script><script src="core-runtime.js?v=stage3-2h-cert-ux-safety1"></script><script src="expenses.js?v=stage3-2h-expense-cleanup1"></script><script src="moments.js?v=nz1.0-rc22-1"></script><script src="trip-runtime.js?v=booking-save-response1"></script><script src="moments-compat.js?v=stage3-2h-port1"></script><script src="script.js?v=stage3-2h-studio-guide-polish1"></script><script src="guide-runtime.js?v=stage3-2h-ownership1"></script><script src="admin.js?v=stage3-2h-cert-ux-safety1"></script><script src="reset-runtime.js?v=stage3-2h-storage-currency1"></script><script src="publication-runtime.js?v=stage3-2h-port1"></script><script src="complete-runtime.js?v=stage3-2h-port1"></script><script src="export-runtime.js?v=stage3-2h-modal-cleanup1"></script><script src="currency-runtime.js?v=stage3-2h-front-interaction1-2"></script><script src="pwa.js?v=nz1.0-rc22-1"></script>
-<div class="trip-modal" id="tripModal"><div class="trip-sheet"><button class="trip-close" onclick="closeTripModal()" type="button">×</button><div id="tripModalContent"></div></div></div>
-<div class="guide-modal" id="guideModal"><div class="guide-sheet"><button class="guide-close" onclick="closeGuideModal()" type="button">×</button><div id="guideModalContent"></div></div></div>
-<div class="moments-modal" id="momentsModal"><div class="moments-sheet"><button class="moments-close" onclick="closeMomentsModal()" type="button">×</button><p class="kicker">MEMORY BOOK</p><h2 id="momentsTitle">Moment</h2><p class="lead modal-intro" id="momentsIntro">Add a rating, a short note and a photo at any stop. After the trip, this becomes the three families’ shared memory book.</p><p><span class="status-badge" id="momentsFriend">Friend</span> <button class="mini-btn" onclick="openFriendModal()">Change Family</button></p><div class="moments-form"><input id="momentsRating" type="hidden" value="0"/><div class="star-row"><span class="star" onclick="setStars(1)">⭐</span><span class="star" onclick="setStars(2)">⭐</span><span class="star" onclick="setStars(3)">⭐</span><span class="star" onclick="setStars(4)">⭐</span><span class="star" onclick="setStars(5)">⭐</span></div><p class="mood-help">Choose up to 2 moods</p><div class="mood-grid" id="moodGrid"></div><textarea id="momentsText" placeholder="Something to say..."></textarea><div class="photo-input">📷 Add Photo (Camera / Photo Library)</div><button class="btn" onclick="saveMoments()">Save</button></div></div></div>
-<div class="unexpected-modal" id="unexpectedModal"><div class="unexpected-sheet"><button class="unexpected-close" onclick="closeUnexpectedModal()" type="button">×</button><p class="kicker">Moments</p><h2>Leave a Moment</h2><p class="lead">Add a rating, a short note and a photo at any stop. After the trip, this becomes the three families’ shared memory book.</p><p><span class="status-badge" id="unexpectedFriend">Friend</span></p><textarea id="unexpectedText" placeholder="Capture this moment..." style="width:100%;min-height:120px;border:1px solid var(--line);border-radius:18px;background:#fffaf2;padding:14px;font:inherit;color:var(--ink)"></textarea><div class="photo-input">📷 Add Photo (Camera / Photo Library)</div><button class="btn" onclick="saveUnexpected()">Save</button></div></div>
-<div class="tools-modal" id="expenseModal"><div class="tools-sheet"><button class="tools-close" onclick="closeExpenseModal()" type="button">×</button><p class="kicker">TRIP EXPENSES</p><h2 id="expenseModalTitle">💸 What did we spend?</h2><p class="lead modal-intro" id="expenseIntro">Record each shared or personal expense. Personal Spend and Settlement update automatically.</p><div class="expense-form"><input id="expenseItem" placeholder="Item e.g. Family Dinner"/><input autocomplete="off" id="expenseTotal" inputmode="numeric" pattern="[0-9]*" data-trip-currency-placeholder="" placeholder="" type="tel"/><label>Paid by</label><select class="btn" id="expensePaidBy" onchange="syncConsumedIfAuto()" data-party-options=""></select><label class="check-row"><input id="expensePersonal" onchange="updateExpenseMode()" type="checkbox"/> Personal Expense</label><div id="splitBetweenBlock"><p>Split between</p><div class="expense-split-tools"><button class="mini-btn" onclick="splitAll()" type="button">Split between all</button><button class="mini-btn" onclick="clearAllSplit()" type="button">Clear all</button></div><div data-party-split-options=""></div></div><div id="consumedByBlock" style="display:none"><label>Consumed by <span class="timestamp">(same as paid by unless changed)</span></label><select class="btn" id="expenseConsumedBy" onchange="markConsumedManual()" data-party-options=""></select></div><br/><button class="btn" id="expenseSaveButton" onclick="saveExpense()">Save Expense</button></div><p class="timestamp">After saving, this window stays open so you can enter another expense. The summary updates when you close it.</p></div></div><div class="mama-modal" id="mamaModal"><div class="guide-sheet"><button class="mama-close" onclick="closeFriendModal()" type="button">×</button><p class="kicker">Family</p><h2>Choose Family</h2><div class="category-pop-list friend-choice-list" data-party-choices=""></div></div></div><script src="theme-preview-assets/registry.js?v=theme-studio-visual-polish-1"></script><script src="theme-preview-runtime.js?v=theme-studio-visual-polish-1"></script></body></html>
+/* Stage 4C-4: legacy one-per-place Moments functions were removed.
+   The active Moments API is the append/edit/delete implementation below
+   (moments_list + legacy localStorage compatibility inside renderMoments).
+   These vars keep global onclick/bare calls stable until the canonical API assigns
+   window.openMomentsModal / window.saveMoments / window.editMoment /
+   window.deleteMoment / window.renderMoments later in this file. */
+var openMomentsModal, saveMoments, editMoment, deleteMoment, renderMoments;
+
+function openUnexpectedModal(){$('unexpectedFriend').textContent=FRIENDS[getFriend()];$('unexpectedText').value='';$('unexpectedModal').classList.add('show')}
+function closeUnexpectedModal(){$('unexpectedModal').classList.remove('show')}
+function saveUnexpected(){const arr=STORAGE.local.readJSON(STORAGE_CONFIG.keys.momentsFreeform,[]);arr.push({page:document.title.replace(' · '+TRIP_CONFIG.tripName,''),friendLabel:FRIENDS[getFriend()],text:$('unexpectedText').value,savedAt:new Date().toISOString()});STORAGE.local.writeJSON(STORAGE_CONFIG.keys.momentsFreeform,arr);closeUnexpectedModal();renderUnexpected();}
+function renderUnexpected(){const box=$('unexpectedTimeline');if(!box)return;let arr=[];try{arr=STORAGE.local.readJSON(STORAGE_CONFIG.keys.momentsFreeform,[]);if(!Array.isArray(arr))arr=[];}catch(e){arr=[];}box.innerHTML=arr.length?arr.map(e=>`<div class="moments-entry"><strong>✨ ${escapeHTML(e.page)}</strong><p>${escapeHTML(e.friendLabel)}</p><p>${escapeHTML(e.text)}</p></div>`).join(''):'<p>No Moments yet.</p>'}
+
+
+const MOODS=[
+  ["🤩","Wow"],["😋","Delicious"],["😵","Exhausted"],["🔥","Amazing"],
+  ["🤯","Unexpected"],["😶","Speechless"],["🥲","Oh no"],["🤬","Damn"]
+];
+let currentMood=[];
+
+function renderMoodButtons(selected=[]){
+  currentMood = selected || [];
+  const box=document.getElementById('moodGrid');
+  if(!box) return;
+  box.innerHTML=MOODS.map(([emoji,label])=>{
+    const on=currentMood.includes(label);
+    return `<button type="button" class="mood-btn ${on?'active':''}" aria-pressed="${on?'true':'false'}" onclick="toggleMood('${label}')">${emoji} ${label}</button>`;
+  }).join('');
+}
+function toggleMood(label){
+  if(currentMood.includes(label)){
+    currentMood=currentMood.filter(x=>x!==label);
+  }else{
+    if(currentMood.length>=2) currentMood.shift();
+    currentMood.push(label);
+  }
+  renderMoodButtons(currentMood);
+}
+function moodLabel(labels=[]){
+  return labels.map(l=>{
+    const m=MOODS.find(x=>x[1]===l);
+    return m?m[0]+' '+m[1]:l;
+  }).join(' · ');
+}
+function formatTime(iso){
+  if(!iso) return '';
+  try{
+    return FORMATTER.dateTime(new Date(iso));
+  }catch(e){return iso}
+}
+
+
+/* v3.5 guard: bottom bar is summary navigation; buttons on summary pages open tools */
+document.addEventListener('DOMContentLoaded',()=>{
+  document.querySelectorAll('.summary-link-row').forEach(x=>x.remove());
+  try{ renderExpenses(); renderMoments(); }catch(e){}
+});
+
+/* v3.6 production polish: non-overriding expense copy polish only.
+   Stage 4C-6 removed the old open/save wrappers from this block. */
+(function(){
+  function polishExpenseCopy(){
+    document.querySelectorAll('button,a').forEach(el=>{
+      if((el.textContent||'').includes('Add Expense') || (el.textContent||'').includes('Split Bill')){
+        el.textContent='💸 What did we spend?';
+      }
+    });
+    const title=document.getElementById('expenseModalTitle'); if(title) title.textContent='💸 What did we spend?';
+    const intro=document.getElementById('expenseIntro'); if(intro) intro.textContent='Record each shared or personal expense. Personal Spend and Settlement update automatically.';
+    const save=document.getElementById('expenseSaveButton'); if(save) save.textContent='Save';
+  }
+  document.addEventListener('DOMContentLoaded',polishExpenseCopy);
+  window.polishExpenseCopy = polishExpenseCopy;
+})();
+
+/* Stage 4C-6: removed legacy v3.7 Expenses save/open wrappers. */
+
+/* Stage 4F-A: removed stale legacy dayN.html swipe handler. Active day route is day.html?day=N. */
+
+/* v3.9.6c Final UX Hotfix: current-user Moments author label.
+   Stage 4C-6 removed the expense open/save/edit wrappers from this block;
+   Expense current-user defaults are handled by the Stage 4F-Q module. */
+(function(){
+  const DEFAULT_FRIEND = (typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.participants&&TRIP_CONFIG.participants.defaultKey)||'lee';
+  function currentUser(){
+    try { return (typeof getFriend === 'function' ? getFriend() : STORAGE.local.get(STORAGE_CONFIG.keys.friend)) || DEFAULT_FRIEND; }
+    catch(e){ return DEFAULT_FRIEND; }
+  }
+  function friendLabel(k){
+    try { return (typeof FRIENDS !== 'undefined' && FRIENDS[k]) ? FRIENDS[k] : (FRIENDS?.[DEFAULT_FRIEND] || ((typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.participants&&TRIP_CONFIG.participants.identities&&TRIP_CONFIG.participants.identities[DEFAULT_FRIEND])?`${TRIP_CONFIG.participants.identities[DEFAULT_FRIEND].code} · ${TRIP_CONFIG.participants.identities[DEFAULT_FRIEND].name}`:'MEL · Lee')); }
+    catch(e){ return ((typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.participants&&TRIP_CONFIG.participants.identities&&TRIP_CONFIG.participants.identities[DEFAULT_FRIEND])?`${TRIP_CONFIG.participants.identities[DEFAULT_FRIEND].code} · ${TRIP_CONFIG.participants.identities[DEFAULT_FRIEND].name}`:'MEL · Lee'); }
+  }
+  function simplifyMomentsAuthor(){
+    const row=document.querySelector('#momentsModal p:has(#momentsFriend)');
+    const badge=document.getElementById('momentsFriend');
+    if(badge) badge.textContent='By ' + friendLabel(currentUser());
+    if(row){
+      row.classList.add('moments-author-row');
+      row.querySelectorAll('button').forEach(btn=>btn.remove());
+    }
+  }
+  window.simplifyMomentsAuthor = simplifyMomentsAuthor;
+
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    simplifyMomentsAuthor();
+  });
+})();
 

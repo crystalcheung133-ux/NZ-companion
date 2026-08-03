@@ -1,174 +1,183 @@
-/* money.js — Stage 7I-2 Money Service.
-   Owns currency resolution, FX cache access, rate fetching, amount
-   normalisation, arithmetic helpers and currency conversion. UI rendering
-   and expense settlement rules remain in script.js. */
-(function(root){
+(function(global){
   'use strict';
 
-  function tripCurrency(){
-    const currency=(root.TRIP_CONFIG&&root.TRIP_CONFIG.currency)||(root.LOCALE_CONFIG&&root.LOCALE_CONFIG.currency)||{};
-    return Object.freeze({
-      code:String(currency.code||'').toUpperCase(),
-      symbol:String(currency.symbol||''),
-      name:String(currency.name||currency.code||'')
+  const config=global.NAVIGATION_CONFIG;
+  if(!config) throw new Error('NAVIGATION_CONFIG must load before navigation.js');
+
+  function page(name){
+    return config.pages[name] || config.pages[config.fallback.unknown] || config.pages.home;
+  }
+
+  function queryName(name){
+    return config.query[name] || name;
+  }
+
+  function hashName(name){
+    return config.hash[name] || name;
+  }
+
+  function params(search){
+    return new URLSearchParams(search == null ? global.location.search : search);
+  }
+
+  function getQuery(name, fallback, search){
+    const value=params(search).get(queryName(name));
+    return value == null || value === '' ? fallback : value;
+  }
+
+  function getQueryList(name, search){
+    const value=getQuery(name,'',search);
+    return String(value).split(',').map(item=>item.trim()).filter(Boolean);
+  }
+
+  function build(pageName, options){
+    const opts=options || {};
+    const target=page(pageName);
+    const search=new URLSearchParams();
+    Object.entries(opts.query || {}).forEach(([name,value])=>{
+      if(value == null || value === '') return;
+      search.set(queryName(name),String(value));
     });
+    const queryString=search.toString();
+    const hash=opts.hash ? '#'+encodeURIComponent(hashName(opts.hash)) : '';
+    return target+(queryString?'?'+queryString:'')+hash;
   }
 
-  function homeCurrency(){
-    return String(root.MONEY_CONFIG&&root.MONEY_CONFIG.homeCurrency||'').toUpperCase();
+  function currentPage(){
+    const path=(global.location.pathname || '').split('/').pop();
+    return path || config.pages.home;
   }
 
-  function cacheKey(){
-    const config=root.MONEY_CONFIG||{};
-    return `travel_engine_fx_${tripCurrency().code.toLowerCase()}_${homeCurrency().toLowerCase()}_v${Number(config.storageVersion||1)}`;
+  function currentRelativeUrl(options){
+    const opts=options || {};
+    const pathname=global.location.pathname || page('home');
+    const search=opts.includeSearch === false ? '' : (global.location.search || '');
+    let hash=opts.includeHash === false ? '' : (global.location.hash || '');
+    if(Object.prototype.hasOwnProperty.call(opts,'hash')){
+      hash=opts.hash == null || opts.hash === '' ? '' : '#'+encodeURIComponent(String(opts.hash));
+    }
+    return pathname+search+hash;
   }
 
-  function apiUrl(){
-    const config=root.MONEY_CONFIG||{};
-    return `${config.apiBase}?base=${encodeURIComponent(tripCurrency().code)}&symbols=${encodeURIComponent(homeCurrency())}`;
+  function currentAbsoluteUrl(){
+    return global.location.href;
   }
 
-  function normalizeAmount(value){
-    if(typeof value==='number') return Number.isFinite(value)?value:0;
-    const cleaned=String(value==null?'':value).replace(/[^0-9.]/g,'');
-    const amount=Number(cleaned);
-    return Number.isFinite(amount)?amount:0;
+  function getHash(fallback){
+    const raw=(global.location.hash || '').replace(/^#/,'');
+    if(!raw) return fallback;
+    try{return decodeURIComponent(raw);}catch(e){return raw;}
   }
 
-  function sumAmounts(values){
-    return Array.from(values||[]).reduce((sum,value)=>sum+normalizeAmount(value),0);
+  function hasSameOriginReferrer(){
+    if(!global.document || !global.document.referrer) return false;
+    try{return new URL(global.document.referrer,global.location.href).origin === global.location.origin;}
+    catch(e){return false;}
   }
 
-  function equalShares(amount,parties){
-    const selected=Array.from(parties||[]).filter(Boolean);
-    const total=normalizeAmount(amount);
-    if(!selected.length) return {};
-    const share=total/selected.length;
-    return Object.fromEntries(selected.map(party=>[party,share]));
+  function isPage(name){
+    return currentPage() === page(name);
   }
 
-  function remainder(total,usedValues){
-    return normalizeAmount(total)-sumAmounts(usedValues);
+  function hasHash(name){
+    return global.location.hash === '#'+hashName(name);
   }
 
-  function amountsMatch(left,right,tolerance){
-    const allowed=Number.isFinite(Number(tolerance))?Math.abs(Number(tolerance)):0.01;
-    return Math.abs(normalizeAmount(left)-normalizeAmount(right))<=allowed;
+  function setHash(name){
+    global.location.hash=hashName(name);
   }
 
-  function normalizeRateRecord(record,source){
-    if(!record||!(Number(record.rate)>0)) return null;
-    return {
-      base:String(record.base||tripCurrency().code).toUpperCase(),
-      quote:String(record.quote||homeCurrency()).toUpperCase(),
-      rate:Number(record.rate),
-      date:String(record.date||''),
-      savedAt:String(record.savedAt||''),
-      source:String(source||record.source||'cached')
-    };
+  function go(target){
+    global.location.href=target;
   }
 
-  function readCachedRate(){
+  function goPage(name, options){
+    go(build(name,options));
+  }
+
+  function permittedReturnTarget(target, fallbackPage){
+    const fallback=page(fallbackPage || config.fallback.unknown);
+    if(!target) return fallback;
     try{
-      if(!root.STORAGE||!root.STORAGE.local) return null;
-      return normalizeRateRecord(root.STORAGE.local.readJSON(cacheKey(),null),'cached');
-    }catch(error){
-      return null;
+      const resolved=new URL(target,global.location.href);
+      if(resolved.origin !== global.location.origin) return fallback;
+      const filename=resolved.pathname.split('/').pop() || config.pages.home;
+      if(!config.permittedReturnPages.includes(filename)) return fallback;
+      return resolved.pathname+resolved.search+resolved.hash;
+    }catch(e){
+      return fallback;
     }
   }
 
-  function saveCachedRate(rateOrRecord,date,savedAt){
-    const input=typeof rateOrRecord==='object'&&rateOrRecord!==null
-      ? rateOrRecord
-      : {rate:rateOrRecord,date,savedAt};
-    const record=normalizeRateRecord(input,input.source||'cached');
-    if(!record||!root.STORAGE||!root.STORAGE.local) return false;
-    const payload={
-      rate:record.rate,
-      date:record.date,
-      savedAt:record.savedAt||new Date().toISOString()
-    };
+  /* RC4.6 — PWA cold-launch canonical entry enforcement.
+     This module loads before storage-config.js/storage.js in every page's
+     required script order, so it uses sessionStorage directly rather than
+     the shared STORAGE helper. The key name follows the same
+     travel_engine_..._v1 convention as STORAGE_CONFIG keys. */
+  const PWA_SESSION_KEY='travel_engine_pwa_session_active_v1';
+
+  function isStandaloneDisplay(){
     try{
-      return root.STORAGE.local.writeJSON(cacheKey(),payload)!==false;
-    }catch(error){
-      return false;
+      if(global.navigator && global.navigator.standalone===true) return true;
+      return !!(global.matchMedia && global.matchMedia('(display-mode: standalone)').matches);
+    }catch(e){return false;}
+  }
+
+  function hasActiveSession(){
+    try{return global.sessionStorage.getItem(PWA_SESSION_KEY)==='1';}
+    catch(e){return true;} // fail open: never force a redirect loop if storage is unavailable
+  }
+
+  function markSessionActive(){
+    try{global.sessionStorage.setItem(PWA_SESSION_KEY,'1');}catch(e){}
+  }
+
+  /* True only for a genuine cold start of the installed standalone app:
+     display-mode is standalone AND no flag survived from a prior page in
+     this process. A background/resume (no force-close) never re-runs this
+     script, so the flag set on first load is still present when the user
+     returns. A true force-close discards the process and its
+     sessionStorage, so the next launch reads as a fresh session again,
+     regardless of which page the OS happens to reopen. */
+  function isColdLaunch(){
+    return isStandaloneDisplay() && !hasActiveSession();
+  }
+
+  function enforceCanonicalEntry(){
+    if(isPage('offline')) return; // never redirect the offline fallback; avoid loops with no network
+    const cold=isColdLaunch();
+    if(cold && !isPage('home')){
+      markSessionActive();
+      go(build('home',{query:{source:'pwa',coldLaunch:'1'}}));
+      return;
     }
+    markSessionActive();
   }
 
-  function isCacheFresh(record,now){
-    const candidate=normalizeRateRecord(record||readCachedRate(),'cached');
-    if(!candidate||!candidate.savedAt) return false;
-    const saved=Date.parse(candidate.savedAt);
-    const current=now instanceof Date?now.getTime():Number(now||Date.now());
-    const maxAge=Number(root.MONEY_CONFIG&&root.MONEY_CONFIG.cacheHours||0)*60*60*1000;
-    return Number.isFinite(saved)&&Number.isFinite(current)&&maxAge>0&&current-saved<=maxAge;
-  }
-
-  function rateForDirection(rate,from,to){
-    const numeric=Number(rate);
-    if(!(numeric>0)) return null;
-    const trip=tripCurrency().code;
-    const home=homeCurrency();
-    const source=String(from||trip).toUpperCase();
-    const target=String(to||home).toUpperCase();
-    if(source===target) return 1;
-    if(source===trip&&target===home) return numeric;
-    if(source===home&&target===trip) return 1/numeric;
-    return null;
-  }
-
-  function convert(amount,rate,from,to){
-    const directionRate=rateForDirection(rate,from,to);
-    if(directionRate===null) return null;
-    return normalizeAmount(amount)*directionRate;
-  }
-
-  function convertToHome(amount,rate){
-    return convert(amount,rate,tripCurrency().code,homeCurrency());
-  }
-
-  function convertToTrip(amount,rate){
-    return convert(amount,rate,homeCurrency(),tripCurrency().code);
-  }
-
-  async function fetchLatestRate(fetchImpl){
-    const request=fetchImpl||root.fetch;
-    if(typeof request!=='function') throw new Error('rate request unavailable');
-    const response=await request(apiUrl(),{cache:'no-store'});
-    if(!response||!response.ok) throw new Error('rate request failed');
-    const data=await response.json();
-    const rate=data&&data.rates&&Number(data.rates[homeCurrency()]);
-    if(!(rate>0)) throw new Error('invalid rate');
-    return normalizeRateRecord({
-      base:tripCurrency().code,
-      quote:homeCurrency(),
-      rate,
-      date:data.date||new Date().toISOString().slice(0,10),
-      savedAt:new Date().toISOString(),
-      source:'live'
-    },'live');
-  }
-
-  const service=Object.freeze({
-    getTripCurrency:tripCurrency,
-    getHomeCurrency:homeCurrency,
-    getCacheKey:cacheKey,
-    getApiUrl:apiUrl,
-    normalizeAmount,
-    sumAmounts,
-    equalShares,
-    remainder,
-    amountsMatch,
-    readCachedRate,
-    saveCachedRate,
-    isCacheFresh,
-    rateForDirection,
-    convert,
-    convertToHome,
-    convertToTrip,
-    fetchLatestRate
+  const NAVIGATION=Object.freeze({
+    page,
+    queryName,
+    hashName,
+    params,
+    getQuery,
+    getQueryList,
+    build,
+    currentPage,
+    currentRelativeUrl,
+    currentAbsoluteUrl,
+    getHash,
+    hasSameOriginReferrer,
+    isPage,
+    hasHash,
+    setHash,
+    go,
+    goPage,
+    permittedReturnTarget,
+    isStandaloneDisplay,
+    isColdLaunch,
+    enforceCanonicalEntry
   });
 
-  root.MONEY=service;
-  root.getFxCacheKey=cacheKey; // compatibility alias for pre-7I callers
-})(globalThis);
+  global.NAVIGATION=NAVIGATION;
+  enforceCanonicalEntry();
+})(typeof self !== 'undefined' ? self : window);

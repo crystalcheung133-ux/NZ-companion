@@ -1,114 +1,174 @@
-/* Travel Engine v1.0 — Stage 7M modular runtime. */
-let currentMomentKey='';
-function closeMomentsModal(){$('momentsModal').classList.remove('show')}
-function setStars(n){document.querySelectorAll('.star').forEach((el,i)=>el.classList.toggle('active',i<n));$('momentsRating').value=n;}
+/* money.js — Stage 7I-2 Money Service.
+   Owns currency resolution, FX cache access, rate fetching, amount
+   normalisation, arithmetic helpers and currency conversion. UI rendering
+   and expense settlement rules remain in script.js. */
+(function(root){
+  'use strict';
 
-/* Stage 4C-4: legacy one-per-place Moments functions were removed.
-   The active Moments API is the append/edit/delete implementation below
-   (moments_list + legacy localStorage compatibility inside renderMoments).
-   These vars keep global onclick/bare calls stable until the canonical API assigns
-   window.openMomentsModal / window.saveMoments / window.editMoment /
-   window.deleteMoment / window.renderMoments later in this file. */
-var openMomentsModal, saveMoments, editMoment, deleteMoment, renderMoments;
-
-function openUnexpectedModal(){$('unexpectedFriend').textContent=FRIENDS[getFriend()];$('unexpectedText').value='';$('unexpectedModal').classList.add('show')}
-function closeUnexpectedModal(){$('unexpectedModal').classList.remove('show')}
-function saveUnexpected(){const arr=STORAGE.local.readJSON(STORAGE_CONFIG.keys.momentsFreeform,[]);arr.push({page:document.title.replace(' · '+TRIP_CONFIG.tripName,''),friendLabel:FRIENDS[getFriend()],text:$('unexpectedText').value,savedAt:new Date().toISOString()});STORAGE.local.writeJSON(STORAGE_CONFIG.keys.momentsFreeform,arr);closeUnexpectedModal();renderUnexpected();}
-function renderUnexpected(){const box=$('unexpectedTimeline');if(!box)return;let arr=[];try{arr=STORAGE.local.readJSON(STORAGE_CONFIG.keys.momentsFreeform,[]);if(!Array.isArray(arr))arr=[];}catch(e){arr=[];}box.innerHTML=arr.length?arr.map(e=>`<div class="moments-entry"><strong>✨ ${escapeHTML(e.page)}</strong><p>${escapeHTML(e.friendLabel)}</p><p>${escapeHTML(e.text)}</p></div>`).join(''):'<p>No Moments yet.</p>'}
-
-
-const MOODS=[
-  ["🤩","Wow"],["😋","Delicious"],["😵","Exhausted"],["🔥","Amazing"],
-  ["🤯","Unexpected"],["😶","Speechless"],["🥲","Oh no"],["🤬","Damn"]
-];
-let currentMood=[];
-
-function renderMoodButtons(selected=[]){
-  currentMood = selected || [];
-  const box=document.getElementById('moodGrid');
-  if(!box) return;
-  box.innerHTML=MOODS.map(([emoji,label])=>{
-    const on=currentMood.includes(label);
-    return `<button type="button" class="mood-btn ${on?'active':''}" aria-pressed="${on?'true':'false'}" onclick="toggleMood('${label}')">${emoji} ${label}</button>`;
-  }).join('');
-}
-function toggleMood(label){
-  if(currentMood.includes(label)){
-    currentMood=currentMood.filter(x=>x!==label);
-  }else{
-    if(currentMood.length>=2) currentMood.shift();
-    currentMood.push(label);
-  }
-  renderMoodButtons(currentMood);
-}
-function moodLabel(labels=[]){
-  return labels.map(l=>{
-    const m=MOODS.find(x=>x[1]===l);
-    return m?m[0]+' '+m[1]:l;
-  }).join(' · ');
-}
-function formatTime(iso){
-  if(!iso) return '';
-  try{
-    return FORMATTER.dateTime(new Date(iso));
-  }catch(e){return iso}
-}
-
-
-/* v3.5 guard: bottom bar is summary navigation; buttons on summary pages open tools */
-document.addEventListener('DOMContentLoaded',()=>{
-  document.querySelectorAll('.summary-link-row').forEach(x=>x.remove());
-  try{ renderExpenses(); renderMoments(); }catch(e){}
-});
-
-/* v3.6 production polish: non-overriding expense copy polish only.
-   Stage 4C-6 removed the old open/save wrappers from this block. */
-(function(){
-  function polishExpenseCopy(){
-    document.querySelectorAll('button,a').forEach(el=>{
-      if((el.textContent||'').includes('Add Expense') || (el.textContent||'').includes('Split Bill')){
-        el.textContent='💸 What did we spend?';
-      }
+  function tripCurrency(){
+    const currency=(root.TRIP_CONFIG&&root.TRIP_CONFIG.currency)||(root.LOCALE_CONFIG&&root.LOCALE_CONFIG.currency)||{};
+    return Object.freeze({
+      code:String(currency.code||'').toUpperCase(),
+      symbol:String(currency.symbol||''),
+      name:String(currency.name||currency.code||'')
     });
-    const title=document.getElementById('expenseModalTitle'); if(title) title.textContent='💸 What did we spend?';
-    const intro=document.getElementById('expenseIntro'); if(intro) intro.textContent='Record each shared or personal expense. Personal Spend and Settlement update automatically.';
-    const save=document.getElementById('expenseSaveButton'); if(save) save.textContent='Save';
   }
-  document.addEventListener('DOMContentLoaded',polishExpenseCopy);
-  window.polishExpenseCopy = polishExpenseCopy;
-})();
 
-/* Stage 4C-6: removed legacy v3.7 Expenses save/open wrappers. */
-
-/* Stage 4F-A: removed stale legacy dayN.html swipe handler. Active day route is day.html?day=N. */
-
-/* v3.9.6c Final UX Hotfix: current-user Moments author label.
-   Stage 4C-6 removed the expense open/save/edit wrappers from this block;
-   Expense current-user defaults are handled by the Stage 4F-Q module. */
-(function(){
-  const DEFAULT_FRIEND = (typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.participants&&TRIP_CONFIG.participants.defaultKey)||'lee';
-  function currentUser(){
-    try { return (typeof getFriend === 'function' ? getFriend() : STORAGE.local.get(STORAGE_CONFIG.keys.friend)) || DEFAULT_FRIEND; }
-    catch(e){ return DEFAULT_FRIEND; }
+  function homeCurrency(){
+    return String(root.MONEY_CONFIG&&root.MONEY_CONFIG.homeCurrency||'').toUpperCase();
   }
-  function friendLabel(k){
-    try { return (typeof FRIENDS !== 'undefined' && FRIENDS[k]) ? FRIENDS[k] : (FRIENDS?.[DEFAULT_FRIEND] || ((typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.participants&&TRIP_CONFIG.participants.identities&&TRIP_CONFIG.participants.identities[DEFAULT_FRIEND])?`${TRIP_CONFIG.participants.identities[DEFAULT_FRIEND].code} · ${TRIP_CONFIG.participants.identities[DEFAULT_FRIEND].name}`:'MEL · Lee')); }
-    catch(e){ return ((typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.participants&&TRIP_CONFIG.participants.identities&&TRIP_CONFIG.participants.identities[DEFAULT_FRIEND])?`${TRIP_CONFIG.participants.identities[DEFAULT_FRIEND].code} · ${TRIP_CONFIG.participants.identities[DEFAULT_FRIEND].name}`:'MEL · Lee'); }
+
+  function cacheKey(){
+    const config=root.MONEY_CONFIG||{};
+    return `travel_engine_fx_${tripCurrency().code.toLowerCase()}_${homeCurrency().toLowerCase()}_v${Number(config.storageVersion||1)}`;
   }
-  function simplifyMomentsAuthor(){
-    const row=document.querySelector('#momentsModal p:has(#momentsFriend)');
-    const badge=document.getElementById('momentsFriend');
-    if(badge) badge.textContent='By ' + friendLabel(currentUser());
-    if(row){
-      row.classList.add('moments-author-row');
-      row.querySelectorAll('button').forEach(btn=>btn.remove());
+
+  function apiUrl(){
+    const config=root.MONEY_CONFIG||{};
+    return `${config.apiBase}?base=${encodeURIComponent(tripCurrency().code)}&symbols=${encodeURIComponent(homeCurrency())}`;
+  }
+
+  function normalizeAmount(value){
+    if(typeof value==='number') return Number.isFinite(value)?value:0;
+    const cleaned=String(value==null?'':value).replace(/[^0-9.]/g,'');
+    const amount=Number(cleaned);
+    return Number.isFinite(amount)?amount:0;
+  }
+
+  function sumAmounts(values){
+    return Array.from(values||[]).reduce((sum,value)=>sum+normalizeAmount(value),0);
+  }
+
+  function equalShares(amount,parties){
+    const selected=Array.from(parties||[]).filter(Boolean);
+    const total=normalizeAmount(amount);
+    if(!selected.length) return {};
+    const share=total/selected.length;
+    return Object.fromEntries(selected.map(party=>[party,share]));
+  }
+
+  function remainder(total,usedValues){
+    return normalizeAmount(total)-sumAmounts(usedValues);
+  }
+
+  function amountsMatch(left,right,tolerance){
+    const allowed=Number.isFinite(Number(tolerance))?Math.abs(Number(tolerance)):0.01;
+    return Math.abs(normalizeAmount(left)-normalizeAmount(right))<=allowed;
+  }
+
+  function normalizeRateRecord(record,source){
+    if(!record||!(Number(record.rate)>0)) return null;
+    return {
+      base:String(record.base||tripCurrency().code).toUpperCase(),
+      quote:String(record.quote||homeCurrency()).toUpperCase(),
+      rate:Number(record.rate),
+      date:String(record.date||''),
+      savedAt:String(record.savedAt||''),
+      source:String(source||record.source||'cached')
+    };
+  }
+
+  function readCachedRate(){
+    try{
+      if(!root.STORAGE||!root.STORAGE.local) return null;
+      return normalizeRateRecord(root.STORAGE.local.readJSON(cacheKey(),null),'cached');
+    }catch(error){
+      return null;
     }
   }
-  window.simplifyMomentsAuthor = simplifyMomentsAuthor;
 
+  function saveCachedRate(rateOrRecord,date,savedAt){
+    const input=typeof rateOrRecord==='object'&&rateOrRecord!==null
+      ? rateOrRecord
+      : {rate:rateOrRecord,date,savedAt};
+    const record=normalizeRateRecord(input,input.source||'cached');
+    if(!record||!root.STORAGE||!root.STORAGE.local) return false;
+    const payload={
+      rate:record.rate,
+      date:record.date,
+      savedAt:record.savedAt||new Date().toISOString()
+    };
+    try{
+      return root.STORAGE.local.writeJSON(cacheKey(),payload)!==false;
+    }catch(error){
+      return false;
+    }
+  }
 
-  document.addEventListener('DOMContentLoaded',()=>{
-    simplifyMomentsAuthor();
+  function isCacheFresh(record,now){
+    const candidate=normalizeRateRecord(record||readCachedRate(),'cached');
+    if(!candidate||!candidate.savedAt) return false;
+    const saved=Date.parse(candidate.savedAt);
+    const current=now instanceof Date?now.getTime():Number(now||Date.now());
+    const maxAge=Number(root.MONEY_CONFIG&&root.MONEY_CONFIG.cacheHours||0)*60*60*1000;
+    return Number.isFinite(saved)&&Number.isFinite(current)&&maxAge>0&&current-saved<=maxAge;
+  }
+
+  function rateForDirection(rate,from,to){
+    const numeric=Number(rate);
+    if(!(numeric>0)) return null;
+    const trip=tripCurrency().code;
+    const home=homeCurrency();
+    const source=String(from||trip).toUpperCase();
+    const target=String(to||home).toUpperCase();
+    if(source===target) return 1;
+    if(source===trip&&target===home) return numeric;
+    if(source===home&&target===trip) return 1/numeric;
+    return null;
+  }
+
+  function convert(amount,rate,from,to){
+    const directionRate=rateForDirection(rate,from,to);
+    if(directionRate===null) return null;
+    return normalizeAmount(amount)*directionRate;
+  }
+
+  function convertToHome(amount,rate){
+    return convert(amount,rate,tripCurrency().code,homeCurrency());
+  }
+
+  function convertToTrip(amount,rate){
+    return convert(amount,rate,homeCurrency(),tripCurrency().code);
+  }
+
+  async function fetchLatestRate(fetchImpl){
+    const request=fetchImpl||root.fetch;
+    if(typeof request!=='function') throw new Error('rate request unavailable');
+    const response=await request(apiUrl(),{cache:'no-store'});
+    if(!response||!response.ok) throw new Error('rate request failed');
+    const data=await response.json();
+    const rate=data&&data.rates&&Number(data.rates[homeCurrency()]);
+    if(!(rate>0)) throw new Error('invalid rate');
+    return normalizeRateRecord({
+      base:tripCurrency().code,
+      quote:homeCurrency(),
+      rate,
+      date:data.date||new Date().toISOString().slice(0,10),
+      savedAt:new Date().toISOString(),
+      source:'live'
+    },'live');
+  }
+
+  const service=Object.freeze({
+    getTripCurrency:tripCurrency,
+    getHomeCurrency:homeCurrency,
+    getCacheKey:cacheKey,
+    getApiUrl:apiUrl,
+    normalizeAmount,
+    sumAmounts,
+    equalShares,
+    remainder,
+    amountsMatch,
+    readCachedRate,
+    saveCachedRate,
+    isCacheFresh,
+    rateForDirection,
+    convert,
+    convertToHome,
+    convertToTrip,
+    fetchLatestRate
   });
-})();
 
+  root.MONEY=service;
+  root.getFxCacheKey=cacheKey; // compatibility alias for pre-7I callers
+})(globalThis);

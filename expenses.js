@@ -1,676 +1,609 @@
-/* Travel Engine V2 — authoritative Engine Integrity Layer E1–E5. */
-(function(root,factory){
-  const api=factory();
-  if(typeof module==='object'&&module.exports)module.exports=api;
-  root.TravelEngineIntegrity=api;
-})(typeof globalThis!=='undefined'?globalThis:this,function(){
-  'use strict';
+/* Travel Engine — Expenses Page Runtime
+   Stage 7K-2A extracts the existing canonical Expenses workflow from script.js.
+   Storage schema, global HTML handlers, calculations, copy and modal behavior remain unchanged. */
 
-  const INTEGRITY_STAGES=Object.freeze(['E1','E2','E3','E4','E5']);
-  const STAGES=Object.freeze([...INTEGRITY_STAGES,'PLANNING']);
-  const PLANNING_STATUSES=Object.freeze(['confirmed','planned','backup','optional','cancelled']);
-  const PLANNING_ROLES=Object.freeze(['primary','alternative']);
-  const NON_PLACE_ROLES=Object.freeze([
-    'meal-choice','accommodation-meal','operator-meal','fuel-check','final-refuel',
-    'comfort-stop','free-time','check-in','check-out','preparation','transfer-instruction'
-  ]);
-  const NAVIGATION_ROLES=Object.freeze([
-    'place','hotel','rental-pickup','rental-return','airport','activity-meeting-point',
-    'restaurant','parking','shuttle-collection-point'
-  ]);
-  const PRESENTATION_FIELDS=new Set([
-    'title','name','label','subtitle','sub','emoji','description','desc','address','maps','map'
-  ]);
-  const PLACE_ACTION_FIELDS=['map','maps','address','navigation','navigationAction','navigationDestination'];
+function updateExpenseMode(){
+  const personal = !!document.getElementById('expensePersonal')?.checked;
+  document.querySelectorAll('[data-expense-type]').forEach(btn=>btn.classList.toggle('active',btn.dataset.expenseType===(personal?'personal':'shared')));
+  const splitBlock = document.getElementById('splitBetweenBlock');
+  const sharedPaid = document.getElementById('sharedPaidByBlock');
+  const personalPaid = document.getElementById('personalPaidForBlock');
+  if(splitBlock) splitBlock.style.display = personal ? 'none' : 'block';
+  if(sharedPaid) sharedPaid.hidden = personal;
+  if(personalPaid) personalPaid.hidden = !personal;
+  if(personal) syncConsumedIfAuto();
+}
+window.setExpenseType=function(type){
+  const personal=document.getElementById('expensePersonal');
+  if(personal) personal.checked=type==='personal';
+  updateExpenseMode();
+};
+window.setExpenseCategory=function(category){
+  const input=document.getElementById('expenseCategory');
+  if(input) input.value=category;
+  document.querySelectorAll('[data-category]').forEach(btn=>btn.classList.toggle('active',btn.dataset.category===category));
+};
+function syncConsumedIfAuto(){
+  const sharedPaid = document.getElementById('expensePaidBy');
+  const personalPaid = document.getElementById('expensePersonalPaidBy');
+  const consumed = document.getElementById('expenseConsumedBy');
+  const personal=!!document.getElementById('expensePersonal')?.checked;
+  const paid=personal?personalPaid:sharedPaid;
+  if(!paid || !consumed) return;
+  if(consumed.dataset.manual !== 'true') consumed.value = paid.value;
+}
+window.syncPersonalPayer=function(){
+  const personalPaid=document.getElementById('expensePersonalPaidBy');
+  const sharedPaid=document.getElementById('expensePaidBy');
+  if(personalPaid&&sharedPaid) sharedPaid.value=personalPaid.value;
+  syncConsumedIfAuto();
+};
+function markConsumedManual(){
+  const consumed = document.getElementById('expenseConsumedBy');
+  if(consumed) consumed.dataset.manual = 'true';
+}
 
-  function value(data,...keys){
-    for(const key of keys)if(data&&data[key]!=null)return data[key];
-    return undefined;
+/* Stage 4C-6: legacy top-level Expenses handlers were removed.
+   Active Expenses API lives in the Stage 4F-Q single canonical module
+   near the end of this file. Keep closeExpenseModal as a simple modal
+   utility because HTML buttons call it directly. */
+function closeExpenseModal(){const m=$('expenseModal'); if(m) m.classList.remove('show'); if(typeof window.unlockExpensePage==='function') window.unlockExpensePage();}
+
+function splitAll() {
+  document.querySelectorAll('#expenseModal input[data-split]').forEach(x => x.checked = true);
+  if(typeof window.updateSplitUI==='function') window.updateSplitUI();
+}
+
+function clearAllSplit() {
+  document.querySelectorAll('#expenseModal input[data-split]').forEach(x => x.checked = false);
+  if(typeof window.updateSplitUI==='function') window.updateSplitUI();
+}
+
+let editingExpenseIndex=null;
+
+/* ============================================================================
+   STAGE 4F-Q — EXPENSES SINGLE CANONICAL MODULE
+   ----------------------------------------------------------------------------
+   One active implementation owns the Expenses open/save/reset/render/edit/
+   delete/history flow. Storage schema, UI copy, modal behaviour and calculations
+   are unchanged from the deploy-tested Stage 4F-P baseline.
+   ============================================================================ */
+(function(){
+  const FRIEND_ORDER=(TRIP_CONFIG.participants&&TRIP_CONFIG.participants.order)||['lee','fowlers','yau'];
+  const FRIEND_FALLBACK=Object.fromEntries(Object.entries(TRIP_CONFIG.participants?.identities||{}).map(([key,value])=>[key,`${value.code} · ${value.name}`]));
+
+  function currentUser(){
+    try{return (typeof getFriend==='function' ? getFriend() : STORAGE.local.get(STORAGE_CONFIG.keys.friend)) || (TRIP_CONFIG.participants&&TRIP_CONFIG.participants.defaultKey) || 'lee';}
+    catch(e){return 'crystal';}
   }
-  function text(input){return typeof input==='string'?input.trim():'';}
-  function recordEntries(collection){
-    if(Array.isArray(collection))return collection.map((record,index)=>[record&&record.id!=null?record.id:String(index),record]);
-    if(collection&&typeof collection==='object')return Object.entries(collection);
-    return [];
+  function labelFor(k){
+    try{return (typeof FRIENDS!=='undefined' && FRIENDS[k]) ? FRIENDS[k] : (FRIEND_FALLBACK[k]||k||'');}
+    catch(e){return FRIEND_FALLBACK[k]||k||'';}
   }
-  function recordMap(collection){
-    const map=new Map();
-    for(const [key,record] of recordEntries(collection)){
-      const id=text(record&&record.id)||text(key);
-      if(id&&!map.has(id))map.set(id,record);
+  function identityFor(k,compact=false){
+    try{return typeof window.friendIdentityHTML==='function' ? window.friendIdentityHTML(k,compact) : escapeHTML(labelFor(k));}
+    catch(e){return escapeHTML(labelFor(k));}
+  }
+  function syncIdentityControls(){
+    document.querySelectorAll('#expenseModal select').forEach(select=>{if(FRIEND_ORDER.includes(select.value)) select.dataset.family=select.value;});
+    document.querySelectorAll('#splitPickerMenu label').forEach(label=>{const input=label.querySelector('input[data-split]');const text=label.querySelector('span');if(input&&text) text.innerHTML=identityFor(input.value,true);});
+  }
+  function readExpenses(){
+    try{return window.EXPENSE_SYNC?.readLocal ? window.EXPENSE_SYNC.readLocal() : STORAGE.local.readJSON(STORAGE_CONFIG.keys.expenses,[]);}
+    catch(e){return [];}
+  }
+  function observeExpenseShadow(action,records){
+    try{window.CCMV_EXPENSE_READ_SHADOW?.observe({action,legacyRecords:records});}
+    catch(error){}
+  }
+  function writeExpenses(arr){
+    const list=Array.isArray(arr)?arr:[];
+    if(window.EXPENSE_SYNC?.writeLocal) window.EXPENSE_SYNC.writeLocal(list);
+    else STORAGE.local.writeJSON(STORAGE_CONFIG.keys.expenses,list);
+  }
+  function timeLabel(iso){
+    try{return (typeof formatTime==='function') ? formatTime(iso) : (iso?FORMATTER.dateTime(new Date(iso)):'');}
+    catch(e){return iso||'';}
+  }
+  function setSelectValue(id,value){
+    const el=document.getElementById(id); if(!el) return;
+    el.value=value;
+    Array.from(el.options||[]).forEach(opt=>{opt.selected=(opt.value===value);});
+    try{el.dispatchEvent(new Event('change',{bubbles:true}));}catch(e){}
+  }
+  let expenseSplitMode='equal';
+  let calculatorTargetId='expenseTotal';
+  let calculatorExpression='';
+
+  function selectedSplitParties(){
+    return [...document.querySelectorAll('#expenseModal input[data-split]:checked')].map(x=>x.value);
+  }
+  function expenseTotalValue(){
+    return MONEY.normalizeAmount(document.getElementById('expenseTotal')?.value);
+  }
+  function setExportVisibility(){
+    const btn=document.getElementById('expenseExportButton');
+    if(!btn) return;
+    const visible=typeof window.isAdminMode==='function' && window.isAdminMode();
+    btn.hidden=!visible;
+    btn.setAttribute('aria-hidden',String(!visible));
+    btn.style.display=visible?'inline-flex':'none';
+  }
+  window.refreshExpenseAdminUI=setExportVisibility;
+  document.addEventListener('travelengine:adminmodechange',setExportVisibility);
+  function splitSharesForExpense(e){
+    const amount=MONEY.normalizeAmount(e.total);
+    if(e.type==='personal'){
+      const who=e.consumedBy || ((e.split||[])[0]) || e.paidBy;
+      return {[who]:amount};
     }
-    return map;
+    if(e.shares && typeof e.shares==='object') return e.shares;
+    const split=(e.split&&e.split.length)?e.split:[e.paidBy];
+    return MONEY.equalShares(amount,split);
   }
-  function itineraryDays(data){return value(data,'ITINERARY_DATA','itinerary','days')||{};}
-  function itineraryItems(data){
-    const output=[];
-    for(const [dayKey,day] of recordEntries(itineraryDays(data))){
-      for(const item of (day&&Array.isArray(day.items)?day.items:[]))output.push({dayKey,day,item});
+  function expenseSummary(records){
+    const arr=Array.isArray(records)?records:[];
+    const personalSpend=Object.fromEntries(FRIEND_ORDER.map(k=>[k,0]));
+    const balance=Object.fromEntries(FRIEND_ORDER.map(k=>[k,0]));
+    arr.forEach(e=>{
+      const amount=MONEY.normalizeAmount(e.total);
+      if(!(e.paidBy in balance)) balance[e.paidBy]=0;
+      balance[e.paidBy]+=amount;
+      const shares=splitSharesForExpense(e);
+      Object.entries(shares).forEach(([partyId,share])=>{
+        if(!(partyId in personalSpend)) personalSpend[partyId]=0;
+        if(!(partyId in balance)) balance[partyId]=0;
+        const shareAmount=MONEY.normalizeAmount(share);
+        personalSpend[partyId]+=shareAmount;
+        balance[partyId]-=shareAmount;
+      });
+    });
+    return {total:MONEY.sumAmounts(arr.map(e=>e.total)),personalSpend,balance};
+  }
+  function calculatorIcon(){
+    return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm0 2v4h12V4H6Zm2 7H6v2h2v-2Zm5 0h-2v2h2v-2Zm5 0h-2v2h2v-2ZM8 16H6v2h2v-2Zm5 0h-2v2h2v-2Zm5 0h-2v2h2v-2Z"/></svg>`;
+  }
+  function renderCustomSplitPanel(){
+    const panel=document.getElementById('customSplitPanel');
+    if(!panel) return;
+    const parties=selectedSplitParties();
+    panel.hidden=expenseSplitMode!=='custom';
+    if(panel.hidden){panel.innerHTML='';return;}
+    if(!parties.length){panel.innerHTML='<p class="split-helper">Choose at least one party.</p>';return;}
+    const previous={};
+    panel.querySelectorAll('input[data-custom-party]').forEach(i=>previous[i.dataset.customParty]=i.value);
+    panel.innerHTML=parties.map(k=>`<label class="custom-split-row"><span>${identityFor(k,true)}</span><div class="expense-money-field"><input id="customShare_${k}" data-custom-party="${k}" inputmode="decimal" type="text" value="${previous[k]??''}" placeholder="0.00" oninput="recalculateCustomSplit()" onblur="autofillCustomRemainderOnExit('${k}')"/><button class="field-clear-btn" type="button" onclick="clearExpenseField('customShare_${k}')" aria-label="Clear ${labelFor(k)} amount">Clear</button><button class="calc-open-btn remainder-btn" type="button" onclick="calculateCustomRemainder('${k}')" aria-label="Calculate remainder for ${labelFor(k)}">${calculatorIcon()}</button></div></label>`).join('')+`<p class="split-helper" id="customSplitStatus">Enter two amounts, then move to the remaining field to fill the balance automatically.</p>`;
+    window.recalculateCustomSplit();
+  }
+  window.calculateCustomRemainder=function(targetParty){
+    const total=expenseTotalValue();
+    const parties=selectedSplitParties();
+    if(!total) return alert('Enter the total amount first.');
+    if(!parties.includes(targetParty)) return;
+    let used=0;
+    for(const party of parties){
+      if(party===targetParty) continue;
+      const raw=document.getElementById(`customShare_${party}`)?.value;
+      if(raw==='' || raw==null) return alert('Fill the other selected amounts first.');
+      used+=MONEY.normalizeAmount(raw);
     }
-    return output;
-  }
-  function issue(stage,code,severity,details){
-    return Object.assign({
-      stage,code,severity,
-      entityType:null,entityId:null,field:null,relatedEntityId:null,
-      message:'',recommendation:null
-    },details||{});
-  }
-  function collector(stage){
-    const errors=[],warnings=[];
+    const remainder=MONEY.remainder(total,[used]);
+    if(remainder<0) return alert(`The other amounts exceed the total by ${FORMATTER.decimal(Math.abs(remainder),2)} ${MONEY.getTripCurrency().code}.`);
+    const input=document.getElementById(`customShare_${targetParty}`);
+    if(input){input.value=FORMATTER.decimal(remainder,2);input.dispatchEvent(new Event('input',{bubbles:true}));}
+  };
+  window.autofillCustomRemainderOnExit=function(sourceParty){
+    const panel=document.getElementById('customSplitPanel');
+    if(!panel || expenseSplitMode!=='custom') return;
+    const inputs=[...panel.querySelectorAll('input[data-custom-party]')];
+    const total=expenseTotalValue();
+    const blanks=inputs.filter(i=>String(i.value||'').trim()==='');
+    const filled=inputs.filter(i=>String(i.value||'').trim()!=='');
+    if(total>0 && inputs.length>1 && blanks.length===1 && filled.length===inputs.length-1){
+      const used=MONEY.sumAmounts(filled.map(i=>i.value));
+      const remainder=MONEY.remainder(total,[used]);
+      if(remainder>=0) blanks[0].value=FORMATTER.decimal(remainder,2);
+    }
+    window.recalculateCustomSplit();
+  };
+  function expenseVisibleBounds(){
+    const vv=window.visualViewport;
     return {
-      error(code,details){errors.push(issue(stage,code,'error',details));},
-      warn(code,details){warnings.push(issue(stage,code,'warning',details));},
-      result(summary){return {stage,valid:errors.length===0,errors,warnings,summary:summary||{}};}
+      top:vv?Math.max(0,vv.offsetTop):0,
+      bottom:vv?(vv.offsetTop+vv.height):window.innerHeight
     };
   }
-  function validId(id){
-    return typeof id==='string'&&id.length>0&&id===id.trim()&&
-      /^[A-Za-z0-9]+(?:[-_.:][A-Za-z0-9]+)*$/.test(id)&&
-      !/^(?:temp|temporary|placeholder|todo|tbd|test|sample|dummy|fixme)(?:[-_.:]|$)/i.test(id);
+  function positionExpenseControlAboveKeyboard(element, preferredBlock){
+    if(!element) return;
+    const sheet=element.closest('#expenseModal .tools-sheet');
+    if(!sheet) return;
+    const bounds=expenseVisibleBounds();
+    const rect=element.getBoundingClientRect();
+    const topGuard=bounds.top+88;
+    const bottomGuard=bounds.bottom-28;
+    let delta=0;
+    if(rect.bottom>bottomGuard) delta=rect.bottom-bottomGuard+18;
+    else if(rect.top<topGuard) delta=rect.top-topGuard-14;
+    if(Math.abs(delta)>1){
+      sheet.scrollTop+=delta;
+      return;
+    }
+    if(preferredBlock==='start'&&rect.top>topGuard+70) sheet.scrollTop+=rect.top-(topGuard+20);
   }
-  function idMessage(entityType,id){
-    return {
-      entityType,entityId:typeof id==='string'?id:null,field:'id',
-      message:`${entityType} ID must be a stable, non-empty, trimmed, non-placeholder string.`,
-      recommendation:'Replace the malformed ID with a stable canonical identifier and update its references.'
+  function revealExpenseControl(element, block){
+    if(!element) return;
+    const align=block||'center';
+    const sheet=element.closest('#expenseModal .tools-sheet');
+    const initial=()=>{
+      try{element.scrollIntoView({behavior:'auto',block:align,inline:'nearest'});}catch(e){element.scrollIntoView();}
+      positionExpenseControlAboveKeyboard(element,align);
     };
-  }
-  function duplicateIds(entries){
-    const seen=new Set(),duplicates=new Set();
-    for(const [key,record] of entries){
-      const id=text(record&&record.id)||text(key);
-      if(seen.has(id))duplicates.add(id);else seen.add(id);
+    requestAnimationFrame(initial);
+    // Mobile keyboards animate over several frames. Re-check the nested modal scroller
+    // throughout the animation instead of relying on one visualViewport resize event.
+    const started=Date.now();
+    const timer=setInterval(()=>{
+      if(!document.body.contains(element)||Date.now()-started>1300){clearInterval(timer);return;}
+      positionExpenseControlAboveKeyboard(element,align);
+    },80);
+    const settle=()=>positionExpenseControlAboveKeyboard(element,align);
+    setTimeout(settle,40);setTimeout(settle,180);setTimeout(settle,360);setTimeout(settle,650);setTimeout(settle,1000);
+    if(window.visualViewport){
+      const onViewport=()=>positionExpenseControlAboveKeyboard(element,align);
+      window.visualViewport.addEventListener('resize',onViewport);
+      window.visualViewport.addEventListener('scroll',onViewport);
+      setTimeout(()=>{
+        window.visualViewport.removeEventListener('resize',onViewport);
+        window.visualViewport.removeEventListener('scroll',onViewport);
+      },1500);
     }
-    return [...duplicates];
-  }
-  function validateRecords(c,collection,entityType){
-    const entries=recordEntries(collection);
-    for(const id of duplicateIds(entries))c.error(`ENTITY_${entityType.toUpperCase()}_ID_DUPLICATE`,{
-      entityType,entityId:id,field:'id',message:`Duplicate ${entityType} ID: ${id}.`,
-      recommendation:'Keep one canonical record and update references without renumbering unrelated entities.'
-    });
-    for(const [key,record] of entries){
-      const id=record&&record.id!=null?record.id:key;
-      if(!record||typeof record!=='object'||Array.isArray(record)){
-        c.error('ENTITY_RECORD_MALFORMED',{entityType,entityId:text(id)||null,message:`${entityType} record must be an object.`});
-        continue;
-      }
-      if(!validId(id))c.error('ENTITY_ID_MALFORMED',idMessage(entityType,id));
-      if(!Array.isArray(collection)&&record.id!=null&&text(record.id)!==text(key)){
-        c.error('ENTITY_ID_KEY_MISMATCH',{
-          entityType,entityId:text(record.id)||null,field:'id',relatedEntityId:text(key)||null,
-          message:`${entityType} record ID does not match its canonical collection key.`,
-          recommendation:'Use the collection key as the record ID or correct the key and every canonical reference.'
-        });
-      }
-    }
-    return entries.length;
-  }
-  function sourceIds(data,name,collection){
-    const meta=value(data,'SOURCE_META','sourceMeta')||{};
-    const explicit=meta[name];
-    if(Array.isArray(explicit))return explicit;
-    return recordEntries(collection).map(([key,record])=>text(record&&record.id)||text(key));
-  }
-  function validateSourceDuplicates(c,ids,entityType){
-    const seen=new Set();
-    for(const id of ids){
-      if(seen.has(id))c.error(`ENTITY_${entityType.toUpperCase()}_ID_DUPLICATE`,{
-        entityType,entityId:id,field:'id',message:`Duplicate ${entityType} ID: ${id}.`,
-        recommendation:'Remove the duplicate canonical definition; do not renumber unrelated records.'
-      });
-      seen.add(id);
+    if(sheet){
+      const onSheet=()=>positionExpenseControlAboveKeyboard(element,align);
+      sheet.addEventListener('scroll',onSheet,{passive:true,once:true});
     }
   }
+  window.revealExpenseControl=revealExpenseControl;
+  window.clearExpenseField=function(id){
+    const input=document.getElementById(id);
+    if(!input) return;
+    input.value='';
+    input.dispatchEvent(new Event('input',{bubbles:true}));
+    // Focus first to trigger the keyboard, then actively scroll the modal's own
+    // tools-sheet until the field sits above the final visual viewport.
+    try{input.focus({preventScroll:true});}catch(e){input.focus();}
+    revealExpenseControl(input,'center');
+  };
+  window.recalculateCustomSplit=function(){
+    const panel=document.getElementById('customSplitPanel');
+    if(!panel || expenseSplitMode!=='custom') return;
+    const inputs=[...panel.querySelectorAll('input[data-custom-party]')];
+    const total=expenseTotalValue();
+    const allocated=MONEY.sumAmounts(inputs.map(i=>i.value));
+    const difference=total-allocated;
+    const status=document.getElementById('customSplitStatus');
+    if(status){
+      if(!total) status.textContent='Enter the total amount first.';
+      else if(MONEY.amountsMatch(total,allocated)) status.textContent='Custom split matches the total.';
+      else if(difference>0) status.textContent=`${FORMATTER.decimal(difference,2)} ${MONEY.getTripCurrency().code} remains unallocated.`;
+      else status.textContent=`Over by ${FORMATTER.decimal(Math.abs(difference),2)} ${MONEY.getTripCurrency().code}.`;
+      status.classList.toggle('error',difference<-.01);
+      status.classList.toggle('complete',MONEY.amountsMatch(total,allocated) && total>0);
+    }
+  };
+  window.updateSplitUI=function(){
+    document.querySelectorAll('[data-split-mode]').forEach(btn=>btn.classList.toggle('active',btn.dataset.splitMode===expenseSplitMode));
+    const selected=[...document.querySelectorAll('#expenseModal input[data-split]:checked')].map(input=>input.value);
+    const summary=document.getElementById('splitPickerSummary');
+    if(summary){
+      const names=Object.fromEntries(Object.entries(TRIP_CONFIG.participants?.identities||{}).map(([key,value])=>[key,value.name]));
+      summary.innerHTML=selected.length===3?'All':selected.length===0?'None':selected.map(key=>identityFor(key,true)).join('<span class="identity-plus">+</span>');
+    }
+    renderCustomSplitPanel();
+    syncIdentityControls();
+  };
+  window.toggleSplitPicker=function(event){
+    if(event) event.stopPropagation();
+    const menu=document.getElementById('splitPickerMenu');
+    const button=document.getElementById('splitPickerButton');
+    if(!menu||!button) return;
+    const opening=menu.hidden;
+    menu.hidden=!opening;
+    button.setAttribute('aria-expanded',opening?'true':'false');
+  };
+  window.closeSplitPicker=function(){
+    const menu=document.getElementById('splitPickerMenu');
+    const button=document.getElementById('splitPickerButton');
+    if(menu) menu.hidden=true;
+    if(button) button.setAttribute('aria-expanded','false');
+  };
+  document.addEventListener('click',window.closeSplitPicker);
+  window.setExpenseSplitMode=function(mode){
+    expenseSplitMode=mode==='custom'?'custom':'equal';
+    window.updateSplitUI();
+    if(expenseSplitMode==='custom'){
+      const panel=document.getElementById('customSplitPanel');
+      revealExpenseControl(panel,'start');
+    }
+  };
+  window.openExpenseCalculator=function(targetId){
+    calculatorTargetId=targetId||'expenseTotal';
+    const target=document.getElementById(calculatorTargetId);
+    calculatorExpression=String(target?.value||'').replace(/[^0-9.+\-*/()]/g,'');
+    const display=document.getElementById('expenseCalculatorDisplay');
+    if(display) display.textContent=calculatorExpression||'0';
+    document.getElementById('expenseCalculatorModal')?.classList.add('show');
+  };
+  window.closeExpenseCalculator=function(){document.getElementById('expenseCalculatorModal')?.classList.remove('show');};
+  function safeEvaluateExpression(expr){
+    if(!expr || !/^[0-9.+\-*/()\s]+$/.test(expr)) throw new Error('Invalid');
+    const value=Function(`"use strict";return (${expr})`)();
+    if(!Number.isFinite(value)) throw new Error('Invalid');
+    return value;
+  }
+  window.calcPress=function(key){
+    if(key==='C') calculatorExpression='';
+    else if(key==='⌫') calculatorExpression=calculatorExpression.slice(0,-1);
+    else if(key==='='){
+      try{calculatorExpression=String(Math.round(safeEvaluateExpression(calculatorExpression)*100)/100);}catch(e){calculatorExpression='';}
+    }else calculatorExpression+=key;
+    const display=document.getElementById('expenseCalculatorDisplay');
+    if(display) display.textContent=calculatorExpression||'0';
+  };
+  window.useExpenseCalculatorResult=function(){
+    try{
+      const value=Math.round(safeEvaluateExpression(calculatorExpression)*100)/100;
+      const target=document.getElementById(calculatorTargetId);
+      if(target){target.value=FORMATTER.decimal(MONEY.normalizeAmount(value),2);target.dispatchEvent(new Event('input',{bubbles:true}));}
+      window.closeExpenseCalculator();
+    }catch(e){alert('Please complete the calculation first.');}
+  };
 
-  function validateE1(data,config){
-    const c=collector('E1');
-    const places=value(data,'PLACES','places')||{};
-    const bookings=value(data,'BOOKINGS_DATA','bookings')||{};
-    const days=itineraryDays(data);
-    const placeCount=validateRecords(c,places,'place');
-    const bookingCount=validateRecords(c,bookings,'booking');
-    validateSourceDuplicates(c,sourceIds(data,'placeIds',places),'place');
-    validateSourceDuplicates(c,sourceIds(data,'bookingIds',bookings),'booking');
-    const itemEntries=itineraryItems(data).map(({item},index)=>[item&&item.id!=null?item.id:String(index),item]);
-    validateRecords(c,itemEntries.map(([,record])=>record),'itineraryItem');
-    validateSourceDuplicates(c,sourceIds(data,'itineraryItemIds',itemEntries.map(([,record])=>record)),'itineraryItem');
-    for(const [dayKey,day] of recordEntries(days)){
-      if(!day||typeof day!=='object'||Array.isArray(day)){
-        c.error('ENTITY_DAY_MALFORMED',{entityType:'itineraryDay',entityId:text(dayKey)||null,message:'Itinerary day must be an object.'});
-        continue;
-      }
-      if(!Array.isArray(day.items))c.error('ENTITY_DAY_ITEMS_MALFORMED',{
-        entityType:'itineraryDay',entityId:text(dayKey)||null,field:'items',message:'Itinerary day items must be an array.'
-      });
-    }
-    const guideOrder=value(data,'GUIDE_ORDER','guideOrder')||[];
-    if(!Array.isArray(guideOrder))c.error('ENTITY_GUIDE_ORDER_MALFORMED',{entityType:'guideOrder',field:'GUIDE_ORDER',message:'Guide order must be an array.'});
-    const categories=value(data,'CATEGORIES','categories')||{};
-    if(!categories||typeof categories!=='object'||Array.isArray(categories))c.error('ENTITY_GUIDE_CATEGORIES_MALFORMED',{entityType:'guideCategory',field:'CATEGORIES',message:'Guide categories must be an object.'});
-    const tripConfig=config||value(data,'TRIP_CONFIG','tripConfig')||{};
-    for(const field of ['tripName','startDate','endDate','version']){
-      if(!text(tripConfig[field]))c.error('ENTITY_TRIP_CONFIG_REQUIRED',{
-        entityType:'tripConfig',entityId:'trip',field,message:`Trip configuration requires ${field}.`,
-        recommendation:`Supply the canonical ${field}; validation will not fabricate it.`
-      });
-    }
-    const references=value(data,'CANONICAL_REFERENCES','canonicalReferences')||[];
-    const maps={place:recordMap(places),booking:recordMap(bookings),itineraryItem:recordMap(itemEntries.map(([,item])=>item))};
-    for(const reference of references){
-      const target=maps[reference&&reference.entityType];
-      if(!target||!target.has(text(reference&&reference.entityId)))c.error('ENTITY_CANONICAL_REFERENCE_UNRESOLVED',{
-        entityType:reference&&reference.entityType||'unknown',entityId:text(reference&&reference.entityId)||null,
-        field:reference&&reference.field||null,message:'Canonical entity reference does not resolve.',
-        recommendation:'Correct the reference to an existing canonical ID or create the real canonical entity from authoritative data.'
-      });
-    }
-    return c.result({places:placeCount,itineraryDays:recordEntries(days).length,itineraryItems:itemEntries.length,bookings:bookingCount});
+  function resetExpenseForm(){
+    editingExpenseIndex=null;
+    const user=currentUser();
+    const item=document.getElementById('expenseItem'); if(item) item.value='';
+    window.setExpenseCategory('Meals');
+    const total=document.getElementById('expenseTotal'); if(total) total.value='';
+    setSelectValue('expensePaidBy',user);
+    setSelectValue('expensePersonalPaidBy',user);
+    const personal=document.getElementById('expensePersonal'); if(personal) personal.checked=false;
+    const consumed=document.getElementById('expenseConsumedBy');
+    if(consumed){consumed.dataset.manual='false';setSelectValue('expenseConsumedBy',user);}
+    try{splitAll();}
+    catch(e){document.querySelectorAll('#expenseModal input[data-split]').forEach(x=>x.checked=true);}
+    expenseSplitMode='equal';
+    try{updateExpenseMode();}catch(e){}
+    window.updateSplitUI();
+    const title=document.getElementById('expenseModalTitle'); if(title) title.textContent='Add expense';
+    const save=document.getElementById('expenseSaveButton'); if(save) save.textContent='Save';
   }
-
-  function guideKey(entry){return typeof entry==='string'?entry:text(entry&&(entry.key||entry.placeId||entry.id));}
-  function validateE2(data){
-    const c=collector('E2');
-    const places=recordMap(value(data,'PLACES','places')||{});
-    const bookings=recordMap(value(data,'BOOKINGS_DATA','bookings')||{});
-    const guideOrder=value(data,'GUIDE_ORDER','guideOrder')||[];
-    const categories=value(data,'CATEGORIES','categories')||{};
-    const orderKeys=[];
-    for(const entry of Array.isArray(guideOrder)?guideOrder:[]){
-      const key=guideKey(entry);orderKeys.push(key);
-      if(!places.has(key))c.error('REL_GUIDE_ORDER_PLACE_MISSING',{
-        entityType:'guideOrder',entityId:key||null,field:'placeId',relatedEntityId:key||null,
-        message:'Guide order entry does not resolve to a canonical place.',
-        recommendation:'Correct or remove the relationship; do not create a fake place.'
-      });
-    }
-    const categoryKeys=[];
-    for(const [category,entries] of recordEntries(categories)){
-      if(!Array.isArray(entries)){
-        c.error('REL_GUIDE_CATEGORY_MALFORMED',{entityType:'guideCategory',entityId:category,field:'entries',message:'Guide category entries must be an array.'});
-        continue;
-      }
-      for(const entry of entries){
-        const key=guideKey(entry);categoryKeys.push(key);
-        if(!places.has(key))c.error('REL_GUIDE_CATEGORY_PLACE_MISSING',{
-          entityType:'guideCategory',entityId:category,field:'placeId',relatedEntityId:key||null,
-          message:'Guide category entry does not resolve to a canonical place.',
-          recommendation:'Correct or remove the relationship; do not create a fake place.'
-        });
-        if(entry&&typeof entry==='object'&&Object.keys(entry).some(field=>PRESENTATION_FIELDS.has(field))){
-          c.error('REL_GUIDE_PRESENTATION_AUTHORITY_DUPLICATED',{
-            entityType:'guideCategory',entityId:category,field:'entries',relatedEntityId:key||null,
-            message:'Guide entry copies canonical place presentation content.',
-            recommendation:'Store only the canonical place key and render presentation from the place record.'
-          });
-        }
-      }
-    }
-    for(const key of orderKeys)if(key&&!categoryKeys.includes(key))c.error('REL_GUIDE_PLACE_UNREACHABLE',{
-      entityType:'place',entityId:key,field:'GUIDE_ORDER',message:'Intended Guide place is not reachable through a Guide category.',
-      recommendation:'Add the canonical place key to the appropriate Guide category or remove it from intended Guide ordering.'
-    });
-    for(const key of categoryKeys)if(key&&!orderKeys.includes(key))c.error('REL_GUIDE_ENTRY_ORPHAN',{
-      entityType:'place',entityId:key,field:'CATEGORIES',message:'Guide category place is absent from Guide ordering.',
-      recommendation:'Add the canonical place key to Guide ordering or remove the obsolete category relationship.'
-    });
-    const dayLinks=value(data,'DAY_LINKS','dayLinks')||{};
-    for(const key of Object.keys(dayLinks))if(!places.has(key))c.error('REL_DAY_LINK_PLACE_MISSING',{
-      entityType:'dayLink',entityId:key,field:'placeId',relatedEntityId:key,
-      message:'Day-to-Guide link does not resolve to a canonical place.',
-      recommendation:'Remove generic/non-place relationships or correct the key to a real canonical place.'
-    });
-    let placeLinked=0,nonPlace=0;
-    for(const {item} of itineraryItems(data)){
-      const id=text(item&&item.id)||null;
-      if(item&&item.nonPlace===true){
-        nonPlace++;
-        if(text(item.placeId))c.error('REL_NON_PLACE_HAS_PLACE',{
-          entityType:'itineraryItem',entityId:id,field:'placeId',relatedEntityId:text(item.placeId),
-          message:'Explicit non-place item also references a place.',
-          recommendation:'Remove the place relationship or correct the classification after authoritative review.'
-        });
-        if(Array.isArray(item.guideIds)&&item.guideIds.length)c.error('REL_NON_PLACE_HAS_GUIDE',{
-          entityType:'itineraryItem',entityId:id,field:'guideIds',message:'Non-place item exposes a Guide relationship.',
-          recommendation:'Remove the Guide relationship; generic roles must not create fake Guide places.'
-        });
-      }else if(text(item&&item.placeId)){
-        placeLinked++;
-        if(!places.has(text(item.placeId)))c.error('REL_TIMELINE_PLACE_DANGLING',{
-          entityType:'itineraryItem',entityId:id,field:'placeId',relatedEntityId:text(item.placeId),
-          message:'Timeline item placeId does not resolve.',
-          recommendation:'Correct the reference to the authoritative place or explicitly classify a genuine non-place event.'
-        });
-      }else c.error('REL_TIMELINE_CLASSIFICATION_AMBIGUOUS',{
-        entityType:'itineraryItem',entityId:id,field:'placeId',
-        message:'Timeline item has neither a place relationship nor explicit non-place classification.',
-        recommendation:'Review the event: link a real venue to its canonical place or explicitly mark a genuine non-place role.'
-      });
-      for(const key of (item&&Array.isArray(item.guideIds)?item.guideIds:[]))if(!places.has(key))c.error('REL_TIMELINE_GUIDE_DANGLING',{
-        entityType:'itineraryItem',entityId:id,field:'guideIds',relatedEntityId:key,message:'Timeline Guide relationship does not resolve.'
-      });
-      if(text(item&&item.bookingId)&&!bookings.has(text(item.bookingId)))c.error('REL_TIMELINE_BOOKING_DANGLING',{
-        entityType:'itineraryItem',entityId:id,field:'bookingId',relatedEntityId:text(item.bookingId),message:'Timeline booking relationship does not resolve.'
-      });
-    }
-    for(const [id,booking] of bookings){
-      if(text(booking.placeId)&&!places.has(text(booking.placeId)))c.error('REL_BOOKING_PLACE_DANGLING',{
-        entityType:'booking',entityId:id,field:'placeId',relatedEntityId:text(booking.placeId),message:'Booking place relationship does not resolve.'
-      });
-      if(!text(booking.placeId)&&booking.standalone!==true)c.error('REL_BOOKING_OWNER_MISSING',{
-        entityType:'booking',entityId:id,field:'placeId',message:'Booking has no related canonical place and is not explicitly standalone.',
-        recommendation:'Link the booking to its real canonical entity or mark a genuinely standalone booking.'
-      });
-    }
-    return c.result({placeLinkedTimelineItems:placeLinked,nonPlaceTimelineItems:nonPlace,guideOrder:orderKeys.length,guideCategoryEntries:categoryKeys.length});
+  function expenseCard(e){
+    const personal=e.type==='personal';
+    const split=e.split||[];
+    const consumer=e.consumedBy || split[0] || e.paidBy;
+    const who=personal ? `Consumed by ${identityFor(consumer,true)}` : `${e.splitMode==='custom'?'Custom':'Equal'} split: ${split.map(k=>identityFor(k,true)).join('<span class="identity-separator">·</span>')}`;
+    const latestId=e._latest?' id="latestExpenseCard"':'';
+    return `<div class="expense-card"${latestId}><strong>${escapeHTML(e.item||'')}</strong><p class="timestamp">${timeLabel(e.createdAt)}${e.editedAt?` · Edited ${timeLabel(e.editedAt)}`:''}</p><p>${FORMATTER.number(MONEY.normalizeAmount(e.total))} ${MONEY.getTripCurrency().code} · Paid by ${identityFor(e.paidBy,true)}</p><p>${personal?'Personal Expense':'Shared Expense'} · ${who}</p><div class="entry-actions"><button class="mini-btn" onclick="editExpense(${e._idx})">✏️ Edit</button><button class="mini-btn" onclick="deleteExpense(${e._idx})">🗑 Delete</button></div></div>`;
   }
-
-  function normalizedDestination(value){return text(value).toLowerCase().replace(/^https?:\/\/(?:www\.)?maps\.google\.com\/\?q=/,'').replace(/[%+\s,./-]+/g,'');}
-  function navigationActions(data){
-    const explicit=value(data,'NAVIGATION_ACTIONS','navigationActions');
-    if(Array.isArray(explicit))return explicit.slice();
-    const actions=[];
-    for(const [id,booking] of recordEntries(value(data,'BOOKINGS_DATA','bookings')||{})){
-      const bookingId=text(booking&&booking.id)||text(id);
-      const status=planningStatus(booking);
-      const inactiveCandidate=['cancelled','optional','backup'].includes(status)&&!activePlanningFlag(booking);
-      if(booking&&!inactiveCandidate&&/^(?:rentalCar|rental-vehicle|rental)$/i.test(booking.type||'')){
-        actions.push({id:`${bookingId}:pickup`,ownerType:'booking',ownerId:bookingId,role:'rental-pickup',destinationSource:'pickupNavigationDestination',destination:booking.pickupNavigationDestination,label:'Navigate to pickup depot'});
-        actions.push({id:`${bookingId}:return`,ownerType:'booking',ownerId:bookingId,role:'rental-return',destinationSource:'returnNavigationDestination',destination:booking.returnNavigationDestination,label:'Navigate to return depot'});
-        if(text(booking.shuttleCollectionNavigationDestination))actions.push({id:`${bookingId}:shuttle`,ownerType:'booking',ownerId:bookingId,role:'shuttle-collection-point',destinationSource:'shuttleCollectionNavigationDestination',destination:booking.shuttleCollectionNavigationDestination,label:'Navigate to shuttle collection point'});
-      }
-    }
-    return actions;
+  let expensePageScrollY=0;
+  function lockExpensePage(){
+    if(document.body.classList.contains('expense-modal-open')) return;
+    expensePageScrollY=window.scrollY||0;
+    document.body.style.top=`-${expensePageScrollY}px`;
+    document.body.classList.add('expense-modal-open');
   }
-  function validateE3(data){
-    const c=collector('E3');
-    const actions=navigationActions(data);
-    const bookings=recordMap(value(data,'BOOKINGS_DATA','bookings')||{});
-    const byOwner=new Map();
-    for(const action of actions){
-      const id=text(action&&action.id)||null,ownerId=text(action&&action.ownerId);
-      if(!ownerId)c.error('NAV_OWNER_MISSING',{entityType:'navigationAction',entityId:id,field:'ownerId',message:'Navigation action has no canonical owner.'});
-      if(!text(action&&action.role))c.error('NAV_ROLE_MISSING',{entityType:'navigationAction',entityId:id,field:'role',message:'Navigation action has no role.'});
-      else if(!NAVIGATION_ROLES.includes(action.role))c.warn('NAV_ROLE_UNKNOWN',{entityType:'navigationAction',entityId:id,field:'role',message:`Navigation role is not registered: ${action.role}.`});
-      if(!text(action&&action.destinationSource))c.error('NAV_DESTINATION_SOURCE_MISSING',{entityType:'navigationAction',entityId:id,field:'destinationSource',message:'Navigation action does not declare its canonical destination source.'});
-      if(!text(action&&action.destination))c.error('NAV_DESTINATION_MISSING',{
-        entityType:'navigationAction',entityId:id,field:'destination',message:'Displayed navigation action has no destination.',
-        recommendation:'Bind the action to the correct canonical role destination or suppress the action.'
-      });
-      if(!text(action&&action.label))c.error('NAV_LABEL_MISSING',{entityType:'navigationAction',entityId:id,field:'label',message:'Navigation action has no user-facing label.'});
-      if(ownerId){if(!byOwner.has(ownerId))byOwner.set(ownerId,[]);byOwner.get(ownerId).push(action);}
-      const booking=bookings.get(ownerId);
-      if(booking&&action.role==='rental-pickup'&&text(action.destination)!==text(booking.pickupNavigationDestination))c.error('NAV_RENTAL_PICKUP_BINDING_INVALID',{
-        entityType:'booking',entityId:ownerId,field:'pickupNavigationDestination',relatedEntityId:id,
-        message:'Rental pickup action is not bound to the canonical pickup destination.',
-        recommendation:'Bind pickup only to the canonical pickup depot destination.'
-      });
-      if(booking&&action.role==='rental-return'&&text(action.destination)!==text(booking.returnNavigationDestination))c.error('NAV_RENTAL_RETURN_BINDING_INVALID',{
-        entityType:'booking',entityId:ownerId,field:'returnNavigationDestination',relatedEntityId:id,
-        message:'Rental return action is not bound to the canonical return destination.',
-        recommendation:'Bind return only to the canonical return depot destination.'
-      });
-    }
-    for(const [ownerId,ownerActions] of byOwner){
-      const material=ownerActions.filter(action=>['rental-pickup','rental-return','shuttle-collection-point'].includes(action.role));
-      const destinations=new Set(material.map(action=>normalizedDestination(action.destination)).filter(Boolean));
-      if(material.length>1&&destinations.size>1)for(const action of material)if(/^navigate$/i.test(text(action.label)))c.error('NAV_LABEL_AMBIGUOUS',{
-        entityType:'navigationAction',entityId:text(action.id)||null,field:'label',relatedEntityId:ownerId,
-        message:'Generic Navigate label is ambiguous because the owner has multiple material destinations.',
-        recommendation:'Name the role, for example Navigate to pickup depot or Navigate to return depot.'
-      });
-      const pickup=material.find(action=>action.role==='rental-pickup');
-      const returned=material.find(action=>action.role==='rental-return');
-      const booking=bookings.get(ownerId);
-      if(pickup&&returned&&normalizedDestination(pickup.destination)===normalizedDestination(returned.destination)){
-        const sameDepot=booking&&booking.sameDepot===true||
-          normalizedDestination(booking&&booking.pickupDepotAddress)===normalizedDestination(booking&&booking.returnDepotAddress);
-        if(!sameDepot)c.warn('NAV_DISTINCT_ROLES_SHARE_DESTINATION',{
-          entityType:'booking',entityId:ownerId,field:'navigationDestination',
-          message:'Pickup and return roles share a destination without an explicit same-depot declaration.',
-          recommendation:'Confirm the depots are genuinely the same; otherwise correct the role-specific destination.'
-        });
-      }
-    }
-    return c.result({actions:actions.length,owners:byOwner.size});
+  function unlockExpensePage(){
+    if(!document.body.classList.contains('expense-modal-open')) return;
+    document.body.classList.remove('expense-modal-open');
+    document.body.style.top='';
+    window.scrollTo(0,expensePageScrollY);
   }
-
-  function required(c,booking,id,field,code,message){
-    if(!text(booking&&booking[field]))c.error(code,{entityType:'booking',entityId:id,field,message,recommendation:`Supply the authoritative ${field}; validation will not fabricate it.`});
-  }
-  function validateE4(data){
-    const c=collector('E4');
-    const bookings=recordMap(value(data,'BOOKINGS_DATA','bookings')||{});
-    const counts={accommodation:0,rentalVehicle:0,flight:0,activityTour:0,other:0,deferredCandidates:0};
-    for(const [id,booking] of bookings){
-      const type=text(booking.type);
-      const status=planningStatus(booking);
-      if(['cancelled','optional','backup'].includes(status)&&!activePlanningFlag(booking)){
-        counts.deferredCandidates++;
-        continue;
-      }
-      if(type==='accommodation'){
-        counts.accommodation++;
-        required(c,booking,id,'title','BOOKING_ACCOMMODATION_PROPERTY_MISSING','Accommodation property name is required.');
-        required(c,booking,id,'checkIn','BOOKING_ACCOMMODATION_CHECKIN_MISSING','Accommodation check-in is required.');
-        required(c,booking,id,'checkOut','BOOKING_ACCOMMODATION_CHECKOUT_MISSING','Accommodation check-out is required.');
-        if(!text(booking.address)&&!text(booking.placeId))c.error('BOOKING_ACCOMMODATION_LOCATION_MISSING',{entityType:'booking',entityId:id,field:'address',message:'Accommodation requires an address or canonical place relationship.'});
-        if(!text(booking.stayDates)&&!text(booking.date))c.error('BOOKING_ACCOMMODATION_DATES_MISSING',{entityType:'booking',entityId:id,field:'stayDates',message:'Accommodation stay dates are required.'});
-      }else if(/^(?:rentalCar|rental-vehicle|rental)$/i.test(type)){
-        counts.rentalVehicle++;
-        required(c,booking,id,'provider','BOOKING_RENTAL_PROVIDER_MISSING','Rental provider is required.');
-        required(c,booking,id,'pickupDateTime','BOOKING_RENTAL_PICKUP_TIME_MISSING','Rental pickup date/time is required.');
-        required(c,booking,id,'pickupDepotAddress','BOOKING_RENTAL_PICKUP_DEPOT_MISSING','Rental pickup depot is required.');
-        required(c,booking,id,'pickupNavigationDestination','BOOKING_RENTAL_PICKUP_DESTINATION_MISSING','Rental pickup navigation destination is required.');
-        required(c,booking,id,'returnDateTime','BOOKING_RENTAL_RETURN_TIME_MISSING','Rental return date/time is required.');
-        required(c,booking,id,'returnDepotAddress','BOOKING_RENTAL_RETURN_DEPOT_MISSING','Rental return depot is required.');
-        required(c,booking,id,'returnNavigationDestination','BOOKING_RENTAL_RETURN_DESTINATION_MISSING','Rental return navigation destination is required.');
-        if(booking.oneWay===true&&normalizedDestination(booking.pickupDepotAddress)===normalizedDestination(booking.returnDepotAddress))c.warn('BOOKING_RENTAL_ONE_WAY_DEPOTS_IDENTICAL',{
-          entityType:'booking',entityId:id,field:'returnDepotAddress',message:'One-way rental declares identical pickup and return depots; confirm this is intentional.'
-        });
-      }else if(type==='flight'){
-        counts.flight++;
-        required(c,booking,id,'departureDateTime','BOOKING_FLIGHT_DEPARTURE_TIME_MISSING','Flight departure date/time is required.');
-        required(c,booking,id,'departureAirport','BOOKING_FLIGHT_DEPARTURE_AIRPORT_MISSING','Flight departure airport is required.');
-        required(c,booking,id,'arrivalDateTime','BOOKING_FLIGHT_ARRIVAL_TIME_MISSING','Flight arrival date/time is required.');
-        required(c,booking,id,'arrivalAirport','BOOKING_FLIGHT_ARRIVAL_AIRPORT_MISSING','Flight arrival airport is required.');
-      }else if(type==='activity'||type==='tour'){
-        counts.activityTour++;
-        required(c,booking,id,'title','BOOKING_ACTIVITY_IDENTITY_MISSING','Activity/tour identity is required.');
-        if(!text(booking.date)&&!text(booking.dateTime))c.error('BOOKING_ACTIVITY_DATE_MISSING',{entityType:'booking',entityId:id,field:'date',message:'Activity/tour date is required.'});
-        if(!text(booking.time)&&!text(booking.dateTime))c.error('BOOKING_ACTIVITY_TIME_MISSING',{entityType:'booking',entityId:id,field:'time',message:'Activity/tour time is required.'});
-        if(booking.requiresMeeting===true&&!text(booking.meetingArrangement)&&!text(booking.pickupArrangement))c.error('BOOKING_ACTIVITY_MEETING_MISSING',{
-          entityType:'booking',entityId:id,field:'meetingArrangement',message:'Activity/tour requires a meeting or pickup arrangement, but none is supplied.',
-          recommendation:'Supply the confirmed arrangement; do not fabricate a place.'
-        });
-        if(!text(booking.placeId)&&booking.operatorNonPlace!==true&&booking.standalone!==true)c.error('BOOKING_ACTIVITY_LOCATION_CLASSIFICATION_MISSING',{
-          entityType:'booking',entityId:id,field:'placeId',message:'Activity/tour needs a canonical place or explicit operator/standalone classification.'
-        });
-      }else{
-        counts.other++;
-        c.warn('BOOKING_TYPE_UNSUPPORTED',{entityType:'booking',entityId:id,field:'type',message:`No type-specific validator is registered for booking type: ${type||'(missing)'}.`});
-      }
-    }
-    return c.result(counts);
-  }
-
-  function validateE5(data){
-    const c=collector('E5');
-    let nonPlace=0,place=0,ambiguous=0;
-    for(const {item} of itineraryItems(data)){
-      const id=text(item&&item.id)||null;
-      const explicit=item&&item.nonPlace===true;
-      const placeId=text(item&&item.placeId);
-      if(explicit){
-        nonPlace++;
-        if(placeId)c.error('NONPLACE_HAS_PLACE_ID',{entityType:'itineraryItem',entityId:id,field:'placeId',message:'Non-place item must not have a placeId.'});
-        if(Array.isArray(item.guideIds)&&item.guideIds.length)c.error('NONPLACE_HAS_GUIDE_RELATIONSHIP',{entityType:'itineraryItem',entityId:id,field:'guideIds',message:'Non-place item must not expose a Guide relationship.'});
-        for(const field of PLACE_ACTION_FIELDS)if(text(item[field])||(item[field]&&typeof item[field]==='object'))c.error('NONPLACE_HAS_PLACE_ACTION',{
-          entityType:'itineraryItem',entityId:id,field,message:`Non-place item must not expose ${field}.`,
-          recommendation:'Remove the place action while retaining non-place instructions and route context.'
-        });
-        if(item.nonPlaceRole!=null&&!NON_PLACE_ROLES.includes(item.nonPlaceRole))c.warn('NONPLACE_ROLE_UNKNOWN',{
-          entityType:'itineraryItem',entityId:id,field:'nonPlaceRole',message:`Unregistered non-place role: ${item.nonPlaceRole}.`
-        });
-      }else if(placeId)place++;
-      else{
-        ambiguous++;
-        c.error('NONPLACE_CLASSIFICATION_MISSING',{
-          entityType:'itineraryItem',entityId:id,field:'nonPlace',
-          message:'Item has no valid place relationship and is not explicitly classified as non-place.',
-          recommendation:'Review the descriptive event. Link a known real venue only when authoritative, otherwise explicitly classify a genuine non-place role.'
-        });
-        if(/[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)+/.test(text(item&&item.title)))c.warn('NONPLACE_POSSIBLE_NAMED_VENUE',{
-          entityType:'itineraryItem',entityId:id,field:'title',
-          message:'Descriptive text may name a real venue; it was not auto-classified or converted into a place.',
-          recommendation:'Review against authoritative trip data before assigning a place or non-place classification.'
-        });
-      }
-    }
-    return c.result({placeLinked:place,nonPlace,ambiguous,registeredRoles:NON_PLACE_ROLES.length});
-  }
-
-  function planningStatus(record){
-    return record&&Object.prototype.hasOwnProperty.call(record,'planningStatus')?record.planningStatus:undefined;
-  }
-  function planningEntries(data){
-    const entries=[];
-    for(const [id,record] of recordEntries(value(data,'PLACES','places')||{}))entries.push({entityType:'place',entityId:text(record&&record.id)||text(id),record});
-    for(const [id,record] of recordEntries(value(data,'BOOKINGS_DATA','bookings')||{}))entries.push({entityType:'booking',entityId:text(record&&record.id)||text(id),record});
-    for(const {item} of itineraryItems(data))entries.push({entityType:'itineraryItem',entityId:text(item&&item.id),record:item});
-    for(const [id,record] of recordEntries(value(data,'PLANNING_RECORDS','planningRecords')||{}))entries.push({
-      entityType:text(record&&record.entityType)||'planningRecord',
-      entityId:text(record&&record.id)||text(id),
-      record
-    });
-    return entries;
-  }
-  function activePlanningFlag(record){
-    return record&&(
-      record.active===true||record.selected===true||record.mandatory===true||
-      record.productionSelection===true||record.productionBooking===true||
-      record.productionGuide===true||record.includeInExport===true||record.exportAsConfirmed===true
-    );
-  }
-  function validatePlanning(data){
-    const c=collector('PLANNING');
-    const groups=recordMap(value(data,'PLANNING_GROUPS','planningGroups')||{});
-    const membersByGroup=new Map();
-    const entries=planningEntries(data);
-    let statusCount=0,groupedCount=0;
-
-    for(const [id,group] of groups){
-      if(!validId(id))c.error('PLANNING_GROUP_ID_INVALID',{
-        entityType:'planningGroup',entityId:id||null,field:'id',
-        message:'Planning group ID must be a stable canonical identifier.',
-        recommendation:'Replace it with a stable group ID and update member planningGroupId values.'
-      });
-      if(group&&group.primaryRequired!=null&&typeof group.primaryRequired!=='boolean')c.error('PLANNING_GROUP_PRIMARY_REQUIRED_INVALID',{
-        entityType:'planningGroup',entityId:id,field:'primaryRequired',
-        message:'primaryRequired must be boolean when supplied.'
-      });
-    }
-
-    for(const entry of entries){
-      const {entityType,entityId,record}=entry;
-      if(!record||typeof record!=='object')continue;
-      const status=planningStatus(record);
-      const groupId=text(record.planningGroupId);
-      const role=record.planningRole;
-      if(status!==undefined){
-        statusCount++;
-        if(typeof status!=='string'||!PLANNING_STATUSES.includes(status))c.error('PLANNING_INVALID_STATUS',{
-          entityType,entityId,field:'planningStatus',
-          message:`Invalid planning status: ${String(status)}.`,
-          recommendation:`Use one canonical value: ${PLANNING_STATUSES.join(', ')}.`
-        });
-      }
-      if(groupId){
-        groupedCount++;
-        if(!groups.has(groupId))c.error('PLANNING_GROUP_UNRESOLVED',{
-          entityType,entityId,field:'planningGroupId',relatedEntityId:groupId,
-          message:'Planning record references a missing planning group.',
-          recommendation:'Correct the group relationship or create the real generic planning decision group.'
-        });
-        if(!PLANNING_ROLES.includes(role))c.error('PLANNING_ROLE_INVALID',{
-          entityType,entityId,field:'planningRole',relatedEntityId:groupId,
-          message:'Grouped planning record must be primary or alternative.',
-          recommendation:'Assign the record role within its existing planning group.'
-        });
-        if(!membersByGroup.has(groupId))membersByGroup.set(groupId,[]);
-        membersByGroup.get(groupId).push(entry);
-      }else if(role!==undefined)c.error('PLANNING_ROLE_WITHOUT_GROUP',{
-        entityType,entityId,field:'planningRole',
-        message:'Planning role is present without a planningGroupId.',
-        recommendation:'Attach the record to its planning decision group or remove the orphan role.'
-      });
-
-      if(status==='cancelled'&&activePlanningFlag(record))c.error('PLANNING_CANCELLED_ACTIVE',{
-        entityType,entityId,field:'planningStatus',
-        message:'Cancelled record is marked for active production use.',
-        recommendation:'Keep it editable/searchable, but remove active, selection, Guide, booking, and export production flags.'
-      });
-      if(status==='optional'&&(record.mandatory===true||record.required===true||record.productionSelection===true))c.error('PLANNING_OPTIONAL_MANDATORY',{
-        entityType,entityId,field:'planningStatus',
-        message:'Optional record is being treated as mandatory.',
-        recommendation:'Remove the mandatory/required production selection flag or promote the status intentionally.'
-      });
-      if(status==='backup'&&(record.productionSelection===true||record.exportAsConfirmed===true||record.productionBooking===true))c.error('PLANNING_BACKUP_ACTIVE',{
-        entityType,entityId,field:'planningStatus',
-        message:'Backup record is being treated as the active or confirmed production selection.',
-        recommendation:'Promote the backup intentionally before production selection or export.'
-      });
-    }
-
-    for(const [groupId,members] of membersByGroup){
-      const selectable=members.filter(({record})=>planningStatus(record)!=='cancelled');
-      const primary=selectable.filter(({record})=>record.planningRole==='primary');
-      const confirmed=selectable.filter(({record})=>planningStatus(record)==='confirmed');
-      if(primary.length>1)c.error('PLANNING_DUPLICATE_PRIMARY',{
-        entityType:'planningGroup',entityId:groupId,field:'planningRole',
-        message:`Planning group has ${primary.length} primary records.`,
-        recommendation:'Keep exactly one primary and retain the other candidates as alternatives.'
-      });
-      if(confirmed.length>1)c.error('PLANNING_DUPLICATE_CONFIRMED',{
-        entityType:'planningGroup',entityId:groupId,field:'planningStatus',
-        message:`Planning group has ${confirmed.length} confirmed selections.`,
-        recommendation:'Keep one confirmed selection; retain other candidates as planned, backup, or optional according to authoritative intent.'
-      });
-      const group=groups.get(groupId);
-      if(group&&group.primaryRequired===true&&selectable.length>0&&primary.length===0)c.error('PLANNING_PRIMARY_MISSING',{
-        entityType:'planningGroup',entityId:groupId,field:'planningRole',
-        message:'Planning group requires a primary but has none.',
-        recommendation:'Promote one existing selectable candidate to primary.'
-      });
-    }
-    return c.result({
-      records:entries.length,
-      recordsWithStatus:statusCount,
-      groups:groups.size,
-      groupedRecords:groupedCount,
-      allowedStatuses:PLANNING_STATUSES.length
-    });
-  }
-
-  function isProductionEligible(record,channel){
-    const status=planningStatus(record);
-    const target=channel||'selection';
-    if(status===undefined)return true;
-    if(target==='edit'||target==='search')return true;
-    if(status==='cancelled')return false;
-    if(status==='backup')return !['selection','confirmed-export','production-booking'].includes(target);
-    if(status==='optional')return !['mandatory','selection'].includes(target);
-    return true;
-  }
-  function filterProductionRecords(records,channel){
-    return (Array.isArray(records)?records:[]).filter(record=>isProductionEligible(record,channel));
-  }
-  function cloneData(data){
-    if(typeof structuredClone==='function')return structuredClone(data);
-    return JSON.parse(JSON.stringify(data));
-  }
-  function mutablePlanningRecord(data,entityType,entityId){
-    const id=text(entityId);
-    const collectionName=entityType==='place'?(data.PLACES?'PLACES':'places'):
-      entityType==='booking'?(data.BOOKINGS_DATA?'BOOKINGS_DATA':'bookings'):null;
-    if(collectionName){
-      const collection=data[collectionName];
-      if(Array.isArray(collection))return collection.find(record=>text(record&&record.id)===id)||null;
-      return collection&&collection[id]||null;
-    }
-    if(entityType==='itineraryItem'){
-      for(const {item} of itineraryItems(data))if(text(item&&item.id)===id)return item;
-      return null;
-    }
-    const records=data.PLANNING_RECORDS||data.planningRecords;
-    if(Array.isArray(records))return records.find(record=>text(record&&record.id)===id)||null;
-    return records&&records[id]||null;
-  }
-  function promotePlanningRecord(data,change,config){
-    const candidate=cloneData(data);
-    const entityType=text(change&&change.entityType);
-    const entityId=text(change&&change.entityId);
-    const record=mutablePlanningRecord(candidate,entityType,entityId);
-    if(!record)throw new Error(`Planning record not found: ${entityType}/${entityId}`);
-    const groupId=text(record.planningGroupId);
-    if(change&&change.planningRole==='primary'&&groupId){
-      for(const entry of planningEntries(candidate)){
-        if(entry.record!==record&&text(entry.record&&entry.record.planningGroupId)===groupId&&entry.record.planningRole==='primary'){
-          entry.record.planningRole='alternative';
-        }
-      }
-    }
-    if(change&&change.planningStatus!==undefined)record.planningStatus=change.planningStatus;
-    if(change&&change.planningRole!==undefined)record.planningRole=change.planningRole;
-    const result=validateTripData(candidate,config);
-    return {accepted:result.valid,data:result.valid?candidate:data,candidate,result};
-  }
-
-  function validateTripData(data,config){
-    const stageResults={
-      E1:validateE1(data,config),
-      E2:validateE2(data,config),
-      E3:validateE3(data,config),
-      E4:validateE4(data,config),
-      E5:validateE5(data,config),
-      PLANNING:validatePlanning(data,config)
-    };
-    const errors=STAGES.flatMap(stage=>stageResults[stage].errors);
-    const warnings=STAGES.flatMap(stage=>stageResults[stage].warnings);
-    return {
-      valid:errors.length===0,
-      status:errors.length===0?'PASS':'FAIL',
-      blockingErrorCount:errors.length,
-      warningCount:warnings.length,
-      errors,warnings,issues:[...errors,...warnings],
-      stages:stageResults,
-      summary:{
-        entityCounts:stageResults.E1.summary,
-        relationshipCounts:stageResults.E2.summary,
-        navigationCounts:stageResults.E3.summary,
-        bookingCounts:stageResults.E4.summary,
-        nonPlaceCounts:stageResults.E5.summary,
-        planningCounts:stageResults.PLANNING.summary
-      }
-    };
-  }
-  function formatValidationReport(result,options){
-    const markdown=!options||options.format!=='text';
-    const lines=[];
-    if(markdown)lines.push('# Travel Engine Integrity Failure Report','',`## ${result.status}`,'');
-    else lines.push(`TRAVEL ENGINE INTEGRITY ${result.status}`,'');
-    lines.push(`Blocking errors: ${result.blockingErrorCount}`,`Warnings: ${result.warningCount}`,'');
-    for(const item of result.issues){
-      const heading=`${item.severity==='error'?'FAIL':'WARNING'} ${item.code}`;
-      lines.push(markdown?`## ${heading}`:heading,'');
-      lines.push(`Stage: ${item.stage}`);
-      if(item.entityType)lines.push(`Entity: ${item.entityType}${item.entityId?` / ${item.entityId}`:''}`);
-      if(item.field)lines.push(`Field: ${item.field}`);
-      if(item.relatedEntityId)lines.push(`Related entity: ${item.relatedEntityId}`);
-      lines.push(`Message: ${item.message}`);
-      if(item.recommendation)lines.push(`Recommended correction: ${item.recommendation}`);
-      lines.push('');
-    }
-    if(!result.issues.length)lines.push('No validation issues.');
-    return lines.join('\n').trim()+'\n';
-  }
-  function acceptTripData(data,config){
-    const result=validateTripData(data,config);
-    if(!result.valid){
-      const error=new Error(formatValidationReport(result,{format:'text'}));
-      error.name='TravelEngineIntegrityError';
-      error.validationResult=result;
-      throw error;
-    }
-    return result;
-  }
-
-  return Object.freeze({
-    version:'2.1.0-planning-semantics',
-    STAGES,INTEGRITY_STAGES,PLANNING_STATUSES,PLANNING_ROLES,NON_PLACE_ROLES,NAVIGATION_ROLES,
-    validateE1,validateE2,validateE3,validateE4,validateE5,
-    validatePlanning,validateTripData,acceptTripData,formatValidationReport,
-    isProductionEligible,filterProductionRecords,promotePlanningRecord
+  window.unlockExpensePage=unlockExpensePage;
+  let expenseSheetFocusScroll=0;
+  document.addEventListener('focusin',event=>{
+    if(!event.target.closest('#expenseModal')) return;
+    const sheet=document.querySelector('#expenseModal .tools-sheet');
+    if(sheet) expenseSheetFocusScroll=sheet.scrollTop;
   });
-});
+  document.addEventListener('focusout',event=>{
+    if(!event.target.closest('#expenseModal')) return;
+    const sheet=document.querySelector('#expenseModal .tools-sheet');
+    if(sheet) setTimeout(()=>{ if(!document.activeElement?.closest('#expenseModal input, #expenseModal textarea, #expenseModal select')) sheet.scrollTop=expenseSheetFocusScroll; },80);
+  });
+
+  window.openExpenseModal=function(){
+    resetExpenseForm();
+    lockExpensePage();
+    const modal=document.getElementById('expenseModal');
+    if(modal) modal.classList.add('show');
+  };
+
+  window.saveExpense=function(){
+    const details=(document.getElementById('expenseItem')?.value||'').trim();
+    const category=document.getElementById('expenseCategory')?.value || 'Other';
+    const item=details || category;
+    const total=MONEY.normalizeAmount(document.getElementById('expenseTotal')?.value);
+    const personal=!!document.getElementById('expensePersonal')?.checked;
+    const paidBy=(personal?document.getElementById('expensePersonalPaidBy')?.value:document.getElementById('expensePaidBy')?.value) || currentUser();
+    const split=selectedSplitParties();
+    const splitMode=personal?'personal':expenseSplitMode;
+    let shares=null;
+    if(!personal && splitMode==='custom'){
+      shares={};
+      split.forEach(k=>{shares[k]=MONEY.normalizeAmount(document.getElementById(`customShare_${k}`)?.value);});
+    }
+    const consumedBy=document.getElementById('expenseConsumedBy')?.value || paidBy;
+    if(!total) return alert('Please enter the amount.');
+    if(!personal && !split.length) return alert('Please choose who to split with.');
+    if(!personal && splitMode==='custom'){
+      const allocated=MONEY.sumAmounts(Object.values(shares||{}));
+      if(!MONEY.amountsMatch(allocated,total)) return alert('Custom split must equal the total.');
+    }
+
+    const arr=readExpenses();
+    const now=new Date().toISOString();
+    const operationIndex=editingExpenseIndex;
+    const operation=operationIndex!==null?'update':'create';
+    const previousRecord=operationIndex!==null&&arr[operationIndex]?Object.assign({},arr[operationIndex]):null;
+    const data={item,details,category,total,paidBy,type:personal?'personal':'shared',split:personal?[consumedBy]:split,splitMode,shares:personal?null:shares,consumedBy:personal?consumedBy:null,createdAt:now,updatedAt:now};
+    if(editingExpenseIndex!==null && arr[editingExpenseIndex]){
+      data.id=arr[editingExpenseIndex].id;
+      data.createdAt=arr[editingExpenseIndex].createdAt || now;
+      data.editedAt=now;
+      data.updatedAt=now;
+      arr[editingExpenseIndex]=data;
+      editingExpenseIndex=null;
+    }else{
+      arr.push(data);
+    }
+    writeExpenses(arr);
+    window.EXPENSE_SYNC?.queueSync();
+    try{
+      window.CCMV_EXPENSE_DUAL_WRITE?.afterLegacyWrite({
+        action:operation,
+        legacyRecords:readExpenses(),
+        targetIndex:operationIndex!==null?operationIndex:arr.length-1,
+        previousRecord
+      });
+    }catch(error){}
+    window.renderExpenses(operation);
+    resetExpenseForm();
+    closeExpenseModal();
+    setTimeout(()=>{
+      const latest=document.getElementById('latestExpenseCard');
+      if(latest){
+        latest.scrollIntoView({behavior:'auto',block:'center'});
+        latest.classList.add('expense-card--new');
+        setTimeout(()=>latest.classList.remove('expense-card--new'),1800);
+      }
+    },120);
+  };
+
+  window.renderExpenses=function(shadowAction){
+    const pageBox=document.getElementById('expensePageList');
+    const arr=readExpenses();
+    observeExpenseShadow(typeof shadowAction==='string'?shadowAction:'render',arr);
+    const sorted=arr.map((e,i)=>({...e,_idx:i})).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||''))).map((e,i)=>({...e,_latest:i===0}));
+    if(pageBox){
+      const {total,personalSpend,balance}=expenseSummary(arr);
+      const spendHtml=FRIEND_ORDER.map(k=>`<p data-family="${k}">${identityFor(k)}<strong>${FORMATTER.number(Math.round(personalSpend[k]||0))} ${MONEY.getTripCurrency().code}</strong></p>`).join('');
+      const balanceHtml=FRIEND_ORDER.map(k=>{const v=balance[k]||0;return `<p data-family="${k}">${identityFor(k)}<strong>${v>=0?'Receive':'Owes'} ${FORMATTER.number(Math.abs(Math.round(v)))} ${MONEY.getTripCurrency().code}</strong></p>`;}).join('');
+      pageBox.innerHTML=`<div class="expense-dashboard-v33 identity-dashboard"><div class="expense-total-card"><span>Trip Total</span><strong>${FORMATTER.number(total)} ${MONEY.getTripCurrency().code}</strong><small>Shared + personal expenses</small></div><div class="expense-focus-grid"><div class="expense-focus-card"><h3>Personal Spend</h3>${spendHtml}</div><div class="expense-focus-card"><h3>Settlement</h3>${balanceHtml}</div></div></div><div class="expense-history-block"><h3>Transaction History</h3><p class="timestamp">Newest transactions appear first.</p><div class="transaction-scroll">${sorted.length?sorted.map(expenseCard).join(''):'<p>No transactions yet.</p>'}</div></div>`;
+    }
+  };
+
+  window.exportExpenseData=function(){
+    if(currentUser()!==((TRIP_CONFIG.admin&&TRIP_CONFIG.admin.user)||'lee') || typeof window.isAdminMode!=='function' || !window.isAdminMode()) return alert('Enter Admin Mode to export the complete expense data.');
+    const arr=readExpenses();
+    if(!arr.length) return alert('No expense data to export yet.');
+    const quote=value=>`"${String(value??'').replace(/"/g,'""')}"`;
+    const {total,personalSpend,balance}=expenseSummary(arr);
+    const rows=[
+      [TRIP_CONFIG.exports?.expenseSummaryTitle||`${TRIP_CONFIG.tripName.toUpperCase()} EXPENSE SUMMARY`],
+      [`Trip Total ${MONEY.getTripCurrency().code}`,Math.round(total)],
+      [],
+      ['Personal Spend',`Amount ${MONEY.getTripCurrency().code}`],
+      ...FRIEND_ORDER.map(k=>[labelFor(k),Math.round(personalSpend[k]||0)]),
+      [],
+      ['Settlement','Position',`Amount ${MONEY.getTripCurrency().code}`],
+      ...FRIEND_ORDER.map(k=>{
+        const v=balance[k]||0;
+        return [labelFor(k),v>=0?'Receive':'Owes',Math.abs(Math.round(v))];
+      }),
+      [],
+      ['TRANSACTION HISTORY'],
+      ['Created At','Category','Details','Item',`Total ${MONEY.getTripCurrency().code}`,'Paid By','Type','Split Mode','Split Between','Custom Shares','Consumed By','Edited At'],
+      ...arr.map(e=>[
+        e.createdAt||'',
+        e.category||'',
+        e.details||'',
+        e.item||'',
+        MONEY.normalizeAmount(e.total),
+        labelFor(e.paidBy),
+        e.type==='personal'?'Personal':'Shared',
+        e.splitMode||'equal',
+        (e.split||[]).map(labelFor).join(' | '),
+        Object.entries(e.shares||{}).map(([k,v])=>`${labelFor(k)}: ${FORMATTER.decimal(MONEY.normalizeAmount(v),2)}`).join(' | '),
+        e.consumedBy?labelFor(e.consumedBy):'',
+        e.editedAt||''
+      ])
+    ];
+    const csv='\uFEFF'+rows.map(row=>row.map(quote).join(',')).join('\r\n');
+    const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    const date=new Date().toISOString().slice(0,10);
+    a.href=url;
+    a.download=`CCMV-New-Zealand-Expenses-${date}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+  };
+
+  window.editExpense=function(i){
+    const arr=readExpenses();
+    observeExpenseShadow('edit-load',arr);
+    const e=arr[i]; if(!e) return;
+    editingExpenseIndex=i;
+    const item=document.getElementById('expenseItem'); if(item) item.value=e.details || (e.category ? '' : (e.item||''));
+    window.setExpenseCategory(e.category || 'Other');
+    const total=document.getElementById('expenseTotal'); if(total) total.value=e.total||'';
+    setSelectValue('expensePaidBy',e.paidBy||'lee');
+    setSelectValue('expensePersonalPaidBy',e.paidBy||'lee');
+    const personal=(e.type==='personal');
+    const personalBox=document.getElementById('expensePersonal'); if(personalBox) personalBox.checked=personal;
+    const consumed=document.getElementById('expenseConsumedBy');
+    if(consumed){
+      consumed.value=e.consumedBy || ((e.split||[])[0]) || e.paidBy || 'lee';
+      consumed.dataset.manual=personal && consumed.value!==e.paidBy ? 'true':'false';
+    }
+    document.querySelectorAll('#expenseModal input[data-split]').forEach(x=>x.checked=(e.split||[]).includes(x.value));
+    expenseSplitMode=e.splitMode==='custom'?'custom':'equal';
+    try{updateExpenseMode();}catch(e){}
+    window.updateSplitUI();
+    if(expenseSplitMode==='custom' && e.shares){
+      Object.entries(e.shares).forEach(([k,v])=>{const input=document.getElementById(`customShare_${k}`);if(input&&!input.readOnly) input.value=FORMATTER.decimal(MONEY.normalizeAmount(v),2);});
+      window.updateSplitUI();
+    }
+    const title=document.getElementById('expenseModalTitle'); if(title) title.textContent='✏️ Edit Expense';
+    const save=document.getElementById('expenseSaveButton'); if(save) save.textContent='Update Expense';
+    const modal=document.getElementById('expenseModal'); if(modal) modal.classList.add('show');
+  };
+
+  window.deleteExpense=function(i){
+    const arr=readExpenses();
+    if(!arr[i]) return;
+    const previousRecord=Object.assign({},arr[i]);
+    window.EXPENSE_SYNC?.markDeleted(arr[i]);
+    arr.splice(i,1);
+    writeExpenses(arr);
+    window.EXPENSE_SYNC?.queueSync();
+    try{
+      window.CCMV_EXPENSE_DUAL_WRITE?.afterLegacyWrite({
+        action:'delete',legacyRecords:readExpenses(),targetIndex:i,previousRecord
+      });
+    }catch(error){}
+    if(editingExpenseIndex===i) editingExpenseIndex=null;
+    window.renderExpenses('delete');
+  };
+
+  window.resetExpenseForm=resetExpenseForm;
+  document.addEventListener('travelengine:expensesyncchanged',()=>window.renderExpenses());
+  document.addEventListener('travelengine:expensesyncstatus',event=>{
+    const badge=document.getElementById('expenseSyncStatus');
+    if(!badge)return;
+    const detail=event.detail||{};
+    badge.textContent=detail.message||'Saved on this device';
+    badge.dataset.state=detail.status||'idle';
+  });
+  document.addEventListener('DOMContentLoaded',()=>{
+    setExportVisibility();
+    window.updateSplitUI();
+    window.renderExpenses();
+    const initial=window.EXPENSE_SYNC?.getState?.();
+    const badge=document.getElementById('expenseSyncStatus');
+    if(badge&&initial){badge.textContent=initial.message;badge.dataset.state=initial.status;}
+    window.EXPENSE_SYNC?.syncNow();
+  });
+})();

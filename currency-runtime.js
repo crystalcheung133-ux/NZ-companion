@@ -1,145 +1,176 @@
-/* Travel Engine v1.0 — Stage 8A-2 Complete Mode lifecycle. */
+/* Travel Engine v1.0 — Stage 7M modular runtime. */
+/* FRONT-INTERACTION1.2 — inline currency input with keyboard-safe vertical visibility and exact viewport restoration. */
 (function(){
-  'use strict';
-  const KEY=STORAGE_CONFIG.keys.tripCompletion;
-  const ADMIN_CONFIG=(typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.admin)||null;
-  if(!ADMIN_CONFIG||!ADMIN_CONFIG.user){
-    throw new Error('Complete Trip requires TRIP_CONFIG.admin.user.');
-  }
-  const ADMIN_USER=ADMIN_CONFIG.user;
-  let completed=false;
-  let record=null;
+  if(typeof MONEY==='undefined') return;
+  const tripCurrency=MONEY.getTripCurrency();
+  const homeCurrency=MONEY.getHomeCurrency();
+  const state={base:tripCurrency.code,quote:homeCurrency,rate:null,date:'',source:'',loaded:false};
 
-  function tripId(){ return TRIP_CONFIG.storageNamespace || TRIP_CONFIG.tripName || 'trip'; }
-  function valid(value){ return !!value && value.version===1 && value.tripId===tripId() && typeof value.completed==='boolean'; }
-  function read(){ const value=STORAGE.local.readJSON(KEY,null); return valid(value)?value:null; }
-  const NOTICE_KEY=KEY+':notice';
-  function noticeId(){ return record&&record.completedAt?record.completedAt:'complete'; }
-  function guardMessage(){ return false; }
-  function showCompletionNoticeOnce(){
-    if(!completed || !record) return;
-    if(STORAGE.local.get(NOTICE_KEY)===noticeId()) return;
-    alert('Trip completed. You can still browse the itinerary, guide, moments and expenses. Enter Admin Mode and choose Reopen Trip to make changes.');
-    STORAGE.local.set(NOTICE_KEY,noticeId());
+  function formatMoney(value){
+    return Number.isFinite(value)?FORMATTER.decimal(value,2):'--';
   }
-  function isMutationControl(el){
-    if(!el) return false;
-    if(el.closest('#adminSaveBar')) return true;
-    const call=(el.getAttribute('onclick')||'')+(el.getAttribute('onchange')||'');
-    return /saveChecklist|openExpenseModal|saveExpense|editExpense|deleteExpense|openMomentsModal|openPlannedMomentCapture|saveMoments|editMoment|deleteMoment|openUnexpectedModal|saveUnexpected|openTimelineEditor|applyTimelineEdit|openTimelineDelete|confirmTimelineDelete|openTimelineMove|applyTimelineMove|markAdminDirty|saveAdminChanges|discardAdminChanges/.test(call);
+  function applyRateRecord(record){
+    if(!record) return false;
+    state.rate=Number(record.rate);
+    state.date=record.date||'';
+    state.source=record.source||'cached';
+    return state.rate>0;
   }
-  function isLifecycleAdmin(){
-    return getFriend()===ADMIN_USER && typeof window.isAdminMode==='function' && window.isAdminMode();
+  function getAmountInput(){
+    return document.getElementById('currencyAmount');
   }
-  function buildControl(){
-    const host=document.getElementById('tripStudioManagement') || document.querySelector('#mamaModal .guide-sheet');
-    if(!host || document.getElementById('completeTripControl') || !isLifecycleAdmin()) return;
-    const section=document.createElement('section');
-    section.id='completeTripControl';
-    section.className='complete-trip-control';
-    section.innerHTML='<div class="trip-studio-copy"><strong id="completeTripTitle">Complete Trip</strong><small id="completeTripHelp">Lock editing and unlock post-trip outputs.</small></div><button id="completeTripButton" type="button" class="complete-trip-btn">Complete Trip</button>';
-    host.appendChild(section);
+  function selectAll(input){
+    if(!input) return;
+    try{input.select();}catch(e){}
+    try{input.setSelectionRange(0,input.value.length);}catch(e){}
   }
-  function updateLifecycleControl(){
-    let control=document.getElementById('completeTripControl');
-    if(!isLifecycleAdmin()){
-      if(control) control.remove();
-      return;
-    }
-    if(!control){
-      buildControl();
-      control=document.getElementById('completeTripControl');
-    }
-    if(!control) return;
-    const title=document.getElementById('completeTripTitle');
-    const help=document.getElementById('completeTripHelp');
-    const button=document.getElementById('completeTripButton');
-    if(!button) return;
-    if(completed){
-      if(title) title.textContent='Trip Completed';
-      if(help) help.textContent='Reopen the trip to enable editing again. Existing data will remain unchanged.';
-      button.textContent='Reopen Trip';
-      button.classList.add('reopen-trip-btn');
-      button.onclick=window.reopenTrip;
-    }else{
-      if(title) title.textContent='Complete Trip';
-      if(help) help.textContent='Lock editing and unlock post-trip outputs.';
-      button.textContent='Complete Trip';
-      button.classList.remove('reopen-trip-btn');
-      button.onclick=window.completeTrip;
-    }
+  let focusOrigin=null;
+  let visibilityTimers=[];
+  function clearVisibilityTimers(){
+    visibilityTimers.forEach(timer=>clearTimeout(timer));
+    visibilityTimers=[];
   }
-  function render(){
-    document.body.classList.toggle('trip-completed',completed);
-    document.querySelectorAll('[data-check]').forEach(el=>{el.disabled=completed;});
-    document.querySelectorAll('#expenseModal input,#expenseModal select,#expenseModal textarea,#expenseModal button:not(.tools-close),#momentsModal input,#momentsModal select,#momentsModal textarea,#momentsModal button:not(.moments-close),#unexpectedModal textarea,#unexpectedModal button:not(.unexpected-close)').forEach(el=>{el.disabled=completed;});
-    document.querySelectorAll('button,a').forEach(el=>{if(isMutationControl(el)){el.hidden=completed;el.setAttribute('aria-hidden',String(completed));}});
-    updateLifecycleControl();
-  }
-  function wrap(name){
-    const original=window[name];
-    if(typeof original!=='function' || original.__completeGuarded) return;
-    const wrapped=function(){ if(completed) return guardMessage(); return original.apply(this,arguments); };
-    wrapped.__completeGuarded=true;
-    window[name]=wrapped;
-  }
-  function installGuards(){
-    ['saveChecklist','openExpenseModal','saveExpense','editExpense','deleteExpense','openMomentsModal','openPlannedMomentCapture','saveMoments','editMoment','deleteMoment','openUnexpectedModal','saveUnexpected','openTimelineEditor','applyTimelineEdit','openTimelineDelete','confirmTimelineDelete','openTimelineMove','applyTimelineMove','markAdminDirty','saveAdminChanges','discardAdminChanges'].forEach(wrap);
-  }
-  function persist(nextRecord){
-    record=nextRecord;
-    STORAGE.local.writeJSON(KEY,record);
-    completed=record.completed===true;
-    render();
-    if(completed) setTimeout(showCompletionNoticeOnce,0);
-  }
-
-  window.isTripCompleted=function(){ return completed; };
-  window.getTripCompletion=function(){ return record?JSON.parse(JSON.stringify(record)):null; };
-  window.assertTripWritable=function(){ return completed?guardMessage():true; };
-  window.completeTrip=function(){
-    if(completed) return true;
-    if(getFriend()!==ADMIN_USER || typeof window.isAdminMode!=='function' || !window.isAdminMode()){ alert('Enter Admin Mode to complete the trip.'); return false; }
-    if(typeof window.hasUnsavedAdminChanges==='function' && window.hasUnsavedAdminChanges()){
-      alert('Save or discard the pending Admin changes before completing the trip.');
-      return false;
-    }
-    const ok=window.confirm((typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.admin&&TRIP_CONFIG.admin.completeMessage)||'Complete this trip? All trip content will remain available to browse, but editing will be disabled until Lee reopens the trip.');
-    if(!ok) return false;
-    const next={version:1,tripId:tripId(),completed:true,completedAt:new Date().toISOString(),completedBy:ADMIN_USER};
-    persist(next);
-    document.dispatchEvent(new CustomEvent('travelengine:tripcompleted',{detail:{...next}}));
-    return true;
-  };
-  window.reopenTrip=function(){
-    if(!completed) return true;
-    if(getFriend()!==ADMIN_USER || typeof window.isAdminMode!=='function' || !window.isAdminMode()){ alert('Enter Admin Mode to reopen the trip.'); return false; }
-    const ok=window.confirm('Reopen this trip? Editing will be enabled again. Existing moments, expenses and trip data will remain unchanged.');
-    if(!ok) return false;
-    const next={
-      version:1,
-      tripId:tripId(),
-      completed:false,
-      completedAt:record&&record.completedAt?record.completedAt:null,
-      completedBy:record&&record.completedBy?record.completedBy:ADMIN_USER,
-      reopenedAt:new Date().toISOString(),
-      reopenedBy:ADMIN_USER
+  function captureFocusOrigin(){
+    if(focusOrigin) return;
+    focusOrigin={
+      top:window.scrollY||document.documentElement.scrollTop||0,
+      left:window.scrollX||document.documentElement.scrollLeft||0
     };
-    persist(next);
-    STORAGE.local.remove(NOTICE_KEY);
-    document.dispatchEvent(new CustomEvent('travelengine:tripreopened',{detail:{...next}}));
-    return true;
+  }
+  function setViewportPosition(top){
+    const targetTop=Number.isFinite(top)?Math.max(0,top):(window.scrollY||0);
+    try{window.scrollTo({left:0,top:targetTop,behavior:'auto'});}catch(e){window.scrollTo(0,targetTop);}
+    document.documentElement.scrollLeft=0;
+    document.body.scrollLeft=0;
+  }
+  function restoreViewportPosition(){
+    const top=focusOrigin?focusOrigin.top:(window.scrollY||document.documentElement.scrollTop||0);
+    setViewportPosition(top);
+  }
+  function ensureInputVisibleVertically(input){
+    if(!input||document.activeElement!==input) return;
+    const viewport=window.visualViewport;
+    const rect=input.getBoundingClientRect();
+    const visibleTop=(viewport?viewport.offsetTop:0)+12;
+    const visibleBottom=(viewport?viewport.offsetTop+viewport.height:window.innerHeight)-18;
+    let delta=0;
+    if(rect.bottom>visibleBottom) delta=rect.bottom-visibleBottom;
+    else if(rect.top<visibleTop) delta=rect.top-visibleTop;
+    const currentTop=window.scrollY||document.documentElement.scrollTop||0;
+    setViewportPosition(currentTop+delta);
+  }
+  function scheduleInputVisibility(input){
+    clearVisibilityTimers();
+    [60,160,280,420].forEach(delay=>{
+      visibilityTimers.push(setTimeout(()=>ensureInputVisibleVertically(input),delay));
+    });
+  }
+  function settleInput(input){
+    if(!input) return;
+    clearVisibilityTimers();
+    input.blur();
+    requestAnimationFrame(restoreViewportPosition);
+    setTimeout(restoreViewportPosition,120);
+    setTimeout(()=>{restoreViewportPosition();focusOrigin=null;},320);
+  }
+  function focusAmountInput(input){
+    if(!input) return;
+    captureFocusOrigin();
+    try{input.focus({preventScroll:true});}catch(e){input.focus();}
+    selectAll(input);
+    scheduleInputVisibility(input);
+  }
+  function updateCurrencyUI(){
+    const amountInput=getAmountInput();
+    const amount=MONEY.normalizeAmount(amountInput&&amountInput.value);
+    const result=MONEY.convert(amount,state.rate,state.base,state.quote);
+    const inputCode=document.getElementById('currencyInputCode');
+    const direction=document.getElementById('currencyDirectionLabel');
+    const resultEl=document.getElementById('currencyResult');
+    const meta=document.getElementById('currencyCardMeta');
+    if(inputCode) inputCode.textContent=state.base;
+    if(direction) direction.textContent=`${state.base} → ${state.quote}`;
+    if(resultEl) resultEl.textContent=`≈ ${result===null?'--':formatMoney(result)} ${state.quote}`;
+    if(meta){
+      if(state.rate){
+        const unit=MONEY.convert(1,state.rate,state.base,state.quote);
+        const freshness=state.source==='live'?'live':`saved ${state.date||'offline'}`;
+        meta.textContent=`1 ${state.base} ≈ ${formatMoney(unit)} ${state.quote} · ${freshness}`;
+      }else{
+        meta.textContent='Rate unavailable';
+      }
+    }
+  }
+  async function loadCurrencyRate(){
+    applyRateRecord(MONEY.readCachedRate());
+    updateCurrencyUI();
+    try{
+      const live=await MONEY.fetchLatestRate();
+      applyRateRecord(live);
+      state.loaded=true;
+      MONEY.saveCachedRate(live);
+      updateCurrencyUI();
+    }catch(e){
+      state.loaded=true;
+      if(!state.rate) applyRateRecord(MONEY.readCachedRate());
+      updateCurrencyUI();
+    }
+  }
+  window.swapCurrencyDirection=function(){
+    const old=state.base;
+    state.base=state.quote;
+    state.quote=old;
+    updateCurrencyUI();
+    const input=getAmountInput();
+    if(input) focusAmountInput(input);
   };
-
-  record=read();
-  completed=!!record && record.completed===true;
-  installGuards();
-
   document.addEventListener('DOMContentLoaded',function(){
-    installGuards();
-    updateLifecycleControl();
-    render();
-    showCompletionNoticeOnce();
+    const input=getAmountInput();
+    if(input){
+      input.addEventListener('pointerdown',function(event){
+        event.preventDefault();
+        focusAmountInput(input);
+      });
+      input.addEventListener('focus',function(){
+        captureFocusOrigin();
+        setTimeout(()=>selectAll(input),0);
+        scheduleInputVisibility(input);
+      });
+      input.addEventListener('click',function(){
+        setTimeout(()=>selectAll(input),0);
+        scheduleInputVisibility(input);
+      });
+      input.addEventListener('blur',function(){
+        clearVisibilityTimers();
+        requestAnimationFrame(restoreViewportPosition);
+        setTimeout(restoreViewportPosition,120);
+        setTimeout(()=>{restoreViewportPosition();focusOrigin=null;},320);
+      });
+      input.addEventListener('input',updateCurrencyUI);
+      input.addEventListener('keydown',function(event){
+        if(event.key==='Enter'){
+          event.preventDefault();
+          settleInput(input);
+        }
+      });
+      input.addEventListener('change',updateCurrencyUI);
+    }
+    if(window.visualViewport){
+      let lastHeight=window.visualViewport.height;
+      const handleViewportChange=function(){
+        const active=getAmountInput();
+        const height=window.visualViewport.height;
+        if(active&&document.activeElement===active){
+          scheduleInputVisibility(active);
+        }else if(height>=lastHeight){
+          requestAnimationFrame(restoreViewportPosition);
+          setTimeout(restoreViewportPosition,120);
+        }
+        lastHeight=height;
+      };
+      window.visualViewport.addEventListener('resize',handleViewportChange);
+      window.visualViewport.addEventListener('scroll',handleViewportChange);
+    }
+    loadCurrencyRate();
   });
-  document.addEventListener('travelengine:adminmodechange',render);
 })();

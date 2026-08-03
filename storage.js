@@ -1,69 +1,50 @@
-/* script.js — Stage 7K-2E compatibility entry and shared startup.
-   Domain behavior lives in focused runtime modules. */
-function renderCanonicalDayNavigation(){
-  const productionItinerary=GenerationSelectionAdapter.view('itinerary').days;
-  const days=Object.keys(productionItinerary).sort((a,b)=>Number(a)-Number(b));
-  const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-  const model=days.map(number=>{
-    const day=productionItinerary[number]||{};
-    const legend=Array.isArray(day.legend)?day.legend:[];
-    const icon=(String(legend[0]||'🗓').match(/^\S+/)||['🗓'])[0];
-    const date=String(day.kicker||'').split('·').slice(1).join('·').trim();
-    const summary=legend.map(value=>String(value).replace(/^\S+\s*/,''));
-    return {number,icon,date,heading:day.heading||`Day ${number}`,summary};
-  });
-  document.querySelectorAll('#daysMenu').forEach(menu=>{
-    menu.innerHTML=model.map(day=>`<a href="day.html?day=${encodeURIComponent(day.number)}"><span><span class="menu-title">${esc(day.icon)} Day ${esc(day.number)}</span><span class="menu-sub">${esc(day.heading)}<br/>${esc(day.date)}</span></span><span>›</span></a>`).join('');
-  });
-  document.querySelectorAll('#canonicalDaySummary').forEach(summary=>{
-    summary.innerHTML=model.map(day=>`<a href="day.html?day=${encodeURIComponent(day.number)}"><strong>Day ${esc(day.number)}</strong><span><span class="day-card-title">${esc(day.icon)} ${esc(day.heading)}</span><span class="day-card-meta">${esc(day.date)}${day.summary.length?`<br/>${esc(day.summary.join(' · '))}`:''}</span></span></a>`).join('');
-  });
-}
-document.addEventListener('DOMContentLoaded',()=>{
-  renderCanonicalDayNavigation();
-  updateFriendLabels();
-  if(typeof renderMoments==='function') renderMoments();
-  if(typeof renderUnexpected==='function') renderUnexpected();
-  if(typeof renderExpenses==='function') renderExpenses();
-  if(typeof loadChecklist==='function') loadChecklist();
-  if(typeof renderDashboard==='function') renderDashboard();
-  document.querySelectorAll('.summary-link-row').forEach(x=>x.remove());
-});
+/* storage.js — Stage 7F browser-storage access layer.
+   Centralizes safe local/session storage access without changing key values or data shapes. */
+(function(root){
+  'use strict';
 
-
-/* RC16.5 — Current bottom-navigation state. */
-(function(){
-  function markCurrentNav(){
-    var nav=document.querySelector('.app-nav');
-    if(!nav)return;
-    var file=(location.pathname.split('/').pop()||'index.html').toLowerCase();
-    var target='trip';
-    if(file==='guide.html'||file==='place.html')target='guide';
-    else if(file==='day.html'||file==='itinerary.html')target='days';
-    else if(file==='moments.html'||file==='memory.html')target='moments';
-    else if(file==='expenses.html')target='expenses';
-    var el=null;
-    if(target==='trip')el=nav.querySelector('.trip-trigger');
-    else if(target==='guide')el=nav.querySelector('.guide-trigger');
-    else if(target==='days')el=nav.querySelector('.days-trigger');
-    else if(target==='moments')el=nav.querySelector('a[href*="moments.html"]');
-    else if(target==='expenses')el=nav.querySelector('a[href*="expenses.html"]');
-    nav.querySelectorAll('.is-active').forEach(function(node){node.classList.remove('is-active');node.removeAttribute('aria-current');});
-    if(el){el.classList.add('is-active');el.setAttribute('aria-current','page');}
+  function createStore(nativeStore){
+    function get(key, fallback=null){
+      try{
+        const value=nativeStore.getItem(key);
+        return value===null ? fallback : value;
+      }catch(error){
+        return fallback;
+      }
+    }
+    function set(key, value){
+      try{nativeStore.setItem(key,String(value));return true;}catch(error){return false;}
+    }
+    function remove(key){
+      try{nativeStore.removeItem(key);return true;}catch(error){return false;}
+    }
+    function readJSON(key, fallback=null){
+      const raw=get(key,null);
+      if(raw===null)return fallback;
+      try{return JSON.parse(raw);}catch(error){return fallback;}
+    }
+    function writeJSON(key, value){
+      try{return set(key,JSON.stringify(value));}catch(error){return false;}
+    }
+    function keys(){
+      const result=[];
+      try{
+        for(let index=0;index<nativeStore.length;index++){
+          const key=nativeStore.key(index);
+          if(key!==null)result.push(key);
+        }
+      }catch(error){}
+      return result;
+    }
+    return Object.freeze({get,set,remove,readJSON,writeJSON,keys});
   }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',markCurrentNav,{once:true});
-  else markCurrentNav();
-})();
 
-
-
-/* UX-POLISH1 — compact modal cards only when they miss one-screen fit by a small amount. */
-function applyNearFitModal(sheet,className){
-  if(!sheet)return;
-  sheet.classList.remove('guide-near-fit','trip-near-fit');
-  requestAnimationFrame(()=>{
-    const overflow=Math.max(0,sheet.scrollHeight-sheet.clientHeight);
-    if(overflow>0&&overflow<=150)sheet.classList.add(className);
-  });
-}
-window.applyNearFitModal=applyNearFitModal;
+  const local=createStore(root.localStorage);
+  const session=createStore(root.sessionStorage);
+  function domain(name){
+    const map=root.STORAGE_CONFIG&&root.STORAGE_CONFIG.domains&&root.STORAGE_CONFIG.domains[name];
+    if(!map)return null;
+    return Object.freeze({keys:map,local,session});
+  }
+  root.STORAGE=Object.freeze({local,session,domain});
+})(globalThis);

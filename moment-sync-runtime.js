@@ -1,428 +1,220 @@
-/* Travel Engine Stage 7K-2B — Moments page module
-   Canonical Moments capture, photo prototype, context, timeline, and
-   shared latest-expense mini-card compatibility extracted from script.js.
-   Existing global handler names and storage schemas are preserved. */
+/* moment-sync-runtime.js — Stage 10B Supabase Moments Sync
+   Local-first multi-device sync for moment text/rating/moods/context plus photo storage.
+   Photos are uploaded to the trip-moments Storage bucket when online; offline photos wait in IndexedDB. */
+(function(root){
+  'use strict';
+  const config=root.SYNC_CONFIG||{};
+  const storage=root.STORAGE?.local;
+  const table=config.tables?.moments||'trip_moments';
+  const bucket=config.storage?.momentsBucket||'trip-moments';
+  const EVENTS=Object.freeze({status:'travelengine:momentsyncstatus',changed:'travelengine:momentsyncchanged'});
+  const TOMBSTONE_KEY='travel_engine_moment_tombstones_v1';
+  const META_KEY='travel_engine_moment_sync_meta_v1';
+  const DB_NAME='travel_engine_moment_photos_v1';
+  const STORE='pending_photos';
+  const state={status:'idle',message:'Saved on this device',lastSyncAt:null,error:null,timer:null,inFlight:null,paused:false};
 
-/* v3.2 P0 workflow fixes: append Moments, latest-first Expenses, save-and-stay expense tool */
-(function(){
-  let editingMomentId = null;
-  let currentMomentPhoto = null;
-  let currentMomentContext = null;
-  let momentSelectorDay = '1';
-  let momentEntryIsPlanned = false; /* Stage 5B-2B2: true only while the composer was opened via the "Planned activity" landing card */
-  const prototypePhotoUrls = new Map();
-  function readJson(key, fallback){try{return STORAGE.local.readJSON(key,fallback);}catch(e){return fallback;}}
-  function writeJson(key, value){STORAGE.local.writeJSON(key,value);}
-  function clearMomentPhoto(revoke=true){
-    if(currentMomentPhoto?.url && revoke && ![...prototypePhotoUrls.values()].includes(currentMomentPhoto.url)){
-      try{ URL.revokeObjectURL(currentMomentPhoto.url); }catch(e){}
+  function uuid(){return root.crypto?.randomUUID?root.crypto.randomUUID():'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&3|8)).toString(16);});}
+  function readJSON(key,fallback){try{return storage?.readJSON?storage.readJSON(key,fallback):(JSON.parse(localStorage.getItem(key)||'null')??fallback);}catch(e){return fallback;}}
+  function writeJSON(key,value){try{storage?.writeJSON?storage.writeJSON(key,value):localStorage.setItem(key,JSON.stringify(value));}catch(e){}}
+  function iso(value){const d=new Date(value||0);return Number.isNaN(d.getTime())?new Date(0).toISOString():d.toISOString();}
+  function normalizeRecord(record){const next=Object.assign({},record||{});next.id=String(next.id||uuid());next.createdAt=iso(next.createdAt||new Date().toISOString());next.updatedAt=iso(next.updatedAt||next.editedAt||next.createdAt);return next;}
+  function key(){return root.STORAGE_CONFIG?.keys?.momentsList||'moments_list';}
+  function readLocal(){const list=readJSON(key(),[]);const normalized=(Array.isArray(list)?list:[]).map(normalizeRecord);if(JSON.stringify(list)!==JSON.stringify(normalized))writeJSON(key(),normalized);return normalized;}
+  function writeLocal(list){writeJSON(key(),(Array.isArray(list)?list:[]).map(normalizeRecord));}
+  function readTombstones(){return (readJSON(TOMBSTONE_KEY,[])||[]).filter(x=>x?.id).map(x=>Object.assign({},x,{updatedAt:iso(x.updatedAt||x.deletedAt),deletedAt:iso(x.deletedAt||x.updatedAt)}));}
+  function writeTombstones(list){const cutoff=Date.now()-1000*60*60*24*90;writeJSON(TOMBSTONE_KEY,(list||[]).filter(x=>new Date(x.deletedAt||0).getTime()>cutoff));}
+  function markDeleted(record){if(!record)return;const now=new Date().toISOString();const tomb=Object.assign({},normalizeRecord(record),{updatedAt:now,deletedAt:now});const map=new Map(readTombstones().map(x=>[x.id,x]));map.set(tomb.id,tomb);writeTombstones([...map.values()]);deletePendingPhoto(tomb.id);}
+  function snapshot(){return Object.freeze({status:state.status,message:state.message,lastSyncAt:state.lastSyncAt,error:state.error});}
+  function emit(status,message,error){state.status=status;state.message=message;state.error=error||null;root.document?.dispatchEvent(new CustomEvent(EVENTS.status,{detail:snapshot()}));}
+  const LOG='[Supabase]';
+  function configured(){return !!(config.enabled&&config.url&&config.anonKey&&config.tripId&&root.SUPABASE?.isConfigured?.());}
+  async function ensureSession(){
+    if(!root.SUPABASE?.getSession)throw new Error('Shared Supabase client runtime unavailable');
+    return root.SUPABASE.getSession();
+  }
+  function client(){
+    if(!root.SUPABASE?.getClient)throw new Error('Shared Supabase client runtime unavailable');
+    return root.SUPABASE.getClient();
+  }
+  function withTimeout(builder){
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),config.requestTimeoutMs||8000);
+    return builder.abortSignal(controller.signal).then(
+      result=>{clearTimeout(timer);return result;},
+      error=>{clearTimeout(timer);throw error;}
+    );
+  }
+  function toRemote(record,deleted=false){const r=normalizeRecord(record);return{id:r.id,trip_id:config.tripId,payload:r,actor_family:(typeof root.getFriend==='function'?root.getFriend():null)||'lee',created_at:r.createdAt,updated_at:r.updatedAt,deleted_at:deleted?(r.deletedAt||r.updatedAt):null,generation:root.TRIP_GENERATION?.getLocal?.()||1};}
+  function fromRemote(row){const payload=normalizeRecord(Object.assign({},row.payload||{},{id:row.id,createdAt:row.created_at,updatedAt:row.updated_at}));if(row.deleted_at)payload.deletedAt=row.deleted_at;return payload;}
+  async function pull(){
+    await ensureSession();
+    const{data,error}=await withTimeout(
+      client().from(table).select('id,payload,created_at,updated_at,deleted_at,actor_family').eq('trip_id',config.tripId).order('updated_at',{ascending:true})
+    );
+    if(error){console.error(LOG,'Supabase select failed',error.message,error);throw new Error(error.message||'Moments sync select failed');}
+    console.log(LOG,'Moments pulled',(data||[]).length);
+    return data||[];
+  }
+  async function push(records){
+    if(!records.length)return;
+    await ensureSession();
+    const{error}=await withTimeout(client().from(table).upsert(records,{onConflict:'id'}));
+    if(error){
+      const rls=/row-level security|permission denied|policy/i.test(error.message||'');
+      console.error(LOG,rls?'RLS rejected':'Supabase insert failed',error.message,error);
+      throw new Error(error.message||'Moments sync upsert failed');
     }
-    currentMomentPhoto = null;
-    const inputCamera=document.getElementById('momentsPhotoCamera');
-    const inputLibrary=document.getElementById('momentsPhotoLibrary');
-    if(inputCamera) inputCamera.value='';
-    if(inputLibrary) inputLibrary.value='';
-    renderMomentPhotoPreview();
+    console.log(LOG,'Moment uploaded',records.map(r=>r.id).join(', '));
   }
-  function renderMomentPhotoPreview(){
-    const preview=document.getElementById('momentsPhotoPreview');
-    if(!preview) return;
-    if(!currentMomentPhoto){
-      preview.hidden=true;
-      preview.innerHTML='';
-      return;
+
+  function openDb(){return new Promise((resolve,reject)=>{const req=indexedDB.open(DB_NAME,1);req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains(STORE))req.result.createObjectStore(STORE,{keyPath:'id'});};req.onsuccess=()=>{const db=req.result;db.onversionchange=()=>db.close();resolve(db);};req.onerror=()=>reject(req.error);});}
+  function runDbTransaction(mode,operation){return openDb().then(db=>new Promise((resolve,reject)=>{let result;let settled=false;const finish=(ok,value)=>{if(settled)return;settled=true;try{db.close();}catch(e){}ok?resolve(value):reject(value);};let tx;try{tx=db.transaction(STORE,mode);result=operation(tx.objectStore(STORE));}catch(error){finish(false,error);return;}tx.oncomplete=()=>finish(true,result?.result);tx.onerror=()=>finish(false,tx.error||result?.error||new Error('Pending photo database transaction failed'));tx.onabort=()=>finish(false,tx.error||new Error('Pending photo database transaction aborted'));}));}
+  async function storePendingPhoto(id,blob){await runDbTransaction('readwrite',store=>store.put({id,blob,type:blob.type||'image/jpeg',updatedAt:new Date().toISOString()}));}
+  async function getPendingPhotos(){const rows=await runDbTransaction('readonly',store=>store.getAll());return rows||[];}
+  async function deletePendingPhoto(id){try{await runDbTransaction('readwrite',store=>store.delete(id));}catch(e){}}
+  function extension(type){return type==='image/png'?'png':'jpg';}
+  function photoErrorMessage(error){
+    return error?.message||error?.error_description||error?.details||String(error||'Photo upload failed');
+  }
+  async function uploadPhoto(id,blob){
+    if(!(blob instanceof Blob)||!blob.size)throw new Error('Moment photo blob is empty or invalid');
+    const session=await ensureSession();
+    const contentType=blob.type==='image/png'?'image/png':'image/jpeg';
+    const path=`${config.tripId}/${id}.${extension(contentType)}`;
+    console.log(LOG,'Moment photo upload started',{id,path,type:contentType,size:blob.size,userId:session?.user?.id||null});
+    const{error}=await client().storage.from(bucket).upload(path,blob,{upsert:true,contentType,cacheControl:'3600'});
+    if(error){
+      console.error(LOG,'Storage upload failed',{id,path,type:contentType,size:blob.size,statusCode:error.statusCode||error.status||null,message:photoErrorMessage(error),error});
+      throw new Error(photoErrorMessage(error));
     }
-    const meta=currentMomentPhoto.meta||{};
-    preview.hidden=false;
-    preview.innerHTML=`<div class="photo-prototype-card">
-      <img src="${currentMomentPhoto.url}" alt="Compressed moment preview"/>
-      <div class="photo-prototype-copy"><strong>✨ Looking good!</strong><span>${meta.width||'?'} × ${meta.height||'?'} · ${FORMATTER.bytes(meta.bytes)}</span><small>${meta.originalBytes ? `Original ${FORMATTER.bytes(meta.originalBytes)} → ` : ''}Compressed preview · local prototype</small></div>
-      <button type="button" class="photo-remove" onclick="removeMomentPhoto()" aria-label="Remove photo">×</button>
-    </div>`;
+    const{data:publicUrlData}=client().storage.from(bucket).getPublicUrl(path);
+    const photoUrl=publicUrlData?.publicUrl||null;
+    if(!photoUrl)throw new Error('Supabase returned no public photo URL');
+    console.log(LOG,'Moment photo uploaded',{id,path,photoUrl});
+    return{photoPath:path,photoUrl};
   }
-  function loadImageFromFile(file){
-    return new Promise((resolve,reject)=>{
-      const url=URL.createObjectURL(file);
-      const img=new Image();
-      img.onload=()=>{URL.revokeObjectURL(url);resolve(img);};
-      img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('Could not read this photo.'));};
-      img.src=url;
-    });
-  }
-  function canvasToBlob(canvas,type,quality){
-    return new Promise(resolve=>canvas.toBlob(resolve,type,quality));
-  }
-  async function compressMomentPhoto(file){
-    if(!file || !file.type.startsWith('image/')) throw new Error('Please choose a photo.');
-    const img=await loadImageFromFile(file);
-    const maxEdge=1600;
-    const scale=Math.min(1,maxEdge/Math.max(img.naturalWidth,img.naturalHeight));
-    const width=Math.max(1,Math.round(img.naturalWidth*scale));
-    const height=Math.max(1,Math.round(img.naturalHeight*scale));
-    const canvas=document.createElement('canvas');
-    canvas.width=width; canvas.height=height;
-    const ctx=canvas.getContext('2d',{alpha:false});
-    ctx.fillStyle='#fff'; ctx.fillRect(0,0,width,height);
-    ctx.drawImage(img,0,0,width,height);
-    /* RC10F: always encode Moment photos as JPEG. Mobile browsers can produce
-       WebP blobs inconsistently inside installed PWAs; JPEG is the stable
-       cross-device upload format and is allowed by the Supabase bucket. */
-    const type='image/jpeg';
-    let blob=await canvasToBlob(canvas,type,.82);
-    for(const q of [.74,.66,.58]){
-      if(blob && blob.size<=500*1024) break;
-      const next=await canvasToBlob(canvas,type,q);
-      if(next) blob=next;
-    }
-    if(!blob) throw new Error('Photo compression failed. Please try another photo.');
-    return {blob,url:URL.createObjectURL(blob),meta:{name:file.name||'camera-photo',bytes:blob.size,width,height,type:blob.type,originalBytes:file.size||0}};
-  }
-  async function handleMomentPhotoFile(file){
-    const zone=document.querySelector('#momentsModal .photo-capture-zone');
-    if(zone) zone.classList.add('is-processing');
+  async function stagePhoto(id,blob){
+    if(!blob)return null;
+    await storePendingPhoto(id,blob);
+    console.log(LOG,'Moment photo queued',{id,type:blob.type||null,size:blob.size||0,online:navigator.onLine});
+    if(!navigator.onLine)return{photoPending:true,photoSyncError:null};
     try{
-      const processed=await compressMomentPhoto(file);
-      clearMomentPhoto(true);
-      currentMomentPhoto=processed;
-      renderMomentPhotoPreview();
-    }catch(err){
-      alert(err?.message||'Unable to prepare this photo.');
-    }finally{
-      if(zone) zone.classList.remove('is-processing');
-      queueAppNavSync();
+      const result=await uploadPhoto(id,blob);
+      await deletePendingPhoto(id);
+      return Object.assign({photoPending:false,photoSyncError:null},result);
+    }catch(error){
+      const message=photoErrorMessage(error);
+      console.error(LOG,'Moment photo remains pending',{id,message,error});
+      return{photoPending:true,photoSyncError:message};
     }
   }
-  function stabiliseAppNavAfterViewportChange(){
-    const nav=document.querySelector('.app-nav');
-    if(!nav) return;
-    nav.classList.add('app-nav--layout-sync');
-    void nav.offsetHeight;
-    requestAnimationFrame(()=>requestAnimationFrame(()=>nav.classList.remove('app-nav--layout-sync')));
-  }
-  let appNavSyncTimer=0;
-  function queueAppNavSync(){
-    clearTimeout(appNavSyncTimer);
-    appNavSyncTimer=setTimeout(stabiliseAppNavAfterViewportChange,80);
-  }
-  window.addEventListener('focus',queueAppNavSync);
-  window.addEventListener('pageshow',queueAppNavSync);
-  if(window.visualViewport){
-    window.visualViewport.addEventListener('resize',queueAppNavSync);
-    window.visualViewport.addEventListener('scroll',queueAppNavSync);
-  }
-  window.removeMomentPhoto=function(){ clearMomentPhoto(true); };
-  function normaliseDayId(value){
-    if(value == null) return null;
-    const raw=String(value);
-    if(/^day(?:10|[1-9])$/.test(raw)) return raw;
-    if(/^(?:10|[1-9])$/.test(raw)) return 'day'+raw;
-    return null;
-  }
-  function dayNumberFromId(dayId){
-    const match=String(dayId||'').match(/day(10|[1-9])/);
-    return match ? match[1] : null;
-  }
-  function currentDayItems(dayNumber){
-    const key=String(dayNumber);
-    const master=((typeof ITINERARY_DATA!=='undefined'&&ITINERARY_DATA)||{})[key];
-    if(window.ITINERARY_AUTHORITY&&typeof ITINERARY_AUTHORITY.resolveDayItems==='function'){
-      return ITINERARY_AUTHORITY.resolveDayItems(key,master?.items||[]);
-    }
-    return (master?.items||[]).map(item=>({...item}));
-  }
-  function itineraryItems(){
-    const out=[];
-    Object.entries((typeof ITINERARY_DATA!=='undefined'&&ITINERARY_DATA)||{}).forEach(([dayNumber])=>{
-      currentDayItems(dayNumber).forEach(item=>out.push({...item,_dayNumber:String(dayNumber),dayId:normaliseDayId(item.dayId)||('day'+dayNumber)}));
-    });
-    return out;
-  }
-  function stripMomentTitle(title){
-    return String(title||'Moment').replace(/^[^\p{L}\p{N}]+/u,'').trim() || 'Moment';
-  }
-  function guideCandidates(placeKey){
-    const links=(typeof DAY_LINKS!=='undefined'&&DAY_LINKS[placeKey])||[];
-    return links.map(link=>{
-      const href=Array.isArray(link)?link[1]:'';
-      const dayMatch=String(href||'').match(/[?&]day=(10|[1-9])/);
-      const idMatch=String(href||'').match(/#([^#?&]+)/);
-      if(!dayMatch||!idMatch) return null;
-      const item=itineraryItems().find(x=>x._dayNumber===dayMatch[1]&&x.id===decodeURIComponent(idMatch[1]));
-      return item||null;
-    }).filter(Boolean);
-  }
-  function momentEntrySource(){
-    const guideModalOpen=document.getElementById('guideModal')?.classList.contains('show');
-    if(guideModalOpen || NAVIGATION.isPage('guide') || NAVIGATION.isPage('place') || document.getElementById('placeMain')) return 'guide';
-    if(NAVIGATION.isPage('day')) return 'days';
-    return 'unknown';
-  }
-  function resolveMomentContext(key, sourceHint){
-    const raw=key||'general';
-    if(raw==='general') return {contextType:'custom',placeKey:null,activityId:null,dayId:null,displayTitleSnapshot:'Just this moment'};
-    const source=sourceHint||momentEntrySource();
-    if(source==='guide' && typeof PLACES!=='undefined' && PLACES[raw]){
-      const candidates=guideCandidates(raw);
-      const unique=new Map(candidates.map(x=>[x.dayId+'|'+x.id,x]));
-      const only=unique.size===1?[...unique.values()][0]:null;
-      return {contextType:'guide',placeKey:raw,activityId:only?.id||null,dayId:only?.dayId||null,displayTitleSnapshot:PLACES[raw].title||'Moment'};
-    }
-    const item=itineraryItems().find(x=>x.id===raw);
-    if(item){
-      return {contextType:'days',placeKey:item.placeId||null,activityId:item.id,dayId:item.dayId,displayTitleSnapshot:stripMomentTitle(item.title)};
-    }
-    if(typeof PLACES!=='undefined'&&PLACES[raw]){
-      const candidates=guideCandidates(raw);
-      const unique=new Map(candidates.map(x=>[x.dayId+'|'+x.id,x]));
-      const only=unique.size===1?[...unique.values()][0]:null;
-      return {contextType:'guide',placeKey:raw,activityId:only?.id||null,dayId:only?.dayId||null,displayTitleSnapshot:PLACES[raw].title||'Moment'};
-    }
-    return {contextType:'custom',placeKey:null,activityId:null,dayId:null,displayTitleSnapshot:'Just this moment'};
-  }
-  function plannedMomentContext(dayNumber,item){
-    return {contextType:'planned-activity',placeKey:item.placeId||null,activityId:item.id,dayId:normaliseDayId(item.dayId)||('day'+dayNumber),displayTitleSnapshot:stripMomentTitle(item.title)};
-  }
-  function suggestedMomentDay(){
-    return String(tripDayNumber());
-  }
-  function renderMomentContextSummary(){
-    const box=document.getElementById('momentContextSummary');
-    if(!box) return;
-    const c=currentMomentContext||resolveMomentContext('general');
-    if(c.contextType==='custom'){
-      box.hidden=true;
-      box.innerHTML='';
-      box.closest('.moment-context-panel')?.classList.add('is-custom');
-    } else {
-      box.hidden=false;
-      box.closest('.moment-context-panel')?.classList.remove('is-custom');
-      box.innerHTML=`<span class="moment-context-dot">✓</span><span><strong>${c.displayTitleSnapshot}</strong><small>${c.dayId ? `Day ${dayNumberFromId(c.dayId)} · ` : ''}${c.contextType==='guide'?'From Guide':'Planned activity'}</small></span>`;
-    }
-  }
-  function renderPlannedActivityPicker(){
-    const host=document.getElementById('momentPlannedPicker');
-    if(!host) return;
-    const chips=currentDayItems(momentSelectorDay).map(item=>`<button type="button" class="moment-activity-chip" onclick="chooseMomentActivity('${momentSelectorDay}','${String(item.id).replace(/'/g,"\'")}')"><span>${stripMomentTitle(item.title)}</span><small>${item.time||''}</small></button>`).join('');
-    /* Stage 5B-2B2: the "Just this moment" chip is redundant when the composer was entered via the
-       Planned activity card — returning to free capture is done by closing the composer and choosing
-       the other card instead. Only render the chip for the general-entry "+Add planned activity" path. */
-    const customChoiceHTML=momentEntryIsPlanned ? '' : `<button type="button" class="moment-custom-choice" onclick="clearMomentActivity()">✨ Just this moment</button>`;
-    host.innerHTML=`${customChoiceHTML}<div class="moment-day-tabs">${Object.keys((typeof ITINERARY_DATA!=='undefined'&&ITINERARY_DATA)||{}).sort((a,b)=>Number(a)-Number(b)).map(n=>`<button type="button" class="moment-day-tab ${n===momentSelectorDay?'active':''}" onclick="setMomentSelectorDay('${n}')">Day ${n}</button>`).join('')}</div><div class="moment-activity-grid">${chips}</div>`;
-  }
-  function ensureMomentContextUI(){
-    const form=document.querySelector('#momentsModal .moments-form');
-    if(!form||form.querySelector('.moment-context-panel')) return;
-    const panel=document.createElement('div');
-    panel.className='moment-context-panel';
-    panel.innerHTML=`<div id="momentContextSummary" class="moment-context-summary"></div><button type="button" id="momentPlannedToggle" class="moment-planned-toggle" onclick="toggleMomentPlannedPicker()">＋ Add planned activity</button><div id="momentPlannedPicker" class="moment-planned-picker" hidden></div>`;
-    form.insertBefore(panel,form.firstChild);
-  }
-  window.toggleMomentPlannedPicker=function(){
-    const picker=document.getElementById('momentPlannedPicker');
-    const toggle=document.getElementById('momentPlannedToggle');
-    if(!picker) return;
-    picker.hidden=!picker.hidden;
-    if(!picker.hidden){ renderPlannedActivityPicker(); if(toggle) toggle.textContent='− Hide planned activities'; }
-    else if(toggle) toggle.textContent=currentMomentContext?.contextType==='custom'?'＋ Add planned activity':'Change planned activity';
-  };
-  window.openPlannedMomentCapture=function(){
-    window.openMomentsModal('general');
-    momentEntryIsPlanned=true;
-    momentSelectorDay=suggestedMomentDay();
-    const picker=document.getElementById('momentPlannedPicker');
-    const toggle=document.getElementById('momentPlannedToggle');
-    if(picker){
-      picker.hidden=false;
-      renderPlannedActivityPicker();
-    }
-    if(toggle) toggle.textContent='− Hide planned activities';
-  };
-  window.setMomentSelectorDay=function(dayNumber){ momentSelectorDay=String(dayNumber); renderPlannedActivityPicker(); };
-  window.chooseMomentActivity=function(dayNumber,activityId){
-    const item=currentDayItems(dayNumber).find(x=>x.id===activityId);
-    if(!item) return;
-    currentMomentKey=item.id;
-    currentMomentContext=plannedMomentContext(String(dayNumber),item);
-    const title=document.getElementById('momentsTitle');
-    if(title) title.textContent=currentMomentContext.displayTitleSnapshot;
-    renderMomentContextSummary();
-    const picker=document.getElementById('momentPlannedPicker');
-    const toggle=document.getElementById('momentPlannedToggle');
-    if(picker) picker.hidden=true;
-    if(toggle) toggle.textContent='Change planned activity';
-  };
-  window.clearMomentActivity=function(){
-    currentMomentKey='general';
-    currentMomentContext=resolveMomentContext('general');
-    const title=document.getElementById('momentsTitle'); if(title) title.textContent='Just this moment';
-    renderMomentContextSummary();
-    const picker=document.getElementById('momentPlannedPicker'); if(picker) picker.hidden=true;
-    const toggle=document.getElementById('momentPlannedToggle'); if(toggle) toggle.textContent='＋ Add planned activity';
-  };
-  function enhanceMomentPhotoInput(){
-    document.querySelectorAll('#momentsModal .photo-input').forEach(host=>{
-      if(host.dataset.photoEnhanced==='true') return;
-      host.dataset.photoEnhanced='true';
-      host.classList.add('photo-capture-zone');
-      host.innerHTML=`<div class="photo-capture-heading"><span class="photo-capture-spark">📸</span><span><strong>Add a happy snap</strong><small>We compress it before anything is saved.</small></span></div>
-        <div class="photo-capture-actions">
-          <label class="photo-capture-btn photo-capture-btn--camera">📷 Take Photo<input id="momentsPhotoCamera" type="file" accept="image/*" capture="environment" hidden></label>
-          <label class="photo-capture-btn">🖼 Choose Photo<input id="momentsPhotoLibrary" type="file" accept="image/*" hidden></label>
-        </div>
-        <div id="momentsPhotoPreview" class="photo-prototype-preview" hidden></div>`;
-      host.querySelectorAll('input[type=file]').forEach(input=>input.addEventListener('change',e=>{
-        const file=e.target.files?.[0]; if(file) handleMomentPhotoFile(file);
-      }));
-    });
-  }
-  window.openMomentsModal = function(key){
-    editingMomentId = null;
-    momentEntryIsPlanned = false; /* Stage 5B-2B2: only openPlannedMomentCapture re-enables planned-entry mode, right after this call */
-    currentMomentKey = key || 'general';
-    currentMomentContext = resolveMomentContext(currentMomentKey);
-    momentSelectorDay = dayNumberFromId(currentMomentContext.dayId) || suggestedMomentDay();
-    const g = PLACES[currentMomentContext.placeKey||currentMomentKey] || PLACES.general || {title:'Moment'};
-    const title = document.getElementById('momentsTitle');
-    const friend = document.getElementById('momentsFriend');
-    const text = document.getElementById('momentsText');
-    if(title) title.textContent = currentMomentContext.displayTitleSnapshot || g.title || 'Moment';
-    if(friend) friend.textContent = FRIENDS[getFriend()];
-    if(text) text.value = '';
-    ensureMomentContextUI();
-    renderMomentContextSummary();
-    const picker=document.getElementById('momentPlannedPicker'); if(picker) picker.hidden=true;
-    const toggle=document.getElementById('momentPlannedToggle'); if(toggle) toggle.textContent=currentMomentContext.contextType==='custom'?'＋ Add planned activity':'Change planned activity';
-    clearMomentPhoto(true);
-    setStars(0);
-    renderMoodButtons([]);
-    const save=document.querySelector('#momentsModal .moments-form .btn');
-    if(save) save.textContent='Save';
-    const modal=document.getElementById('momentsModal');
-    if(modal) modal.classList.add('show');
-    try{ if(typeof window.simplifyMomentsAuthor === 'function') window.simplifyMomentsAuthor(); }catch(e){}
-  };
-  window.saveMoments = async function(){
-    const key = currentMomentKey || 'general';
-    const g = PLACES[key] || PLACES.general || {title:'Moment'};
-    const textEl=document.getElementById('momentsText');
-    const ratingEl=document.getElementById('momentsRating');
-    const now=new Date().toISOString();
-    let arr=readJson(STORAGE_CONFIG.keys.momentsList,[]);
-    let entry={
-      id:editingMomentId || ('m_'+Date.now()+'_'+Math.random().toString(36).slice(2,7)),
-      itemKey:key,
-      itemTitle:currentMomentContext?.displayTitleSnapshot || g.title || 'Moment',
-      context:{...(currentMomentContext||resolveMomentContext(key))},
-      friendLabel:FRIENDS[getFriend()],
-      rating:Number(ratingEl?.value||0),
-      moods:(currentMood||[]).slice(),
-      text:textEl?.value||'',
-      photoPrototype:currentMomentPhoto ? {...currentMomentPhoto.meta, retained:false} : null,
-      createdAt:now,
-      updatedAt:now,
-      createdBy:(typeof getFriend==='function'?getFriend():'lee'),
-      editedBy:(typeof getFriend==='function'?getFriend():'lee')
-    };
-    if(editingMomentId){
-      const existing=arr.find(e=>e.id===editingMomentId);
-      if(!currentMomentPhoto && existing?.photoPrototype) entry.photoPrototype=existing.photoPrototype;
-      arr=arr.map(e=> e.id===editingMomentId ? {...e,...entry,createdAt:e.createdAt||now,createdBy:e.createdBy||entry.createdBy,editedAt:now,updatedAt:now,editedBy:(typeof getFriend==='function'?getFriend():'lee')} : e);
-    }else{
-      arr.push(entry);
-    }
-    if(currentMomentPhoto?.url) prototypePhotoUrls.set(entry.id,currentMomentPhoto.url);
-    if(currentMomentPhoto?.blob && window.MOMENT_SYNC){
-      const photoState=await window.MOMENT_SYNC.stagePhoto(entry.id,currentMomentPhoto.blob);
-      entry={...entry,...(photoState||{}),updatedAt:new Date().toISOString()};
-      arr=arr.map(e=>e.id===entry.id?{...e,...entry}:e);
-    }
-    writeJson(STORAGE_CONFIG.keys.momentsList,arr);
-    window.MOMENT_SYNC?.queueSync();
-    STORAGE.local.writeJSON(STORAGE_CONFIG.keys.latestMomentPrefix+key,entry);
-    editingMomentId=null;
-    if(textEl) textEl.value='';
-    currentMomentPhoto=null;
-    renderMomentPhotoPreview();
-    setStars(0); renderMoodButtons([]);
-    const save=document.querySelector('#momentsModal .moments-form .btn');
-    if(save) save.textContent='Save';
-    closeMomentsModal(); renderMoments();
-  };
-  window.editMoment = function(id){
-    const arr=readJson(STORAGE_CONFIG.keys.momentsList,[]);
-    const e=arr.find(x=>x.id===id);
-    if(!e) return;
-    editingMomentId=id;
-    momentEntryIsPlanned = false; /* Stage 5B-2B2: editing an existing moment always keeps the full planned-activity picker */
-    currentMomentKey=e.itemKey || 'general';
-    currentMomentContext=e.context ? {...e.context} : resolveMomentContext(currentMomentKey);
-    momentSelectorDay=dayNumberFromId(currentMomentContext.dayId)||suggestedMomentDay();
-    ensureMomentContextUI();
-    renderMomentContextSummary();
-    const picker=document.getElementById('momentPlannedPicker'); if(picker) picker.hidden=true;
-    const toggle=document.getElementById('momentPlannedToggle'); if(toggle) toggle.textContent=currentMomentContext.contextType==='custom'?'＋ Add planned activity':'Change planned activity';
-    const title=document.getElementById('momentsTitle');
-    const friend=document.getElementById('momentsFriend');
-    const text=document.getElementById('momentsText');
-    if(title) title.textContent=e.context?.displayTitleSnapshot || e.itemTitle || 'Moment';
-    if(friend) friend.textContent=e.friendLabel || FRIENDS[getFriend()];
-    if(text) text.value=e.text || '';
-    clearMomentPhoto(true);
-    const rememberedUrl=prototypePhotoUrls.get(e.id);
-    if(rememberedUrl && e.photoPrototype){
-      currentMomentPhoto={url:rememberedUrl,meta:e.photoPrototype};
-      renderMomentPhotoPreview();
-    }
-    setStars(e.rating||0);
-    renderMoodButtons(e.moods||[]);
-    const save=document.querySelector('#momentsModal .moments-form .btn');
-    if(save) save.textContent='Save Changes';
-    const modal=document.getElementById('momentsModal');
-    if(modal) modal.classList.add('show');
-    try{ if(typeof window.simplifyMomentsAuthor === 'function') window.simplifyMomentsAuthor(); }catch(e){}
-  };
-  window.deleteMoment = function(idOrKey){
-    let arr=readJson(STORAGE_CONFIG.keys.momentsList,[]);
-    const before=arr.length;
-    const deleting=arr.find(e=>e.id===idOrKey);
-    window.MOMENT_SYNC?.markDeleted(deleting);
-    arr=arr.filter(e=>e.id!==idOrKey);
-    writeJson(STORAGE_CONFIG.keys.momentsList,arr);
-    if(before===arr.length && idOrKey && !idOrKey.startsWith('m_')) STORAGE.local.remove(STORAGE_CONFIG.keys.momentPrefix+idOrKey);
-    const photoUrl=prototypePhotoUrls.get(idOrKey);
-    if(photoUrl){try{URL.revokeObjectURL(photoUrl);}catch(e){} prototypePhotoUrls.delete(idOrKey);}
-    window.MOMENT_SYNC?.queueSync();
-    renderMoments();
-  };
-  window.renderMoments = function(){
-    const box=document.getElementById('momentsTimeline'); if(!box) return;
-    let arr=readJson(STORAGE_CONFIG.keys.momentsList,[]);
-    // Include legacy one-per-place moments once so older saved data still appears.
-    for(const k of STORAGE.local.keys()){
-      if(k && k.startsWith(STORAGE_CONFIG.keys.momentPrefix) && !k.startsWith(STORAGE_CONFIG.keys.latestMomentPrefix)){
-        try{
-          const e=STORAGE.local.readJSON(k,null);
-          if(e && !arr.some(x=>x.id===e.id || (x.createdAt===e.createdAt && x.itemKey===e.itemKey && x.text===e.text))){
-            arr.push({...e,id:e.id||('legacy_'+k.replace(STORAGE_CONFIG.keys.momentPrefix,''))});
-          }
-        }catch(err){}
+  async function flushPhotos(){
+    const pending=await getPendingPhotos();
+    if(!pending.length)return false;
+    console.log(LOG,'Retrying pending moment photos',pending.length);
+    let changed=false;
+    const list=readLocal();
+    for(const p of pending){
+      try{
+        const result=await uploadPhoto(p.id,p.blob);
+        const idx=list.findIndex(x=>x.id===p.id);
+        if(idx>=0){
+          list[idx]=Object.assign({},list[idx],result,{photoPending:false,photoSyncError:null,updatedAt:new Date().toISOString(),editedAt:new Date().toISOString()});
+          changed=true;
+        }
+        await deletePendingPhoto(p.id);
+      }catch(error){
+        const message=photoErrorMessage(error);
+        const idx=list.findIndex(x=>x.id===p.id);
+        if(idx>=0&&list[idx].photoSyncError!==message){
+          list[idx]=Object.assign({},list[idx],{photoPending:true,photoSyncError:message});
+          changed=true;
+        }
+        console.error(LOG,'Pending moment photo retry failed',{id:p.id,message,error});
       }
     }
-    arr.sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
-    if(!arr.length){box.innerHTML='<p>No Moments yet.</p>';return;}
-    box.innerHTML=arr.map(e=>`<div class="moments-entry">
-      <strong>${escapeHTML(e.itemTitle||'Moment')}</strong>
-      <p class="timestamp">${escapeHTML(e.friendLabel||'')} · ${formatTime(e.createdAt)}${e.editedAt?` · Edited ${formatTime(e.editedAt)}`:''}</p>
-      ${(e.photoUrl||prototypePhotoUrls.get(e.id)) ? `<img class="moment-prototype-photo" src="${escapeHTML(e.photoUrl||prototypePhotoUrls.get(e.id))}" alt="Moment photo">` : (e.photoPending?`<p class="moment-photo-note">📸 Photo saved offline · waiting to sync</p>`:(e.photoPrototype?`<p class="moment-photo-note">📸 Photo preview unavailable on this device</p>`:''))}
-      <p class="moment-mood">${moodLabel(e.moods||[])}</p>
-      <p class="moment-stars">${'⭐'.repeat(e.rating||0)}</p>
-      <p class="moment-copy">${escapeHTML(e.text||'')}</p>
-      <div class="entry-actions"><button class="mini-btn" onclick="editMoment('${e.id||e.itemKey}')">✏️ Edit</button><button class="mini-btn" onclick="deleteMoment('${e.id||e.itemKey}')">🗑 Delete</button></div>
-    </div>`).join('');
-  };
-  /* Stage 4C-6: removed legacy v3.2 window.saveExpense; canonical handler is later in this file. */
+    if(changed)writeLocal(list);
+    return changed;
+  }
 
-  /* Stage 4C-6: removed legacy v3.2 window.renderExpenses; canonical handler is later in this file. */
-
-  document.addEventListener('DOMContentLoaded',()=>{enhanceMomentPhotoInput();renderMoodButtons([]);renderMoments();renderExpenses();window.MOMENT_SYNC?.queueSync(150);document.addEventListener(window.MOMENT_SYNC?.EVENTS?.changed||'travelengine:momentsyncchanged',()=>renderMoments());});
-})();
+  async function syncNow(){if(state.paused){emit('paused','Sync paused for trip reset');return snapshot();}if(!configured()||!navigator.onLine){emit('offline','Saved offline — will sync later');return snapshot();}if(state.inFlight)return state.inFlight;state.inFlight=(async()=>{emit('syncing','Syncing moments…');try{
+    const generationCheck=await root.TRIP_GENERATION?.ensureCurrentGeneration?.();
+    if(generationCheck?.stale){
+      // Trip was reset since this device last synced. Local moments/photos
+      // for this device have already been wiped by TRIP_GENERATION — pull
+      // whatever the (now-clean) cloud has and stop. Do NOT flush pending
+      // photos or push anything: it's all pre-reset state.
+      const remoteRows=await pull();
+      const finalActive=remoteRows.map(fromRemote).filter(r=>!r.deletedAt);
+      finalActive.sort((a,b)=>String(a.createdAt).localeCompare(String(b.createdAt)));
+      writeLocal(finalActive);writeTombstones([]);
+      state.lastSyncAt=new Date().toISOString();writeJSON(META_KEY,{lastSyncAt:state.lastSyncAt});
+      emit('synced','Synced across families');
+      root.document?.dispatchEvent(new CustomEvent(EVENTS.changed,{detail:{count:finalActive.length}}));
+      return snapshot();
+    }
+    await flushPhotos();const remoteRows=await pull();const localActive=readLocal(),localDeleted=readTombstones();const localMap=new Map([...localActive,...localDeleted].map(x=>[x.id,x]));const remoteMap=new Map(remoteRows.map(r=>[r.id,fromRemote(r)]));const ids=new Set([...localMap.keys(),...remoteMap.keys()]);const active=[],deleted=[],toPush=[];ids.forEach(id=>{const l=localMap.get(id),r=remoteMap.get(id);let winner;if(!l)winner=r;else if(!r){winner=l;toPush.push(toRemote(l,!!l.deletedAt));}else{const lt=new Date(l.updatedAt||0).getTime(),rt=new Date(r.updatedAt||0).getTime();winner=lt>rt?l:r;if(lt>rt)toPush.push(toRemote(l,!!l.deletedAt));}if(winner?.deletedAt)deleted.push(winner);else if(winner)active.push(winner);});await push(toPush);active.sort((a,b)=>String(a.createdAt).localeCompare(String(b.createdAt)));writeLocal(active);writeTombstones(deleted);state.lastSyncAt=new Date().toISOString();writeJSON(META_KEY,{lastSyncAt:state.lastSyncAt});emit('synced','Synced across families');root.document?.dispatchEvent(new CustomEvent(EVENTS.changed,{detail:{count:active.length}}));return snapshot();}catch(error){console.error(LOG,'Moments sync failed',error?.message||error);emit('error',navigator.onLine?'Sync unavailable — saved on this device':'Saved offline — will sync later',error?.message||String(error));return snapshot();}finally{state.inFlight=null;}})();return state.inFlight;}
+  function queueSync(delay=350){if(state.paused)return;clearTimeout(state.timer);state.timer=setTimeout(syncNow,delay);}
+  function pause(){state.paused=true;clearTimeout(state.timer);state.timer=null;emit('paused','Sync paused for trip reset');}
+  async function clearPendingPhotos(){
+    if(!('indexedDB' in root))return;
+    await new Promise((resolve,reject)=>{const request=indexedDB.deleteDatabase(DB_NAME);request.onsuccess=()=>resolve();request.onerror=()=>reject(request.error);request.onblocked=()=>reject(new Error('Pending photo database is still in use'));});
+  }
+  /* Deletes every photo under this trip's folder in the Storage bucket and
+     verifies the folder is empty afterwards. This module is the only place
+     that knows the bucket name and the trip-folder path convention, so it
+     stays the single owner of this logic — reset-runtime.js calls this
+     rather than re-implementing bucket/path handling itself. Cloud ROW
+     deletion (trip_moments) is NOT done here — that happens once, inside
+     the reset_trip() database RPC, called by reset-runtime.js. */
+  async function resetCloudPhotos(){
+    if(!configured()||!navigator.onLine)throw new Error('An internet connection is required to reset cloud photos.');
+    await ensureSession();
+    const {data:files,error:listError}=await client().storage.from(bucket).list(config.tripId,{limit:1000});
+    if(listError)throw new Error(listError.message||'Unable to list cloud moment photos');
+    const paths=(files||[]).filter(file=>file?.name).map(file=>`${config.tripId}/${file.name}`);
+    if(!paths.length)return{removed:0};
+    const {data:removedFiles,error:removeError}=await client().storage.from(bucket).remove(paths);
+    if(removeError)throw new Error(removeError.message||'Cloud photo reset failed');
+    const {data:remainingFiles,error:photoVerifyError}=await client().storage.from(bucket).list(config.tripId,{limit:1});
+    if(photoVerifyError)throw new Error(photoVerifyError.message||'Unable to verify cloud photo reset');
+    if((remainingFiles||[]).some(file=>file?.name)){
+      throw new Error(`Cloud photos were not deleted. Supabase Storage DELETE policy has not been applied (requested ${paths.length}, removed ${(removedFiles||[]).length}). Run SUPABASE_STAGE_11_RESET_ARCHITECTURE.sql, then try Reset again.`);
+    }
+    return{removed:(removedFiles||[]).length};
+  }
+  /* Removes the legacy one-per-place moment_<key> / moment_latest_<key>
+     localStorage entries. The writer for plain moment_<key> keys was
+     removed in Stage 4C-4, but renderMoments() in moments.js still scans
+     every localStorage key for this prefix (to keep any pre-4C-4 data
+     visible) and merges whatever it finds into the rendered feed. That
+     scan runs independently of moments_list/EXPENSE_SYNC's own state, so
+     a device that still carries one of these keys from years-ago usage
+     would have it silently resurface after moments_list was wiped — the
+     very failure mode Reset exists to prevent, just via a different
+     mechanism than cloud sync. This is why clearLocal(), not just the
+     Reset button flow, is responsible for removing them: it must happen
+     on every device that wipes its local moments, not only the one that
+     pressed the button. */
+  function clearLegacyMomentKeys(){
+    const prefixes=[root.STORAGE_CONFIG?.keys?.momentPrefix,root.STORAGE_CONFIG?.keys?.latestMomentPrefix].filter(Boolean);
+    if(!prefixes.length)return;
+    for(let i=localStorage.length-1;i>=0;i--){
+      const k=localStorage.key(i);
+      if(k && prefixes.some(prefix=>k.startsWith(prefix))) localStorage.removeItem(k);
+    }
+  }
+  /* Clears this device's local moment store only (list, tombstones, sync
+     meta, pending-photo IndexedDB queue, legacy per-place keys). Does NOT
+     touch the cloud. Called both by reset-runtime.js (the device that
+     pressed Reset) and by generation-runtime.js (any other device that
+     detects the trip was reset out from under it). */
+  async function clearLocal(){
+    writeLocal([]);writeTombstones([]);await clearPendingPhotos();clearLegacyMomentKeys();
+    try{storage?.remove?storage.remove(META_KEY):localStorage.removeItem(META_KEY);}catch(e){}
+    state.lastSyncAt=null;state.error=null;
+  }
+  function initialise(){readLocal();root.addEventListener?.('online',()=>queueSync(50));root.document?.addEventListener('visibilitychange',()=>{if(root.document.visibilityState==='visible')queueSync(100);});root.setInterval?.(()=>{if(root.document?.visibilityState==='visible')syncNow();},30000);}
+  root.MOMENT_SYNC=Object.freeze({EVENTS,getState:snapshot,normalizeRecord,readLocal,writeLocal,markDeleted,stagePhoto,syncNow,queueSync,pause,clearPendingPhotos,clearLocal,resetCloudPhotos,isConfigured:configured});initialise();
+})(globalThis);

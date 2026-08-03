@@ -1,37 +1,190 @@
-<!DOCTYPE html>
+/* expense-sync-runtime.js — Stage 10A Supabase Expenses Sync
+   Local-first, multi-device expense sync with soft-delete tombstones.
+   Requires SUPABASE_STAGE_10A_EXPENSES_SETUP.sql and Anonymous Sign-Ins enabled. */
+(function(root){
+  'use strict';
 
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><script src="app-runtime.js?v=nz1.0-rc22-1"></script><script src="theme-config.js"></script><script src="asset-config.js"></script><script src="locale-config.js"></script><script src="geo-config.js?v=stage3-2h-port1"></script><script src="formatter.js"></script><script src="money-config.js"></script><script src="navigation-config.js?v=nz1.0-rc22-1"></script><script src="navigation.js?v=nz1.0-rc22-1"></script><script src="trip-config.js?v=stage3-2h-cert-final-fix1"></script><script src="storage-config.js?v=stage3-2h-cert-final-fix1"></script><script src="storage.js"></script><script src="sync-config.js?v=stage3-2h-storage-currency1"></script><script src="sync-runtime.js?v=stage3-2h-precert-data3"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-client-runtime.js?v=nz1.0-rc22-1"></script><script src="expense-sync-runtime.js?v=stage3-2h-precert-data3"></script><script src="moment-sync-runtime.js?v=stage3-2h-precert-data3"></script><script src="generation-runtime.js?v=nz1.0-rc22-1"></script><script src="party-render-runtime.js?v=stage3-2h-party-config2"></script><script src="money.js"></script><title data-trip-page-title="Expenses">Expenses</title><meta content="" data-trip-theme-color="" name="theme-color"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="" data-trip-apple-title="" name="apple-mobile-web-app-title"/><link data-trip-icon="icon192" rel="apple-touch-icon"/><link href="styles.css?v=stage3-2h-booking-audit2" rel="stylesheet"/><link href="theme-preview.css?v=theme-studio-visual-polish-1" rel="stylesheet"/></head><body class="expenses-page"><nav class="site-nav"><a class="brand" href="index.html"><span class="brand-mark"><img alt="" data-brand-logo="header"/></span><span data-brand-text="navLabel"></span></a><button class="friend-pill" onclick="openFriendModal()"><span data-friend-label="" data-family=""></span></button></nav>
-<main class="content-page expense-page-shell">
-<div class="page-hero module-hero">
-<p class="kicker">TRIP EXPENSES</p>
-<h1>Expenses</h1>
-<p class="lead">A clear record of what we shared, spent and settled.</p>
-<div class="page-action-row" data-v35="expense-action">
-<button class="btn primary-action" onclick="openExpenseModal()" type="button">💸 What did we spend?</button>
-</div><div class="expense-sync-line"><span class="expense-sync-dot" aria-hidden="true"></span><span id="expenseSyncStatus">Saved on this device</span><button class="expense-sync-now" type="button" onclick="EXPENSE_SYNC.syncNow()">Sync now</button></div></div>
-<section class="prose-block">
-<div id="expensePageList"></div>
-</section>
-</main>
-<div class="mini-menu" id="guideMenu"><button onclick="openGuideCategory('ATTRACTIONS')"><span><span class="menu-title">🍃 SIGHTS</span></span><span>›</span></button><button onclick="openGuideCategory('ACTIVITIES')"><span><span class="menu-title">🎟️ ACTIVITIES</span></span><span>›</span></button><button onclick="openGuideCategory('DINING')"><span><span class="menu-title">🍽 DINING</span></span><span>›</span></button><button onclick="openGuideCategory('STAY')"><span><span class="menu-title">🏨 STAY</span></span><span>›</span></button></div><div class="mini-menu" id="tripMenu"><a href="#" onclick="openTripCard('flights');return false;"><span><span class="menu-title">✈️ Flights</span><span class="menu-sub">MEL · CHC · ZQN</span></span><span>›</span></a><a href="#" onclick="openTripCard('vehicle');return false;"><span><span class="menu-title">🚙 Rental Car</span><span class="menu-sub">Rental Cars 247 · ASX</span></span><span>›</span></a><a href="#" onclick="openTripCard('stay');return false;"><span><span class="menu-title">🏨 Accommodation</span><span class="menu-sub">Bookings & addresses</span></span><span>›</span></a><a href="#" onclick="openTripCard('activities');return false;"><span><span class="menu-title">🎟️ Activities</span><span class="menu-sub">Confirmed tours & experiences</span></span><span>›</span></a><a href="#" onclick="openTripCard('checklist');return false;"><span><span class="menu-title">✅ Checklist</span><span class="menu-sub">Before the Trip</span></span><span>›</span></a><a href="#" onclick="openTripCard('emergency');return false;"><span><span class="menu-title">☎️ Emergency</span><span class="menu-sub">Contacts & medical care</span></span><span>›</span></a></div><div class="mini-menu" id="daysMenu"></div><nav class="app-nav">
-<button class="trip-trigger" onclick="toggleTripMenu()" type="button"><span>🧳</span><small>Trip</small></button>
-<button class="guide-trigger" onclick="toggleGuideMenu()" type="button"><span>📖</span><small>Guide</small></button>
-<button class="days-trigger" onclick="toggleDays()" type="button"><span>🗓</span><small>Days</small></button>
-<a class="summary-link" href="moments.html"><span>✨</span><small>Moments</small></a>
-<a class="summary-link" href="expenses.html"><span>💸</span><small>Expenses</small></a>
-</nav>
-<script src="engine-integrity.js?v=nz1.0-rc22-1"></script><script src="data.js?v=stage3-2h-precert-data3"></script><script src="booking-authority.js?v=booking-save-rootfix1"></script><script src="generation-selection-adapter.js?v=nz1.0-rc22-1"></script><script src="guide-navigation-runtime.js?v=stage3-2h-ownership1"></script><script src="itinerary-authority.js?v=nz1.0-rc22-1"></script><script src="core-runtime.js?v=stage3-2h-cert-ux-safety1"></script><script src="expenses.js?v=stage3-2h-expense-cleanup1"></script><script src="moments.js?v=nz1.0-rc22-1"></script><script src="trip-runtime.js?v=booking-save-response1"></script><script src="moments-compat.js?v=stage3-2h-port1"></script><script src="script.js?v=stage3-2h-studio-guide-polish1"></script><script src="guide-runtime.js?v=stage3-2h-ownership1"></script><script src="admin.js?v=stage3-2h-cert-ux-safety1"></script><script src="reset-runtime.js?v=stage3-2h-storage-currency1"></script><script src="publication-runtime.js?v=stage3-2h-port1"></script><script src="complete-runtime.js?v=stage3-2h-port1"></script><script src="export-runtime.js?v=stage3-2h-modal-cleanup1"></script><script src="currency-runtime.js?v=stage3-2h-front-interaction1-2"></script><script src="pwa.js?v=nz1.0-rc22-1"></script>
-<div class="trip-modal" id="tripModal"><div class="trip-sheet"><button class="trip-close" onclick="closeTripModal()" type="button">×</button><div id="tripModalContent"></div></div></div>
-<div class="guide-modal" id="guideModal"><div class="guide-sheet"><button class="guide-close" onclick="closeGuideModal()" type="button">×</button><div id="guideModalContent"></div></div></div>
-<div class="moments-modal" id="momentsModal"><div class="moments-sheet"><button class="moments-close" onclick="closeMomentsModal()" type="button">×</button><p class="kicker">MEMORY BOOK</p><h2 id="momentsTitle">Moment</h2><p class="lead modal-intro" id="momentsIntro">Add a rating, a short note and a photo at any stop. After the trip, this becomes the three families’ shared memory book.</p><p><span class="status-badge" id="momentsFriend">Friend</span> <button class="mini-btn" onclick="openFriendModal()">Change Family</button></p><div class="moments-form"><input id="momentsRating" type="hidden" value="0"/><div class="star-row"><span class="star" onclick="setStars(1)">⭐</span><span class="star" onclick="setStars(2)">⭐</span><span class="star" onclick="setStars(3)">⭐</span><span class="star" onclick="setStars(4)">⭐</span><span class="star" onclick="setStars(5)">⭐</span></div><p class="mood-help">Choose up to 2 moods</p><div class="mood-grid" id="moodGrid"></div><textarea id="momentsText" placeholder="Something to say..."></textarea><div class="photo-input">📷 Add Photo (Camera / Photo Library)</div><button class="btn" onclick="saveMoments()">Save</button></div></div></div>
-<div class="unexpected-modal" id="unexpectedModal"><div class="unexpected-sheet"><button class="unexpected-close" onclick="closeUnexpectedModal()" type="button">×</button><p class="kicker">Moments</p><h2>Leave a Moment</h2><p class="lead">Add a rating, a short note and a photo at any stop. After the trip, this becomes the three families’ shared memory book.</p><p><span class="status-badge" id="unexpectedFriend">Friend</span></p><textarea id="unexpectedText" placeholder="Capture this moment..." style="width:100%;min-height:120px;border:1px solid var(--line);border-radius:18px;background:#fffaf2;padding:14px;font:inherit;color:var(--ink)"></textarea><div class="photo-input">📷 Add Photo (Camera / Photo Library)</div><button class="btn" onclick="saveUnexpected()">Save</button></div></div>
-<div class="tools-modal" id="expenseModal"><div class="tools-sheet"><button class="tools-close" onclick="closeExpenseModal()" type="button">×</button><p class="kicker">EXPENSES</p><h2 id="expenseModalTitle">Add expense</h2><div class="expense-form">
-<div class="expense-type-toggle" role="group" aria-label="Expense type"><button class="expense-type-btn active" data-expense-type="shared" onclick="setExpenseType('shared')" type="button">Shared</button><button class="expense-type-btn" data-expense-type="personal" onclick="setExpenseType('personal')" type="button">Personal</button></div><input id="expensePersonal" type="checkbox" hidden onchange="updateExpenseMode()"/>
-<label>Category</label><input id="expenseCategory" type="hidden" value="Meals"/><div class="expense-category-grid" id="expenseCategoryGrid"><button class="expense-category-btn active" data-category="Meals" type="button" onclick="setExpenseCategory('Meals')">Meals</button><button class="expense-category-btn" data-category="Activities" type="button" onclick="setExpenseCategory('Activities')">Activities</button><button class="expense-category-btn" data-category="Grocery" type="button" onclick="setExpenseCategory('Grocery')">Grocery</button><button class="expense-category-btn" data-category="Other" type="button" onclick="setExpenseCategory('Other')">Other</button></div>
-<label for="expenseItem">Details <span class="timestamp">(optional)</span></label><input id="expenseItem" placeholder="e.g. Fergburger"/>
-<label for="expenseTotal">Amount</label><div class="expense-money-field expense-total-field"><input autocomplete="off" data-locale-currency-placeholder="" id="expenseTotal" inputmode="decimal" placeholder="0.00 NZD" type="text" oninput="updateSplitUI()"/><button class="field-clear-btn total-clear-btn" type="button" onclick="clearExpenseField('expenseTotal')" aria-label="Clear total amount">Clear</button><button class="calc-open-btn amount-calc-btn" type="button" onclick="openExpenseCalculator('expenseTotal')" aria-label="Open calculator for total amount"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm0 2v4h12V4H6Zm2 7H6v2h2v-2Zm5 0h-2v2h2v-2Zm5 0h-2v2h2v-2ZM8 16H6v2h2v-2Zm5 0h-2v2h2v-2Zm5 0h-2v2h2v-2Z"/></svg></button></div>
-<div class="shared-compact-row" id="sharedPaidByBlock"><div class="compact-expense-control"><label for="expensePaidBy">Paid by</label><select class="btn" id="expensePaidBy" onchange="syncConsumedIfAuto()" data-party-options=""></select></div><div class="compact-expense-control split-picker-wrap"><label>Split by</label><button aria-expanded="false" class="split-picker-button" id="splitPickerButton" onclick="toggleSplitPicker(event)" type="button"><span id="splitPickerSummary">All</span><span aria-hidden="true" class="split-picker-arrow">⌄</span></button><div class="split-picker-menu" hidden id="splitPickerMenu" onclick="event.stopPropagation()" data-party-split-options=""></div></div></div>
-<div id="personalPaidForBlock" hidden><label>Paid by / for</label><div class="personal-paid-for-line"><select class="btn" id="expensePersonalPaidBy" onchange="syncPersonalPayer()" data-party-options=""></select><span>paid for</span><select class="btn" id="expenseConsumedBy" onchange="markConsumedManual()" data-party-options=""></select></div></div>
-<div id="splitBetweenBlock"><div class="expense-split-mode" role="group" aria-label="Split mode"><button class="split-mode-btn active" data-split-mode="equal" onclick="setExpenseSplitMode('equal')" type="button">Equal</button><button class="split-mode-btn" data-split-mode="custom" onclick="setExpenseSplitMode('custom')" type="button">Custom</button></div><div id="customSplitPanel" class="custom-split-panel" hidden></div></div>
-<button class="btn" id="expenseSaveButton" onclick="saveExpense()">Save Expense</button></div></div></div><div class="tools-modal calculator-modal" id="expenseCalculatorModal"><div class="tools-sheet calculator-sheet"><button class="tools-close" onclick="closeExpenseCalculator()" type="button">×</button><p class="kicker">CALCULATOR</p><div class="calculator-display" id="expenseCalculatorDisplay">0</div><div class="calculator-grid"><button type="button" onclick="calcPress('C')">C</button><button type="button" onclick="calcPress('⌫')">⌫</button><button type="button" onclick="calcPress('/')">÷</button><button type="button" onclick="calcPress('*')">×</button><button type="button" onclick="calcPress('7')">7</button><button type="button" onclick="calcPress('8')">8</button><button type="button" onclick="calcPress('9')">9</button><button type="button" onclick="calcPress('-')">−</button><button type="button" onclick="calcPress('4')">4</button><button type="button" onclick="calcPress('5')">5</button><button type="button" onclick="calcPress('6')">6</button><button type="button" onclick="calcPress('+')">+</button><button type="button" onclick="calcPress('1')">1</button><button type="button" onclick="calcPress('2')">2</button><button type="button" onclick="calcPress('3')">3</button><button type="button" class="calc-equals" onclick="calcPress('=')">=</button><button type="button" class="calc-zero" onclick="calcPress('0')">0</button><button type="button" onclick="calcPress('.')">.</button></div><button class="btn calc-use-result" type="button" onclick="useExpenseCalculatorResult()">Use result</button></div></div><div class="mama-modal" id="mamaModal"><div class="guide-sheet"><button class="mama-close" onclick="closeFriendModal()" type="button">×</button><p class="kicker">Family</p><h2>Choose Family</h2><div class="category-pop-list friend-choice-list" data-party-choices=""></div></div></div><script src="theme-preview-assets/registry.js?v=theme-studio-visual-polish-1"></script><script src="theme-preview-runtime.js?v=theme-studio-visual-polish-1"></script></body></html>
+  const config=root.SYNC_CONFIG||{};
+  const storage=root.STORAGE?.local;
+  const EVENTS=Object.freeze({status:'travelengine:expensesyncstatus',changed:'travelengine:expensesyncchanged'});
+  const TOMBSTONE_KEY='travel_engine_expense_tombstones_v1';
+  const META_KEY='travel_engine_expense_sync_meta_v1';
+  const table=config.tables?.expenses||'trip_expenses';
+  const state={status:'idle',message:'Saved on this device',lastSyncAt:null,error:null,timer:null,inFlight:null,paused:false};
 
+  function uuid(){
+    if(root.crypto?.randomUUID) return root.crypto.randomUUID();
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&3|8)).toString(16);});
+  }
+  function readJSON(key,fallback){
+    try{return storage?.readJSON?storage.readJSON(key,fallback):JSON.parse(localStorage.getItem(key)||'null')??fallback;}
+    catch(e){return fallback;}
+  }
+  function writeJSON(key,value){
+    try{if(storage?.writeJSON)storage.writeJSON(key,value);else localStorage.setItem(key,JSON.stringify(value));}catch(e){}
+  }
+  function iso(value){
+    const d=new Date(value||0);return Number.isNaN(d.getTime())?new Date(0).toISOString():d.toISOString();
+  }
+  function normalizeRecord(record){
+    const next=Object.assign({},record||{});
+    next.id=String(next.id||uuid());
+    next.createdAt=iso(next.createdAt||new Date().toISOString());
+    next.updatedAt=iso(next.updatedAt||next.editedAt||next.createdAt);
+    return next;
+  }
+  function readLocal(){
+    const key=root.STORAGE_CONFIG?.keys?.expenses||'expenses';
+    const list=readJSON(key,[]);
+    const normalized=(Array.isArray(list)?list:[]).map(normalizeRecord);
+    if(JSON.stringify(list)!==JSON.stringify(normalized)) writeJSON(key,normalized);
+    return normalized;
+  }
+  function writeLocal(list){
+    const key=root.STORAGE_CONFIG?.keys?.expenses||'expenses';
+    writeJSON(key,(Array.isArray(list)?list:[]).map(normalizeRecord));
+  }
+  function readTombstones(){return (readJSON(TOMBSTONE_KEY,[])||[]).filter(x=>x?.id).map(x=>Object.assign({},x,{updatedAt:iso(x.updatedAt||x.deletedAt),deletedAt:iso(x.deletedAt||x.updatedAt)}));}
+  function writeTombstones(list){
+    const cutoff=Date.now()-1000*60*60*24*90;
+    writeJSON(TOMBSTONE_KEY,(list||[]).filter(x=>new Date(x.deletedAt||0).getTime()>cutoff));
+  }
+  function markDeleted(record){
+    if(!record) return;
+    const now=new Date().toISOString();
+    const tomb=Object.assign({},normalizeRecord(record),{updatedAt:now,deletedAt:now});
+    const map=new Map(readTombstones().map(x=>[x.id,x]));map.set(tomb.id,tomb);writeTombstones([...map.values()]);
+  }
+  function emit(status,message,error){
+    state.status=status;state.message=message;state.error=error||null;
+    root.document?.dispatchEvent(new CustomEvent(EVENTS.status,{detail:snapshot()}));
+  }
+  function snapshot(){return Object.freeze({status:state.status,message:state.message,lastSyncAt:state.lastSyncAt,error:state.error});}
+  function configured(){return !!(config.enabled&&config.url&&config.anonKey&&config.tripId&&root.SUPABASE?.isConfigured?.());}
+  const LOG='[Supabase]';
+  async function ensureSession(){
+    if(!root.SUPABASE?.getSession)throw new Error('Shared Supabase client runtime unavailable');
+    return root.SUPABASE.getSession();
+  }
+  function client(){
+    if(!root.SUPABASE?.getClient)throw new Error('Shared Supabase client runtime unavailable');
+    return root.SUPABASE.getClient();
+  }
+  function withTimeout(builder){
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),config.requestTimeoutMs||8000);
+    return builder.abortSignal(controller.signal).then(
+      result=>{clearTimeout(timer);return result;},
+      error=>{clearTimeout(timer);throw error;}
+    );
+  }
+  function toRemote(record,deleted=false){
+    const r=normalizeRecord(record);
+    return {id:r.id,trip_id:config.tripId,payload:r,actor_family:(typeof root.getFriend==='function'?root.getFriend():null)||'lee',created_at:r.createdAt,updated_at:r.updatedAt,deleted_at:deleted?(r.deletedAt||r.updatedAt):null,generation:root.TRIP_GENERATION?.getLocal?.()||1};
+  }
+  function fromRemote(row){
+    const payload=normalizeRecord(Object.assign({},row.payload||{},{id:row.id,createdAt:row.created_at,updatedAt:row.updated_at}));
+    if(row.deleted_at)payload.deletedAt=row.deleted_at;return payload;
+  }
+  async function pull(){
+    await ensureSession();
+    const {data,error}=await withTimeout(
+      client().from(table).select('id,payload,created_at,updated_at,deleted_at,actor_family').eq('trip_id',config.tripId).order('updated_at',{ascending:true})
+    );
+    if(error){
+      console.error(LOG,'Supabase select failed',error.message,error);
+      throw new Error(error.message||'Expenses sync select failed');
+    }
+    console.log(LOG,'Expenses pulled',(data||[]).length);
+    return data||[];
+  }
+  async function push(records){
+    if(!records.length)return;
+    await ensureSession();
+    const {error}=await withTimeout(
+      client().from(table).upsert(records,{onConflict:'id'})
+    );
+    if(error){
+      const rls=/row-level security|permission denied|policy/i.test(error.message||'');
+      console.error(LOG,rls?'RLS rejected':'Supabase insert failed',error.message,error);
+      throw new Error(error.message||'Expenses sync upsert failed');
+    }
+    console.log(LOG,'Expense uploaded',records.map(r=>r.id).join(', '));
+  }
+  async function syncNow(){
+    if(state.paused){emit('paused','Sync paused for trip reset');return snapshot();}
+    if(!configured()||!navigator.onLine){emit('offline','Saved offline — will sync later');return snapshot();}
+    if(state.inFlight)return state.inFlight;
+    state.inFlight=(async()=>{
+      emit('syncing','Syncing expenses…');
+      try{
+        const generationCheck=await root.TRIP_GENERATION?.ensureCurrentGeneration?.();
+        if(generationCheck?.stale){
+          // Trip was reset since this device last synced. Local data for
+          // this device has already been wiped by TRIP_GENERATION — pull
+          // whatever the (now-clean) cloud has and stop. Do NOT merge or
+          // push: anything still sitting in memory here is pre-reset state.
+          const remoteRows=await pull();
+          const finalActive=remoteRows.map(fromRemote).filter(r=>!r.deletedAt);
+          finalActive.sort((a,b)=>String(a.createdAt).localeCompare(String(b.createdAt)));
+          writeLocal(finalActive);writeTombstones([]);
+          state.lastSyncAt=new Date().toISOString();writeJSON(META_KEY,{lastSyncAt:state.lastSyncAt});
+          emit('synced','Synced across families');
+          root.document?.dispatchEvent(new CustomEvent(EVENTS.changed,{detail:{count:finalActive.length}}));
+          return snapshot();
+        }
+        const remoteRows=await pull();
+        const localActive=readLocal();const localDeleted=readTombstones();
+        const localMap=new Map([...localActive,...localDeleted].map(x=>[x.id,x]));
+        const remoteMap=new Map(remoteRows.map(row=>[row.id,fromRemote(row)]));
+        const ids=new Set([...localMap.keys(),...remoteMap.keys()]);
+        const finalActive=[];const finalDeleted=[];const toPush=[];
+        ids.forEach(id=>{
+          const l=localMap.get(id),r=remoteMap.get(id);
+          let winner;
+          if(!l)winner=r;else if(!r){winner=l;toPush.push(toRemote(l,!!l.deletedAt));}
+          else{
+            const lt=new Date(l.updatedAt||0).getTime(),rt=new Date(r.updatedAt||0).getTime();
+            winner=lt>rt?l:r;
+            if(lt>rt)toPush.push(toRemote(l,!!l.deletedAt));
+          }
+          if(winner?.deletedAt)finalDeleted.push(winner);else if(winner)finalActive.push(winner);
+        });
+        await push(toPush);
+        finalActive.sort((a,b)=>String(a.createdAt).localeCompare(String(b.createdAt)));
+        writeLocal(finalActive);writeTombstones(finalDeleted);
+        state.lastSyncAt=new Date().toISOString();writeJSON(META_KEY,{lastSyncAt:state.lastSyncAt});
+        emit('synced','Synced across families');
+        root.document?.dispatchEvent(new CustomEvent(EVENTS.changed,{detail:{count:finalActive.length}}));
+        return snapshot();
+      }catch(error){
+        const msg=/Anonymous sign-ins|anonymous/i.test(String(error?.message))?'Enable Anonymous Sign-Ins in Supabase':(navigator.onLine?'Sync unavailable — saved on this device':'Saved offline — will sync later');
+        console.error(LOG,'Expenses sync failed',error?.message||error);
+        emit('error',msg,error?.message||String(error));return snapshot();
+      }finally{state.inFlight=null;}
+    })();
+    return state.inFlight;
+  }
+  function queueSync(delay=350){if(state.paused)return;clearTimeout(state.timer);state.timer=setTimeout(syncNow,delay);}
+  function pause(){state.paused=true;clearTimeout(state.timer);state.timer=null;emit('paused','Sync paused for trip reset');}
+  /* Clears this device's local expense store only (list, tombstones, sync
+     meta). Does NOT touch the cloud — cloud deletion happens exactly once,
+     inside the reset_trip() database RPC, orchestrated by reset-runtime.js.
+     Called both by reset-runtime.js (the device that pressed Reset) and by
+     generation-runtime.js (any other device that detects the trip was
+     reset out from under it). */
+  function clearLocal(){
+    writeLocal([]);writeTombstones([]);
+    try{storage?.remove?storage.remove(META_KEY):localStorage.removeItem(META_KEY);}catch(e){}
+    state.lastSyncAt=null;state.error=null;
+  }
+  function initialise(){
+    readLocal();
+    root.addEventListener?.('online',()=>queueSync(50));
+    root.document?.addEventListener('visibilitychange',()=>{if(root.document.visibilityState==='visible')queueSync(100);});
+    root.setInterval?.(()=>{if(root.document?.visibilityState==='visible')syncNow();},30000);
+  }
+
+  root.EXPENSE_SYNC=Object.freeze({EVENTS,getState:snapshot,normalizeRecord,readLocal,writeLocal,markDeleted,syncNow,queueSync,pause,clearLocal,isConfigured:configured});
+  initialise();
+})(globalThis);

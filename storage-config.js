@@ -1,77 +1,58 @@
-7cca762fb6d9da0ba152ab6c2b4c2d295bd77b75fc1d1688b77969cac944989c  CI-PATH-FIX-REPORT.md
-63d8d43269b866b3a4b6ef86495649cd113737bf70484f2a305c7c7599a6c442  PRODUCTION-FILE-MANIFEST.txt
-3ce51452fb1440c060e7e26d48cc20b140321aa48d2aa289a025c3b9efd2ab00  THEME-STUDIO-FREEZE-REGRESSION-REPORT.md
-763487a2aa440b3dd7f02b750f26f1c7fc3aa28a0b4740703ac24adecb92cb21  THEME-STUDIO-FREEZE-REPORT.md
-7d34505cb0a951ca54588f2df23df61698f8ef2abee3b393516d75a1e4fcca93  THEME-VISUAL-POLISH-REGRESSION-REPORT.md
-9aaf919813ae1762644c56a3499f0ee6a1249a4f888fd4d97bc97c57f72b9847  THEME-VISUAL-POLISH-REPORT.md
-94cba66a1daf209408c7d67826f7f025ac47086d83f0f1e835a0624f4829aa94  VERSION.txt
-ce6e3916ebc4b094615184cff912501d50a2cc1e2dfc73048889ccf37802df58  admin.js
-a0f9041bd28136fe2e3c7eab1f4f244faef9ba057cf89e0c2e8941d88ae1d1e3  app-runtime.js
-10d9a59ffe1542d8e0a7a6d2d77e89beb41f68a56fd2a8dca2c58669d6a242d2  asset-config.js
-1372b1027ed9629fbda10d510b490085002dd46f2385fee8b11c183e643d50a6  booking-authority.js
-24ea5f0213172880a21af2bc8db88c32d2c46e583f0bc7e8a1cbec1e12a44a41  complete-runtime.js
-5a83c090863047ee8e52fd1948f643788c4cde8deac461877abc1bbfc71a0e26  core-runtime.js
-168ee80f70fd42a9cced04d26ffcddee5908789cf69e358e57d3766059cd4baa  currency-runtime.js
-b4269479bee7dd9b124478b385748f2010e2fee1ed6fa78efeda76c7e7ffa786  data.js
-7bb85fc9837c8a9a8475b8e677102c1321c6f1c796ea91ec3470092bf4e6d181  day.html
-31d8b881c0b3eab03c333df6f742ffa03a4df49c564daa70cd6be290cd24435a  engine-integrity.js
-fbbfd497b74f4220f0e77853273d4743b9afaebf05cb8888f6c2cec61db026ca  expense-sync-runtime.js
-ba3251b4f5836ce83d8bad018237ac4340bb3bc0bcaf11aa2cd09867daeebac9  expenses.html
-f5beed497655e001fdb5a41a93f5b54f5c4fd4bdffd0fc23846325ffc6380b93  expenses.js
-1e0ce4581cebf95bac8199e3b1c4c8f9e4f1f870c5f17f24b3413a8784629a60  export-runtime.js
-58ccad9a796b79cce871dcd43f342c6fc526b29ceaaead4ddd5ba0756e8e3d2b  formatter.js
-aa059a261dd08fc6732a57c992ea709d6011b2e2a64ec32aae1e364b55b73f65  generation-runtime.js
-bfad531007fed93abba12307c7a2031677bd8f092941870bfa64f485e4b1a5c5  generation-selection-adapter.js
-f279aa9369533d01feff45c0dc5115688b19a06f2d108aa53383485a7b33eed1  geo-config.js
-24270e034a66028de7aa867aac70a2a232317dc898281c079e6651de1c156be7  guide-navigation-runtime.js
-aff6320959a4dc5a6d95eb6821249fff8b5458acd207e91bdf27b7efbbf538ea  guide-runtime.js
-073252ec6ca09e0e5c0d5be59874572a35ca4bb03681f4b96177572bd6e83150  guide.html
-5d6e836efb3a4ba0a4a77e1e07c5f1e2de05f1690b3cace20347fc874c7596ce  home-runtime.js
-058734ba3be9209998c4a2335bc396303e6dd0599df5abbd5e88f427710877e0  icon-192.png
-6342cf33e54d051a5211181dee8068f52cf519ca4b86598d332756392c22f073  icon-512.png
-714056b10c1a33df9799b7761d8b91d87a034023bd32b3fd1e7b14ccdba19ecf  index.html
-c5a71ddb9fb05302eebc3770b253c8a55abc34b5d72f155617e19b8a28eee8c0  itinerary-authority.js
-3dce36804549d91661ea717e07899b2b2ce887168351a24bbeaad9e24b6cd908  itinerary.html
-26fdde129494df71e81025e149640ce434714188547beede515be5bce2e3a88e  locale-config.js
-fb5fc7b9f3500ef1ddd568f923b8b7af17073adf0abeb162f96dffc0cc85cbc4  manifest.webmanifest
-3db8191b07f36d656d0d8fe86d77d248b19c813555b8f622e63e3a62e082418a  memory.html
-b727aafafbd79e9f759e05e34a0376215a4f0ff7582cdb7e8ca4bbe059322428  moment-sync-runtime.js
-48cbe6869234e735e296d2463bbe01a27e5409724d1568c36240bf0643a34750  moments-compat.js
-2fb60c2d29f352006bde2e653729b2437eac3a3fea76439217143fcaf6e3d8c3  moments.html
-f3dd4b4aa80fbd272aea192e0da0dc9aaf918f9fea58aa6f19b26eced68f1a10  moments.js
-e238de14a1dd39d4afa9b8b6cd6d5e30138e5a453a08cbe52faad7407cd3b08b  money-config.js
-cfaf4dd36f5f116c9aae6cf9f8f382c23244a9d15b51917bfc4cb8a0b436f8b5  money.js
-b90bf5f384f7bf12f3f1af4ca8bd2b027c6def575e9167507f9a42acbef5b1fd  navigation-config.js
-be6ee04b997bc12cf3b3c38d04cd1366a888d7791c3ee08b4005217fe1607b51  navigation.js
-3cadd2cfa5f79e25e328eb371aabab42ce1e16bf9c561e6d136d3ff3e1ca30de  nz-adventure-logo.png
-f0fb66859695905bbf6ea53cc553643e19f5c01bbcc57e7a3ca78f8e1770f14a  nz-adventure-mark.png
-63f280931fe013097e829ee30378b6ad749ccd18bcbe3923e1aba02892d13167  offline.html
-c1f9bd4ddd8ea3c50fb843aa30377d655686f6c95647751de5129183a57842f4  party-render-runtime.js
-52a365d053615de0fba1421619d90ecf62b82acdc035f83614eaf5ba12434e58  place.html
-c036e30263869c6b8f6aaa83f6b598ec87e7c9ff0fcf2edd6ef60f12e71eab4c  publication-runtime.js
-e90c7410d608492df953b930075bd7b18024d5ad184fd543ea8a0fc7fe1d4a49  pwa.js
-8ce470faef2f6c6b2ed8bf15c6a373c2300dfd5f8e262a3f11700f8b3bda0092  reset-runtime.js
-0a8b51329a0a78390356e5ad928edb7c35be2e1c4bb0f6d2b7f560d3e73b3434  script.js
-9676cab371cab1aeb3389aae95afa2528277d3596fdf782a104cd9b3d223df20  storage-config.js
-afd1db094344b6503422ccb4a2877e147f9c4e7d53d4b27385575e22f1fe9e49  storage.js
-d56425fa4a19c965ab045ac4d476a50ee5ec0d3d8c2b231af4c2b01e7521bca6  styles.css
-4086f7b154acc74eb119def8ec481228d28e6fafcdefe2e2f66d4fe0f25a4c9e  supabase-client-runtime.js
-e316e2f091caa38d4bee669a4d13e440877671f52ab17aef10e58805507612ac  sw.js
-ccd37a3d8ffdf5e5747776859169d41a341439f0413cba6df35e8d5f87224fe0  sync-config.js
-e167de867974e43d4afb17bbb3e16214c1ad5c67f86f5a82d75418a74c5e1c3e  sync-runtime.js
-fc208fa0fca5be0eabc6cf7bab23a447c08c71bc2b990aa536fc11692df4d309  theme-config.js
-03ae2902cd3d2236f7264e277af11ab25dd775b276c152958e028956e0b3c3eb  theme-preview-assets/adventure-fresh-outdoor-canvas.svg
-d16acade21311eecb99a7be586a772293203e90afa173ea4402a4febbcb0b972  theme-preview-assets/cafe-minimal-cozy-canvas.svg
-62a98d0532e30467d5d1155327221e2a3715218764f0a8f58b10b257ddc7d9ed  theme-preview-assets/coastal-bright-ocean-canvas.svg
-3272014537d47849419b8f0e76d1e8fc9195355b699e665dc009ea4ea7b4fc28  theme-preview-assets/family-friendly-bright-canvas.svg
-f44e306cbdce35764eda56b9eccdb6e701293b2c92ea1198bb371ca9ca2f88a5  theme-preview-assets/heritage-classic-historic-canvas.svg
-f9d0b361b5a029f7b91df1dc7d05fcab1c93eb60a9df47682ae80a3cb6b2f556  theme-preview-assets/japan-warm-editorial-canvas.svg
-b453843902b58c123b329c62cbad61be258b4afcf1c99b6f24db5e2d037dc5ac  theme-preview-assets/luxury-boutique-elegant-canvas.svg
-3873ce59483854b0bd79afdc5dd7e373121c595922d7a2d7b33af574bd53fe6f  theme-preview-assets/nature-forest-organic-canvas.svg
-76909026dbabf8dd269721dc13e68206dd2d4dec4d42e009b548422a8adb9048  theme-preview-assets/registry.js
-bf54a202bc15f8980f2521d9d30eeb5741aacf7800ce3ec101155e8cf0db87c4  theme-preview-runtime.js
-5a5e57c61f68d430427befdd2a27ba44101abafcc53bcc8cdfc50af79cdf2568  theme-preview.css
-e9f216c4b00d6e9314603a47ece6bc304d537d33ad42dfeec60a5f26464edcdf  trip-config.js
-ca2507861494832d4a08a93be06ee6019dd229a9a56cb07c30798ae79964535f  trip-runtime.js
-b0d5e22f392e8c9a3f62b6c9f8632fc7dc7b8154213d75a3da19589fd00fada0  trip.html
-b130b701ac004f6953bd47df4b8b12bedfc788fd817e111af7a1d43a96d312b1  vercel.json
+/* storage-config.js — Stage 7F canonical browser-storage key ownership.
+   Existing key values are intentionally preserved so deployed user data remains compatible. */
+(function(root){
+  'use strict';
+
+  const namespace=String(root.TRIP_CONFIG&&root.TRIP_CONFIG.storageNamespace||'').trim();
+  if(!namespace) throw new Error('TRIP_CONFIG.storageNamespace is required before storage-config.js');
+
+  const keys=Object.freeze({
+    checklist:'checklist',
+    expenses:'expenses',
+    momentPrefix:'moment_',
+    latestMomentPrefix:'moment_latest_',
+    momentsFreeform:'moments_freeform',
+    momentsList:'moments_list',
+    friend:'nz_friend',
+    adminMode:'travel_engine_admin_mode_v1',
+    adminDraft:'travel_engine_admin_draft_v1',
+    guideNavContext:'ccmv_guide_nav_context',
+    guideNavReopen:'ccmv_guide_nav_reopen',
+    itineraryOverrides:'travel_engine_itinerary_overrides_v1',
+    itineraryMasterSignature:'travel_engine_itinerary_master_signature_v1',
+    tripCompletion:'travel_engine_trip_completion_v1',
+    changedPlans:'travel_engine_changed_plans_v1',
+    cloudSnapshot:'travel_engine_cloud_snapshot_v1',
+    cloudSyncMeta:'travel_engine_cloud_sync_meta_v1',
+    cloudReloadMarker:'travel_engine_cloud_reload_version_v1',
+    expenseSyncTombstones:'travel_engine_expense_tombstones_v1',
+    expenseSyncMeta:'travel_engine_expense_sync_meta_v1',
+    canonicalExpenseState:namespace+':canonical_expenses:stage_3_2d:v1',
+    expenseReadShadowState:namespace+':canonical_expense_read_shadow:stage_3_2e:v1',
+    tripGeneration:'travel_engine_trip_generation_v1',
+    bookingOverrides:'travel_engine_booking_overrides_v1'
+  });
+
+  const domains=Object.freeze({
+    identity:Object.freeze({friend:keys.friend}),
+    checklist:Object.freeze({state:keys.checklist}),
+    expenses:Object.freeze({records:keys.expenses,tombstones:keys.expenseSyncTombstones,syncMetadata:keys.expenseSyncMeta}),
+    canonicalExpenses:Object.freeze({state:keys.canonicalExpenseState}),
+    expenseReadShadow:Object.freeze({state:keys.expenseReadShadowState}),
+    moments:Object.freeze({records:keys.momentsList,freeform:keys.momentsFreeform,legacyPrefix:keys.momentPrefix,latestPrefix:keys.latestMomentPrefix}),
+    admin:Object.freeze({mode:keys.adminMode,draft:keys.adminDraft}),
+    guide:Object.freeze({context:keys.guideNavContext,reopen:keys.guideNavReopen}),
+    itinerary:Object.freeze({overrides:keys.itineraryOverrides,masterSignature:keys.itineraryMasterSignature}),
+    bookings:Object.freeze({overrides:keys.bookingOverrides}),
+    completion:Object.freeze({state:keys.tripCompletion}),
+    journey:Object.freeze({changedPlans:keys.changedPlans}),
+    sync:Object.freeze({snapshot:keys.cloudSnapshot,metadata:keys.cloudSyncMeta,reloadMarker:keys.cloudReloadMarker})
+  });
+
+  root.STORAGE_CONFIG=Object.freeze({
+    appPrefix:'travel_engine',
+    version:1,
+    keys,
+    domains
+  });
+})(globalThis);

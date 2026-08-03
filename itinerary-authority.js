@@ -1,74 +1,202 @@
-<!DOCTYPE html>
+/* itinerary-authority.js — RC15 canonical itinerary authority.
+   ONE owner for: master identity (masterRevision), saved-override validation,
+   pending-draft validation, storage-format migration, and invalidation.
+   Nothing else in the app should read or write STORAGE_CONFIG.keys.itineraryOverrides
+   directly, and nothing else should decide whether a saved/pending itinerary
+   change is still valid — every consumer (day.html, publication-runtime.js,
+   export-runtime.js) calls into this module instead.
 
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title data-trip-page-title="Home">Home</title><meta content="" data-trip-theme-color="" name="theme-color"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="#f4eadb" name="theme-color"/><meta content="#f4eadb" name="msapplication-TileColor"/><link rel="manifest" href="manifest.webmanifest?v=rc22-1"/><meta content="" data-trip-apple-title="" name="apple-mobile-web-app-title"/><link data-trip-icon="icon192" rel="apple-touch-icon"/><style id="pwa-launch-critical">html,body{margin:0;min-height:100%;background:#f4eadb}#ccmvSplash{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;min-height:100dvh;padding:22px 18px;background:#f4eadb;box-sizing:border-box}#ccmvSplash .splash-content{text-align:center;width:min(94vw,620px)}#ccmvSplash .splash-logo{display:block;width:min(76vw,370px);max-height:52vh;object-fit:contain;margin:0 auto 16px;filter:none;box-shadow:none}#ccmvSplash .splash-line{margin:0;border:0;box-shadow:none;text-shadow:none;background:transparent;color:#12324a;font:950 clamp(20px,5.3vw,30px)/1.18 system-ui,sans-serif;letter-spacing:.11em}#ccmvSplash .splash-destination{margin-top:18px;color:#d76518;font:900 clamp(13px,3.4vw,18px)/1 system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase}</style><link href="styles.css?v=stage3-2h-booking-audit2" rel="stylesheet"/><link href="theme-preview.css?v=theme-studio-visual-polish-1" rel="stylesheet"/></head><body class="home-bg"><div aria-hidden="true" id="ccmvSplash" role="presentation"><div class="splash-paper"></div><div class="splash-glow"></div><div class="splash-content"><img alt="" class="splash-logo" data-brand-logo="splash" src="nz-adventure-logo.png"/><h1 class="splash-line" data-brand-text="splashSlogan">ADVENTURE AWAITS</h1><div class="splash-destination" data-brand-text="splashDestination">NEW ZEALAND 2026</div></div><div class="splash-fadeout"></div></div><script>(function(){
-  var splash=document.getElementById('ccmvSplash');
-  if(!splash) return;
+   Lifecycle implemented here (see RC15-ROOT-CAUSE-AUDIT.md):
+     Current Master File + Saved Admin edits = Current Itinerary
+     New Master File = new authoritative baseline; anything (saved override or
+     pending draft change) stamped with a different masterRevision is invalid
+     and is dropped — never applied, never left silently masking the master.
 
-  var navType='navigate';
-  try{
-    var nav=performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
-    if(nav && nav.type) navType=nav.type;
-    else if(performance.navigation && performance.navigation.type===1) navType='reload';
-  }catch(e){}
+   masterRevision is a deterministic content hash of the shipped ITINERARY_DATA
+   (computed in data.js, before any cloud hydration can touch it). It is NOT a
+   build/version string and NOT a one-time migration flag — it changes exactly
+   when the master's own itinerary content changes, so a stale override always
+   fails validation against a newer master and a same-master edit always
+   passes, regardless of build numbers or cache names. */
+(function(root){
+  'use strict';
 
-  var coldLaunchRedirect=false;
-  try{coldLaunchRedirect=new URLSearchParams(window.location.search).get('coldLaunch')==='1';}catch(e){}
-  if(coldLaunchRedirect && window.history && window.history.replaceState){
-    try{window.history.replaceState(null,'','index.html');}catch(e){}
+  function log(){ if(root.console&&console.warn) console.warn.apply(console,['[ItineraryAuthority]'].concat(Array.prototype.slice.call(arguments))); }
+
+  /* Defensive fallback hash — identical algorithm to the one in data.js.
+     Only used if data.js has not yet set MASTER_ITINERARY_REVISION for some
+     reason (should not happen in normal load order); data.js's own value is
+     always used when present so there is a single source of truth. */
+  function hashString(input){
+    let h1=0xdeadbeef^input.length,h2=0x41c6ce57^input.length;
+    for(let i=0;i<input.length;i++){
+      const ch=input.charCodeAt(i);
+      h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);
+    }
+    h1=Math.imul(h1^(h1>>>16),2246822507);h1^=Math.imul(h2^(h2>>>13),3266489909);
+    h2=Math.imul(h2^(h2>>>16),2246822507);h2^=Math.imul(h1^(h1>>>13),3266489909);
+    return (4294967296*(2097151&h2)+(h1>>>0)).toString(16);
+  }
+  function computeRevisionFallback(){
+    try{
+      const source=root.ITINERARY_DATA||(root.TRAVEL_DATASETS&&root.TRAVEL_DATASETS.ITINERARY_DATA)||{};
+      return hashString(JSON.stringify(source));
+    }catch(error){ log('Could not compute fallback master revision',error); return null; }
+  }
+  function getMasterRevision(){
+    return root.MASTER_ITINERARY_REVISION||computeRevisionFallback();
   }
 
-  // RC15.2 Fast Resume: show the branded splash once per live app session.
-  // Internal navigation, browser back/forward and a normal background resume
-  // reuse the existing session and must return immediately without replaying it.
-  var sessionKey='travel_engine_fast_resume_started';
-  var sessionStarted=false;
-  try{sessionStarted=sessionStorage.getItem(sessionKey)==='1';}catch(e){}
-  var shouldShow=!sessionStarted || coldLaunchRedirect;
-  try{sessionStorage.setItem(sessionKey,'1');}catch(e){}
+  function storageKey(){ return (root.STORAGE_CONFIG&&root.STORAGE_CONFIG.keys&&root.STORAGE_CONFIG.keys.itineraryOverrides)||'travel_engine_itinerary_overrides_v1'; }
+  function localStore(){ return root.STORAGE&&root.STORAGE.local?root.STORAGE.local:null; }
+  function draftKey(){ return (root.STORAGE_CONFIG&&root.STORAGE_CONFIG.keys&&root.STORAGE_CONFIG.keys.adminDraft)||'travel_engine_admin_draft_v1'; }
+  function clone(value){ return value==null?value:JSON.parse(JSON.stringify(value)); }
 
-  function removeSplashNow(){
-    if(splash && splash.parentNode) splash.parentNode.removeChild(splash);
-    document.body.classList.remove('ccmv-splash-active');
+  function emptyStore(){ return {masterRevision:getMasterRevision(),dayChanges:{}}; }
+
+  /* Accepts any previously-saved shape and returns a store that is guaranteed
+     to be {masterRevision, dayChanges:{day:{items:[...]}}} and bound to the
+     CURRENT master. Three input shapes are handled:
+       1. Missing / null              -> fresh empty store.
+       2. Legacy flat {"2":[...]}     -> revision is unknown, so the whole
+                                          store is treated as belonging to an
+                                          unrecoverable previous master and is
+                                          dropped (Test A: legacy override must
+                                          never mask the current master).
+       3. Current {masterRevision,dayChanges} -> kept only if masterRevision
+          matches; otherwise dropped (Test C: new Master File invalidates the
+          previous master's saved overrides). */
+  function normalizeStore(raw){
+    const current=getMasterRevision();
+    if(!raw||typeof raw!=='object'||Array.isArray(raw)) return emptyStore();
+    const hasRevisionShape=typeof raw.masterRevision==='string'&&raw.dayChanges&&typeof raw.dayChanges==='object'&&!Array.isArray(raw.dayChanges);
+    if(!hasRevisionShape){
+      // Legacy flat shape (or anything unrecognised) — revision unknown, discard.
+      return emptyStore();
+    }
+    if(raw.masterRevision!==current){
+      // Saved under a previous master — invalidate rather than let it mask
+      // whatever the current master says.
+      return emptyStore();
+    }
+    const cleanChanges={};
+    Object.keys(raw.dayChanges).forEach(function(day){
+      const entry=raw.dayChanges[day];
+      if(entry&&Array.isArray(entry.items)) cleanChanges[String(day)]={items:clone(entry.items)};
+    });
+    return {masterRevision:current,dayChanges:cleanChanges};
   }
 
-  if(!shouldShow){
-    removeSplashNow();
-    return;
+  /* Reads, migrates/validates and — only when the on-disk shape actually
+     needed to change — persists the result once. Safe to call on every
+     render; it only writes when normalization produced a different result. */
+  function getValidatedStore(){
+    const store=localStore();
+    const raw=store?store.readJSON(storageKey(),null):null;
+    const normalized=normalizeStore(raw);
+    const rawJson=raw?JSON.stringify(raw):null;
+    const normalizedJson=JSON.stringify(normalized);
+    if(store&&rawJson!==normalizedJson){
+      store.writeJSON(storageKey(),normalized);
+    }
+    return normalized;
   }
 
-  document.body.classList.add('ccmv-splash-active');
-
-  function dismiss(){
-    if(!splash || splash.classList.contains('ccmv-splash-hide')) return;
-    splash.classList.add('ccmv-splash-hide');
-    setTimeout(function(){
-      document.body.classList.remove('ccmv-splash-active');
-      if(splash && splash.parentNode) splash.parentNode.removeChild(splash);
-    }, 760);
+  function getDayOverrideItems(dayKey){
+    const store=getValidatedStore();
+    const entry=store.dayChanges[String(dayKey)];
+    return entry&&Array.isArray(entry.items)?clone(entry.items):null;
   }
 
-  splash.addEventListener('click', dismiss);
+  /* Commits a batch of admin-draft changes (as produced by admin.js's
+     'itineraryDay<N>' keys) into the saved-override store, stamped with the
+     CURRENT master revision. This is the only path that writes saved
+     overrides — day.html's 'travelengine:adminsave' handler calls this
+     instead of touching localStorage directly. */
+  function commitDayChanges(changes){
+    const store=getValidatedStore();
+    Object.keys(changes||{}).forEach(function(key){
+      if(!key.startsWith('itineraryDay')) return;
+      const change=changes[key];
+      if(change&&Array.isArray(change.items)){
+        store.dayChanges[String(change.day)]={items:clone(change.items)};
+      }
+    });
+    store.masterRevision=getMasterRevision();
+    const backing=localStore();
+    if(backing) backing.writeJSON(storageKey(),store);
+    return store;
+  }
 
-  // Local UI is already available in the document. Do not block first use on
-  // cloud sync or hold the splash for the former 5.2-second animation.
-  var dismissSoon=function(){window.requestAnimationFrame(function(){setTimeout(dismiss,4400);});};
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',dismissSoon,{once:true});
-  else dismissSoon();
-  setTimeout(dismiss,5200);
-})();</script><script src="app-runtime.js?v=nz1.0-rc22-1"></script><script src="theme-config.js"></script><script src="asset-config.js"></script><script src="locale-config.js"></script><script src="geo-config.js?v=stage3-2h-port1"></script><script src="formatter.js"></script><script src="money-config.js"></script><script src="navigation-config.js?v=nz1.0-rc22-1"></script><script src="navigation.js?v=nz1.0-rc22-1"></script><script src="trip-config.js?v=stage3-2h-cert-final-fix1"></script><script src="storage-config.js?v=stage3-2h-cert-final-fix1"></script><script src="storage.js"></script><script src="sync-config.js?v=stage3-2h-storage-currency1"></script><script src="sync-runtime.js?v=stage3-2h-precert-data3"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-client-runtime.js?v=nz1.0-rc22-1"></script><script src="expense-sync-runtime.js?v=stage3-2h-precert-data3"></script><script src="moment-sync-runtime.js?v=stage3-2h-precert-data3"></script><script src="generation-runtime.js?v=nz1.0-rc22-1"></script><script src="party-render-runtime.js?v=stage3-2h-party-config2"></script><script src="money.js"></script><nav class="site-nav"><a class="brand" href="index.html"><span class="brand-mark"><img alt="" data-brand-logo="header"/></span><span data-brand-text="navLabel"></span></a><button class="friend-pill" onclick="openFriendModal()"><span data-friend-label="" data-family=""></span></button></nav><main class="dashboard home-premium home-v37">
-<section aria-label="" data-trip-home-aria="" class="home-brand-card v37-dashboard-home"><p class="home-since" data-brand-text="familyLabel">MELBOURNE · SYDNEY · NEWCASTLE</p><h1><span data-brand-text="heroLine1">New Zealand</span><br/><em data-brand-text="heroEmphasis">Companion</em></h1><div class="home-reunion-story" aria-label="Annual family reunion"><strong data-trip-home="reunionStory">Three cities. One reunion.</strong></div><div class="home-trip-line"><span data-trip-home="dateLine">22 Sep — 1 Oct 2026</span><span data-trip-home="regionLine">South Island</span></div><div aria-label="Live travel dashboard" class="home-live-grid"><div class="live-card live-countdown"><span class="live-icon">⏳</span><small>Countdown</small><strong id="countdownText">Counting down...</strong></div><button aria-label="Open destination and home clocks" class="live-card live-time live-interactive-card" onclick="openHomeInfoModal('clockModal')" type="button"><span class="live-icon">🕒</span><small id="homeClockLabel">New Zealand</small><strong id="hcmTime">--:--</strong><em class="live-card-action">View clocks ›</em></button><a aria-label="Open today’s weather" class="live-card live-weather live-interactive-card" id="homeWeatherCard" href="https://www.google.com/search?q=Christchurch+New+Zealand+weather" rel="noopener" target="_blank"><span class="live-icon" id="homeWeatherIcon">🌦</span><small id="homeWeatherLabel">Today · Christchurch</small><strong id="homeWeatherValue">Loading weather…</strong><em class="live-card-action" id="homeWeatherMeta">Open details ›</em></a><div aria-label="Currency converter" class="live-card live-rate live-currency-card" id="currencyCard"><div class="currency-card-top"><span class="live-icon">💱</span><button aria-label="Swap currency direction" class="currency-card-swap" id="currencySwap" onclick="swapCurrencyDirection()" type="button">⇄</button></div><small id="currencyDirectionLabel">NZD → AUD</small><div class="currency-card-input-row"><span id="currencyInputCode">NZD</span><input aria-label="Currency amount" autocomplete="off" id="currencyAmount" inputmode="decimal" enterkeyhint="done" pattern="[0-9]*[.,]?[0-9]*" type="text" value="100"/></div><strong aria-live="polite" id="currencyResult">≈ AUD --</strong><em class="live-card-action" id="currencyCardMeta">Loading live rate…</em></div></div><a class="home-day-button" id="homeTodayButton" href="day.html?day=1">Let's go ✨</a></section>
-</main><div class="mini-menu" id="guideMenu"><button onclick="openGuideCategory('ATTRACTIONS')"><span><span class="menu-title">🍃 SIGHTS</span></span><span>›</span></button><button onclick="openGuideCategory('ACTIVITIES')"><span><span class="menu-title">🎟️ ACTIVITIES</span></span><span>›</span></button><button onclick="openGuideCategory('DINING')"><span><span class="menu-title">🍽 DINING</span></span><span>›</span></button><button onclick="openGuideCategory('STAY')"><span><span class="menu-title">🏨 STAY</span></span><span>›</span></button></div><div class="mini-menu" id="tripMenu"><a href="#" onclick="openTripCard('flights');return false;"><span><span class="menu-title">✈️ Flights</span><span class="menu-sub">MEL · CHC · ZQN</span></span><span>›</span></a><a href="#" onclick="openTripCard('vehicle');return false;"><span><span class="menu-title">🚙 Rental Car</span><span class="menu-sub">Rental Cars 247 · ASX</span></span><span>›</span></a><a href="#" onclick="openTripCard('stay');return false;"><span><span class="menu-title">🏨 Accommodation</span><span class="menu-sub">Bookings & addresses</span></span><span>›</span></a><a href="#" onclick="openTripCard('activities');return false;"><span><span class="menu-title">🎟️ Activities</span><span class="menu-sub">Confirmed tours & experiences</span></span><span>›</span></a><a href="#" onclick="openTripCard('checklist');return false;"><span><span class="menu-title">✅ Checklist</span><span class="menu-sub">Before the Trip</span></span><span>›</span></a><a href="#" onclick="openTripCard('emergency');return false;"><span><span class="menu-title">☎️ Emergency</span><span class="menu-sub">Contacts & medical care</span></span><span>›</span></a></div><div class="mini-menu" id="daysMenu"></div><nav class="app-nav">
-<button class="trip-trigger" onclick="toggleTripMenu()" type="button"><span>🧳</span><small>Trip</small></button>
-<button class="guide-trigger" onclick="toggleGuideMenu()" type="button"><span>📖</span><small>Guide</small></button>
-<button class="days-trigger" onclick="toggleDays()" type="button"><span>🗓</span><small>Days</small></button>
-<a class="summary-link" href="moments.html"><span>✨</span><small>Moments</small></a>
-<a class="summary-link" href="expenses.html"><span>💸</span><small>Expenses</small></a>
-</nav>
-<div aria-hidden="true" class="home-info-modal" id="clockModal"><div class="home-info-sheet" role="dialog" aria-modal="true" aria-labelledby="clockModalTitle"><button aria-label="Close clocks" class="home-info-close" onclick="closeHomeInfoModal('clockModal')" type="button">×</button><p class="kicker">TRIP CLOCKS</p><h2 id="clockModalTitle">Destination &amp; home</h2><div class="home-info-list"><div><span><span data-geo-flag="destinationFlag">🇳🇿</span> <span data-trip-home="clockLabel">New Zealand</span></span><strong id="clockNzValue">--:--</strong></div><div><span><span data-geo-flag="homeFlag">🇦🇺</span> <span data-trip-home="homeCities"></span></span><strong id="clockMelValue">--:--</strong></div></div><p class="home-info-note">Before departure, the Home card shows <span data-trip-home="clockLabel">New Zealand</span> time. During the trip, it switches to <span data-geo-label="homeLabel">Melbourne</span> time so it is easier to contact home.</p></div></div><script src="engine-integrity.js?v=nz1.0-rc22-1"></script><script src="data.js?v=stage3-2h-precert-data3"></script><script src="booking-authority.js?v=booking-save-rootfix1"></script><script src="generation-selection-adapter.js?v=nz1.0-rc22-1"></script><script src="guide-navigation-runtime.js?v=stage3-2h-ownership1"></script><script src="itinerary-authority.js?v=nz1.0-rc22-1"></script><script src="core-runtime.js?v=stage3-2h-cert-ux-safety1"></script><script src="expenses.js?v=stage3-2h-expense-cleanup1"></script><script src="moments.js?v=nz1.0-rc22-1"></script><script src="trip-runtime.js?v=booking-save-response1"></script><script src="moments-compat.js?v=stage3-2h-port1"></script><script src="script.js?v=stage3-2h-studio-guide-polish1"></script><script src="guide-runtime.js?v=stage3-2h-ownership1"></script><script src="admin.js?v=stage3-2h-cert-ux-safety1"></script><script src="reset-runtime.js?v=stage3-2h-storage-currency1"></script><script src="publication-runtime.js?v=stage3-2h-port1"></script><script src="complete-runtime.js?v=stage3-2h-port1"></script><script src="export-runtime.js?v=stage3-2h-modal-cleanup1"></script><script src="currency-runtime.js?v=stage3-2h-front-interaction1-2"></script><script src="home-runtime.js?v=stage3-2h-modal-cleanup1"></script><script src="pwa.js?v=nz1.0-rc22-1"></script>
-<div class="trip-modal" id="tripModal"><div class="trip-sheet"><button class="trip-close" onclick="closeTripModal()" type="button">×</button><div id="tripModalContent"></div></div></div>
-<div class="guide-modal" id="guideModal"><div class="guide-sheet"><button class="guide-close" onclick="closeGuideModal()" type="button">×</button><div id="guideModalContent"></div></div></div>
-<div class="moments-modal" id="momentsModal"><div class="moments-sheet"><button class="moments-close" onclick="closeMomentsModal()" type="button">×</button><p class="kicker">MEMORY BOOK</p><h2 id="momentsTitle">Moment</h2><p class="lead modal-intro" id="momentsIntro">Add a rating, a short note and a photo at any stop. After the trip, this becomes the three families’ shared memory book.</p><p><span class="status-badge" id="momentsFriend">Friend</span> <button class="mini-btn" onclick="openFriendModal()">Change Family</button></p><div class="moments-form"><input id="momentsRating" type="hidden" value="0"/><div class="star-row"><span class="star" onclick="setStars(1)">⭐</span><span class="star" onclick="setStars(2)">⭐</span><span class="star" onclick="setStars(3)">⭐</span><span class="star" onclick="setStars(4)">⭐</span><span class="star" onclick="setStars(5)">⭐</span></div><p class="mood-help">Choose up to 2 moods</p><div class="mood-grid" id="moodGrid"></div><textarea id="momentsText" placeholder="Something to say..."></textarea><div class="photo-input">📷 Add Photo (Camera / Photo Library)</div><button class="btn" onclick="saveMoments()">Save</button></div></div></div>
-<div class="unexpected-modal" id="unexpectedModal"><div class="unexpected-sheet"><button class="unexpected-close" onclick="closeUnexpectedModal()" type="button">×</button><p class="kicker">Moments</p><h2>Leave a Moment</h2><p class="lead">Add a rating, a short note and a photo at any stop. After the trip, this becomes the three families’ shared memory book.</p><p><span class="status-badge" id="unexpectedFriend">Friend</span></p><textarea id="unexpectedText" placeholder="Capture this moment..." style="width:100%;min-height:120px;border:1px solid var(--line);border-radius:18px;background:#fffaf2;padding:14px;font:inherit;color:var(--ink)"></textarea><div class="photo-input">📷 Add Photo (Camera / Photo Library)</div><button class="btn" onclick="saveUnexpected()">Save</button></div></div>
-<div class="tools-modal" id="expenseModal"><div class="tools-sheet"><button class="tools-close" onclick="closeExpenseModal()" type="button">×</button><p class="kicker">TRIP EXPENSES</p><h2 id="expenseModalTitle">💸 What did we spend?</h2><p class="lead modal-intro" id="expenseIntro">Record each shared or personal expense. Personal Spend and Settlement update automatically.</p><div class="expense-form"><input id="expenseItem" placeholder="Item e.g. Family Dinner"/><input autocomplete="off" id="expenseTotal" inputmode="numeric" pattern="[0-9]*" data-trip-currency-placeholder="" placeholder="" type="tel"/><label>Paid by</label><select class="btn" id="expensePaidBy" onchange="syncConsumedIfAuto()" data-party-options=""></select><label class="check-row"><input id="expensePersonal" onchange="updateExpenseMode()" type="checkbox"/> Personal Expense</label><div id="splitBetweenBlock"><p>Split between</p><div class="expense-split-tools"><button class="mini-btn" onclick="splitAll()" type="button">Split between all</button><button class="mini-btn" onclick="clearAllSplit()" type="button">Clear all</button></div><div data-party-split-options=""></div></div><div id="consumedByBlock" style="display:none"><label>Consumed by <span class="timestamp">(same as paid by unless changed)</span></label><select class="btn" id="expenseConsumedBy" onchange="markConsumedManual()" data-party-options=""></select></div><br/><button class="btn" id="expenseSaveButton" onclick="saveExpense()">Save Expense</button></div><p class="timestamp">After saving, this window stays open so you can enter another expense. The summary updates when you close it.</p></div></div><div class="mama-modal" id="mamaModal"><div class="guide-sheet"><button class="mama-close" onclick="closeFriendModal()" type="button">×</button><p class="kicker">Family</p><h2>Choose Family</h2><div class="category-pop-list friend-choice-list" data-party-choices=""></div></div></div><script src="theme-preview-assets/registry.js?v=theme-studio-visual-polish-1"></script><script src="theme-preview-runtime.js?v=theme-studio-visual-polish-1"></script></body></html>
+  function clearDayOverride(dayKey){
+    const store=getValidatedStore();
+    delete store.dayChanges[String(dayKey)];
+    const backing=localStore();
+    if(backing) backing.writeJSON(storageKey(),store);
+    return store;
+  }
 
+  /* Pending (unsaved) Admin Mode edits live in the admin draft, keyed
+     'itineraryDay<N>' -> {day, items, masterRevision}. day.html stamps
+     masterRevision when it marks a day dirty; this validates that stamp
+     against the current master before ever trusting a pending edit. */
+  function getPendingDayItems(dayKey){
+    const draft=typeof root.getAdminDraft==='function'?root.getAdminDraft():null;
+    const pending=draft&&draft.changes?draft.changes['itineraryDay'+dayKey]:null;
+    if(!pending||!Array.isArray(pending.items)) return null;
+    if(pending.masterRevision!==getMasterRevision()) return null;
+    return clone(pending.items);
+  }
 
+  /* Removes only the itinerary-related entries of the persisted admin draft
+     that belong to a previous master, leaving every other pending change
+     (and the draft itself) intact. Call once per page load — not on every
+     render — since it performs a write. (Test D) */
+  function pruneStaleDraftItineraryChanges(){
+    const backing=localStore();
+    if(!backing) return;
+    const raw=backing.readJSON(draftKey(),null);
+    if(!raw||!raw.changes||typeof raw.changes!=='object') return;
+    const current=getMasterRevision();
+    let changed=false;
+    Object.keys(raw.changes).forEach(function(key){
+      if(!key.startsWith('itineraryDay')) return;
+      const change=raw.changes[key];
+      if(change&&Array.isArray(change.items)&&change.masterRevision!==current){
+        delete raw.changes[key];
+        changed=true;
+      }
+    });
+    if(changed) backing.writeJSON(draftKey(),raw);
+  }
+
+  /* Single resolver used by every itinerary consumer:
+     pending (validated) -> saved override (validated) -> master. */
+  function resolveDayItems(dayKey,masterItems){
+    const pending=getPendingDayItems(dayKey);
+    if(pending) return pending;
+    const saved=getDayOverrideItems(dayKey);
+    if(saved) return saved;
+    return clone(masterItems||[]);
+  }
+
+  /* Used by sync-runtime.js to decide whether a cached/fetched Supabase
+     publication is compatible with the master file that is CURRENTLY
+     deployed on this device. A publication built from an older/different
+     master must never be allowed to mask a newer one. */
+  function isCompatibleSnapshotPayload(payload){
+    const current=getMasterRevision();
+    return !!(current&&payload&&typeof payload==='object'&&payload.masterRevision===current);
+  }
+
+  root.ITINERARY_AUTHORITY=Object.freeze({
+    getMasterRevision,
+    resolveDayItems,
+    getDayOverrideItems,
+    getPendingDayItems,
+    commitDayChanges,
+    clearDayOverride,
+    pruneStaleDraftItineraryChanges,
+    isCompatibleSnapshotPayload
+  });
+})(globalThis);
