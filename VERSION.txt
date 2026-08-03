@@ -1,4 +1,4 @@
-Travel Engine — Theme Studio Visual Identity Polish (Stage 1.5.1)
-Build: theme-studio-visual-polish-1
+Travel Engine — Theme Studio Fine Tune Controls & Palette Refinement (Stage 1.5.2)
+Build: theme-studio-fine-tune-1
 Date: 2026-08-03
-Baseline: Theme Studio Freeze 1.5 (theme-studio-freeze-1)
+Baseline: Theme Studio Visual Identity Polish (theme-studio-visual-polish-1)

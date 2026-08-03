@@ -5,8 +5,8 @@ const frozen={preset:'nz',bg:'#EEF8FA',primary:'#087F9C',secondary:'#3D7F55',acc
 
 // Official Theme Studio catalogue — one click applies the complete visual
 // package (palette, typography, canvas, cards, buttons, decorative styling).
-// Advanced only ever exposes Background Colour / Card Opacity / Typography;
-// every other value below is preset-owned and not user-editable.
+// Fine Tune only ever exposes the 6 properties in FINE_TUNE_LABELS below;
+// every other value in a preset is package-owned and not user-editable.
 const THEMES=[
   {id:'adventure',icon:'🏔',name:'Adventure',tagline:'Fresh • Outdoor • Explorer'},
   {id:'japan',icon:'🌸',name:'Japan',tagline:'Warm • Editorial • Calm'},
@@ -24,8 +24,8 @@ const THEMES=[
 // a distinct CTA colour, a hyperlink colour, an active bottom-nav/tab
 // colour, and a 3-colour rotating Timeline stripe. These extra fields are
 // only consumed by the "official theme package" rules in theme-preview.css
-// (guarded to skip the nz/custom presets), so the Frozen NZ baseline and
-// the Advanced panel are completely unaffected.
+// (guarded to skip the nz/custom presets), so the Frozen NZ baseline is
+// completely unaffected by Fine Tune.
 const presets={
   nz:frozen,
   adventure:{...frozen,preset:'adventure',bg:'#EEF8FA',primary:'#087F9C',secondary:'#3D7F55',accent:'#F49A24',card:'#FFFFFF',cardOpacity:1,canvasEnabled:true,canvasAsset:'theme-preview-assets/adventure-fresh-outdoor-canvas.svg',canvasOpacity:.12,canvasSize:'cover',canvasPosition:'top',typography:'original',decorative:true,
@@ -43,11 +43,11 @@ const presets={
   nature:{...frozen,preset:'nature',bg:'#EFF3E8',primary:'#3F6C40',secondary:'#7C9473',accent:'#A9784A',card:'#FBFBF3',cardOpacity:.97,canvasEnabled:true,canvasAsset:'theme-preview-assets/nature-forest-organic-canvas.svg',canvasOpacity:.13,canvasSize:'cover',canvasPosition:'center',typography:'soft',decorative:true,
     ink:'#22331A',muted:'#5B6E52',border:'rgba(63,108,64,.24)',
     heroGradient:'linear-gradient(135deg,#20361F 0%,#5C7C50 55%,#C6D3AE 100%)',heroInk:'#F5F7EC',heroScrim:'rgba(255,255,255,.10)',
-    cta:'#A9784A',ctaInk:'#FFF8EE',link:'#3F6C40',navActive:'#A9784A',navActiveInk:'#FFF8EE',timeline:['#3F6C40','#7C9473','#A9784A'],primaryInk:'#FFFFFF'},
-  coastal:{...frozen,preset:'coastal',bg:'#EAF6FB',primary:'#1583B7',secondary:'#F2B705',accent:'#EF6C4D',card:'#FFFFFF',cardOpacity:1,canvasEnabled:true,canvasAsset:'theme-preview-assets/coastal-bright-ocean-canvas.svg',canvasOpacity:.14,canvasSize:'cover',canvasPosition:'top',typography:'modern',decorative:true,
-    ink:'#123049',muted:'#4A6E82',border:'rgba(21,131,183,.24)',
+    cta:'#A9784A',ctaInk:'#1F160C',link:'#3F6C40',navActive:'#A9784A',navActiveInk:'#1F160C',timeline:['#3F6C40','#7C9473','#A9784A'],primaryInk:'#FFFFFF'},
+  coastal:{...frozen,preset:'coastal',bg:'#EAF6FB',primary:'#125E82',secondary:'#F2B705',accent:'#EF6C4D',card:'#FFFFFF',cardOpacity:1,canvasEnabled:true,canvasAsset:'theme-preview-assets/coastal-bright-ocean-canvas.svg',canvasOpacity:.14,canvasSize:'cover',canvasPosition:'top',typography:'modern',decorative:true,
+    ink:'#123049',muted:'#4A6E82',border:'rgba(18,94,130,.24)',
     heroGradient:'linear-gradient(135deg,#0E5C82 0%,#3FAFC9 55%,#EAF6FB 100%)',heroInk:'#083247',heroScrim:'rgba(255,255,255,.14)',
-    cta:'#EF6C4D',ctaInk:'#3A0E04',link:'#1583B7',navActive:'#EF6C4D',navActiveInk:'#FFF8F3',timeline:['#1583B7','#F2B705','#EF6C4D'],primaryInk:'#FFFFFF'},
+    cta:'#EF6C4D',ctaInk:'#3A0E04',link:'#125E82',navActive:'#EF6C4D',navActiveInk:'#FFF8F3',timeline:['#125E82','#F2B705','#EF6C4D'],primaryInk:'#FFFFFF'},
   heritage:{...frozen,preset:'heritage',bg:'#F3ECE0',primary:'#6E3B2C',secondary:'#8C7A4B',accent:'#B0452E',card:'#FAF6EE',cardOpacity:.96,canvasEnabled:true,canvasAsset:'theme-preview-assets/heritage-classic-historic-canvas.svg',canvasOpacity:.12,canvasSize:'cover',canvasPosition:'top',typography:'editorial',decorative:true,
     ink:'#3B2417',muted:'#7A6A55',border:'rgba(110,59,44,.24)',
     heroGradient:'linear-gradient(135deg,#B0452E 0%,#C9A876 60%,#F3ECE0 100%)',heroInk:'#3B2210',heroScrim:'rgba(255,255,255,.10)',
@@ -59,15 +59,43 @@ const presets={
   family:{...frozen,preset:'family',bg:'#FFF8ED',primary:'#FF6F59',secondary:'#3AACA8',accent:'#FFC145',card:'#FFFFFF',cardOpacity:1,canvasEnabled:true,canvasAsset:'theme-preview-assets/family-friendly-bright-canvas.svg',canvasOpacity:.14,canvasSize:'cover',canvasPosition:'top',typography:'soft',decorative:true,
     ink:'#22314F',muted:'#5C6B85',border:'rgba(58,172,168,.24)',
     heroGradient:'linear-gradient(135deg,#8ED0F0 0%,#FFC145 55%,#8FCB7B 100%)',heroInk:'#1F3A2E',heroScrim:'rgba(255,255,255,.12)',
-    cta:'#FF6F59',ctaInk:'#FFF8F5',link:'#3AACA8',navActive:'#FF6F59',navActiveInk:'#FFF8F5',timeline:['#FF6F59','#FFC145','#3AACA8'],primaryInk:'#FFFFFF'}
+    cta:'#FF6F59',ctaInk:'#341008',link:'#3AACA8',navActive:'#FF6F59',navActiveInk:'#341008',timeline:['#FF6F59','#FFC145','#3AACA8'],primaryInk:'#341008'}
 };
 
-let state=load();
+// Fine Tune editable properties — deliberately only these six. Each is a
+// single named property on the preset object; overriding one never touches
+// the others. heroGradient is edited as two colour stops (start/end) but
+// stored/restored as one override, since the brief lists it as one setting.
+const FINE_TUNE_PROPS=['cta','ctaInk','heroGradient','bg','card','accent'];
+const FINE_TUNE_LABELS={cta:'Primary Button Colour',ctaInk:'Primary Button Text Colour',heroGradient:'Hero Gradient Colours',bg:'Page Background',card:'Card Background',accent:'Accent Colour'};
+
+function loadPersisted(){
+  try{
+    const raw=JSON.parse(localStorage.getItem(KEY)||'null');
+    if(raw&&raw.schemaVersion===2&&typeof raw.selectedTheme==='string'){
+      return {selectedTheme:presets[raw.selectedTheme]?raw.selectedTheme:'nz',overrides:raw.overrides&&typeof raw.overrides==='object'?raw.overrides:{}};
+    }
+  }catch(e){}
+  // No recognised v2 record (first run, or a pre-Fine-Tune save) — start clean from Frozen NZ.
+  return {selectedTheme:'nz',overrides:{}};
+}
+const _persisted=loadPersisted();
+let selectedTheme=_persisted.selectedTheme;
+let overrides=_persisted.overrides; // { themeId: { cta, ctaInk, heroGradient, bg, card, accent } }
+let state={...(presets[selectedTheme]||frozen),...(overrides[selectedTheme]||{}),preset:selectedTheme}; // merged/effective values — recomputed by recompute()
 let ui=loadUi();
-function load(){try{return {...frozen,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(e){return {...frozen}}}
+function persist(){localStorage.setItem(KEY,JSON.stringify({schemaVersion:2,selectedTheme,overrides}))}
 function loadUi(){try{return {enabled:false,collapsed:true,left:null,top:null,...JSON.parse(localStorage.getItem(UI_KEY)||'{}')}}catch(e){return {enabled:false,collapsed:true,left:null,top:null}}}
-function save(){localStorage.setItem(KEY,JSON.stringify(state))}
 function saveUi(){localStorage.setItem(UI_KEY,JSON.stringify(ui))}
+function themeOverrides(id){return overrides[id]||{}}
+function heroStopsOf(id){const grad=(presets[id]||frozen).heroGradient||'';const hexes=grad.match(/#[0-9a-fA-F]{6}/g)||[];return hexes.length>=2?[hexes[0],hexes[hexes.length-1]]:['#000000','#ffffff']}
+function effectiveHeroStops(id){const ov=themeOverrides(id).heroGradient;if(ov){const hexes=ov.match(/#[0-9a-fA-F]{6}/g)||[];if(hexes.length>=2)return [hexes[0],hexes[1]]}return heroStopsOf(id)}
+function recompute(){state={...(presets[selectedTheme]||frozen),...themeOverrides(selectedTheme),preset:selectedTheme}}
+function setOverride(prop,value){overrides={...overrides,[selectedTheme]:{...themeOverrides(selectedTheme),[prop]:value}};persist();recompute();apply();renderFineTune();syncThemeCards()}
+function setHeroStop(which,hex){const [s,e]=effectiveHeroStops(selectedTheme),start=which==='start'?hex:s,end=which==='end'?hex:e;setOverride('heroGradient',`linear-gradient(135deg,${start} 0%,${end} 100%)`)}
+function restoreSetting(prop){const cur=themeOverrides(selectedTheme);if(!(prop in cur))return;const next={...cur};delete next[prop];overrides={...overrides,[selectedTheme]:next};if(!Object.keys(next).length){const {[selectedTheme]:_,...rest}=overrides;overrides=rest}persist();recompute();apply();renderFineTune();syncThemeCards()}
+function restoreSelectedTheme(){if(!(selectedTheme in overrides))return;const {[selectedTheme]:_,...rest}=overrides;overrides=rest;persist();recompute();apply();renderFineTune();syncThemeCards()}
+function resetToFrozenNZ(){selectedTheme='nz';persist();recompute();apply();sync()}
 function fontPair(name){if(name==='editorial')return ['Georgia,"Times New Roman",serif','system-ui,-apple-system,"Segoe UI",sans-serif'];if(name==='soft')return ['"Trebuchet MS","Arial Rounded MT Bold",system-ui,sans-serif','system-ui,-apple-system,"Segoe UI",sans-serif'];if(name==='modern')return ['system-ui,-apple-system,"Segoe UI",sans-serif','system-ui,-apple-system,"Segoe UI",sans-serif'];return ['var(--ccmv-fashion-serif,"Cormorant Garamond",Georgia,serif)','var(--font-sans,Inter,system-ui,sans-serif)']}
 function asset(path){return path?`url("${String(path).replace(/"/g,'')}")`:'none'}
 function apply(){const el=document.documentElement,[heading,body]=fontPair(state.typography);el.classList.add('theme-preview-active');el.classList.toggle('theme-preview-no-decor',!state.decorative);el.classList.toggle('theme-preview-watermark',!!state.watermark);el.classList.toggle('theme-preview-hero-image',!!state.heroEnabled&&!!state.heroAsset);el.classList.toggle('theme-preview-logo-off',!state.logoEnabled);el.setAttribute('data-theme-preset',state.preset||'custom');const v={'--tp-bg':state.bg,'--tp-primary':state.primary,'--tp-secondary':state.secondary,'--tp-accent':state.accent,'--tp-card':state.card,'--tp-card-opacity':state.cardOpacity,'--tp-canvas-image':state.canvasEnabled?asset(state.canvasAsset):'none','--tp-canvas-opacity':state.canvasEnabled?state.canvasOpacity:0,'--tp-canvas-size':state.canvasSize,'--tp-canvas-position':state.canvasPosition,'--tp-hero-image':asset(state.heroAsset),'--tp-heading-font':heading,'--tp-body-font':body,'--tp-title-scale':Math.max(.88,Math.min(1.08,Number(state.titleScale)||1)),'--tp-hero-radius':Math.max(20,Math.min(40,Number(state.heroRadius)||30))+'px','--tp-logo-size':Math.max(36,Math.min(84,Number(state.logoSize)||54))+'px','--tp-watermark-opacity':Math.max(.04,Math.min(.25,Number(state.watermarkOpacity)||.12)),'--tp-ink':state.ink||state.primary,
@@ -78,39 +106,49 @@ function apply(){const el=document.documentElement,[heading,body]=fontPair(state
     '--tp-nav-active':state.navActive||state.accent,'--tp-nav-active-ink':state.navActiveInk||'#fff',
     '--tp-timeline-1':(state.timeline&&state.timeline[0])||state.primary,'--tp-timeline-2':(state.timeline&&state.timeline[1])||state.secondary,'--tp-timeline-3':(state.timeline&&state.timeline[2])||state.accent
   };Object.entries(v).forEach(([k,val])=>el.style.setProperty(k,val));if(state.logoEnabled&&state.logoAsset)document.querySelectorAll('[data-brand-logo="header"]').forEach(img=>{img.src=state.logoAsset});document.dispatchEvent(new CustomEvent('travelengine:theme-preview-applied',{detail:{...state}}))}
-function update(patch){state={...state,...patch,preset:patch.preset||'custom'};save();apply();sync()}
-function setPreset(id){state={...(presets[id]||frozen)};save();apply();sync()}
-function reset(){localStorage.removeItem(KEY);state={...frozen};apply();sync()}
+function setPreset(id){selectedTheme=presets[id]?id:'nz';persist();recompute();apply();sync()}
 // Kept for API/back-compat — not wired to any control in the simplified UI.
-function exportJson(){const blob=new Blob([JSON.stringify({schema:'travelEngine.themePreview.v1',settings:state},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='travel-engine-theme-preview.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
-function importJson(file){const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(x.schema!=='travelEngine.themePreview.v1'||!x.settings)throw Error();state={...frozen,...x.settings,preset:'custom'};save();apply();sync()}catch(e){alert('Invalid Theme Preview JSON.')}};r.readAsText(file)}
-function val(id){const n=document.getElementById(id);return n&&n.type==='checkbox'?n.checked:n?.value}
-function sync(){const map={tpBg:state.bg,tpCardOpacity:state.cardOpacity,tpTypography:state.typography};Object.entries(map).forEach(([id,x])=>{const n=document.getElementById(id);if(!n)return;if(n.type==='checkbox')n.checked=!!x;else n.value=x});document.querySelectorAll('[data-tp-value]').forEach(n=>{const k=n.dataset.tpValue;n.textContent=formatValue(k,state[k])});syncPickers();syncThemeCards()}
-function syncThemeCards(){document.querySelectorAll('[data-theme-card]').forEach(card=>{const active=card.dataset.themeCard===state.preset;card.classList.toggle('is-active',active);const btn=card.querySelector('[data-apply-theme]');if(btn)btn.textContent=active?'Applied':'Apply'})}
-function formatValue(key,value){if(key==='cardOpacity')return Math.round(Number(value)*100)+'%';return String(value)}
-function key(id){return({tpBg:'bg',tpCardOpacity:'cardOpacity',tpTypography:'typography'})[id]}
-function colour(label,id){return `<div class="theme-preview-field full"><label>${label}</label><div class="theme-preview-colour"><input id="${id}Picker" type="color" aria-label="${label} colour picker"><input id="${id}" type="text" maxlength="7" aria-label="${label} hex value"></div></div>`}
-function range(label,id,k,min,max,step){return `<div class="theme-preview-field full"><label>${label}<span class="theme-preview-value" data-tp-value="${k}"></span></label><input id="${id}" type="range" min="${min}" max="${max}" step="${step}"></div>`}
+function exportJson(){const blob=new Blob([JSON.stringify({schema:'travelEngine.themePreview.v1',selectedTheme,overrides},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='travel-engine-theme-preview.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
+function importJson(file){const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(x.schema!=='travelEngine.themePreview.v1')throw Error();selectedTheme=presets[x.selectedTheme]?x.selectedTheme:'nz';overrides=x.overrides&&typeof x.overrides==='object'?x.overrides:{};persist();recompute();apply();sync()}catch(e){alert('Invalid Theme Preview JSON.')}};r.readAsText(file)}
+function sync(){syncThemeCards();renderFineTune()}
+function syncThemeCards(){document.querySelectorAll('[data-theme-card]').forEach(card=>{const active=card.dataset.themeCard===selectedTheme;card.classList.toggle('is-active',active);const btn=card.querySelector('[data-apply-theme]');if(btn)btn.textContent=active?'Applied':'Apply'})}
+function colourRow(prop){const label=FINE_TUNE_LABELS[prop],overridden=prop in themeOverrides(selectedTheme),value=state[prop]||'#000000';
+  return `<div class="theme-preview-field full ft-row"><label>${label}${overridden?' <span class="ft-badge">Custom</span>':''}<button type="button" class="ft-restore" data-ft-restore="${prop}" ${overridden?'':'disabled'} title="Restore This Setting" aria-label="Restore ${label} to theme default">↺</button></label><div class="theme-preview-colour"><input class="ft-picker" data-ft-picker="${prop}" type="color" value="${value}" aria-label="${label} colour picker"><input class="ft-text" data-ft-text="${prop}" type="text" maxlength="7" value="${value}" aria-label="${label} hex value"></div></div>`}
+function heroRow(){const overridden='heroGradient' in themeOverrides(selectedTheme),[s,e]=effectiveHeroStops(selectedTheme);
+  return `<div class="theme-preview-field full ft-row"><label>${FINE_TUNE_LABELS.heroGradient}${overridden?' <span class="ft-badge">Custom</span>':''}<button type="button" class="ft-restore" data-ft-restore="heroGradient" ${overridden?'':'disabled'} title="Restore This Setting" aria-label="Restore Hero Gradient Colours to theme default">↺</button></label><div class="theme-preview-colour ft-hero-pair"><input class="ft-picker" data-ft-hero="start" type="color" value="${s}" aria-label="Hero gradient start colour"><input class="ft-text" data-ft-hero-text="start" type="text" maxlength="7" value="${s}" aria-label="Hero gradient start hex value"><input class="ft-picker" data-ft-hero="end" type="color" value="${e}" aria-label="Hero gradient end colour"><input class="ft-text" data-ft-hero-text="end" type="text" maxlength="7" value="${e}" aria-label="Hero gradient end hex value"></div></div>`}
+function fineTuneBody(){if(selectedTheme==='nz')return '<p class="ft-empty">Select an official Theme above to Fine Tune it.</p>';
+  return `${colourRow('cta')}${colourRow('ctaInk')}${heroRow()}${colourRow('bg')}${colourRow('card')}${colourRow('accent')}<button type="button" class="ft-restore-theme" data-ft-restore-theme="1" ${selectedTheme in overrides?'':'disabled'}>Restore Selected Theme</button>`}
+function renderFineTune(){const body=document.getElementById('ftBody');if(body)body.innerHTML=fineTuneBody()}
 function themeCard(t){const p=presets[t.id];return `<div class="theme-card" data-theme-card="${t.id}"><div class="theme-card-swatch" style="background:${p.heroGradient||('linear-gradient(135deg,'+p.primary+','+p.accent+')')}"></div><div class="theme-card-copy"><strong>${t.icon} ${t.name}</strong><small>${t.tagline}</small></div><button class="theme-card-apply" data-apply-theme="${t.id}" type="button">Apply</button></div>`}
 function controls(){return `<div class="theme-preview-notice">PREVIEW ONLY · LIVE ON THE REAL COMPANION</div>
 <p class="theme-preview-section-label">Choose Theme</p>
 <div class="theme-preview-list">${THEMES.map(themeCard).join('')}</div>
-<details class="theme-preview-advanced"><summary>Advanced</summary><div class="theme-preview-advanced-body">
-${colour('Background Colour','tpBg')}${range('Card opacity','tpCardOpacity','cardOpacity',.55,1,.01)}
-<div class="theme-preview-field full"><label>Typography</label><select id="tpTypography"><option value="original">Original Engine</option><option value="editorial">Editorial Serif heading</option><option value="soft">Soft / rounded heading</option><option value="modern">Modern</option></select></div>
-</div></details>
-<button id="tpReset" class="theme-preview-reset" type="button">Reset Theme</button>`}
+<details class="theme-preview-advanced"><summary>Fine Tune</summary><div class="theme-preview-advanced-body" id="ftBody">${fineTuneBody()}</div></details>
+<button id="tpReset" class="theme-preview-reset" type="button">Reset to Frozen NZ</button>`}
 function build(){buildStudioLauncher();buildFloatingInspector();wire();sync();syncVisibility()}
 function buildStudioLauncher(){const host=document.getElementById('tripStudioThemePreview');if(!host)return;if(host.dataset.themePreviewLauncher==='1'){syncLauncher();return}host.dataset.themePreviewLauncher='1';host.hidden=false;host.innerHTML=`<p class="trip-studio-label">🎨 THEME PREVIEW</p><div class="theme-preview-launch-card"><div><strong>Floating Theme Inspector</strong><small id="tpLauncherStatus">Closed · preview controls are not covering Studio.</small></div><div class="theme-preview-launch-actions"><button id="tpLaunchFloating" type="button">Open Inspector</button><button id="tpDisableFloating" class="secondary" type="button">Close Inspector</button></div></div>`;document.getElementById('tpLaunchFloating').addEventListener('click',()=>{setEnabled(true);setCollapsed(false);if(typeof root.closeTripStudioPanel==='function')root.closeTripStudioPanel();else document.querySelector('.trip-studio-close')?.click()});document.getElementById('tpDisableFloating').addEventListener('click',()=>setEnabled(false));syncLauncher()}
 function syncLauncher(){const status=document.getElementById('tpLauncherStatus'),open=document.getElementById('tpLaunchFloating'),close=document.getElementById('tpDisableFloating');if(status)status.textContent=ui.enabled?(ui.collapsed?'Open · collapsed to the 🎨 button.':'Open · live controls are floating over the Companion.'):'Closed · preview controls are not covering Studio.';if(open)open.textContent=ui.enabled?'Show Inspector':'Open Inspector';if(close)close.disabled=!ui.enabled}
 function buildFloatingInspector(){if(document.getElementById('themePreviewInspector'))return;const shell=document.createElement('aside');shell.id='themePreviewInspector';shell.className='theme-preview-inspector';shell.setAttribute('aria-label','Floating Theme Inspector');shell.innerHTML=`<button class="theme-preview-fab" id="tpFab" type="button" aria-label="Open Theme Inspector">🎨</button><div class="theme-preview-window"><header class="theme-preview-window-head" id="tpDragHandle"><div><strong>🎨 Theme</strong><small>PREVIEW ONLY</small></div><div class="theme-preview-head-actions"><button id="tpCollapse" type="button" aria-label="Collapse Theme Inspector">−</button><button id="tpCloseInspector" type="button" aria-label="Close Theme Inspector">×</button></div></header><div class="theme-preview-window-body">${controls()}</div></div>`;document.body.appendChild(shell);applyUi();document.getElementById('tpFab').addEventListener('click',()=>setCollapsed(false));document.getElementById('tpCollapse').addEventListener('click',()=>setCollapsed(true));document.getElementById('tpCloseInspector').addEventListener('click',()=>setEnabled(false));enableDrag(shell,document.getElementById('tpDragHandle'))}
-function wire(){const fields=['tpBg','tpCardOpacity','tpTypography'];fields.forEach(id=>document.getElementById(id)?.addEventListener('input',()=>update({[key(id)]:val(id)})));document.getElementById('themePreviewInspector')?.addEventListener('click',e=>{const btn=e.target.closest('[data-apply-theme]');if(btn)setPreset(btn.dataset.applyTheme)});document.getElementById('tpReset')?.addEventListener('click',reset);wirePickers()}
-function wirePickers(){['tpBg'].forEach(id=>{const text=document.getElementById(id),picker=document.getElementById(id+'Picker');if(!text||!picker)return;picker.oninput=()=>{text.value=picker.value;update({[key(id)]:picker.value})};text.addEventListener('change',()=>{if(/^#[0-9a-f]{6}$/i.test(text.value))update({[key(id)]:text.value});else sync()})})}
-function syncPickers(){['tpBg'].forEach(id=>{const text=document.getElementById(id),picker=document.getElementById(id+'Picker');if(text&&picker&&/^#[0-9a-f]{6}$/i.test(text.value))picker.value=text.value})}
+function wire(){const inspector=document.getElementById('themePreviewInspector');if(!inspector)return;
+  inspector.addEventListener('click',e=>{
+    const themeBtn=e.target.closest('[data-apply-theme]');if(themeBtn){setPreset(themeBtn.dataset.applyTheme);return}
+    const restoreBtn=e.target.closest('[data-ft-restore]');if(restoreBtn&&!restoreBtn.disabled){restoreSetting(restoreBtn.dataset.ftRestore);return}
+    const restoreThemeBtn=e.target.closest('[data-ft-restore-theme]');if(restoreThemeBtn&&!restoreThemeBtn.disabled){restoreSelectedTheme();return}
+  });
+  inspector.addEventListener('input',e=>{
+    const picker=e.target.closest('[data-ft-picker]');if(picker){const prop=picker.dataset.ftPicker,text=inspector.querySelector(`[data-ft-text="${prop}"]`);if(text)text.value=picker.value;setOverride(prop,picker.value);return}
+    const heroPicker=e.target.closest('[data-ft-hero]');if(heroPicker){const which=heroPicker.dataset.ftHero,text=inspector.querySelector(`[data-ft-hero-text="${which}"]`);if(text)text.value=heroPicker.value;setHeroStop(which,heroPicker.value);return}
+  });
+  inspector.addEventListener('change',e=>{
+    const text=e.target.closest('[data-ft-text]');if(text){const prop=text.dataset.ftText;if(/^#[0-9a-f]{6}$/i.test(text.value))setOverride(prop,text.value);else renderFineTune();return}
+    const heroText=e.target.closest('[data-ft-hero-text]');if(heroText){const which=heroText.dataset.ftHeroText;if(/^#[0-9a-f]{6}$/i.test(heroText.value))setHeroStop(which,heroText.value);else renderFineTune();return}
+  });
+  document.getElementById('tpReset')?.addEventListener('click',resetToFrozenNZ);
+}
 function setEnabled(enabled){ui.enabled=!!enabled;if(ui.enabled)ui.collapsed=false;saveUi();applyUi();syncVisibility();syncLauncher()}
 function setCollapsed(collapsed){ui.collapsed=!!collapsed;saveUi();applyUi();syncLauncher()}
 function applyUi(){const shell=document.getElementById('themePreviewInspector');if(!shell)return;shell.classList.toggle('is-collapsed',ui.collapsed);if(innerWidth>700&&Number.isFinite(ui.left)&&Number.isFinite(ui.top)){shell.style.left=Math.max(8,Math.min(innerWidth-shell.offsetWidth-8,ui.left))+'px';shell.style.top=Math.max(8,Math.min(innerHeight-shell.offsetHeight-8,ui.top))+'px';shell.style.right='auto';shell.style.bottom='auto'}else{shell.style.removeProperty('left');shell.style.removeProperty('top');shell.style.removeProperty('right');shell.style.removeProperty('bottom')}}
 function syncVisibility(){const shell=document.getElementById('themePreviewInspector');if(shell)shell.hidden=!ui.enabled}
 function enableDrag(shell,handle){let drag=null;handle.addEventListener('pointerdown',event=>{if(innerWidth<=700||event.target.closest('button'))return;const rect=shell.getBoundingClientRect();drag={x:event.clientX-rect.left,y:event.clientY-rect.top};handle.setPointerCapture(event.pointerId);shell.classList.add('is-dragging')});handle.addEventListener('pointermove',event=>{if(!drag)return;const left=Math.max(8,Math.min(innerWidth-shell.offsetWidth-8,event.clientX-drag.x));const top=Math.max(8,Math.min(innerHeight-shell.offsetHeight-8,event.clientY-drag.y));shell.style.left=left+'px';shell.style.top=top+'px';shell.style.right='auto';shell.style.bottom='auto';ui.left=left;ui.top=top});const stop=event=>{if(!drag)return;drag=null;shell.classList.remove('is-dragging');saveUi();try{handle.releasePointerCapture(event.pointerId)}catch(e){}};handle.addEventListener('pointerup',stop);handle.addEventListener('pointercancel',stop)}
-document.addEventListener('DOMContentLoaded',()=>{apply();setTimeout(build,0);const observer=new MutationObserver(()=>{const host=document.getElementById('tripStudioThemePreview');if(host&&host.dataset.themePreviewLauncher!=='1')buildStudioLauncher();syncVisibility()});observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});addEventListener('resize',applyUi)});root.ThemePreviewStudio={apply,reset,setPreset,exportJson,importJson,open:()=>{setEnabled(true);setCollapsed(false)},close:()=>setEnabled(false),getState:()=>({...state}),themes:()=>THEMES.slice()};
+document.addEventListener('DOMContentLoaded',()=>{apply();setTimeout(build,0);const observer=new MutationObserver(()=>{const host=document.getElementById('tripStudioThemePreview');if(host&&host.dataset.themePreviewLauncher!=='1')buildStudioLauncher();syncVisibility()});observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});addEventListener('resize',applyUi)});root.ThemePreviewStudio={apply,reset:resetToFrozenNZ,setPreset,restoreSetting,restoreSelectedTheme,exportJson,importJson,open:()=>{setEnabled(true);setCollapsed(false)},close:()=>setEnabled(false),getState:()=>({...state}),themes:()=>THEMES.slice()};
 })(globalThis);
