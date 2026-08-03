@@ -62,12 +62,12 @@ const presets={
     cta:'#FF6F59',ctaInk:'#341008',link:'#3AACA8',navActive:'#FF6F59',navActiveInk:'#341008',timeline:['#FF6F59','#FFC145','#3AACA8'],primaryInk:'#341008'}
 };
 
-// Fine Tune editable properties — deliberately only these six. Each is a
+// Fine Tune editable properties — deliberately only these eight. Each is a
 // single named property on the preset object; overriding one never touches
 // the others. heroGradient is edited as two colour stops (start/end) but
 // stored/restored as one override, since the brief lists it as one setting.
-const FINE_TUNE_PROPS=['cta','ctaInk','heroGradient','bg','card','accent'];
-const FINE_TUNE_LABELS={cta:'Primary Button Colour',ctaInk:'Primary Button Text Colour',heroGradient:'Hero Gradient Colours',bg:'Page Background',card:'Card Background',accent:'Accent Colour'};
+const FINE_TUNE_PROPS=['cta','ctaInk','navActive','navActiveInk','heroGradient','bg','card','accent'];
+const FINE_TUNE_LABELS={cta:'Primary Button Colour',ctaInk:'Primary Button Text Colour',navActive:'Active Navigation Colour',navActiveInk:'Active Navigation Text / Icon Colour',heroGradient:'Hero Gradient Colours',bg:'Page Background',card:'Card Background',accent:'Accent Colour'};
 
 function loadPersisted(){
   try{
@@ -131,7 +131,7 @@ function colourRow(prop){const label=FINE_TUNE_LABELS[prop],overridden=prop in t
 function heroRow(){const overridden='heroGradient' in themeOverrides(selectedTheme),[s,e]=effectiveHeroStops(selectedTheme);
   return `<div class="theme-preview-field full ft-row"><label>${FINE_TUNE_LABELS.heroGradient}${overridden?' <span class="ft-badge">Custom</span>':''}<button type="button" class="ft-restore" data-ft-restore="heroGradient" ${overridden?'':'disabled'} title="Restore This Setting" aria-label="Restore Hero Gradient Colours to theme default">↺</button></label><div class="theme-preview-colour ft-hero-pair"><input class="ft-picker" data-ft-hero="start" type="color" value="${s}" aria-label="Hero gradient start colour"><input class="ft-text" data-ft-hero-text="start" type="text" maxlength="7" value="${s}" aria-label="Hero gradient start hex value"><input class="ft-picker" data-ft-hero="end" type="color" value="${e}" aria-label="Hero gradient end colour"><input class="ft-text" data-ft-hero-text="end" type="text" maxlength="7" value="${e}" aria-label="Hero gradient end hex value"></div></div>`}
 function fineTuneBody(){if(selectedTheme==='nz')return '<p class="ft-empty">Select an official Theme above to Fine Tune it.</p>';
-  return `${colourRow('cta')}${colourRow('ctaInk')}${heroRow()}${colourRow('bg')}${colourRow('card')}${colourRow('accent')}<button type="button" class="ft-restore-theme" data-ft-restore-theme="1" ${selectedTheme in overrides?'':'disabled'}>Restore Selected Theme</button>`}
+  return `${colourRow('cta')}${colourRow('ctaInk')}${colourRow('navActive')}${colourRow('navActiveInk')}${heroRow()}${colourRow('bg')}${colourRow('card')}${colourRow('accent')}<button type="button" class="ft-restore-theme" data-ft-restore-theme="1" ${selectedTheme in overrides?'':'disabled'}>Restore Selected Theme</button>`}
 function renderFineTune(){const body=document.getElementById('ftBody');if(body)body.innerHTML=fineTuneBody()}
 function themeCard(t){const p=presets[t.id];return `<div class="theme-card" data-theme-card="${t.id}"><div class="theme-card-swatch" style="background:${p.heroGradient||('linear-gradient(135deg,'+p.primary+','+p.accent+')')}"></div><div class="theme-card-copy"><strong>${t.icon} ${t.name}</strong><small>${t.tagline}</small></div><button class="theme-card-apply" data-apply-theme="${t.id}" type="button">Apply</button></div>`}
 function controls(){return `<div class="theme-preview-notice">PREVIEW ONLY · LIVE ON THE REAL COMPANION</div>

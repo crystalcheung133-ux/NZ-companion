@@ -1,4 +1,4 @@
-Travel Engine — Fine Tune Primary Button Override Wiring Fix (Stage 1.5.3)
-Build: theme-studio-button-wiring-fix-1
-Date: 2026-08-03
-Baseline: Theme Studio Fine Tune Controls & Palette Refinement (theme-studio-fine-tune-1)
+Travel Engine — Active Navigation Fine Tune Control (Stage 1.5.4)
+Build: theme-studio-active-nav-control-1
+Date: 2026-08-04
+Baseline: Fine Tune Primary Button Override Wiring Fix (theme-studio-button-wiring-fix-1)
