@@ -1,145 +1,63 @@
-/* Travel Engine v1.0 — Stage 8A-2 Complete Mode lifecycle. */
-(function(){
+/* booking-authority.js — canonical Studio-managed booking overrides.
+   Static BOOKING_DATA remains the deploy master. Studio saves replace one
+   booking record in a small local override store; every page applies those
+   overrides before GenerationSelectionAdapter builds its production views. */
+(function(root){
   'use strict';
-  const KEY=STORAGE_CONFIG.keys.tripCompletion;
-  const ADMIN_CONFIG=(typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.admin)||null;
-  if(!ADMIN_CONFIG||!ADMIN_CONFIG.user){
-    throw new Error('Complete Trip requires TRIP_CONFIG.admin.user.');
+  const KEY=(root.STORAGE_CONFIG&&root.STORAGE_CONFIG.keys&&root.STORAGE_CONFIG.keys.bookingOverrides)||'travel_engine_booking_overrides_v1';
+  function clone(value){return value==null?value:JSON.parse(JSON.stringify(value));}
+  function store(){return root.STORAGE&&root.STORAGE.local?root.STORAGE.local:null;}
+  function read(){
+    const raw=store()?store().readJSON(KEY,null):null;
+    if(!raw||Number(raw.version)!==1||!raw.overrides||typeof raw.overrides!=='object')return {version:1,overrides:{},updatedAt:null};
+    return {version:1,overrides:clone(raw.overrides),updatedAt:raw.updatedAt||null};
   }
-  const ADMIN_USER=ADMIN_CONFIG.user;
-  let completed=false;
-  let record=null;
-
-  function tripId(){ return TRIP_CONFIG.storageNamespace || TRIP_CONFIG.tripName || 'trip'; }
-  function valid(value){ return !!value && value.version===1 && value.tripId===tripId() && typeof value.completed==='boolean'; }
-  function read(){ const value=STORAGE.local.readJSON(KEY,null); return valid(value)?value:null; }
-  const NOTICE_KEY=KEY+':notice';
-  function noticeId(){ return record&&record.completedAt?record.completedAt:'complete'; }
-  function guardMessage(){ return false; }
-  function showCompletionNoticeOnce(){
-    if(!completed || !record) return;
-    if(STORAGE.local.get(NOTICE_KEY)===noticeId()) return;
-    alert('Trip completed. You can still browse the itinerary, guide, moments and expenses. Enter Admin Mode and choose Reopen Trip to make changes.');
-    STORAGE.local.set(NOTICE_KEY,noticeId());
+  function write(state){return !!(store()&&store().writeJSON(KEY,state));}
+  function apply(target){
+    if(!target||typeof target!=='object')return target;
+    const state=read();
+    Object.keys(state.overrides).forEach(function(id){
+      if(!target[id]||!state.overrides[id]||typeof state.overrides[id]!=='object')return;
+      target[id]=Object.assign({},target[id],clone(state.overrides[id]),{id:id});
+    });
+    return target;
   }
-  function isMutationControl(el){
-    if(!el) return false;
-    if(el.closest('#adminSaveBar')) return true;
-    const call=(el.getAttribute('onclick')||'')+(el.getAttribute('onchange')||'');
-    return /saveChecklist|openExpenseModal|saveExpense|editExpense|deleteExpense|openMomentsModal|openPlannedMomentCapture|saveMoments|editMoment|deleteMoment|openUnexpectedModal|saveUnexpected|openTimelineEditor|applyTimelineEdit|openTimelineDelete|confirmTimelineDelete|openTimelineMove|applyTimelineMove|markAdminDirty|saveAdminChanges|discardAdminChanges/.test(call);
+  function master(){try{return typeof BOOKINGS_DATA!=='undefined'?BOOKINGS_DATA:(root.BOOKINGS_DATA||{});}catch(error){return root.BOOKINGS_DATA||{};}}
+  function resolvedSource(target){
+    const source=target||master();
+    const output={};
+    Object.keys(source||{}).forEach(function(id){output[id]=clone(source[id]);});
+    const state=read();
+    Object.keys(state.overrides).forEach(function(id){
+      if(!output[id]||!state.overrides[id]||typeof state.overrides[id]!=='object')return;
+      output[id]=Object.assign({},output[id],clone(state.overrides[id]),{id:id});
+    });
+    return output;
   }
-  function isLifecycleAdmin(){
-    return getFriend()===ADMIN_USER && typeof window.isAdminMode==='function' && window.isAdminMode();
+  function all(target){
+    return Object.values(resolvedSource(target)).filter(Boolean).map(clone);
   }
-  function buildControl(){
-    const host=document.getElementById('tripStudioManagement') || document.querySelector('#mamaModal .guide-sheet');
-    if(!host || document.getElementById('completeTripControl') || !isLifecycleAdmin()) return;
-    const section=document.createElement('section');
-    section.id='completeTripControl';
-    section.className='complete-trip-control';
-    section.innerHTML='<div class="trip-studio-copy"><strong id="completeTripTitle">Complete Trip</strong><small id="completeTripHelp">Lock editing and unlock post-trip outputs.</small></div><button id="completeTripButton" type="button" class="complete-trip-btn">Complete Trip</button>';
-    host.appendChild(section);
+  function get(id,target){
+    const source=resolvedSource(target);
+    return source[id]?clone(source[id]):null;
   }
-  function updateLifecycleControl(){
-    let control=document.getElementById('completeTripControl');
-    if(!isLifecycleAdmin()){
-      if(control) control.remove();
-      return;
-    }
-    if(!control){
-      buildControl();
-      control=document.getElementById('completeTripControl');
-    }
-    if(!control) return;
-    const title=document.getElementById('completeTripTitle');
-    const help=document.getElementById('completeTripHelp');
-    const button=document.getElementById('completeTripButton');
-    if(!button) return;
-    if(completed){
-      if(title) title.textContent='Trip Completed';
-      if(help) help.textContent='Reopen the trip to enable editing again. Existing data will remain unchanged.';
-      button.textContent='Reopen Trip';
-      button.classList.add('reopen-trip-btn');
-      button.onclick=window.reopenTrip;
-    }else{
-      if(title) title.textContent='Complete Trip';
-      if(help) help.textContent='Lock editing and unlock post-trip outputs.';
-      button.textContent='Complete Trip';
-      button.classList.remove('reopen-trip-btn');
-      button.onclick=window.completeTrip;
-    }
+  function byType(type,target){return all(target).filter(function(item){return item&&item.type===type;});}
+  function byPlace(placeId,target){return all(target).find(function(item){return item&&item.placeId===placeId;})||null;}
+  function byDay(dayId,target){return all(target).filter(function(item){return item&&item.dayId===dayId;});}
+  function save(id,record,target){
+    const source=target||master();
+    if(!id||!source[id]||!record||typeof record!=='object')return {ok:false,reason:'invalid-booking'};
+    const complete=Object.assign({},clone(source[id]),clone(record),{id:id});
+    const state=read();
+    state.overrides[id]=complete;
+    state.updatedAt=new Date().toISOString();
+    if(!write(state))return {ok:false,reason:'storage-failed'};
+    try{source[id]=clone(complete);}catch(error){}
+    const base=master();
+    if(base&&base!==source&&base[id]){try{base[id]=clone(complete);}catch(error){}}
+    return {ok:true,booking:clone(complete),updatedAt:state.updatedAt};
   }
-  function render(){
-    document.body.classList.toggle('trip-completed',completed);
-    document.querySelectorAll('[data-check]').forEach(el=>{el.disabled=completed;});
-    document.querySelectorAll('#expenseModal input,#expenseModal select,#expenseModal textarea,#expenseModal button:not(.tools-close),#momentsModal input,#momentsModal select,#momentsModal textarea,#momentsModal button:not(.moments-close),#unexpectedModal textarea,#unexpectedModal button:not(.unexpected-close)').forEach(el=>{el.disabled=completed;});
-    document.querySelectorAll('button,a').forEach(el=>{if(isMutationControl(el)){el.hidden=completed;el.setAttribute('aria-hidden',String(completed));}});
-    updateLifecycleControl();
-  }
-  function wrap(name){
-    const original=window[name];
-    if(typeof original!=='function' || original.__completeGuarded) return;
-    const wrapped=function(){ if(completed) return guardMessage(); return original.apply(this,arguments); };
-    wrapped.__completeGuarded=true;
-    window[name]=wrapped;
-  }
-  function installGuards(){
-    ['saveChecklist','openExpenseModal','saveExpense','editExpense','deleteExpense','openMomentsModal','openPlannedMomentCapture','saveMoments','editMoment','deleteMoment','openUnexpectedModal','saveUnexpected','openTimelineEditor','applyTimelineEdit','openTimelineDelete','confirmTimelineDelete','openTimelineMove','applyTimelineMove','markAdminDirty','saveAdminChanges','discardAdminChanges'].forEach(wrap);
-  }
-  function persist(nextRecord){
-    record=nextRecord;
-    STORAGE.local.writeJSON(KEY,record);
-    completed=record.completed===true;
-    render();
-    if(completed) setTimeout(showCompletionNoticeOnce,0);
-  }
-
-  window.isTripCompleted=function(){ return completed; };
-  window.getTripCompletion=function(){ return record?JSON.parse(JSON.stringify(record)):null; };
-  window.assertTripWritable=function(){ return completed?guardMessage():true; };
-  window.completeTrip=function(){
-    if(completed) return true;
-    if(getFriend()!==ADMIN_USER || typeof window.isAdminMode!=='function' || !window.isAdminMode()){ alert('Enter Admin Mode to complete the trip.'); return false; }
-    if(typeof window.hasUnsavedAdminChanges==='function' && window.hasUnsavedAdminChanges()){
-      alert('Save or discard the pending Admin changes before completing the trip.');
-      return false;
-    }
-    const ok=window.confirm((typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.admin&&TRIP_CONFIG.admin.completeMessage)||'Complete this trip? All trip content will remain available to browse, but editing will be disabled until Lee reopens the trip.');
-    if(!ok) return false;
-    const next={version:1,tripId:tripId(),completed:true,completedAt:new Date().toISOString(),completedBy:ADMIN_USER};
-    persist(next);
-    document.dispatchEvent(new CustomEvent('travelengine:tripcompleted',{detail:{...next}}));
-    return true;
-  };
-  window.reopenTrip=function(){
-    if(!completed) return true;
-    if(getFriend()!==ADMIN_USER || typeof window.isAdminMode!=='function' || !window.isAdminMode()){ alert('Enter Admin Mode to reopen the trip.'); return false; }
-    const ok=window.confirm('Reopen this trip? Editing will be enabled again. Existing moments, expenses and trip data will remain unchanged.');
-    if(!ok) return false;
-    const next={
-      version:1,
-      tripId:tripId(),
-      completed:false,
-      completedAt:record&&record.completedAt?record.completedAt:null,
-      completedBy:record&&record.completedBy?record.completedBy:ADMIN_USER,
-      reopenedAt:new Date().toISOString(),
-      reopenedBy:ADMIN_USER
-    };
-    persist(next);
-    STORAGE.local.remove(NOTICE_KEY);
-    document.dispatchEvent(new CustomEvent('travelengine:tripreopened',{detail:{...next}}));
-    return true;
-  };
-
-  record=read();
-  completed=!!record && record.completed===true;
-  installGuards();
-
-  document.addEventListener('DOMContentLoaded',function(){
-    installGuards();
-    updateLifecycleControl();
-    render();
-    showCompletionNoticeOnce();
-  });
-  document.addEventListener('travelengine:adminmodechange',render);
-})();
+  function clear(){return !!(store()&&store().remove(KEY));}
+  root.BOOKING_AUTHORITY=Object.freeze({key:KEY,read:read,apply:apply,all:all,get:get,byType:byType,byPlace:byPlace,byDay:byDay,save:save,clear:clear});
+  apply(master());
+})(globalThis);

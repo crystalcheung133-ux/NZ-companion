@@ -1,168 +1,31 @@
-/* publication-runtime.js — RC13 one-click Supabase publication.
-   Builds the immutable trip snapshot locally, then calls the server-side
-   publish_trip_snapshot RPC. The database allocates the next version under
-   a transaction lock; no SQL download or service-role key is used. */
-(function(root){
-  'use strict';
+<!DOCTYPE html>
 
-  const state={busy:false,lastPublishedVersion:null};
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><script src="app-runtime.js?v=nz1.0-rc22-1"></script><script src="theme-config.js"></script><script src="asset-config.js"></script><script src="locale-config.js"></script><script src="geo-config.js?v=stage3-2h-port1"></script><script src="formatter.js"></script><script src="money-config.js"></script><script src="navigation-config.js?v=nz1.0-rc22-1"></script><script src="navigation.js?v=nz1.0-rc22-1"></script><script src="trip-config.js?v=stage3-2h-cert-final-fix1"></script><script src="storage-config.js?v=stage3-2h-cert-final-fix1"></script><script src="storage.js"></script><script src="sync-config.js?v=stage3-2h-storage-currency1"></script><script src="sync-runtime.js?v=stage3-2h-precert-data3"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-client-runtime.js?v=nz1.0-rc22-1"></script><script src="expense-sync-runtime.js?v=stage3-2h-precert-data3"></script><script src="moment-sync-runtime.js?v=stage3-2h-precert-data3"></script><script src="generation-runtime.js?v=nz1.0-rc22-1"></script><script src="party-render-runtime.js?v=stage3-2h-party-config2"></script><script src="money.js"></script><title data-trip-page-title="Place">Place</title><meta content="" data-trip-theme-color="" name="theme-color"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="" data-trip-apple-title="" name="apple-mobile-web-app-title"/><link data-trip-icon="icon192" rel="apple-touch-icon"/><link href="styles.css?v=stage3-2h-booking-audit2" rel="stylesheet"/><link href="theme-preview.css?v=theme-studio-visual-polish-1" rel="stylesheet"/></head><body><nav class="site-nav"><a class="brand" href="index.html"><span class="brand-mark"><img alt="" data-brand-logo="header"/></span><span data-brand-text="navLabel"></span></a><button class="friend-pill" onclick="openFriendModal()"><span data-friend-label="" data-family=""></span></button></nav><main class="content-page" id="placeMain"></main><div class="mini-menu" id="guideMenu"><button onclick="openGuideCategory('ATTRACTIONS')"><span><span class="menu-title">🍃 SIGHTS</span></span><span>›</span></button><button onclick="openGuideCategory('ACTIVITIES')"><span><span class="menu-title">🎟️ ACTIVITIES</span></span><span>›</span></button><button onclick="openGuideCategory('DINING')"><span><span class="menu-title">🍽 DINING</span></span><span>›</span></button><button onclick="openGuideCategory('STAY')"><span><span class="menu-title">🏨 STAY</span></span><span>›</span></button></div><div class="mini-menu" id="tripMenu"><a href="#" onclick="openTripCard('flights');return false;"><span><span class="menu-title">✈️ Flights</span><span class="menu-sub">MEL · CHC · ZQN</span></span><span>›</span></a><a href="#" onclick="openTripCard('vehicle');return false;"><span><span class="menu-title">🚙 Rental Car</span><span class="menu-sub">Rental Cars 247 · ASX</span></span><span>›</span></a><a href="#" onclick="openTripCard('stay');return false;"><span><span class="menu-title">🏨 Accommodation</span><span class="menu-sub">Bookings & addresses</span></span><span>›</span></a><a href="#" onclick="openTripCard('activities');return false;"><span><span class="menu-title">🎟️ Activities</span><span class="menu-sub">Confirmed tours & experiences</span></span><span>›</span></a><a href="#" onclick="openTripCard('checklist');return false;"><span><span class="menu-title">✅ Checklist</span><span class="menu-sub">Before the Trip</span></span><span>›</span></a><a href="#" onclick="openTripCard('emergency');return false;"><span><span class="menu-title">☎️ Emergency</span><span class="menu-sub">Contacts & medical care</span></span><span>›</span></a></div><div class="mini-menu" id="daysMenu"></div><nav class="app-nav">
+<button class="trip-trigger" onclick="toggleTripMenu()" type="button"><span>🧳</span><small>Trip</small></button>
+<button class="guide-trigger" onclick="toggleGuideMenu()" type="button"><span>📖</span><small>Guide</small></button>
+<button class="days-trigger" onclick="toggleDays()" type="button"><span>🗓</span><small>Days</small></button>
+<a class="summary-link" href="moments.html"><span>✨</span><small>Moments</small></a>
+<a class="summary-link" href="expenses.html"><span>💸</span><small>Expenses</small></a>
+</nav>
+<script src="engine-integrity.js?v=nz1.0-rc22-1"></script><script src="data.js?v=stage3-2h-precert-data3"></script><script src="booking-authority.js?v=booking-save-rootfix1"></script><script src="generation-selection-adapter.js?v=nz1.0-rc22-1"></script><script src="guide-navigation-runtime.js?v=stage3-2h-ownership1"></script><script src="itinerary-authority.js?v=nz1.0-rc22-1"></script><script src="core-runtime.js?v=stage3-2h-cert-ux-safety1"></script><script src="expenses.js?v=stage3-2h-expense-cleanup1"></script><script src="moments.js?v=nz1.0-rc22-1"></script><script src="trip-runtime.js?v=booking-save-response1"></script><script src="moments-compat.js?v=stage3-2h-port1"></script><script src="script.js?v=stage3-2h-studio-guide-polish1"></script><script src="guide-runtime.js?v=stage3-2h-ownership1"></script><script src="admin.js?v=stage3-2h-cert-ux-safety1"></script><script src="reset-runtime.js?v=stage3-2h-storage-currency1"></script><script src="publication-runtime.js?v=stage3-2h-port1"></script><script src="complete-runtime.js?v=stage3-2h-port1"></script><script src="export-runtime.js?v=stage3-2h-modal-cleanup1"></script><script src="currency-runtime.js?v=stage3-2h-front-interaction1-2"></script><script>
+(function(){
+  const key = NAVIGATION.getQuery('placeId','') || NAVIGATION.getQuery('legacyPlaceId','');
+  const keys = NAVIGATION.getQueryList('placeIds');
+  if(keys.length && typeof renderPlaceGroupPage === 'function'){
+    renderPlaceGroupPage(keys);
+  }else if(key && typeof renderPlacePage === 'function'){
+    renderPlacePage(key);
+  }
+  const mount = document.getElementById('placeMain');
+  if(mount && (!keys.length && (!key || !GenerationSelectionAdapter.view('guide').places[key]))){
+    document.title = 'Place not found · '+TRIP_CONFIG.tripName;
+    mount.innerHTML = '<div class="page-hero"><p class="kicker">Guide</p><h1>Place not found</h1><p class="lead">This shared place page needs a valid place id.</p></div><section class="prose-block"><p><a class="btn" href="guide.html">Back to Guide</a></p></section>';
+  }
+})();
+</script><script src="pwa.js?v=nz1.0-rc22-1"></script>
+<div class="trip-modal" id="tripModal"><div class="trip-sheet"><button class="trip-close" onclick="closeTripModal()" type="button">×</button><div id="tripModalContent"></div></div></div>
+<div class="guide-modal" id="guideModal"><div class="guide-sheet"><button class="guide-close" onclick="closeGuideModal()" type="button">×</button><div id="guideModalContent"></div></div></div>
+<div class="moments-modal" id="momentsModal"><div class="moments-sheet"><button class="moments-close" onclick="closeMomentsModal()" type="button">×</button><p class="kicker">MEMORY BOOK</p><h2 id="momentsTitle">Moment</h2><p class="lead modal-intro" id="momentsIntro">Add a rating, a short note and a photo at any stop. After the trip, this becomes the three families’ shared memory book.</p><p><span class="status-badge" id="momentsFriend">Friend</span> <button class="mini-btn" onclick="openFriendModal()">Change Family</button></p><div class="moments-form"><input id="momentsRating" type="hidden" value="0"/><div class="star-row"><span class="star" onclick="setStars(1)">⭐</span><span class="star" onclick="setStars(2)">⭐</span><span class="star" onclick="setStars(3)">⭐</span><span class="star" onclick="setStars(4)">⭐</span><span class="star" onclick="setStars(5)">⭐</span></div><p class="mood-help">Choose up to 2 moods</p><div class="mood-grid" id="moodGrid"></div><textarea id="momentsText" placeholder="Something to say..."></textarea><div class="photo-input">📷 Add Photo (Camera / Photo Library)</div><button class="btn" onclick="saveMoments()">Save</button></div></div></div>
+<div class="unexpected-modal" id="unexpectedModal"><div class="unexpected-sheet"><button class="unexpected-close" onclick="closeUnexpectedModal()" type="button">×</button><p class="kicker">Moments</p><h2>Leave a Moment</h2><p class="lead">Add a rating, a short note and a photo at any stop. After the trip, this becomes the three families’ shared memory book.</p><p><span class="status-badge" id="unexpectedFriend">Friend</span></p><textarea id="unexpectedText" placeholder="Capture this moment..." style="width:100%;min-height:120px;border:1px solid var(--line);border-radius:18px;background:#fffaf2;padding:14px;font:inherit;color:var(--ink)"></textarea><div class="photo-input">📷 Add Photo (Camera / Photo Library)</div><button class="btn" onclick="saveUnexpected()">Save</button></div></div>
+<div class="tools-modal" id="expenseModal"><div class="tools-sheet"><button class="tools-close" onclick="closeExpenseModal()" type="button">×</button><p class="kicker">TRIP EXPENSES</p><h2 id="expenseModalTitle">💸 What did we spend?</h2><p class="lead modal-intro" id="expenseIntro">Record each shared or personal expense. Personal Spend and Settlement update automatically.</p><div class="expense-form"><input id="expenseItem" placeholder="Item e.g. Family Dinner"/><input autocomplete="off" id="expenseTotal" inputmode="numeric" pattern="[0-9]*" data-trip-currency-placeholder="" placeholder="" type="tel"/><label>Paid by</label><select class="btn" id="expensePaidBy" onchange="syncConsumedIfAuto()" data-party-options=""></select><label class="check-row"><input id="expensePersonal" onchange="updateExpenseMode()" type="checkbox"/> Personal Expense</label><div id="splitBetweenBlock"><p>Split between</p><div class="expense-split-tools"><button class="mini-btn" onclick="splitAll()" type="button">Split between all</button><button class="mini-btn" onclick="clearAllSplit()" type="button">Clear all</button></div><div data-party-split-options=""></div></div><div id="consumedByBlock" style="display:none"><label>Consumed by <span class="timestamp">(same as paid by unless changed)</span></label><select class="btn" id="expenseConsumedBy" onchange="markConsumedManual()" data-party-options=""></select></div><br/><button class="btn" id="expenseSaveButton" onclick="saveExpense()">Save Expense</button></div><p class="timestamp">After saving, this window stays open so you can enter another expense. The summary updates when you close it.</p></div></div><div class="mama-modal" id="mamaModal"><div class="guide-sheet"><button class="mama-close" onclick="closeFriendModal()" type="button">×</button><p class="kicker">Family</p><h2>Choose Family</h2><div class="category-pop-list friend-choice-list" data-party-choices=""></div></div></div><script src="theme-preview-assets/registry.js?v=theme-studio-visual-polish-1"></script><script src="theme-preview-runtime.js?v=theme-studio-visual-polish-1"></script></body></html>
 
-  function clone(value){ return value==null?value:JSON.parse(JSON.stringify(value)); }
-  function datasets(){
-    return root.TRAVEL_DATASETS&&typeof root.TRAVEL_DATASETS==='object'?root.TRAVEL_DATASETS:{};
-  }
-  /* RC15: overrides are read through the single canonical resolver
-     (itinerary-authority.js) so a publication can never embed a saved
-     override that itself belongs to a previous master — the same validation
-     Day rendering relies on is applied here too. */
-  function mergedItinerary(){
-    const source=datasets();
-    const itinerary=clone(source.ITINERARY_DATA||{});
-    const authority=root.ITINERARY_AUTHORITY;
-    Object.keys(itinerary).forEach(function(day){
-      const override=authority&&typeof authority.getDayOverrideItems==='function'?authority.getDayOverrideItems(day):null;
-      if(Array.isArray(override)) itinerary[day].items=override;
-    });
-    return itinerary;
-  }
-  function buildPayload(){
-    const source=datasets();
-    const authority=root.ITINERARY_AUTHORITY;
-    return {
-      masterRevision:authority&&typeof authority.getMasterRevision==='function'?authority.getMasterRevision():(root.MASTER_ITINERARY_REVISION||null),
-      data:{
-        places:clone(source.PLACES||{}),
-        categories:clone(source.CATEGORIES||{}),
-        guideOrder:clone(source.GUIDE_ORDER||[]),
-        dayLinks:clone(source.DAY_LINKS||{}),
-        friends:clone(source.FRIENDS||{}),
-        bookingsData:clone(source.BOOKINGS_DATA||{}),
-        tripData:clone(source.TRIP_DATA||{}),
-        tripOrder:clone(source.TRIP_ORDER||[]),
-        itineraryData:mergedItinerary()
-      }
-    };
-  }
-  function payloadIntegrity(payload){
-    const data=payload&&payload.data;
-    const counts={
-      places:data&&data.places&&typeof data.places==='object'?Object.keys(data.places).length:0,
-      guideOrder:data&&Array.isArray(data.guideOrder)?data.guideOrder.length:0,
-      tripData:data&&data.tripData&&typeof data.tripData==='object'?Object.keys(data.tripData).length:0,
-      tripOrder:data&&Array.isArray(data.tripOrder)?data.tripOrder.length:0,
-      itineraryData:data&&data.itineraryData&&typeof data.itineraryData==='object'?Object.keys(data.itineraryData).length:0
-    };
-    const ok=counts.places>0&&counts.guideOrder>0&&counts.tripData>0&&counts.tripOrder>0&&counts.itineraryData>0;
-    return {ok:ok,counts:counts};
-  }
-  function currentRemoteVersion(){
-    const sync=root.TRIP_SYNC&&root.TRIP_SYNC.getState?root.TRIP_SYNC.getState():null;
-    return sync&&Number.isFinite(Number(sync.remoteVersion))?Number(sync.remoteVersion):0;
-  }
-  function publicationStatusText(){
-    const current=state.lastPublishedVersion||currentRemoteVersion();
-    return current>0?'Latest published version: v'+current+'.':'Publish the saved trip directly to every Companion.';
-  }
-  function updateButton(status){
-    const button=document.getElementById('preparePublicationButton');
-    if(!button)return;
-    button.disabled=state.busy;
-    const strong=button.querySelector('strong');
-    const small=button.querySelector('small');
-    if(strong)strong.textContent=state.busy?'Publishing…':'Publish Latest Trip';
-    if(small)small.textContent=status||publicationStatusText();
-  }
-  function rpcResultVersion(data){
-    const row=Array.isArray(data)?data[0]:data;
-    const version=Number(row&&row.version);
-    return Number.isFinite(version)&&version>0?version:null;
-  }
-  function readableError(error){
-    const message=error&&error.message?String(error.message):'Unknown publishing error';
-    if(/function .* does not exist|Could not find the function|PGRST202/i.test(message)){
-      return 'One-click Publish is not installed in Supabase yet. Run SUPABASE_STAGE_13_ONE_CLICK_PUBLISH.sql once, then try again.';
-    }
-    if(/Invalid Trip Studio credential/i.test(message))return 'Supabase rejected the Trip Studio credential.';
-    return message;
-  }
-  async function publish(){
-    if(state.busy)return false;
-    if(!root.isAdminMode||!root.isAdminMode()){
-      alert('Open Trip Studio before publishing.');return false;
-    }
-    if(root.hasUnsavedAdminChanges&&root.hasUnsavedAdminChanges()){
-      alert('Save pending Trip Studio changes before publishing.');return false;
-    }
-    if(navigator.onLine===false){
-      alert('Publishing needs an internet connection.');return false;
-    }
-    if(!root.SUPABASE||typeof root.SUPABASE.getClient!=='function'||typeof root.SUPABASE.getSession!=='function'){
-      alert('Supabase is not available on this device.');return false;
-    }
-    const credential=typeof root.getAdminPublishCredential==='function'?root.getAdminPublishCredential():null;
-    if(!credential){
-      alert('Trip Studio session has expired. Close and reopen Trip Studio.');return false;
-    }
-    const confirmed=root.confirm('Publish the latest saved trip now?\n\nEvery Companion will receive the new version when it next connects.');
-    if(!confirmed)return false;
-
-    state.busy=true;updateButton('Creating a new immutable cloud version…');
-    try{
-      await root.SUPABASE.getSession();
-      const cfg=root.SYNC_CONFIG||{};
-      const rpcName=cfg.rpc&&cfg.rpc.publishTrip?cfg.rpc.publishTrip:'publish_trip_snapshot';
-      const payload=buildPayload();
-      const integrity=payloadIntegrity(payload);
-      if(!integrity.ok){
-        throw new Error('Publication blocked: Trip or Guide dataset is incomplete. Reload the latest deploy before publishing.');
-      }
-      const result=await root.SUPABASE.getClient().rpc(rpcName,{
-        p_trip_id:cfg.tripId||(typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.storageNamespace)||'nz-family-2026',
-        p_schema_version:Number(cfg.schemaVersion)||1,
-        p_payload:payload,
-        p_admin_pin:credential
-      });
-      if(result&&result.error)throw result.error;
-      const version=rpcResultVersion(result&&result.data);
-      if(!version)throw new Error('Supabase returned no publication version.');
-      state.lastPublishedVersion=version;
-      updateButton('Published successfully · v'+version);
-
-      if(root.TRIP_SYNC&&typeof root.TRIP_SYNC.fetchLatestPublished==='function'){
-        await root.TRIP_SYNC.fetchLatestPublished({reloadOnChange:false});
-      }
-      document.dispatchEvent(new CustomEvent('travelengine:publicationpublished',{detail:{version:version}}));
-      alert('Trip published successfully.\n\nCloud version v'+version+' is now live.');
-      return true;
-    }catch(error){
-      console.error('One-click publication failed',error);
-      const message=readableError(error);
-      updateButton('Publish failed. No new version was created.');
-      alert('Could not publish the trip.\n\n'+message);
-      return false;
-    }finally{
-      state.busy=false;
-      setTimeout(function(){updateButton();},5000);
-    }
-  }
-  function installButton(){
-    const group=document.getElementById('tripStudioManagement');
-    if(!group||document.getElementById('preparePublicationButton'))return;
-    const button=document.createElement('button');
-    button.id='preparePublicationButton';button.type='button';button.className='trip-studio-action publication-prepare-btn';button.hidden=!(root.isAdminMode&&root.isAdminMode());
-    button.innerHTML='<span><strong>Publish Latest Trip</strong><small>'+publicationStatusText()+'</small></span><span aria-hidden="true">☁️</span>';
-    button.addEventListener('click',publish);group.appendChild(button);
-  }
-  function reflectMode(){
-    installButton();
-    const button=document.getElementById('preparePublicationButton');
-    if(button)button.hidden=!(root.isAdminMode&&root.isAdminMode());
-  }
-
-  root.TRIP_PUBLICATION=Object.freeze({buildPayload:buildPayload,validatePayload:payloadIntegrity,publish:publish,prepare:publish,getLastPublishedVersion:function(){return state.lastPublishedVersion;}});
-  root.publishLatestTrip=publish;
-  root.prepareCloudPublication=publish;
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){installButton();reflectMode();},{once:true});
-  else {installButton();reflectMode();}
-  document.addEventListener('travelengine:adminmodechange',reflectMode);
-})(globalThis);
