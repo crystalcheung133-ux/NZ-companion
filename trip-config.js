@@ -74,7 +74,7 @@
     admin: Object.freeze({
       user: (adminParty.legacyAliases && adminParty.legacyAliases[0]) || 'lee',
       displayName: adminParty.displayName,
-      studioMessage: 'Trip Studio is available to ' + adminParty.displayName + ' only.',
+      studioMessage: 'Trip Studio is PIN protected. Enter the Studio PIN to continue.',
       completeMessage: 'Complete this trip? All trip content will remain available to browse, but editing will be disabled until ' + adminParty.displayName + ' reopens the trip.',
       pin: '260922'
     }),
@@ -99,8 +99,8 @@
     splashSlogan: 'ADVENTURE AWAITS',
     splashDestination: 'NEW ZEALAND 2026',
     storageNamespace: 'nz-family-2026',
-    version: 'RC22.1',
-    buildLabel: 'Unicode Mojibake Root Cause Repair',
+    version: 'RC22.2',
+    buildLabel: 'Day 3 Flight + PIN Studio Access',
     theme: root.THEME_CONFIG.colors
   });
 

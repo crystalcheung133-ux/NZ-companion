@@ -20,7 +20,7 @@
   const SESSION_KEY='travel_engine_admin_unlocked_v1';
   const state={mode:false,dirty:false,draft:null};
 
-  function isAdminUser(){ return getFriend()===ADMIN_USER; }
+  function isAdminUser(){ return true; } // Studio access is PIN-based and independent of selected family.
   function isUnlocked(){ return sessionStorage.getItem(SESSION_KEY)==='1'; }
   function lockAdminSession(){ sessionStorage.removeItem(SESSION_KEY); }
   function scrollTripStudioToBottom(){
@@ -50,7 +50,6 @@
     return true;
   }
   function openTripStudioPanel(){
-    if(!isAdminUser()){ alert(ADMIN_CONFIG.studioMessage||('Trip Studio is available to '+ADMIN_CONFIG.displayName+' only.')); return false; }
     if(typeof renderFriendChoices==='function') renderFriendChoices();
     const modal=document.getElementById('mamaModal');
     const studio=document.getElementById('adminModeControl');
@@ -157,7 +156,7 @@
       selectorCard.setAttribute('aria-pressed',String(active));
       selectorCard.setAttribute('aria-label',active?'Open Trip Studio':'Open Studio Mode');
       const status=selectorCard.querySelector('.trip-studio-selector-status');
-      if(status) status.textContent=active?'Studio active · Open workspace':'PIN protected · '+ADMIN_CONFIG.displayName+' only';
+      if(status) status.textContent=active?'Studio active · Open workspace':'PIN protected · Enter PIN to access';
       const arrow=selectorCard.querySelector('.trip-studio-selector-arrow');
       if(arrow) arrow.textContent='›';
     }
@@ -190,7 +189,7 @@
       selectorToggle.setAttribute('tabindex','0');
       selectorToggle.setAttribute('aria-label','Open Studio Mode');
       selectorToggle.setAttribute('aria-pressed','false');
-      selectorToggle.innerHTML=`<span class="trip-studio-selector-copy"><strong>⚙ Studio Mode</strong><small>Editing, Complete Trip, Export Centre and trip controls</small><em class="trip-studio-selector-status">PIN protected · ${ADMIN_CONFIG.displayName} only</em></span><span class="trip-studio-selector-arrow" aria-hidden="true">›</span>`;
+      selectorToggle.innerHTML=`<span class="trip-studio-selector-copy"><strong>⚙ Studio Mode</strong><small>Editing, Complete Trip, Export Centre and trip controls</small><em class="trip-studio-selector-status">PIN protected · Enter PIN to access</em></span><span class="trip-studio-selector-arrow" aria-hidden="true">›</span>`;
       familyList.insertAdjacentElement('afterend',selectorToggle);
       const activateStudio=()=>{
         if(state.mode && isUnlocked() && isAdminUser()){
@@ -273,11 +272,6 @@
 
   window.setAdminMode=function(enabled){
     enabled=!!enabled;
-    if(enabled && !isAdminUser()){
-      alert(ADMIN_CONFIG.studioMessage||('Trip Studio is available to '+ADMIN_CONFIG.displayName+' only.'));
-      updateUI();
-      return false;
-    }
     if(enabled && !isUnlocked() && !requestUnlock()){
       updateUI();
       return false;
@@ -309,9 +303,9 @@
   };
 
   window.getAdminDraft=function(){ return JSON.parse(JSON.stringify(ensureDraft())); };
-  window.isAdminMode=function(){ return state.mode && isUnlocked() && isAdminUser(); };
-  window.isAdminUnlocked=function(){ return isUnlocked() && isAdminUser(); };
-  window.getAdminPublishCredential=function(){ return isUnlocked() && isAdminUser() ? ADMIN_PIN : null; };
+  window.isAdminMode=function(){ return state.mode && isUnlocked(); };
+  window.isAdminUnlocked=function(){ return isUnlocked(); };
+  window.getAdminPublishCredential=function(){ return isUnlocked() ? ADMIN_PIN : null; };
   window.hasUnsavedAdminChanges=function(){ return state.dirty; };
 
   window.saveAdminChanges=function(){
@@ -348,7 +342,7 @@
     if(modal) modal.classList.remove('studio-view');
     originalOpenFriendModal();
     updateUI();
-    if(state.mode && isAdminUser()){
+    if(state.mode){
       const sheet=modal&&modal.querySelector('.guide-sheet');
       if(sheet) window.requestAnimationFrame(()=>{ sheet.scrollTop=sheet.scrollHeight; });
     }
@@ -358,7 +352,6 @@
   window.setFriend=function(key){
     if(state.mode&&state.dirty&&!confirmExit()) return;
     if(state.mode&&state.dirty) window.discardAdminChanges();
-    if(key!==ADMIN_USER){ state.mode=false; setStoredMode(false); lockAdminSession(); }
     originalSetFriend(key);
     state.mode=readMode();
     updateUI();

@@ -1,21 +1,2 @@
-CCMV Travel Engine — New Zealand Companion
-Release: Stage3.2H-PORT1-BOOKING-SAVE-ROOTFIX1-EXPENSE-CLEANUP1
-Engine baseline: BOOKING-SAVE-ROOTFIX1 (new canonical production baseline)
-Release date: 2026-07-31
-Status: CI + expense-cleanup integration onto the new baseline
-Changes in this integration pass (re-implemented fresh against this
-baseline, not copied from any previous ZIP):
-- Retired the dormant canonical-expense-* subsystem (8 files; both
-  activating feature flags were false with no runtime dependency in this
-  baseline) — removed the files, their script tags, their sw.js precache
-  entries, and the now-orphaned trip-config.js feature-flag block.
-- Added a dedicated ci-tests/ CI suite (syntax, checksums+manifest, HTML
-  structure, entity-linkage, guide-address-integrity), reviewed against
-  this baseline's actual data.js/file structure rather than reused
-  unchanged.
-- Added .github/workflows/ci.yml to run the suite on push/pull_request.
-- Regenerated VERSION.txt / SHA256SUMS.txt / PRODUCTION-FILE-MANIFEST.txt.
-All previously validated production behaviour from BOOKING-SAVE-ROOTFIX1
-(the booking-authority.js override-merge fix, the Studio Exit-button UX
-safety change, the booking-edit-in-progress modal guard) is unchanged and
-untouched by this pass.
+NZ Companion RC22.2
+Day 3 Ultimate Alpine + Sudima transition + PIN-based Studio access

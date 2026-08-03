@@ -1,6 +1,6 @@
 CCMV Travel Engine Production File Manifest
-Generated: 2026-07-31
-Release: Stage3.2H-PORT1-BOOKING-SAVE-ROOTFIX1-EXPENSE-CLEANUP1
+Generated: 2026-08-04
+Release: NZ-RC22.2-DAY3-FLIGHT-SUDIMA-PIN-STUDIO
 Production root files:
 
 - VERSION.txt
