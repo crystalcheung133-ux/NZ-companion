@@ -98,13 +98,27 @@ function restoreSelectedTheme(){if(!(selectedTheme in overrides))return;const {[
 function resetToFrozenNZ(){selectedTheme='nz';persist();recompute();apply();sync()}
 function fontPair(name){if(name==='editorial')return ['Georgia,"Times New Roman",serif','system-ui,-apple-system,"Segoe UI",sans-serif'];if(name==='soft')return ['"Trebuchet MS","Arial Rounded MT Bold",system-ui,sans-serif','system-ui,-apple-system,"Segoe UI",sans-serif'];if(name==='modern')return ['system-ui,-apple-system,"Segoe UI",sans-serif','system-ui,-apple-system,"Segoe UI",sans-serif'];return ['var(--ccmv-fashion-serif,"Cormorant Garamond",Georgia,serif)','var(--font-sans,Inter,system-ui,sans-serif)']}
 function asset(path){return path?`url("${String(path).replace(/"/g,'')}")`:'none'}
-function apply(){const el=document.documentElement,[heading,body]=fontPair(state.typography);el.classList.add('theme-preview-active');el.classList.toggle('theme-preview-no-decor',!state.decorative);el.classList.toggle('theme-preview-watermark',!!state.watermark);el.classList.toggle('theme-preview-hero-image',!!state.heroEnabled&&!!state.heroAsset);el.classList.toggle('theme-preview-logo-off',!state.logoEnabled);el.setAttribute('data-theme-preset',state.preset||'custom');const v={'--tp-bg':state.bg,'--tp-primary':state.primary,'--tp-secondary':state.secondary,'--tp-accent':state.accent,'--tp-card':state.card,'--tp-card-opacity':state.cardOpacity,'--tp-canvas-image':state.canvasEnabled?asset(state.canvasAsset):'none','--tp-canvas-opacity':state.canvasEnabled?state.canvasOpacity:0,'--tp-canvas-size':state.canvasSize,'--tp-canvas-position':state.canvasPosition,'--tp-hero-image':asset(state.heroAsset),'--tp-heading-font':heading,'--tp-body-font':body,'--tp-title-scale':Math.max(.88,Math.min(1.08,Number(state.titleScale)||1)),'--tp-hero-radius':Math.max(20,Math.min(40,Number(state.heroRadius)||30))+'px','--tp-logo-size':Math.max(36,Math.min(84,Number(state.logoSize)||54))+'px','--tp-watermark-opacity':Math.max(.04,Math.min(.25,Number(state.watermarkOpacity)||.12)),'--tp-ink':state.ink||state.primary,
+function apply(){const el=document.documentElement,[heading,body]=fontPair(state.typography);el.classList.add('theme-preview-active');el.classList.toggle('theme-preview-no-decor',!state.decorative);el.classList.toggle('theme-preview-watermark',!!state.watermark);el.classList.toggle('theme-preview-hero-image',!!state.heroEnabled&&!!state.heroAsset);el.classList.toggle('theme-preview-logo-off',!state.logoEnabled);el.setAttribute('data-theme-preset',state.preset||'custom');
+  // Fine Tune's "Primary Button Colour/Text" (cta/ctaInk) is the single override
+  // that must drive every real primary-CTA button in the Engine — the brand
+  // .btn/.home-day-button treatment as well as the .primary-action treatment.
+  // When it hasn't been fine-tuned, .btn/.home-day-button keeps rendering the
+  // Theme's own `primary`/`primaryInk` exactly as before (no default-palette
+  // change); once overridden, both button families converge on the same value.
+  const ftOverrides=themeOverrides(selectedTheme),
+    primaryButtonBg=('cta' in ftOverrides)?state.cta:state.primary,
+    primaryButtonText=('ctaInk' in ftOverrides)?state.ctaInk:state.primaryInk;
+  const v={'--tp-bg':state.bg,'--tp-primary':state.primary,'--tp-secondary':state.secondary,'--tp-accent':state.accent,'--tp-card':state.card,'--tp-card-opacity':state.cardOpacity,'--tp-canvas-image':state.canvasEnabled?asset(state.canvasAsset):'none','--tp-canvas-opacity':state.canvasEnabled?state.canvasOpacity:0,'--tp-canvas-size':state.canvasSize,'--tp-canvas-position':state.canvasPosition,'--tp-hero-image':asset(state.heroAsset),'--tp-heading-font':heading,'--tp-body-font':body,'--tp-title-scale':Math.max(.88,Math.min(1.08,Number(state.titleScale)||1)),'--tp-hero-radius':Math.max(20,Math.min(40,Number(state.heroRadius)||30))+'px','--tp-logo-size':Math.max(36,Math.min(84,Number(state.logoSize)||54))+'px','--tp-watermark-opacity':Math.max(.04,Math.min(.25,Number(state.watermarkOpacity)||.12)),'--tp-ink':state.ink||state.primary,
     /* Official Theme Studio package — only read by rules scoped away from the nz/custom presets. */
     '--tp-muted':state.muted||state.primary,'--tp-border':state.border||'transparent',
     '--tp-hero-gradient':state.heroGradient||'none','--tp-hero-ink':state.heroInk||state.ink||state.primary,'--tp-hero-scrim':state.heroScrim||'rgba(0,0,0,0)',
     '--tp-primary-ink':state.primaryInk||'#fff','--tp-cta':state.cta||state.accent,'--tp-cta-ink':state.ctaInk||'#fff','--tp-link':state.link||state.primary,
     '--tp-nav-active':state.navActive||state.accent,'--tp-nav-active-ink':state.navActiveInk||'#fff',
-    '--tp-timeline-1':(state.timeline&&state.timeline[0])||state.primary,'--tp-timeline-2':(state.timeline&&state.timeline[1])||state.secondary,'--tp-timeline-3':(state.timeline&&state.timeline[2])||state.accent
+    '--tp-timeline-1':(state.timeline&&state.timeline[0])||state.primary,'--tp-timeline-2':(state.timeline&&state.timeline[1])||state.secondary,'--tp-timeline-3':(state.timeline&&state.timeline[2])||state.accent,
+    /* Dedicated Fine Tune "Primary Button" runtime properties — the single
+       shared integration point for every real primary CTA selector (Home
+       "Let's go", Booking/Expenses/Moments primary-action buttons). */
+    '--theme-preview-primary-button-bg':primaryButtonBg||state.accent,'--theme-preview-primary-button-text':primaryButtonText||'#fff'
   };Object.entries(v).forEach(([k,val])=>el.style.setProperty(k,val));if(state.logoEnabled&&state.logoAsset)document.querySelectorAll('[data-brand-logo="header"]').forEach(img=>{img.src=state.logoAsset});document.dispatchEvent(new CustomEvent('travelengine:theme-preview-applied',{detail:{...state}}))}
 function setPreset(id){selectedTheme=presets[id]?id:'nz';persist();recompute();apply();sync()}
 // Kept for API/back-compat — not wired to any control in the simplified UI.

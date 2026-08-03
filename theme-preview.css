@@ -43,7 +43,13 @@ html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([
 html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .page-hero .status-badge,
 html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .module-hero .status-badge{color:var(--tp-hero-ink)!important;opacity:.86!important}
 html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .btn,
-html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .home-day-button{background:linear-gradient(135deg,var(--tp-primary),color-mix(in srgb,var(--tp-primary) 68%,black))!important;border-color:var(--tp-primary)!important;color:var(--tp-primary-ink)!important;box-shadow:0 10px 22px color-mix(in srgb,var(--tp-primary) 32%,transparent)!important}
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .home-day-button{background:linear-gradient(135deg,var(--theme-preview-primary-button-bg),color-mix(in srgb,var(--theme-preview-primary-button-bg) 68%,black))!important;border-color:var(--theme-preview-primary-button-bg)!important;color:var(--theme-preview-primary-button-text)!important;box-shadow:0 10px 22px color-mix(in srgb,var(--theme-preview-primary-button-bg) 32%,transparent)!important}
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .btn *,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .home-day-button *,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .btn::before,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .btn::after,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .home-day-button::before,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .home-day-button::after{color:inherit!important;fill:currentColor!important}
 html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .pill,
 html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .mini-btn,
 html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .friend-pill,
@@ -52,6 +58,9 @@ html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([
 html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .primary-action,
 html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .page-action-row .primary-action,
 html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) button.primary-action{background:linear-gradient(135deg,var(--tp-cta),color-mix(in srgb,var(--tp-cta) 68%,black))!important;border-color:var(--tp-cta)!important;color:var(--tp-cta-ink)!important;box-shadow:0 10px 24px color-mix(in srgb,var(--tp-cta) 34%,transparent)!important}
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .primary-action *,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .primary-action::before,
+html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .primary-action::after{color:inherit!important;fill:currentColor!important}
 html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .app-nav .is-active{background:var(--tp-nav-active)!important;box-shadow:0 6px 16px color-mix(in srgb,var(--tp-nav-active) 45%,transparent)!important}
 html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .app-nav .is-active span,
 html.theme-preview-active[data-theme-preset]:not([data-theme-preset="nz"]):not([data-theme-preset="custom"]) .app-nav .is-active small{color:var(--tp-nav-active-ink)!important}
