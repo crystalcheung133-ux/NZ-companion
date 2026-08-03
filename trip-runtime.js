@@ -83,7 +83,9 @@ function buildAccommodationListHTML(){
     const nights=Number(booking.nights||0);
     const nightsLabel=nights?`${nights} night${nights===1?'':'s'}`:'';
     const price=booking.price||'Price not added yet';
-    return `<button class="accommodation-picker-row" type="button" role="listitem" onclick="openAccommodationDetail('${escapeTripHTML(booking.id)}')"><span class="accommodation-picker-icon" aria-hidden="true">🏨</span><span class="accommodation-picker-copy"><strong>${escapeTripHTML(booking.title)}</strong><small>${escapeTripHTML(booking.stayDates||booking.date||'')}</small><span class="accommodation-picker-price">${escapeTripHTML(price)}</span></span><span class="accommodation-picker-meta">${escapeTripHTML(nightsLabel)}<b aria-hidden="true">›</b></span></button>`;
+    const statusLabel=booking.displayStatus||bookingStatusText(booking)||'';
+    const statusClass=String(booking.status||'').replace(/[^a-z0-9-]/gi,'').toLowerCase();
+    return `<button class="accommodation-picker-row" type="button" role="listitem" onclick="openAccommodationDetail('${escapeTripHTML(booking.id)}')"><span class="accommodation-picker-icon" aria-hidden="true">🏨</span><span class="accommodation-picker-copy"><strong>${escapeTripHTML(booking.title)}</strong><small>${escapeTripHTML(booking.stayDates||booking.date||'')}</small><span class="accommodation-picker-price">${escapeTripHTML(price)}</span></span><span class="accommodation-picker-meta accommodation-picker-meta--stack">${statusLabel?`<span class="accommodation-status-badge accommodation-status-badge--${escapeTripHTML(statusClass)}">${escapeTripHTML(statusLabel)}</span>`:''}<span class="accommodation-night-line">${escapeTripHTML(nightsLabel)} <b aria-hidden="true">›</b></span></span></button>`;
   }).join('')+'</div>';
 }
 function accommodationDetailNavigationHTML(bookingId){

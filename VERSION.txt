@@ -1,4 +1,2 @@
-Travel Engine — Fine Tune Primary Button Override Wiring Fix (Stage 1.5.3)
-Build: theme-studio-button-wiring-fix-1
-Date: 2026-08-03
-Baseline: Theme Studio Fine Tune Controls & Palette Refinement (theme-studio-fine-tune-1)
+RC22.4
+Accommodation status badges + Sudima price + Alpine timeline notices

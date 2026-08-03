@@ -1,21 +1,10 @@
 importScripts('./theme-config.js', './asset-config.js', './locale-config.js', './formatter.js', './navigation-config.js', './trip-config.js', './storage-config.js');
-const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-theme-studio-button-wiring-fix-1`;
+const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-rc22-4-price-timeline-fix`;
 const CRITICAL_EXTENSIONS = /\.(?:css|js)$/i;
 const ASSETS = [
   './',
   './index.html',
   './styles.css',
-  './theme-preview.css',
-  './theme-preview-runtime.js',
-  './theme-preview-assets/registry.js',
-  './theme-preview-assets/adventure-fresh-outdoor-canvas.svg',
-  './theme-preview-assets/japan-warm-editorial-canvas.svg',
-  './theme-preview-assets/luxury-boutique-elegant-canvas.svg',
-  './theme-preview-assets/nature-forest-organic-canvas.svg',
-  './theme-preview-assets/coastal-bright-ocean-canvas.svg',
-  './theme-preview-assets/heritage-classic-historic-canvas.svg',
-  './theme-preview-assets/cafe-minimal-cozy-canvas.svg',
-  './theme-preview-assets/family-friendly-bright-canvas.svg',
   './core-runtime.js',
   './trip-runtime.js',
   './moments-compat.js',

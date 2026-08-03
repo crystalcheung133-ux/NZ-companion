@@ -1,16 +1,8 @@
-Travel Engine Production File Manifest
-Generated: 2026-08-03
-Release: Stage1.5.3-THEME-STUDIO-BUTTON-WIRING-FIX
+CCMV Travel Engine Production File Manifest
+Generated: 2026-08-04
+Release: NZ-RC22.4-ACCOMMODATION-STATUS-ALPINE-NOTICES
 Production root files:
 
-- CI-PATH-FIX-REPORT.md
-- THEME-BUTTON-WIRING-FIX-REGRESSION-REPORT.md
-- THEME-BUTTON-WIRING-FIX-REPORT.md
-- THEME-FINE-TUNE-REPORT.md
-- THEME-STUDIO-FREEZE-REGRESSION-REPORT.md
-- THEME-STUDIO-FREEZE-REPORT.md
-- THEME-VISUAL-POLISH-REGRESSION-REPORT.md
-- THEME-VISUAL-POLISH-REPORT.md
 - VERSION.txt
 - admin.js
 - app-runtime.js
@@ -67,17 +59,6 @@ Production root files:
 - sync-config.js
 - sync-runtime.js
 - theme-config.js
-- theme-preview-assets/adventure-fresh-outdoor-canvas.svg
-- theme-preview-assets/cafe-minimal-cozy-canvas.svg
-- theme-preview-assets/coastal-bright-ocean-canvas.svg
-- theme-preview-assets/family-friendly-bright-canvas.svg
-- theme-preview-assets/heritage-classic-historic-canvas.svg
-- theme-preview-assets/japan-warm-editorial-canvas.svg
-- theme-preview-assets/luxury-boutique-elegant-canvas.svg
-- theme-preview-assets/nature-forest-organic-canvas.svg
-- theme-preview-assets/registry.js
-- theme-preview-runtime.js
-- theme-preview.css
 - trip-config.js
 - trip-runtime.js
 - trip.html
