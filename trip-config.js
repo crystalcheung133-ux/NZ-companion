@@ -99,7 +99,7 @@
     splashSlogan: 'ADVENTURE AWAITS',
     splashDestination: 'NEW ZEALAND 2026',
     storageNamespace: 'nz-family-2026',
-    version: 'RC22.2',
+    version: 'RC22.3',
     buildLabel: 'Day 3 Flight + PIN Studio Access',
     theme: root.THEME_CONFIG.colors
   });

@@ -1,2 +1,2 @@
-NZ Companion RC22.2
-Day 3 Ultimate Alpine + Sudima transition + PIN-based Studio access
+NZ-RC22.3
+Day 3 price correction + Sudima price + timeline overlap fix

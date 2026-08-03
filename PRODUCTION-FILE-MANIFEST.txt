@@ -1,6 +1,6 @@
 CCMV Travel Engine Production File Manifest
 Generated: 2026-08-04
-Release: NZ-RC22.2-DAY3-FLIGHT-SUDIMA-PIN-STUDIO
+Release: NZ-RC22.3-DATA-PRICE-TIMELINE-FIX
 Production root files:
 
 - VERSION.txt
@@ -63,5 +63,3 @@ Production root files:
 - trip-runtime.js
 - trip.html
 - vercel.json
-
-Total production files excluding manifest/checksum: 60
