@@ -119,6 +119,15 @@ function bookingSectionHTML(title,content,options){
   const safe=opts.html?String(content):escapeTripHTML(content).replace(/\n/g,'<br>');
   return `<div class="accommodation-section"><h3>${escapeTripHTML(title)}</h3><p>${safe}</p></div>`;
 }
+function usefulCheckInInstructions(text){
+  let value=String(text||'').trim();
+  if(!value)return '';
+  return value
+    .replace(/^Use (?:the )?hotel reception for check-in\.\s*/i,'')
+    .replace(/^Check in at reception\.\s*/i,'')
+    .replace(/^Use reception for check-in\.\s*/i,'')
+    .trim();
+}
 function bookingGuideButtonHTML(booking){
   return booking&&booking.placeId?`<button class="pill trip-action-btn trip-action-btn--guide" type="button" onclick="NAVIGATION.goPage('place',{query:{placeId:'${escapeTripHTML(booking.placeId)}'}})">Guide</button>`:'';
 }
@@ -169,7 +178,7 @@ function buildAccommodationDetailHTML(booking){
   ]);
   const operationalNotes=[booking.cancellation||'',booking.notes||''].filter(Boolean).join('\n');
   const sections=[
-    bookingSectionHTML('Check-in notes',booking.checkInInstructions||''),
+    bookingSectionHTML('Check-in notes',usefulCheckInInstructions(booking.checkInInstructions)),
     bookingSectionHTML('Important',operationalNotes),
     bookingSectionHTML('Address',address)
   ].join('');

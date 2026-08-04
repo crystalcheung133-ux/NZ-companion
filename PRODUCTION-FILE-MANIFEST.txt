@@ -1,6 +1,6 @@
 CCMV Travel Engine Production File Manifest
-Generated: 2026-08-04
-Release: NZ-RC24-UX-FREEZE
+Generated: 2026-08-05
+Release: NZ-RC24.2-GUIDE-DEDUPLICATION
 Production root files:
 
 - VERSION.txt
