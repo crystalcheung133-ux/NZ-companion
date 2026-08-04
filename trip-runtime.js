@@ -167,8 +167,10 @@ function buildAccommodationDetailHTML(booking){
     ['Booking',reference],['Booked via',via],['Payment',payment]
   ]);
   const important=[booking.cancellation||'',booking.notes||''].filter(Boolean).join('\n');
+  const stayHighlights=place?[place.desc||'',...(place.signature||[]),...(place.worth||[])].filter(Boolean):[];
+  const aboutStay=stayHighlights.length?`<div class="accommodation-section accommodation-about-stay"><h3>About this stay</h3><p>${stayHighlights.map(escapeTripHTML).join('<br>')}</p></div>`:'';
   const sections=[
-    bookingSectionHTML('Important information',important),bookingSectionHTML('Address',address),
+    aboutStay,bookingSectionHTML('Important information',important),bookingSectionHTML('Address',address),
     bookingSectionHTML('Arrival instructions',booking.checkInInstructions||''),bookingContactSectionsHTML(booking,place)
   ].join('');
   return `<article class="fact stay-booking accommodation-detail-card"><div class="accommodation-detail-head"><div><strong>${escapeTripHTML(booking.title)}</strong><span>${escapeTripHTML(booking.stayDates||booking.date||'')}</span></div>${nightsLabel?`<span class="accommodation-night-badge">${escapeTripHTML(nightsLabel)}</span>`:''}</div><div class="accommodation-facts">${facts}</div>${sections}${bookingActionButtonsHTML(booking,place)}${accommodationDetailNavigationHTML(booking.id)}</article>`;

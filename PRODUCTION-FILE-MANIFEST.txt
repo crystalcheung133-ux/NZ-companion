@@ -1,6 +1,6 @@
 CCMV Travel Engine Production File Manifest
 Generated: 2026-08-04
-Release: NZ-RC22.4-ACCOMMODATION-STATUS-ALPINE-NOTICES
+Release: NZ-RC22.5-GUIDE-STAY-DINING-ALPINE-RENTAL
 Production root files:
 
 - VERSION.txt

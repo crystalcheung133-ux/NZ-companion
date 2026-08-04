@@ -94,7 +94,14 @@ function guideCategoryItems(cat){
  const excluded=new Set(TRIP_CONFIG.guide?.excludedPlaceIds||[]);
  return (PRODUCTION_GUIDE.categories[cat]||[])
   .map(item=>{const key=typeof item==='string'?item:item&&item.key;return key&&PRODUCTION_GUIDE.places[key]?Object.assign({key},PRODUCTION_GUIDE.places[key]):null;})
-  .filter(item=>item&&!excluded.has(item.key));
+  .filter(item=>{
+    if(!item||excluded.has(item.key))return false;
+    if(cat==='STAY'&&window.BOOKING_AUTHORITY){
+      const booking=BOOKING_AUTHORITY.byPlace(item.key);
+      return !!booking&&booking.status==='confirmed';
+    }
+    return true;
+  });
 }
 function guideCategoryHeading(cat){
  if(cat==='ATTRACTIONS') return 'SIGHTS';
@@ -115,15 +122,17 @@ function guideActivityGroup(item){
 }
 function guideSortedCategoryItems(cat){
  const items=guideCategoryItems(cat).slice();
- if(cat==='ATTRACTIONS') return items.sort((a,b)=>guideDayNumber(a)-guideDayNumber(b)||String(a.title||'').localeCompare(String(b.title||'')));
+ if(cat==='ATTRACTIONS'||cat==='DINING') return items.sort((a,b)=>guideDayNumber(a)-guideDayNumber(b)||String(a.title||'').localeCompare(String(b.title||'')));
  if(cat==='ACTIVITIES') return items.sort((a,b)=>guideActivityGroup(a).localeCompare(guideActivityGroup(b))||String(a.title||'').localeCompare(String(b.title||'')));
  return items.sort((a,b)=>String(a.title||'').localeCompare(String(b.title||'')));
 }
 function guideListRow(item){
- return `<button onclick="openGuideModal('${item.key}')"><span><span class="guide-list-title">${item.emoji} ${item.title}</span><span class="guide-list-sub">${item.sub||''}</span></span><span class="guide-list-meta">${guideStatusHTML(PRODUCTION_GUIDE.places[item.key]||{})}<span class="guide-list-chevron">›</span></span></button>`;
+ const booking=(item.cat==='STAY'&&window.BOOKING_AUTHORITY)?BOOKING_AUTHORITY.byPlace(item.key):null;
+ const action=booking?`openAccommodationDetail('${booking.id}')`:`openGuideModal('${item.key}')`;
+ return `<button onclick="${action}"><span><span class="guide-list-title">${item.emoji} ${item.title}</span><span class="guide-list-sub">${item.sub||''}</span></span><span class="guide-list-meta">${guideStatusHTML(PRODUCTION_GUIDE.places[item.key]||{})}<span class="guide-list-chevron">›</span></span></button>`;
 }
 function groupedGuideRows(cat,list){
- if(cat==='ATTRACTIONS'){
+ if(cat==='ATTRACTIONS'||cat==='DINING'){
   const groups=new Map();
   list.forEach(item=>{const day=guideDayNumber(item);const label=day===999?'Optional / Flexible':`Day ${day}`;(groups.get(label)||groups.set(label,[]).get(label)).push(item);});
   return [...groups.entries()].map(([label,items])=>`<section class="guide-category-group"><h3 class="guide-category-group-title">${label}</h3>${items.map(guideListRow).join('')}</section>`).join('');
@@ -178,10 +187,10 @@ function quickInfoInnerHTML(g,key){
  // Accommodation commercial details have one canonical owner: BOOKINGS_DATA.
  // This prevents Guide cards losing prices when place content is edited independently.
  const price=(bookingPrice&&!unknown.test(bookingPrice))?bookingPrice:placePrice;
- const showPrice=price&&!unknown.test(price);
+ const showPrice=g.cat!=='STAY'&&g.cat!=='ACTIVITIES'&&price&&!unknown.test(price);
  const priceRow=showPrice?`<div class="quick-info-row"><span class="quick-info-icon">💰</span><span><span class="quick-info-label">Price</span><span class="quick-info-value">${price}</span></span></div>`:'';
  const hours=String(g.hours||'').trim();
- const hoursRow=hours&&!unknown.test(hours)?`<div class="quick-info-row"><span class="quick-info-icon">🕘</span><span><span class="quick-info-label">Hours</span><span class="quick-info-value">${hours}</span></span></div>`:'';
+ const hoursRow=g.cat!=='STAY'&&hours&&!unknown.test(hours)?`<div class="quick-info-row"><span class="quick-info-icon">🕘</span><span><span class="quick-info-label">Hours</span><span class="quick-info-value">${hours}</span></span></div>`:'';
  const address=String(g.address||'').trim();
  const addressRow=address?`<div class="quick-info-row"><span class="quick-info-icon">📍</span><span><span class="quick-info-label">Address</span><span class="quick-info-value">${address}</span></span></div>`:'';
  const copyButton=address?`<button class="utility-button" type="button" onclick="copyGuideAddress('${key}')">📍 Copy Address</button>`:'';
@@ -191,7 +200,7 @@ function quickInfoInnerHTML(g,key){
  const reminderRow=reminder?`<p class="visitor-reminder"><strong>Reminder:</strong> ${reminder}</p>`:'';
  const linkedBooking=window.BOOKING_AUTHORITY?BOOKING_AUTHORITY.byPlace(key):null;
  const bookingStatus=linkedBooking?String(linkedBooking.displayStatus||linkedBooking.status||'').toUpperCase():'';
- const bookingRow=linkedBooking?`<div class="quick-info-row"><span class="quick-info-icon">🎟️</span><span><span class="quick-info-label">Booking</span><span class="quick-info-value">${bookingStatus||'DETAILS AVAILABLE'}</span></span></div>`:'';
+ const bookingRow='';
  const bookingButton=linkedBooking?`<button class="utility-button" type="button" onclick="${linkedBooking.type==='activity'?'openActivityBookingDetail':'openAccommodationDetail'}('${linkedBooking.id}')">🎟️ Booking Details</button>`:'';
  const parking=g.parking;
  const parkingHTML=parking?`<div class="recommended-parking"><div class="recommended-parking-head"><span>🚗</span><span><strong>Recommended Parking</strong><small>${parking.name||''}</small></span></div><div class="recommended-parking-grid"><p><span>📍</span><span>${parking.address||''}</span></p><p><span>🚶</span><span>${parking.walk||''}</span></p><p><span>💰</span><span>${parking.fee||''}</span></p></div>${parking.note?`<p class="recommended-parking-note">${parking.note}</p>`:''}${parking.maps?`<a class="map-button recommended-parking-nav" href="${parking.maps}" target="_blank" rel="noopener">🧭 Navigate to Parking</a>`:''}</div>`:'';
