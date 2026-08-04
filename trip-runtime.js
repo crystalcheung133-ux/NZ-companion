@@ -387,6 +387,8 @@ document.addEventListener('travelengine:adminmodechange',function(){
 document.addEventListener('DOMContentLoaded',reopenSavedBooking);
 
 function openTripCard(key) {
+  const guideModal=document.getElementById('guideModal');
+  if(guideModal?.classList.contains('show')) guideModal.classList.remove('show');
   closeMiniMenus();
   const t = PRODUCTION_TRIP.cards[key];
   if (!t) return;

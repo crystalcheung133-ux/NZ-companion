@@ -2144,3 +2144,41 @@ body.home-bg .live-currency-card #currencyCardMeta{position:relative;z-index:2;w
     width: min(330px, calc(100vw - 24px)) !important;
   }
 }
+
+
+/* RC23.4 modal/nav coexistence: long Trip and Guide cards remain fully reachable. */
+:root{
+  --app-nav-clearance: calc(112px + env(safe-area-inset-bottom, 0px));
+}
+.guide-modal,
+.trip-modal{
+  padding-bottom:var(--app-nav-clearance)!important;
+  align-items:start!important;
+  overflow:hidden!important;
+}
+#guideModal .guide-sheet,
+#tripModal .trip-sheet{
+  max-height:calc(100dvh - var(--app-nav-clearance) - 18px)!important;
+  padding-bottom:24px!important;
+  scroll-padding-bottom:28px!important;
+  overscroll-behavior:contain!important;
+}
+#guideModal .guide-next-row,
+#tripModal .guide-next-row{
+  position:relative!important;
+  z-index:2!important;
+  margin-bottom:8px!important;
+}
+@media (max-width:760px){
+  :root{
+    --app-nav-clearance: calc(118px + env(safe-area-inset-bottom, 0px));
+  }
+  .guide-modal,
+  .trip-modal{
+    padding:8px 8px var(--app-nav-clearance)!important;
+  }
+  #guideModal .guide-sheet,
+  #tripModal .trip-sheet{
+    max-height:calc(100dvh - var(--app-nav-clearance) - 8px)!important;
+  }
+}

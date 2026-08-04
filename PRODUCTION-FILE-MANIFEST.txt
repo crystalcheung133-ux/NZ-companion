@@ -1,6 +1,6 @@
 CCMV Travel Engine Production File Manifest
 Generated: 2026-08-04
-Release: NZ-RC23.3-EMERGENCY-RECOVERY
+Release: NZ-RC23.4-MODAL-NAV-COEXISTENCE
 Production root files:
 
 - VERSION.txt
