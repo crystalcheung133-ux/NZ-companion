@@ -13,6 +13,20 @@
   const prototypePhotoUrls = new Map();
   function readJson(key, fallback){try{return STORAGE.local.readJSON(key,fallback);}catch(e){return fallback;}}
   function writeJson(key, value){STORAGE.local.writeJSON(key,value);}
+  function currentMomentParty(){
+    try{return (typeof getFriend==='function'?getFriend():STORAGE.local.get(STORAGE_CONFIG.keys.friend))||'lee';}
+    catch(e){return 'lee';}
+  }
+  function isStudioManager(){
+    try{return typeof window.isAdminMode==='function' && window.isAdminMode();}
+    catch(e){return false;}
+  }
+  function momentOwner(entry){
+    return (entry&&entry.createdBy) || '';
+  }
+  function canManageMoment(entry){
+    return !!entry && (isStudioManager() || momentOwner(entry)===currentMomentParty());
+  }
   function clearMomentPhoto(revoke=true){
     if(currentMomentPhoto?.url && revoke && ![...prototypePhotoUrls.values()].includes(currentMomentPhoto.url)){
       try{ URL.revokeObjectURL(currentMomentPhoto.url); }catch(e){}
@@ -352,6 +366,7 @@
     const arr=readJson(STORAGE_CONFIG.keys.momentsList,[]);
     const e=arr.find(x=>x.id===id);
     if(!e) return;
+    if(!canManageMoment(e)) return alert('Only the party that added this Moment, or Trip Studio, can edit it.');
     editingMomentId=id;
     momentEntryIsPlanned = false; /* Stage 5B-2B2: editing an existing moment always keeps the full planned-activity picker */
     currentMomentKey=e.itemKey || 'general';
@@ -385,6 +400,8 @@
     let arr=readJson(STORAGE_CONFIG.keys.momentsList,[]);
     const before=arr.length;
     const deleting=arr.find(e=>e.id===idOrKey);
+    if(deleting && !canManageMoment(deleting)) return alert('Only the party that added this Moment, or Trip Studio, can delete it.');
+    if(deleting && !window.confirm(`Delete "${deleting.itemTitle||'this Moment'}"?\n\nThis cannot be undone.`)) return;
     window.MOMENT_SYNC?.markDeleted(deleting);
     arr=arr.filter(e=>e.id!==idOrKey);
     writeJson(STORAGE_CONFIG.keys.momentsList,arr);
@@ -417,7 +434,7 @@
       <p class="moment-mood">${moodLabel(e.moods||[])}</p>
       <p class="moment-stars">${'⭐'.repeat(e.rating||0)}</p>
       <p class="moment-copy">${escapeHTML(e.text||'')}</p>
-      <div class="entry-actions"><button class="mini-btn" onclick="editMoment('${e.id||e.itemKey}')">✏️ Edit</button><button class="mini-btn" onclick="deleteMoment('${e.id||e.itemKey}')">🗑 Delete</button></div>
+      ${canManageMoment(e)?`<div class="entry-actions"><button class="mini-btn" onclick="editMoment('${e.id||e.itemKey}')">✏️ Edit</button><button class="mini-btn" onclick="deleteMoment('${e.id||e.itemKey}')">🗑 Delete</button></div>`:`<p class="timestamp entry-owner-note">Added by ${escapeHTML(e.friendLabel||momentOwner(e)||'Traveller')} · View only</p>`}
     </div>`).join('');
   };
   /* Stage 4C-6: removed legacy v3.2 window.saveExpense; canonical handler is later in this file. */

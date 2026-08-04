@@ -275,6 +275,8 @@ function routeStopsHTML(g){
 }
 
 function openGuideModal(key){
+ const tripModal=document.getElementById('tripModal');
+ if(tripModal?.classList.contains('show')) tripModal.classList.remove('show');
  const g=PRODUCTION_GUIDE.places[key]; if(!g)return;
  $('guideModalContent').innerHTML=`<div class="guide-onepage"><p class="kicker">Guide</p><h2>${g.emoji} ${g.title}</h2><p class="guide-onepage-sub"><strong>${g.sub}</strong></p><p class="guide-onepage-desc">${g.desc}</p>${quickInfoHTML(g,key)}${guideStaySections(g)}${routeStopsHTML(g)}${compactGuideSections(g)}${guideNavButtons(key)}</div>`;
  $('guideModal').classList.add('show');

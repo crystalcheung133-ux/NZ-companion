@@ -131,9 +131,28 @@ function toggleMenu(id,trigger){
   closeMiniMenus();
   if(m&&!open)openMiniMenu(id,trigger);
 }
-function toggleTripMenu(){toggleMenu('tripMenu',document.querySelector('.trip-trigger'));}
-function toggleGuideMenu(){toggleMenu('guideMenu',document.querySelector('.guide-trigger'));}
-function toggleDays(){toggleMenu('daysMenu',document.querySelector('.days-trigger'));}
+function closeCrossModuleOverlays(target){
+  const tripModal=document.getElementById('tripModal');
+  const guideModal=document.getElementById('guideModal');
+  if(target!=='trip' && tripModal?.classList.contains('show')){
+    if(typeof window.isBookingEditActive==='function' && window.isBookingEditActive()) return false;
+    tripModal.classList.remove('show');
+  }
+  if(target!=='guide' && guideModal?.classList.contains('show')) guideModal.classList.remove('show');
+  return true;
+}
+function toggleTripMenu(){
+  if(!closeCrossModuleOverlays('trip'))return;
+  toggleMenu('tripMenu',document.querySelector('.trip-trigger'));
+}
+function toggleGuideMenu(){
+  if(!closeCrossModuleOverlays('guide'))return;
+  toggleMenu('guideMenu',document.querySelector('.guide-trigger'));
+}
+function toggleDays(){
+  if(!closeCrossModuleOverlays('days'))return;
+  toggleMenu('daysMenu',document.querySelector('.days-trigger'));
+}
 function reopenTripMenu(){requestAnimationFrame(()=>openMiniMenu('tripMenu',document.querySelector('.trip-trigger')));}
 function reopenGuideMenu(){requestAnimationFrame(()=>openMiniMenu('guideMenu',document.querySelector('.guide-trigger')));}
 window.addEventListener('resize',closeMiniMenus);

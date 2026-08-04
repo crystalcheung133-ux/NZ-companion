@@ -40,3 +40,6 @@ jobs:
       - name: Timeline integrity
         run: node ci-tests/test-timeline-integrity.js
 
+      - name: UX contract
+        run: node ci-tests/test-ux-contract.js
+

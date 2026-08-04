@@ -76,6 +76,16 @@ let editingExpenseIndex=null;
     try{return (typeof getFriend==='function' ? getFriend() : STORAGE.local.get(STORAGE_CONFIG.keys.friend)) || (TRIP_CONFIG.participants&&TRIP_CONFIG.participants.defaultKey) || 'lee';}
     catch(e){return 'crystal';}
   }
+  function isStudioManager(){
+    try{return typeof window.isAdminMode==='function' && window.isAdminMode();}
+    catch(e){return false;}
+  }
+  function expenseOwner(record){
+    return (record&&record.createdBy) || (record&&record.paidBy) || '';
+  }
+  function canManageExpense(record){
+    return !!record && (isStudioManager() || expenseOwner(record)===currentUser());
+  }
   function labelFor(k){
     try{return (typeof FRIENDS!=='undefined' && FRIENDS[k]) ? FRIENDS[k] : (FRIEND_FALLBACK[k]||k||'');}
     catch(e){return FRIEND_FALLBACK[k]||k||'';}
@@ -383,7 +393,8 @@ let editingExpenseIndex=null;
     const consumer=e.consumedBy || split[0] || e.paidBy;
     const who=personal ? `Consumed by ${identityFor(consumer,true)}` : `${e.splitMode==='custom'?'Custom':'Equal'} split: ${split.map(k=>identityFor(k,true)).join('<span class="identity-separator">·</span>')}`;
     const latestId=e._latest?' id="latestExpenseCard"':'';
-    return `<div class="expense-card"${latestId}><strong>${escapeHTML(e.item||'')}</strong><p class="timestamp">${timeLabel(e.createdAt)}${e.editedAt?` · Edited ${timeLabel(e.editedAt)}`:''}</p><p>${FORMATTER.number(MONEY.normalizeAmount(e.total))} ${MONEY.getTripCurrency().code} · Paid by ${identityFor(e.paidBy,true)}</p><p>${personal?'Personal Expense':'Shared Expense'} · ${who}</p><div class="entry-actions"><button class="mini-btn" onclick="editExpense(${e._idx})">✏️ Edit</button><button class="mini-btn" onclick="deleteExpense(${e._idx})">🗑 Delete</button></div></div>`;
+    const actions=canManageExpense(e)?`<div class="entry-actions"><button class="mini-btn" onclick="editExpense(${e._idx})">✏️ Edit</button><button class="mini-btn" onclick="deleteExpense(${e._idx})">🗑 Delete</button></div>`:`<p class="timestamp entry-owner-note">Added by ${identityFor(expenseOwner(e),true)} · View only</p>`;
+    return `<div class="expense-card"${latestId}><strong>${escapeHTML(e.item||'')}</strong><p class="timestamp">${timeLabel(e.createdAt)}${e.editedAt?` · Edited ${timeLabel(e.editedAt)}`:''}</p><p>${FORMATTER.number(MONEY.normalizeAmount(e.total))} ${MONEY.getTripCurrency().code} · Paid by ${identityFor(e.paidBy,true)}</p><p>${personal?'Personal Expense':'Shared Expense'} · ${who}</p>${actions}</div>`;
   }
   let expensePageScrollY=0;
   function lockExpensePage(){
@@ -445,10 +456,11 @@ let editingExpenseIndex=null;
     const operationIndex=editingExpenseIndex;
     const operation=operationIndex!==null?'update':'create';
     const previousRecord=operationIndex!==null&&arr[operationIndex]?Object.assign({},arr[operationIndex]):null;
-    const data={item,details,category,total,paidBy,type:personal?'personal':'shared',split:personal?[consumedBy]:split,splitMode,shares:personal?null:shares,consumedBy:personal?consumedBy:null,createdAt:now,updatedAt:now};
+    const data={item,details,category,total,paidBy,type:personal?'personal':'shared',split:personal?[consumedBy]:split,splitMode,shares:personal?null:shares,consumedBy:personal?consumedBy:null,createdAt:now,updatedAt:now,createdBy:currentUser(),editedBy:currentUser()};
     if(editingExpenseIndex!==null && arr[editingExpenseIndex]){
       data.id=arr[editingExpenseIndex].id;
       data.createdAt=arr[editingExpenseIndex].createdAt || now;
+      data.createdBy=arr[editingExpenseIndex].createdBy || arr[editingExpenseIndex].paidBy || currentUser();
       data.editedAt=now;
       data.updatedAt=now;
       arr[editingExpenseIndex]=data;
@@ -574,6 +586,8 @@ let editingExpenseIndex=null;
   window.deleteExpense=function(i){
     const arr=readExpenses();
     if(!arr[i]) return;
+    if(!canManageExpense(arr[i])) return alert('Only the party that added this expense, or Trip Studio, can delete it.');
+    if(!window.confirm(`Delete "${arr[i].item||'this expense'}"?\n\nThis cannot be undone.`)) return;
     const previousRecord=Object.assign({},arr[i]);
     window.EXPENSE_SYNC?.markDeleted(arr[i]);
     arr.splice(i,1);

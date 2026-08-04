@@ -2144,3 +2144,80 @@ body.home-bg .live-currency-card #currencyCardMeta{position:relative;z-index:2;w
     width: min(330px, calc(100vw - 24px)) !important;
   }
 }
+
+
+/* RC23.4 modal/nav coexistence: long Trip and Guide cards remain fully reachable. */
+:root{
+  --app-nav-clearance: calc(112px + env(safe-area-inset-bottom, 0px));
+}
+.guide-modal,
+.trip-modal{
+  padding-bottom:var(--app-nav-clearance)!important;
+  align-items:start!important;
+  overflow:hidden!important;
+}
+#guideModal .guide-sheet,
+#tripModal .trip-sheet{
+  max-height:calc(100dvh - var(--app-nav-clearance) - 18px)!important;
+  padding-bottom:24px!important;
+  scroll-padding-bottom:28px!important;
+  overscroll-behavior:contain!important;
+}
+#guideModal .guide-next-row,
+#tripModal .guide-next-row{
+  position:relative!important;
+  z-index:2!important;
+  margin-bottom:8px!important;
+}
+@media (max-width:760px){
+  :root{
+    --app-nav-clearance: calc(118px + env(safe-area-inset-bottom, 0px));
+  }
+  .guide-modal,
+  .trip-modal{
+    padding:8px 8px var(--app-nav-clearance)!important;
+  }
+  #guideModal .guide-sheet,
+  #tripModal .trip-sheet{
+    max-height:calc(100dvh - var(--app-nav-clearance) - 8px)!important;
+  }
+}
+
+
+/* RC24 UX Freeze — Trip = Action; Guide = Knowledge. */
+.accommodation-detail-card--compact{
+  gap:12px!important;
+}
+.accommodation-detail-card--compact .accommodation-facts{
+  margin:0!important;
+}
+.accommodation-detail-card--compact .accommodation-section{
+  margin:0!important;
+  padding:10px 12px!important;
+}
+.accommodation-detail-card--compact .accommodation-section h3{
+  margin-bottom:4px!important;
+}
+.accommodation-detail-card--compact .trip-action-row{
+  margin-top:2px!important;
+}
+.entry-owner-note{
+  margin:8px 0 0!important;
+  opacity:.78;
+}
+.trip-studio-selector-toggle[hidden]{
+  display:none!important;
+}
+@media (max-width:760px){
+  .accommodation-onepage-detail{
+    padding-bottom:12px!important;
+  }
+  .accommodation-detail-card--compact .booking-fact-grid,
+  .accommodation-detail-card--compact .accommodation-facts{
+    gap:7px!important;
+  }
+  .accommodation-detail-card--compact .trip-action-row{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}

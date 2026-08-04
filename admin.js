@@ -42,6 +42,8 @@
       modal.classList.remove('studio-view');
       modal.classList.remove('show');
     }
+    const selector=document.getElementById('tripStudioSelectorToggle');
+    if(selector) selector.hidden=false;
   }
   function exitTripStudioMode(){
     const disabled=window.setAdminMode(false);
@@ -55,6 +57,8 @@
     const studio=document.getElementById('adminModeControl');
     if(!modal||!studio) return false;
     studio.hidden=false;
+    const selector=document.getElementById('tripStudioSelectorToggle');
+    if(selector) selector.hidden=true;
     modal.classList.add('studio-view');
     modal.classList.add('show');
     scrollTripStudioToBottom();
@@ -156,9 +160,9 @@
       selectorCard.setAttribute('aria-pressed',String(active));
       selectorCard.setAttribute('aria-label',active?'Open Trip Studio':'Open Studio Mode');
       const status=selectorCard.querySelector('.trip-studio-selector-status');
-      if(status) status.textContent=active?'Studio active · Open workspace':'PIN protected · Enter PIN to access';
-      const arrow=selectorCard.querySelector('.trip-studio-selector-arrow');
-      if(arrow) arrow.textContent='›';
+      if(status) status.textContent=active?'Studio active · Tap to reopen Trip Studio':'PIN protected · Enter PIN to access';
+      const studio=document.getElementById('adminModeControl');
+      selectorCard.hidden=!!(active && studio && !studio.hidden);
     }
     const banner=document.getElementById('adminModeBanner');
     if(banner) banner.hidden=!state.mode;
@@ -189,7 +193,7 @@
       selectorToggle.setAttribute('tabindex','0');
       selectorToggle.setAttribute('aria-label','Open Studio Mode');
       selectorToggle.setAttribute('aria-pressed','false');
-      selectorToggle.innerHTML=`<span class="trip-studio-selector-copy"><strong>⚙ Studio Mode</strong><small>Editing, Complete Trip, Export Centre and trip controls</small><em class="trip-studio-selector-status">PIN protected · Enter PIN to access</em></span><span class="trip-studio-selector-arrow" aria-hidden="true">›</span>`;
+      selectorToggle.innerHTML=`<span class="trip-studio-selector-copy"><strong>⚙ Studio Mode</strong><small>Editing, Complete Trip, Export Centre and trip controls</small><em class="trip-studio-selector-status">PIN protected · Enter PIN to access</em></span>`;
       familyList.insertAdjacentElement('afterend',selectorToggle);
       const activateStudio=()=>{
         if(state.mode && isUnlocked() && isAdminUser()){
@@ -232,7 +236,7 @@
             <span><strong>Reset Trip Data</strong><small>Restore the original trip and remove all saved progress.</small></span><span aria-hidden="true">↺</span>
           </button>
           <button id="exitTripStudioButton" class="exit-trip-studio-btn" type="button">
-            <span><strong>Exit Studio Mode</strong><small>Return to normal traveller mode and hide all editing controls.</small></span><span aria-hidden="true">Leave</span>
+            <span><strong>Leave Studio Mode</strong><small>Return to traveller mode. The Studio PIN will be required next time.</small></span><span aria-hidden="true">Leave</span>
           </button>
         </div>`;
       familySheet.appendChild(block);
