@@ -2109,3 +2109,38 @@ body.home-bg .live-currency-card #currencyCardMeta{position:relative;z-index:2;w
 .guide-stay-section p{margin:0;line-height:1.55}
 .guide-stay-section ul{margin:0;padding-left:20px}
 .guide-stay-section li+li{margin-top:6px}
+
+
+/* RC23.3 emergency hotfix: bottom navigation popups must render above the fixed app nav. */
+.app-nav {
+  z-index: 6000 !important;
+}
+.mini-menu,
+#tripMenu,
+#guideMenu,
+#daysMenu {
+  position: fixed !important;
+  bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+  z-index: 6100 !important;
+  max-height: min(62dvh, 520px) !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+}
+.mini-menu.show,
+#tripMenu.show,
+#guideMenu.show,
+#daysMenu.show {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
+  transform: translateX(-50%) translateY(0) !important;
+}
+@media (max-width: 760px) {
+  .mini-menu,
+  #tripMenu,
+  #guideMenu,
+  #daysMenu {
+    bottom: calc(102px + env(safe-area-inset-bottom, 0px)) !important;
+    width: min(330px, calc(100vw - 24px)) !important;
+  }
+}

@@ -36,3 +36,7 @@ jobs:
 
       - name: Guide address integrity
         run: python3 ci-tests/address-integrity-test.py
+
+      - name: Timeline integrity
+        run: node ci-tests/test-timeline-integrity.js
+
