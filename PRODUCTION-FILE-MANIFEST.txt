@@ -1,6 +1,6 @@
 CCMV Travel Engine Production File Manifest
 Generated: 2026-08-04
-Release: NZ-RC23-PRODUCTION-AUDIT-GUIDE-STAY-DAY3-ROUTE
+Release: NZ-RC23.1-TIMELINE-INTEGRITY-DAY3
 Production root files:
 
 - VERSION.txt
