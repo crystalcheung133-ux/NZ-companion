@@ -1,65 +1,26 @@
-CCMV Travel Engine Production File Manifest
-Generated: 2026-08-05
-Release: NZ-RC24.4-CONFIRMED-STAY-CLEANUP
-Production root files:
+#!/bin/sh
+set -eu
 
-- VERSION.txt
-- admin.js
-- app-runtime.js
-- asset-config.js
-- booking-authority.js
-- complete-runtime.js
-- core-runtime.js
-- currency-runtime.js
-- data.js
-- day.html
-- engine-integrity.js
-- expense-sync-runtime.js
-- expenses.html
-- expenses.js
-- export-runtime.js
-- formatter.js
-- generation-runtime.js
-- generation-selection-adapter.js
-- geo-config.js
-- guide-navigation-runtime.js
-- guide-runtime.js
-- guide.html
-- home-runtime.js
-- icon-192.png
-- icon-512.png
-- index.html
-- itinerary-authority.js
-- itinerary.html
-- locale-config.js
-- manifest.webmanifest
-- memory.html
-- moment-sync-runtime.js
-- moments-compat.js
-- moments.html
-- moments.js
-- money-config.js
-- money.js
-- navigation-config.js
-- navigation.js
-- nz-adventure-logo.png
-- nz-adventure-mark.png
-- offline.html
-- party-render-runtime.js
-- place.html
-- publication-runtime.js
-- pwa.js
-- reset-runtime.js
-- script.js
-- storage-config.js
-- storage.js
-- styles.css
-- supabase-client-runtime.js
-- sw.js
-- sync-config.js
-- sync-runtime.js
-- theme-config.js
-- trip-config.js
-- trip-runtime.js
-- trip.html
-- vercel.json
+SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+REPO_ROOT="$(dirname "$SCRIPT_DIR")"
+manifest="$REPO_ROOT/PRODUCTION-FILE-MANIFEST.txt"
+checksums="$REPO_ROOT/SHA256SUMS.txt"
+
+if cmp -s "$manifest" "$checksums"; then
+  echo "RELEASE FILE SEPARATION: FAILED — manifest and checksum files are identical"
+  exit 1
+fi
+
+first_line="$(head -n 1 "$checksums" || true)"
+printf '%s
+' "$first_line" | grep -Eq '^[0-9a-f]{64}  .+' || {
+  echo "RELEASE FILE SEPARATION: FAILED — SHA256SUMS.txt does not start with a checksum line"
+  exit 1
+}
+
+grep -q '^CCMV Travel Engine Production File Manifest$' "$manifest" || {
+  echo "RELEASE FILE SEPARATION: FAILED — manifest header missing"
+  exit 1
+}
+
+echo "RELEASE FILE SEPARATION: PASS"
