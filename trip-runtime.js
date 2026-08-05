@@ -120,7 +120,7 @@ function bookingSectionHTML(title,content,options){
   return `<div class="accommodation-section"><h3>${escapeTripHTML(title)}</h3><p>${safe}</p></div>`;
 }
 function bookingGuideButtonHTML(booking){
-  return booking&&booking.placeId?`<a class="pill trip-action-btn trip-action-btn--guide" href="place.html?id=${encodeURIComponent(booking.placeId)}">Guide</a>`:'';
+  return booking&&booking.placeId?`<a class="pill trip-action-btn trip-action-btn--guide" href="guide.html?id=${encodeURIComponent(booking.placeId)}">Guide</a>`:'';
 }
 function bookingDayButtonHTML(booking){
   const dayNumber=bookingDayNumber(booking);if(!dayNumber)return '';

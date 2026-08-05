@@ -46,7 +46,7 @@ function openGuideGroupFromDay(keys,itemId){
   const sourceUrl=NAVIGATION.currentRelativeUrl({hash:null});
   saveGuideNavigationContext(first.cat||'GUIDE',{sourceUrl,sourceType:'day',scrollY:window.scrollY||0});
   // RC11K: confirmed single destinations open immediately. Only genuine alternatives show a choice page.
-  NAVIGATION.go(clean.length===1 ? placeHref(clean[0]) : NAVIGATION.build('place',{query:{placeIds:clean.join(',')}}));
+  NAVIGATION.go(clean.length===1 ? NAVIGATION.build('guide',{query:{placeId:clean[0]}}) : NAVIGATION.build('place',{query:{placeIds:clean.join(',')}}));
 }
 function readGuideNavigationContext(){
   try{return STORAGE.session.readJSON(GUIDE_NAV_CONTEXT_KEY,null);}
@@ -89,6 +89,17 @@ function openShoppingDirectoryView(){
 }
 window.addEventListener('hashchange',applyGuideHashView);
 document.addEventListener('DOMContentLoaded',applyGuideHashView);
+function openRequestedGuideCard(){
+ const key=NAVIGATION.getQuery('placeId','') || NAVIGATION.getQuery('legacyPlaceId','');
+ if(!key || !PRODUCTION_GUIDE.places[key]) return;
+ window.setTimeout(function(){
+  openGuideModal(key);
+  const sheet=document.querySelector('#guideModal .guide-sheet');
+  if(sheet){sheet.scrollTop=0;sheet.focus?.({preventScroll:true});}
+ },0);
+}
+document.addEventListener('DOMContentLoaded',openRequestedGuideCard);
+
 
 function guideCategoryItems(cat){
  const excluded=new Set(TRIP_CONFIG.guide?.excludedPlaceIds||[]);
@@ -280,7 +291,7 @@ function openGuideModal(key){
  const tripModal=document.getElementById('tripModal');
  if(tripModal?.classList.contains('show')) tripModal.classList.remove('show');
  const g=PRODUCTION_GUIDE.places[key]; if(!g)return;
- $('guideModalContent').innerHTML=`<div class="guide-onepage"><p class="kicker">Guide</p><h2>${g.emoji} ${g.title}</h2><p class="guide-onepage-sub"><strong>${g.sub}</strong></p>${g.desc?`<p class="guide-onepage-desc">${g.desc}</p>`:''}${quickInfoHTML(g,key)}${guideStaySections(g)}${routeStopsHTML(g)}${compactGuideSections(g)}${guideNavButtons(key)}</div>`;
+ $('guideModalContent').innerHTML=`<div class="guide-onepage"><p class="kicker">Guide</p><h2>${g.emoji} ${g.title}</h2><p class="guide-onepage-sub"><strong>${g.sub}</strong></p>${quickInfoHTML(g,key)}${guideStaySections(g)}${routeStopsHTML(g)}${compactGuideSections(g)}${guideNavButtons(key)}</div>`;
  $('guideModal').classList.add('show');
  const sheet=document.querySelector('#guideModal .guide-sheet');
  if(sheet){ sheet.scrollTop=0; if(typeof window.applyNearFitModal==='function') window.applyNearFitModal(sheet,'guide-near-fit'); }
