@@ -91,7 +91,7 @@
       welcomeMessage: 'Welcome to New Zealand',
       completedMessage: 'Thanks for the moments'
     }),
-    guide: Object.freeze({ excludedPlaceIds: Object.freeze(['airport-queenstown','christchurch-airport','rental-cars-247','lake-tekapo','good-shepherd','firebirds','wolf-coffee','queenstown-central','te-anau','white-water-rafting']) }),
+    guide: Object.freeze({ excludedPlaceIds: Object.freeze(['airport-queenstown','christchurch-airport','rental-cars-247','lake-tekapo','good-shepherd','firebirds','wolf-coffee','queenstown-central','te-anau']) }),
     exports: Object.freeze({ expenseSummaryTitle: 'CCMV NEW ZEALAND EXPENSE SUMMARY' }),
     heroLine1: 'New Zealand',
     heroEmphasis: 'Companion',
@@ -99,7 +99,7 @@
     splashSlogan: 'ADVENTURE AWAITS',
     splashDestination: 'NEW ZEALAND 2026',
     storageNamespace: 'nz-family-2026',
-    version: 'RC22.3',
+    version: 'RC24.6',
     buildLabel: 'Day 3 Flight + PIN Studio Access',
     theme: root.THEME_CONFIG.colors
   });

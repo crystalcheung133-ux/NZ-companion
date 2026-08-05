@@ -1,6 +1,6 @@
 CCMV Travel Engine Production File Manifest
 Generated: 2026-08-05
-Release: NZ-RC24.5-RELEASE-INTEGRITY-HARDENING
+Release: NZ-RC24.6-FINAL-AUDIT-FREEZE
 Production root files:
 
 - VERSION.txt

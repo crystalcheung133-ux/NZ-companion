@@ -100,7 +100,7 @@ function guideCategoryItems(cat){
       const booking=BOOKING_AUTHORITY.byPlace(item.key);
       // Guide Stay shows the current intended stay only: confirmed or primary choice.
       // Booked backups remain exclusively in Trip · Accommodation.
-      return !!booking&&!/backup/i.test(String(booking.status||''))&&['confirmed','monitoring'].includes(String(booking.status||''));
+      return !!booking&&!/backup/i.test(String(booking.status||''))&&['confirmed','monitoring','pending'].includes(String(booking.status||''));
     }
     return true;
   });
@@ -205,6 +205,9 @@ function quickInfoInnerHTML(g,key){
  const price=(bookingPrice&&!unknown.test(bookingPrice))?bookingPrice:placePrice;
  const showPrice=g.cat!=='STAY'&&g.cat!=='ACTIVITIES'&&price&&!unknown.test(price);
  const priceRow=showPrice?`<div class="quick-info-row"><span class="quick-info-icon">💰</span><span><span class="quick-info-label">Price</span><span class="quick-info-value">${price}</span></span></div>`:'';
+ // Room type is a Guide-only informational field; the booking record remains the sole owner of the data.
+ const roomType=String(accommodationBooking?.roomType||'').trim();
+ const roomRow=roomType?`<div class="quick-info-row"><span class="quick-info-icon">🛏️</span><span><span class="quick-info-label">Room type</span><span class="quick-info-value">${roomType}</span></span></div>`:'';
  const hours=String(g.hours||'').trim();
  const hoursRow=g.cat!=='STAY'&&hours&&!unknown.test(hours)?`<div class="quick-info-row"><span class="quick-info-icon">🕘</span><span><span class="quick-info-label">Hours</span><span class="quick-info-value">${hours}</span></span></div>`:'';
  const address=String(g.address||'').trim();
@@ -221,7 +224,7 @@ function quickInfoInnerHTML(g,key){
  const parking=g.parking;
  const parkingHTML=parking?`<div class="recommended-parking"><div class="recommended-parking-head"><span>🚗</span><span><strong>Recommended Parking</strong><small>${parking.name||''}</small></span></div><div class="recommended-parking-grid"><p><span>📍</span><span>${parking.address||''}</span></p><p><span>🚶</span><span>${parking.walk||''}</span></p><p><span>💰</span><span>${parking.fee||''}</span></p></div>${parking.note?`<p class="recommended-parking-note">${parking.note}</p>`:''}${parking.maps?`<a class="map-button recommended-parking-nav" href="${parking.maps}" target="_blank" rel="noopener">🧭 Navigate to Parking</a>`:''}</div>`:'';
  const detailStatus=g.cat==='STAY'?guideStayStatusHTML(Object.assign({key},g)):guideStatusHTML(g);
- return `<div class="quick-info-top"><span class="category-tag">${g.categoryLabel||g.cat||'Guide'}</span>${roleBadge}${detailStatus}</div><div class="quick-info-grid">${addressRow}${phoneRow}${hoursRow}${priceRow}${bookingRow}${visitDayHTML(key)}</div>${reminderRow}${parkingHTML}<div class="quick-info-actions">${copyButton}${navButton}${bookingButton}${callButton}${websiteButton}</div>`;
+ return `<div class="quick-info-top"><span class="category-tag">${g.categoryLabel||g.cat||'Guide'}</span>${roleBadge}${detailStatus}</div><div class="quick-info-grid">${addressRow}${phoneRow}${hoursRow}${priceRow}${roomRow}${bookingRow}${visitDayHTML(key)}</div>${reminderRow}${parkingHTML}<div class="quick-info-actions">${copyButton}${navButton}${bookingButton}${callButton}${websiteButton}</div>`;
 }
 
 function quickInfoHTML(g,key){

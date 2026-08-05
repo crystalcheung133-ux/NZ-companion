@@ -119,15 +119,6 @@ function bookingSectionHTML(title,content,options){
   const safe=opts.html?String(content):escapeTripHTML(content).replace(/\n/g,'<br>');
   return `<div class="accommodation-section"><h3>${escapeTripHTML(title)}</h3><p>${safe}</p></div>`;
 }
-function usefulCheckInInstructions(text){
-  let value=String(text||'').trim();
-  if(!value)return '';
-  return value
-    .replace(/^Use (?:the )?hotel reception for check-in\.\s*/i,'')
-    .replace(/^Check in at reception\.\s*/i,'')
-    .replace(/^Use reception for check-in\.\s*/i,'')
-    .trim();
-}
 function bookingGuideButtonHTML(booking){
   return booking&&booking.placeId?`<button class="pill trip-action-btn trip-action-btn--guide" type="button" onclick="NAVIGATION.goPage('place',{query:{placeId:'${escapeTripHTML(booking.placeId)}'}})">Guide</button>`:'';
 }
@@ -145,17 +136,10 @@ function bookingActionButtonsHTML(booking,place,options={}){
     includeDay?bookingDayButtonHTML(booking):'',
     address?`<a class="pill trip-action-btn" href="${escapeTripHTML(accommodationMapURL(address))}" target="_blank" rel="noopener">Navigate</a>`:'',
     address?`<button class="pill trip-action-btn" type="button" onclick="navigator.clipboard&&navigator.clipboard.writeText(${JSON.stringify(address).replace(/"/g,'&quot;')})">Copy Address</button>`:'',
+    booking&&booking.bookingUrl?`<a class="pill trip-action-btn" href="${escapeTripHTML(booking.bookingUrl)}" target="_blank" rel="noopener">Open Booking</a>`:'',
     bookingEditButtonHTML(booking)
   ].filter(Boolean);
   return buttons.length?`<div class="trip-action-row">${buttons.join('')}</div>`:'';
-}
-function bookingContactSectionsHTML(booking,place){
-  const phone=(booking&&booking.phone)||(place&&place.phone)||'';
-  const email=(booking&&booking.email)||(place&&place.email)||'';
-  const website=(booking&&booking.website)||(place&&place.website)||'';
-  const contact=[phone,email].filter(Boolean).join('\n');
-  const websiteHTML=website?`<a href="${escapeTripHTML(website)}" target="_blank" rel="noopener">${escapeTripHTML(website)}</a>`:'';
-  return bookingSectionHTML('Booking contact',contact)+bookingSectionHTML('Website',websiteHTML,{html:true});
 }
 function buildAccommodationDetailHTML(booking){
   if(!booking)return '<p class="timestamp">Accommodation booking not found.</p>';
@@ -170,15 +154,13 @@ function buildAccommodationDetailHTML(booking){
   const facts=bookingFactGridHTML([
     ['Status',bookingStatusText(booking)],
     ['Stay',booking.stayDates||booking.date||''],
-    ['Room',booking.roomType||''],
     ['Check-in / out',arrival],
     ['Booking',reference],
     ['Platform',via],
-    ['Payment',payment]
+    ['Cost',payment]
   ]);
   const operationalNotes=[booking.cancellation||'',booking.notes||''].filter(Boolean).join('\n');
   const sections=[
-    bookingSectionHTML('Check-in notes',usefulCheckInInstructions(booking.checkInInstructions)),
     bookingSectionHTML('Important',operationalNotes),
     bookingSectionHTML('Address',address)
   ].join('');
