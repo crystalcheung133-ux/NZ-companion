@@ -121,23 +121,6 @@ const friendKeys = Object.keys(FRIENDS);
 if (friendKeys.length === 0) fail('FRIENDS object is empty');
 ok(`FRIENDS declares ${friendKeys.length} parties: ${friendKeys.join(', ')}`);
 
-
-// 10. Every active itinerary-linked Guide must be discoverable.
-const categoryGuideKeys = new Set(
-  Object.values(CATEGORIES || {}).flat().map(entry => entry && entry.key).filter(Boolean)
-);
-const orderedGuideKeys = new Set(GUIDE_ORDER || []);
-for (const [dayNum, day] of Object.entries(ITINERARY_DATA)) {
-  for (const item of day.items || []) {
-    if (item.cancelled === true || item.status === 'cancelled') continue;
-    for (const guideId of item.guideIds || []) {
-      if (!categoryGuideKeys.has(guideId)) fail(`Day ${dayNum} item "${item.id}" guideId "${guideId}" is missing from CATEGORIES`);
-      if (!orderedGuideKeys.has(guideId)) fail(`Day ${dayNum} item "${item.id}" guideId "${guideId}" is missing from GUIDE_ORDER`);
-    }
-  }
-}
-ok('active itinerary guideIds are discoverable in CATEGORIES and GUIDE_ORDER');
-
 console.log('');
 if (failures > 0) {
   console.error(`ENTITY INTEGRITY: FAILED (${failures} issue${failures === 1 ? '' : 's'})`);

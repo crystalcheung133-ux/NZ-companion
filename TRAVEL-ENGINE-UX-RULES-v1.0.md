@@ -60,18 +60,3 @@ Trip, Guide, Days or Studio.
 ## 7. Mobile Priority
 Operational information must be reachable without long scrolling.
 Guide content may be longer because it is optional reading.
-
-
-## 8. One Place, One Description
-Each place has one knowledge description, owned by Guide.
-
-- Timeline names the stop, time and next leg.
-- Trip contains only operational booking/action data.
-- Guide contains the descriptive explanation.
-- The same summary must not be repeated in a Guide header and again below.
-
-## 9. Do Not State the Obvious
-Do not spend screen space on generic instructions such as “Check in at reception”.
-
-Show an instruction only when it can affect the trip, such as late-arrival procedures,
-reception closing times, lockbox access, shuttle arrangements or parking restrictions.

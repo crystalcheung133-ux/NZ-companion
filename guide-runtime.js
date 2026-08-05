@@ -24,6 +24,9 @@ function visitDayHTML(key){
 function placeHref(key){
   return NAVIGATION.build('place',{query:{placeId:key}});
 }
+function guideBookingHref(bookingId){
+  return NAVIGATION.build('trip',{query:{bookingId:bookingId}});
+}
 const GUIDE_NAV_CONTEXT_KEY=STORAGE_CONFIG.keys.guideNavContext;
 const GUIDE_NAV_REOPEN_KEY=STORAGE_CONFIG.keys.guideNavReopen;
 function saveGuideNavigationContext(category, options){
@@ -100,7 +103,7 @@ function guideCategoryItems(cat){
       const booking=BOOKING_AUTHORITY.byPlace(item.key);
       // Guide Stay shows the current intended stay only: confirmed or primary choice.
       // Booked backups remain exclusively in Trip · Accommodation.
-      return !!booking&&!/backup/i.test(String(booking.status||''))&&['confirmed','monitoring','pending'].includes(String(booking.status||''));
+      return !!booking&&!/backup/i.test(String(booking.status||''))&&['confirmed','monitoring'].includes(String(booking.status||''));
     }
     return true;
   });
@@ -195,7 +198,6 @@ function usefulGoodToKnow(items){
 function quickInfoInnerHTML(g,key){
  const phoneRow=g.phone?`<div class="quick-info-row"><span class="quick-info-icon">☎️</span><span><span class="quick-info-label">Phone</span><span class="quick-info-value">${g.phone}</span></span></div>`:'';
  const callButton=g.phone?`<a class="utility-button" href="tel:${String(g.phone).replace(/[^+\d]/g,'')}">☎️ Call</a>`:'';
- const websiteButton=g.website?`<a class="utility-button" href="${g.website}" target="_blank" rel="noopener">🌐 Website</a>`:'';
  const unknown=/^(see|look at|refer to)\s+trip\s+info$|^check (current|live)|^prices? may vary$|^contact venue/i;
  const placePrice=String(g.price||'').trim();
  const accommodationBooking=(g.cat==='STAY'&&window.BOOKING_AUTHORITY)?BOOKING_AUTHORITY.byPlace(key):null;
@@ -205,9 +207,6 @@ function quickInfoInnerHTML(g,key){
  const price=(bookingPrice&&!unknown.test(bookingPrice))?bookingPrice:placePrice;
  const showPrice=g.cat!=='STAY'&&g.cat!=='ACTIVITIES'&&price&&!unknown.test(price);
  const priceRow=showPrice?`<div class="quick-info-row"><span class="quick-info-icon">💰</span><span><span class="quick-info-label">Price</span><span class="quick-info-value">${price}</span></span></div>`:'';
- // Room type is a Guide-only informational field; the booking record remains the sole owner of the data.
- const roomType=String(accommodationBooking?.roomType||'').trim();
- const roomRow=roomType?`<div class="quick-info-row"><span class="quick-info-icon">🛏️</span><span><span class="quick-info-label">Room type</span><span class="quick-info-value">${roomType}</span></span></div>`:'';
  const hours=String(g.hours||'').trim();
  const hoursRow=g.cat!=='STAY'&&hours&&!unknown.test(hours)?`<div class="quick-info-row"><span class="quick-info-icon">🕘</span><span><span class="quick-info-label">Hours</span><span class="quick-info-value">${hours}</span></span></div>`:'';
  const address=String(g.address||'').trim();
@@ -220,11 +219,11 @@ function quickInfoInnerHTML(g,key){
  const linkedBooking=window.BOOKING_AUTHORITY?BOOKING_AUTHORITY.byPlace(key):null;
  const bookingStatus=linkedBooking?String(linkedBooking.displayStatus||linkedBooking.status||'').toUpperCase():'';
  const bookingRow='';
- const bookingButton=(linkedBooking&&g.cat!=='STAY')?`<button class="utility-button" type="button" onclick="${linkedBooking.type==='activity'?'openActivityBookingDetail':'openAccommodationDetail'}('${linkedBooking.id}')">🎟️ Booking Details</button>`:'';
+ const bookingButton=linkedBooking?`<a class="utility-button" href="${guideBookingHref(linkedBooking.id)}">🎟️ Booking</a>`:'';
  const parking=g.parking;
  const parkingHTML=parking?`<div class="recommended-parking"><div class="recommended-parking-head"><span>🚗</span><span><strong>Recommended Parking</strong><small>${parking.name||''}</small></span></div><div class="recommended-parking-grid"><p><span>📍</span><span>${parking.address||''}</span></p><p><span>🚶</span><span>${parking.walk||''}</span></p><p><span>💰</span><span>${parking.fee||''}</span></p></div>${parking.note?`<p class="recommended-parking-note">${parking.note}</p>`:''}${parking.maps?`<a class="map-button recommended-parking-nav" href="${parking.maps}" target="_blank" rel="noopener">🧭 Navigate to Parking</a>`:''}</div>`:'';
  const detailStatus=g.cat==='STAY'?guideStayStatusHTML(Object.assign({key},g)):guideStatusHTML(g);
- return `<div class="quick-info-top"><span class="category-tag">${g.categoryLabel||g.cat||'Guide'}</span>${roleBadge}${detailStatus}</div><div class="quick-info-grid">${addressRow}${phoneRow}${hoursRow}${priceRow}${roomRow}${bookingRow}${visitDayHTML(key)}</div>${reminderRow}${parkingHTML}<div class="quick-info-actions">${copyButton}${navButton}${bookingButton}${callButton}${websiteButton}</div>`;
+ return `<div class="quick-info-top"><span class="category-tag">${g.categoryLabel||g.cat||'Guide'}</span>${roleBadge}${detailStatus}</div><div class="quick-info-grid">${addressRow}${phoneRow}${hoursRow}${priceRow}${bookingRow}${visitDayHTML(key)}</div>${reminderRow}${parkingHTML}<div class="quick-info-actions">${navButton}${bookingButton}</div>`;
 }
 
 function quickInfoHTML(g,key){
@@ -281,8 +280,7 @@ function openGuideModal(key){
  const tripModal=document.getElementById('tripModal');
  if(tripModal?.classList.contains('show')) tripModal.classList.remove('show');
  const g=PRODUCTION_GUIDE.places[key]; if(!g)return;
- const headerDescription=g.cat==='STAY'?'':`<p class="guide-onepage-desc">${g.desc||''}</p>`;
- $('guideModalContent').innerHTML=`<div class="guide-onepage"><p class="kicker">Guide</p><h2>${g.emoji} ${g.title}</h2><p class="guide-onepage-sub"><strong>${g.sub}</strong></p>${headerDescription}${quickInfoHTML(g,key)}${guideStaySections(g)}${routeStopsHTML(g)}${compactGuideSections(g)}${guideNavButtons(key)}</div>`;
+ $('guideModalContent').innerHTML=`<div class="guide-onepage"><p class="kicker">Guide</p><h2>${g.emoji} ${g.title}</h2><p class="guide-onepage-sub"><strong>${g.sub}</strong></p><p class="guide-onepage-desc">${g.desc}</p>${quickInfoHTML(g,key)}${guideStaySections(g)}${routeStopsHTML(g)}${compactGuideSections(g)}${guideNavButtons(key)}</div>`;
  $('guideModal').classList.add('show');
  const sheet=document.querySelector('#guideModal .guide-sheet');
  if(sheet){ sheet.scrollTop=0; if(typeof window.applyNearFitModal==='function') window.applyNearFitModal(sheet,'guide-near-fit'); }
@@ -301,13 +299,20 @@ function renderPlacePage(key){
   const g = PRODUCTION_GUIDE.places[key];
   const mount = document.getElementById('placeMain');
   if(!g || !mount) return;
-  mount.innerHTML = `
+  mount.innerHTML = `<article class="guide-place-detail" id="guide-${key}" data-place-id="${key}" tabindex="-1">
 <button class="place-detail-close" type="button" aria-label="Close place detail" onclick="closePlaceDetail()">×</button>
 <div class="page-hero"><p class="kicker">Guide</p><h1>${g.emoji} ${g.title}</h1><p class="lead">${g.sub||''}</p></div>
 <section class="prose-block guide-overview"><h2>Why Go</h2><p>${g.desc||''}</p></section>
 <section aria-label="Quick Info" class="quick-info-card">${quickInfoInnerHTML(g,key)}</section>
-${routeStopsHTML(g)}${compactGuideSections(g)}${guideNavButtons(key,'page')}`;
+${routeStopsHTML(g)}${compactGuideSections(g)}${guideNavButtons(key,'page')}</article>`;
   document.title = `${g.title} · ${TRIP_CONFIG.tripName}`;
+  requestAnimationFrame(function(){
+    const target=document.getElementById(`guide-${key}`);
+    if(!target)return;
+    target.classList.add('guide-deep-link-target');
+    target.focus({preventScroll:true});
+    target.scrollIntoView({block:'start',behavior:'auto'});
+  });
 }
 
 function renderPlaceGroupPage(keys){
@@ -328,5 +333,3 @@ function renderPlaceGroupPage(keys){
   mount.innerHTML=`<button class="place-detail-close" type="button" aria-label="Close guide options" onclick="closePlaceDetail()">×</button><div class="page-hero"><p class="kicker">Guide</p><h1>Choose an option</h1><p class="lead">Compare the planned choices, then use Navigate inside the restaurant card you choose.</p></div>${cards}`;
   document.title=`Guide options · ${TRIP_CONFIG.tripName}`;
 }
-
-
