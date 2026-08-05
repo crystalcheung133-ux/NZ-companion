@@ -41,12 +41,10 @@ function saveGuideNavigationContext(category, options){
 function openGuideGroupFromDay(keys,itemId){
   const excluded=new Set(TRIP_CONFIG.guide?.excludedPlaceIds||[]);
   const clean=[...new Set((Array.isArray(keys)?keys:[]).filter(key=>key&&typeof PRODUCTION_GUIDE.places!=='undefined'&&PRODUCTION_GUIDE.places[key]&&!excluded.has(key)))];
-  if(!clean.length) return;
-  const first=PRODUCTION_GUIDE.places[clean[0]]||{};
-  const sourceUrl=NAVIGATION.currentRelativeUrl({hash:null});
-  saveGuideNavigationContext(first.cat||'GUIDE',{sourceUrl,sourceType:'day',scrollY:window.scrollY||0});
-  // RC11K: confirmed single destinations open immediately. Only genuine alternatives show a choice page.
-  NAVIGATION.go(clean.length===1 ? NAVIGATION.build('guide',{query:{placeId:clean[0]}}) : NAVIGATION.build('place',{query:{placeIds:clean.join(',')}}));
+  if(!clean.length)return;
+  closeMiniMenus();
+  if(clean.length===1){openGuideModal(clean[0]);return;}
+  openGuideAlternatives(clean,itemId);
 }
 function readGuideNavigationContext(){
   try{return STORAGE.session.readJSON(GUIDE_NAV_CONTEXT_KEY,null);}
@@ -259,25 +257,81 @@ function openAdjacentPlace(key){
  NAVIGATION.go(placeHref(key));
 }
 
-function suggestedItems(g){
- const items=(g.signature||g.highlights||[]);
- return items.map(x=>String(x)).filter(x=>/^TRY\s*[·:]/i.test(x)).map(x=>x.replace(/^TRY\s*[·:]\s*/i,''));
+function cleanGuideLine(value){
+ const text=String(value||'').trim();
+ return text.replace(/^[A-Z][A-Z &/’'\-]{1,28}\s*[·:]\s*/,'').trim();
 }
-function criticalGuideNotes(g){
- const rules=/booking|book ahead|sell out|last entry|last order|queue|check-in|reception|closed|closure|fuel|height|age restriction|weather|road condition|mobile reception|no petrol|arrive early|order timing/i;
- return usefulGoodToKnow(g.worth||g.tips||[]).filter(x=>rules.test(x));
+function taggedGuideItems(items, labels){
+ const wanted=(labels||[]).map(x=>String(x).toUpperCase());
+ return (items||[]).map(value=>{
+  const text=String(value||'').trim();
+  const match=text.match(/^([A-Z][A-Z &/’'\-]{1,28})\s*[·:]\s*(.+)$/);
+  if(!match)return null;
+  const label=match[1].trim().toUpperCase();
+  return wanted.some(w=>label===w||label.startsWith(w))?match[2].trim():null;
+ }).filter(Boolean);
+}
+function uniqueGuideItems(items){
+ return [...new Set((items||[]).map(x=>String(x||'').trim()).filter(Boolean))];
+}
+function guideWhyGo(g){
+ const tagged=taggedGuideItems(g.signature||g.highlights||[],['WHY GO','WHY WE PICKED THIS','WHY STOP','WHY WE CHOSE IT']);
+ return tagged[0]||String(g.desc||'').trim();
+}
+function restaurantDishItems(g){
+ const tagged=taggedGuideItems(g.signature||g.highlights||[],['TRY','FOOD','MUST ORDER','ORDER','SIGNATURE']);
+ if(tagged.length)return uniqueGuideItems(tagged);
+ return [];
+}
+function bookingAdviceItems(g){
+ const all=[...(g.signature||[]),...(g.worth||[]),...(g.tips||[])];
+ return uniqueGuideItems(all.filter(x=>/book|reservation|reserve|sell out|deposit/i.test(String(x))).map(cleanGuideLine));
+}
+function practicalGuideItems(g){
+ const all=[...(g.signature||[]),...(g.worth||[]),...(g.tips||[])];
+ const excluded=/^(WHY GO|WHY WE PICKED THIS|WHY STOP|WHY WE CHOSE IT|TRY|FOOD|MUST ORDER|ORDER|SIGNATURE|WORTH IT)\s*[·:]/i;
+ return uniqueGuideItems(all.filter(x=>{
+  const text=String(x||'').trim();
+  if(!text||excluded.test(text))return false;
+  if(g.cat==='STAY'&&/check[- ]?in|reception|late arrival/i.test(text))return false;
+  if(/book|reservation|reserve|sell out|deposit/i.test(text))return false;
+  return true;
+ }).map(cleanGuideLine));
+}
+function guideListSection(title,items,cls=''){
+ const clean=uniqueGuideItems(items);
+ if(!clean.length)return '';
+ return `<section class="guide-content-section ${cls}"><h3>${title}</h3><ul>${clean.map(x=>`<li>${x}</li>`).join('')}</ul></section>`;
 }
 function compactGuideSections(g){
- const suggested=suggestedItems(g).map(x=>`<li>${x}</li>`).join('');
- const notes=criticalGuideNotes(g).map(x=>`<li>${x}</li>`).join('');
- return `${suggested?`<h3>Suggested Dishes</h3><ul>${suggested}</ul>`:''}${notes?`<h3>Before You Go</h3><ul>${notes}</ul>`:''}`;
+ const why=guideWhyGo(g);
+ const dishes=g.cat==='DINING'?restaurantDishItems(g):[];
+ const booking=bookingAdviceItems(g);
+ const practical=practicalGuideItems(g);
+ const whyRequired=g.cat==='DINING'||g.cat==='ACTIVITIES'||g.cat==='ATTRACTIONS';
+ return `${(why&&(whyRequired||g.cat!=='STAY'))?`<section class="guide-content-section guide-why-go"><h3>Why Go</h3><p>${why}</p></section>`:''}${guideListSection('Suggested Dishes',dishes,'guide-suggested-dishes')}${guideListSection('Booking',booking,'guide-booking-advice')}${guideListSection(g.cat==='DINING'?'Good to Know':'Practical Info',practical,'guide-practical-info')}`;
 }
 function guideStaySections(g){
  if(g.cat!=='STAY')return '';
- const fit=(g.signature||[]).filter(Boolean).map(x=>`<li>${x}</li>`).join('');
- const nearby=(g.worth||[]).filter(Boolean).map(x=>`<li>${x}</li>`).join('');
- const summary=g.desc?`<section class="guide-stay-section"><h3>Why we chose it</h3><p>${g.desc}</p></section>`:'';
- return `${summary}${fit?`<section class="guide-stay-section"><h3>Facilities & practical fit</h3><ul>${fit}</ul></section>`:''}${nearby?`<section class="guide-stay-section"><h3>Nearby & useful</h3><ul>${nearby}</ul></section>`:''}`;
+ const why=guideWhyGo(g);
+ const fit=practicalGuideItems(g);
+ const showWhy=why&&g.key==='southwark';
+ return `${showWhy?`<section class="guide-stay-section guide-why-go"><h3>Why Go</h3><p>${why}</p></section>`:''}${guideListSection('Stay Info',fit,'guide-stay-info')}`;
+}
+
+let guideAlternativeKeys=[];
+function openGuideAlternatives(keys,itemId){
+ guideAlternativeKeys=[...keys];
+ const rows=guideAlternativeKeys.map(key=>{
+  const g=PRODUCTION_GUIDE.places[key];
+  return `<button type="button" onclick="openGuideModal('${key}',{fromAlternatives:true})"><span><span class="guide-list-title">${g.emoji||''} ${g.title||''}</span><span class="guide-list-sub">${g.sub||''}</span></span><span class="guide-list-chevron">›</span></button>`;
+ }).join('');
+ $('guideModalContent').innerHTML=`<p class="kicker">Guide</p><h2>Options</h2><div class="category-pop-list">${rows}</div>`;
+ $('guideModal').classList.add('show');
+ const sheet=document.querySelector('#guideModal .guide-sheet');if(sheet)sheet.scrollTop=0;
+}
+function guideAlternativeBackButton(){
+ return guideAlternativeKeys.length>1?`<button class="pill guide-alternative-back" type="button" onclick="openGuideAlternatives(guideAlternativeKeys)">‹ All options</button>`:'';
 }
 
 function routeStopsHTML(g){
@@ -287,20 +341,19 @@ function routeStopsHTML(g){
  return `<section class="walking-route-card"><h3>Suggested Walking Order</h3><ol>${rows}</ol></section>`;
 }
 
-function openGuideModal(key){
- const tripModal=document.getElementById('tripModal');
- if(tripModal?.classList.contains('show')) tripModal.classList.remove('show');
- const g=PRODUCTION_GUIDE.places[key]; if(!g)return;
- $('guideModalContent').innerHTML=`<div class="guide-onepage"><p class="kicker">Guide</p><h2>${g.emoji} ${g.title}</h2><p class="guide-onepage-sub"><strong>${g.sub}</strong></p>${quickInfoHTML(g,key)}${guideStaySections(g)}${routeStopsHTML(g)}${compactGuideSections(g)}${guideNavButtons(key)}</div>`;
+function openGuideModal(key,options){
+ const g=PRODUCTION_GUIDE.places[key];if(!g)return;
+ const opts=options||{};
+ const back=opts.fromAlternatives?guideAlternativeBackButton():'';
+ $('guideModalContent').innerHTML=`<div class="guide-onepage">${back}<p class="kicker">Guide</p><h2>${g.emoji} ${g.title}</h2><p class="guide-onepage-sub"><strong>${g.sub||''}</strong></p>${quickInfoHTML(g,key)}${guideStaySections(Object.assign({key},g))}${routeStopsHTML(g)}${compactGuideSections(g)}${guideNavButtons(key)}</div>`;
+ closeMiniMenus();
  $('guideModal').classList.add('show');
  const sheet=document.querySelector('#guideModal .guide-sheet');
- if(sheet){ sheet.scrollTop=0; if(typeof window.applyNearFitModal==='function') window.applyNearFitModal(sheet,'guide-near-fit'); }
+ if(sheet){sheet.scrollTop=0;if(typeof window.applyNearFitModal==='function')window.applyNearFitModal(sheet,'guide-near-fit');}
 }
 function closeGuideModal(){
- const modal=$('guideModal');
- if(modal)modal.classList.remove('show');
- const tripModal=$('tripModal');
- if(tripModal)tripModal.classList.remove('show');
+ const modal=$('guideModal');if(modal)modal.classList.remove('show');
+ guideAlternativeKeys=[];
  closeMiniMenus();
  document.body.classList.remove('admin-overlay-open');
  clearGuideNavigationContext();

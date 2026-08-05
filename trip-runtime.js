@@ -120,7 +120,7 @@ function bookingSectionHTML(title,content,options){
   return `<div class="accommodation-section"><h3>${escapeTripHTML(title)}</h3><p>${safe}</p></div>`;
 }
 function bookingGuideButtonHTML(booking){
-  return booking&&booking.placeId?`<a class="pill trip-action-btn trip-action-btn--guide" href="guide.html?id=${encodeURIComponent(booking.placeId)}">Guide</a>`:'';
+  return booking&&booking.placeId?`<button class="pill trip-action-btn trip-action-btn--guide" type="button" onclick="openGuideModal('${escapeTripHTML(booking.placeId)}')">Guide</button>`:'';
 }
 function bookingDayButtonHTML(booking){
   const dayNumber=bookingDayNumber(booking);if(!dayNumber)return '';
@@ -174,7 +174,6 @@ function buildAccommodationDetailHTML(booking){
   const noteDuplicatesParking=booking.parking&&/parking/i.test(booking.notes||'')&&/pre-book/i.test(booking.parking)&&/pre-book/i.test(booking.notes||'');
   const operationalNotes=[booking.cancellation||'',noteDuplicatesParking?'':booking.notes||''].filter(Boolean).join('\n');
   const sections=[
-    bookingSectionHTML('Check-in notes',booking.checkInInstructions||''),
     bookingSectionHTML('Important',operationalNotes),
     bookingSectionHTML('Address',address)
   ].join('');

@@ -2221,3 +2221,12 @@ body.home-bg .live-currency-card #currencyCardMeta{position:relative;z-index:2;w
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
   }
 }
+
+
+/* RC24.7.5 in-page Guide overlay: preserve the originating Trip/Day page. */
+.guide-modal.show{z-index:5010!important;}
+.guide-content-section,.guide-stay-section{margin-top:18px;padding:18px 20px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.5)}
+.guide-content-section h3,.guide-stay-section h3{margin:0 0 8px}
+.guide-content-section p,.guide-stay-section p{margin:0}
+.guide-content-section ul,.guide-stay-section ul{margin:0;padding-left:20px}
+.guide-alternative-back{margin-bottom:14px}
