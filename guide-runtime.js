@@ -266,7 +266,8 @@ function guideStaySections(g){
  if(g.cat!=='STAY')return '';
  const fit=(g.signature||[]).filter(Boolean).map(x=>`<li>${x}</li>`).join('');
  const nearby=(g.worth||[]).filter(Boolean).map(x=>`<li>${x}</li>`).join('');
- return `<section class="guide-stay-section"><h3>Why we chose it</h3><p>${g.desc||''}</p></section>${fit?`<section class="guide-stay-section"><h3>Facilities & practical fit</h3><ul>${fit}</ul></section>`:''}${nearby?`<section class="guide-stay-section"><h3>Nearby & useful</h3><ul>${nearby}</ul></section>`:''}`;
+ const summary=g.desc?`<section class="guide-stay-section"><h3>Why we chose it</h3><p>${g.desc}</p></section>`:'';
+ return `${summary}${fit?`<section class="guide-stay-section"><h3>Facilities & practical fit</h3><ul>${fit}</ul></section>`:''}${nearby?`<section class="guide-stay-section"><h3>Nearby & useful</h3><ul>${nearby}</ul></section>`:''}`;
 }
 
 function routeStopsHTML(g){
@@ -299,20 +300,13 @@ function renderPlacePage(key){
   const g = PRODUCTION_GUIDE.places[key];
   const mount = document.getElementById('placeMain');
   if(!g || !mount) return;
-  mount.innerHTML = `<article class="guide-place-detail" id="guide-${key}" data-place-id="${key}" tabindex="-1">
+  mount.innerHTML = `
 <button class="place-detail-close" type="button" aria-label="Close place detail" onclick="closePlaceDetail()">×</button>
 <div class="page-hero"><p class="kicker">Guide</p><h1>${g.emoji} ${g.title}</h1><p class="lead">${g.sub||''}</p></div>
 <section class="prose-block guide-overview"><h2>Why Go</h2><p>${g.desc||''}</p></section>
 <section aria-label="Quick Info" class="quick-info-card">${quickInfoInnerHTML(g,key)}</section>
-${routeStopsHTML(g)}${compactGuideSections(g)}${guideNavButtons(key,'page')}</article>`;
+${guideStaySections(g)}${routeStopsHTML(g)}${compactGuideSections(g)}${guideNavButtons(key,'page')}`;
   document.title = `${g.title} · ${TRIP_CONFIG.tripName}`;
-  requestAnimationFrame(function(){
-    const target=document.getElementById(`guide-${key}`);
-    if(!target)return;
-    target.classList.add('guide-deep-link-target');
-    target.focus({preventScroll:true});
-    target.scrollIntoView({block:'start',behavior:'auto'});
-  });
 }
 
 function renderPlaceGroupPage(keys){
@@ -327,7 +321,7 @@ function renderPlaceGroupPage(keys){
       <div class="page-hero place-group-hero"><p class="kicker">Option ${index+1}</p><h1>${g.emoji} ${g.title}</h1><p class="lead">${g.sub||''}</p></div>
       <section class="prose-block guide-overview"><h2>Why Go</h2><p>${g.desc||''}</p></section>
       <section aria-label="Quick Info" class="quick-info-card">${quickInfoInnerHTML(g,key)}</section>
-      ${routeStopsHTML(g)}${compactGuideSections(g)}
+      ${guideStaySections(g)}${routeStopsHTML(g)}${compactGuideSections(g)}
     </article>`;
   }).join('');
   mount.innerHTML=`<button class="place-detail-close" type="button" aria-label="Close guide options" onclick="closePlaceDetail()">×</button><div class="page-hero"><p class="kicker">Guide</p><h1>Choose an option</h1><p class="lead">Compare the planned choices, then use Navigate inside the restaurant card you choose.</p></div>${cards}`;

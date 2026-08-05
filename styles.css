@@ -2208,14 +2208,6 @@ body.home-bg .live-currency-card #currencyCardMeta{position:relative;z-index:2;w
 .trip-studio-selector-toggle[hidden]{
   display:none!important;
 }
-.booking-deep-link-target:focus,
-.guide-deep-link-target:focus{
-  outline:3px solid var(--accent,#b36b28);
-  outline-offset:3px;
-}
-.guide-place-detail{
-  min-width:0;
-}
 @media (max-width:760px){
   .accommodation-onepage-detail{
     padding-bottom:12px!important;

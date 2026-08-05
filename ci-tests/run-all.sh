@@ -37,8 +37,8 @@ echo "== 8/9 RC24.7 focused contract =="
 node test-rc24-7.js || overall=1
 echo ""
 
-echo "== 9/9 RC24.7.1 corrective contract =="
-node test-rc24-7-1.js || overall=1
+echo "== 9/9 RC24.7.2 regression contract =="
+node test-rc24-7-2.js || overall=1
 echo ""
 
 if [ "$overall" -eq 0 ]; then

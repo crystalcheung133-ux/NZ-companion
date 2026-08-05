@@ -29,30 +29,6 @@ const PLACES={
     "phone": "+64 3 360 1063",
     "website": "https://www.peppers.com.au/Bluewater"
   },
-  "archway": {
-    "title": "Archway Motels & Chalets",
-    "emoji": "🏨",
-    "cat": "STAY",
-    "sub": "Optional accommodation · Free cancellation · 24–25 Sep",
-    "hours": "24 Hours",
-    "maps": "https://maps.google.com/?q=Archway+Motels+and+Chalets+Wanaka",
-    "address": "64 Hedditch Street, Wānaka 9305, New Zealand",
-    "desc": "An optional Wānaka accommodation choice after the Mt Cook driving day, kept as a flexible alternative to the currently selected stay.",
-    "signature": [
-      "Comfortable stop after the Mt Cook drive",
-      "Easy access to Wānaka lakefront",
-      "Free-cancellation flexibility"
-    ],
-    "worth": [
-      "Use this only if you decide to switch from the currently selected Wānaka accommodation.",
-      "The drive from Mt Cook is long, so keep dinner simple and avoid over-planning the evening."
-    ],
-    "categoryLabel": "🏨 Stay",
-    "price": "AUD 379.99 paid + NZD 40 at property · net AUD 326.87 + NZD 40",
-    "transport": "Self-drive / walk",
-    "audit": "OPTIONAL ACCOMMODATION · Free cancellation",
-    "status": "optional"
-  },
   "queenstown-house": {
     "title": "Queenstown Airbnb · Tonic Lodge",
     "emoji": "🏡",
@@ -1669,7 +1645,7 @@ const CATEGORIES={
       "key": "peppers"
     },
     {
-      "key": "archway"
+      "key": "sudima-five-mile"
     },
     {
       "key": "queenstown-house"
@@ -1856,7 +1832,7 @@ const CATEGORIES={
 const GUIDE_ORDER=[
   "southwark",
   "peppers",
-  "archway",
+  "sudima-five-mile",
   "queenstown-house",
   "lakefront-lodge",
   "edgewater",
@@ -1921,12 +1897,6 @@ const DAY_LINKS={
     [
       "Day 2",
       "day.html?day=2#peppers"
-    ]
-  ],
-  "archway": [
-    [
-      "Day 3",
-      "day.html?day=3#edgewater"
     ]
   ],
   "queenstown-house": [
@@ -2321,7 +2291,7 @@ const BOOKINGS_DATA={
     "guests": 4,
     "reference": "1359046173275966",
     "paymentStatus": "paid",
-    "notes": "23–24 Sep · confirmed, non-refundable",
+    "notes": "",
     "stayDates": "23–24 Sep 2026",
     "nights": 1,
     "roomType": "Two-Bedroom Suite with Mountain View · 2 double beds · 107 m²",
@@ -2333,32 +2303,6 @@ const BOOKINGS_DATA={
     "checkInInstructions": "Check in at reception. Confirm any late-arrival instructions directly with the property before travel.",
     "platform": "Trip.com",
     "cancellation": "Non-refundable; cannot be modified"
-  },
-  "archway-booking": {
-    "id": "archway-booking",
-    "type": "accommodation",
-    "title": "Archway Motels & Chalets",
-    "status": "backup-booked",
-    "displayStatus": "BOOKED BACKUP · Free cancellation",
-    "date": "2026-09-24",
-    "time": "Check-in",
-    "placeId": "archway",
-    "dayId": "day3",
-    "guests": 4,
-    "reference": "1359046173332532",
-    "paymentStatus": "paid · booked backup",
-    "notes": "24–25 Sep · BOOKED BACKUP · free cancellation",
-    "stayDates": "24–25 Sep 2026",
-    "nights": 1,
-    "roomType": "Superior Access Chalet",
-    "checkIn": "2:00 PM",
-    "checkOut": "10:00 AM",
-    "address": "64 Hedditch Street, Wānaka 9305, New Zealand",
-    "phone": "",
-    "price": "AUD 379.99 paid + NZD 40 at property · net AUD 326.87 + NZD 40",
-    "checkInInstructions": "Check in at reception. Confirm any after-hours arrival procedure directly with the property before travel.",
-    "platform": "Trip.com",
-    "cancellation": "Free cancellation before 23:59 on 22 Sep 2026 (hotel local time)"
   },
   "queenstown-booking": {
     "id": "queenstown-booking",
@@ -2372,10 +2316,11 @@ const BOOKINGS_DATA={
     "time": "After 15:00",
     "placeId": "queenstown-house",
     "dayId": "day5",
+    "timelineItemId": "airbnb-checkin-d5",
     "guests": 11,
     "reference": "HMDXBCZAWF",
     "paymentStatus": "date change pending",
-    "notes": "Proposed 26–29 Sep · all three families · Fowlers arrive 26 Sep",
+    "notes": "All three families · Fowlers arrive 26 Sep",
     "stayDates": "Proposed 26–29 Sep 2026",
     "nights": 3,
     "roomType": "Shared accommodation for all three families",
@@ -2437,7 +2382,7 @@ const BOOKINGS_DATA={
     "guests": 11,
     "reference": "685406630",
     "paymentStatus": "paid",
-    "notes": "29 Sep–1 Oct · confirmed · 3 rooms",
+    "notes": "",
     "stayDates": "29 Sep–1 Oct 2026",
     "nights": 2,
     "roomType": "3 rooms · Lee: Executive Apartment, 1 Bedroom, Jetted Tub; bedding request 1 king + 2 twins",
@@ -2466,7 +2411,7 @@ const BOOKINGS_DATA={
     "guests": 4,
     "reference": "73499810818218",
     "paymentStatus": "paid",
-    "notes": "24–25 Sep · preferred booking currently monitoring",
+    "notes": "Preferred booking currently active; reconfirm before travel.",
     "stayDates": "24–25 Sep 2026",
     "nights": 1,
     "roomType": "Premium Suite",
@@ -2527,7 +2472,7 @@ const BOOKINGS_DATA={
     "guests": 4,
     "reference": "See Expedia confirmation",
     "paymentStatus": "pay at property",
-    "notes": "25–26 Sep · one-night transition booking · 2 bedrooms",
+    "notes": "Lee family transition stay.",
     "stayDates": "25–26 Sep 2026",
     "nights": 1,
     "roomType": "Two-bedroom accommodation",
@@ -2606,10 +2551,10 @@ const BOOKINGS_DATA={
     "id": "southwark-booking",
     "type": "accommodation",
     "title": "Southwark Hotel & Apartments",
-    "status": "planned",
-    "displayStatus": "DAY 1",
+    "status": "confirmed",
+    "displayStatus": "DAY 1 CONFIRMED",
     "guideDayLabel": "Day 1",
-    "guideStatus": "planned",
+    "guideStatus": "confirmed",
     "date": "2026-09-22",
     "time": "Check-in",
     "placeId": "southwark",
@@ -2620,7 +2565,11 @@ const BOOKINGS_DATA={
     "checkIn": "2:00 PM",
     "checkOut": "10:00 AM",
     "address": "25 Southwark Street, Christchurch Central City, Christchurch 8011, New Zealand",
-    "paymentStatus": "Not supplied",
+    "roomType": "Expedia confirmation",
+    "reference": "Expedia confirmation",
+    "platform": "Expedia",
+    "paymentStatus": "See Expedia confirmation",
+    "price": "Total in Expedia confirmation",
     "cashback": "AUD 28.98",
     "parking": "NZD 15 · pre-book",
     "notes": "Parking must be pre-booked."
@@ -3325,7 +3274,7 @@ const ITINERARY_DATA={
       ],
       "note": "Most of the day is walkable once parked near Brecon Street.",
       "contingency": "Keep the slow-holiday pace and adjust for weather, road conditions and family energy.",
-      "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=6+Earnslaw+Terrace%2C+Queenstown%2C+New+Zealand&destination=6+Earnslaw+Terrace%2C+Queenstown%2C+New+Zealand&travelmode=driving&waypoints=Skyline+Queenstown%2C+53+Brecon+Street%2C+Queenstown%2C+New+Zealand"
+      "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=Sudima+Queenstown+Five+Mile%2C+22+Grant+Road%2C+Frankton%2C+Queenstown&destination=6+Earnslaw+Terrace%2C+Queenstown%2C+New+Zealand&travelmode=driving&waypoints=Skyline+Queenstown%2C+53+Brecon+Street%2C+Queenstown%2C+New+Zealand"
     },
     "items": [
       {
@@ -3397,12 +3346,26 @@ const ITINERARY_DATA={
         "details": [
           "Optional if the group is tired or Skyline runs late."
         ],
-        "route": "Next: town / dinner · ≈ 5–10 min walk or short drive.",
+        "route": "Next: Queenstown Airbnb · Tonic Lodge · ≈ 10 min drive.",
         "map": "https://maps.google.com/?q=Kiwi+Park+Queenstown+51+Brecon+Street%2C+Queenstown+9300%2C+New+Zealand",
         "type": "experience",
         "dayId": "day5",
         "placeId": "kiwi-park",
         "bookingId": null
+      },
+      {
+        "id": "airbnb-checkin-d5",
+        "time": "After 15:00",
+        "title": "🏡 Check in · Queenstown Airbnb · Tonic Lodge",
+        "details": [
+          "Shared accommodation for all three families."
+        ],
+        "route": "Next: Flame Bar & Grill · ≈ 5–10 min drive.",
+        "map": "https://maps.google.com/?q=6+Earnslaw+Terrace+Queenstown",
+        "type": "rest",
+        "dayId": "day5",
+        "placeId": "queenstown-house",
+        "bookingId": "queenstown-booking"
       },
       {
         "id": "flame",
