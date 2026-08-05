@@ -20,7 +20,7 @@ const pairs=[
   await page.goto(`${base}/place.html?id=southwark`,{waitUntil:'networkidle'});
   const guideText=await page.locator('#placeMain').innerText();
   const guideOverflow=await page.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth);
-  responsive.push({width,bookingOverflow,guideOverflow,compact:/CHECK-IN \/ OUT\n2:00 PM → 10:00 AM/.test(bookingText),southwarkGuide:['STAY · 2:00 PM → 10:00 AM','PARKING · NZD 15 · pre-book','NEARBY · Riverside · 14 min walk','NEARBY · C1 · 6 min walk','NEARBY · PAK’nSAVE Moorhouse · ~5 min drive'].every(x=>guideText.includes(x))});
+  responsive.push({width,bookingOverflow,guideOverflow,compact:/CHECK-IN \/ OUT\n2:00 PM → 10:00 AM/.test(bookingText),southwarkGuide:['STAY · 2:00 PM → 10:00 AM','PARKING · Confirmed · NZD 15 · pay at hotel','NEARBY · Riverside · 14 min walk','NEARBY · C1 · 6 min walk','NEARBY · PAK’nSAVE Moorhouse · ~5 min drive'].every(x=>guideText.includes(x))});
   await page.close();
  }
  const page=await browser.newPage({viewport:{width:375,height:900}});

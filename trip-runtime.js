@@ -82,7 +82,7 @@ function buildAccommodationListHTML(){
   return '<div class="accommodation-picker" role="list">'+bookings.map(function(booking){
     const nights=Number(booking.nights||0);
     const nightsLabel=nights?`${nights} night${nights===1?'':'s'}`:'';
-    const price=booking.price||'Price not added yet';
+    const price=booking.netTotalAUD?`${booking.approximateNet?'≈ ':''}Net ${booking.netTotalAUD}`:(booking.price||'Price not added yet');
     const statusLabel=booking.displayStatus||bookingStatusText(booking)||'';
     const statusClass=String(booking.status||'').replace(/[^a-z0-9-]/gi,'').toLowerCase();
     return `<button class="accommodation-picker-row" type="button" role="listitem" onclick="openAccommodationDetail('${escapeTripHTML(booking.id)}')"><span class="accommodation-picker-icon" aria-hidden="true">🏨</span><span class="accommodation-picker-copy"><strong>${escapeTripHTML(booking.title)}</strong><small>${escapeTripHTML(booking.stayDates||booking.date||'')}</small><span class="accommodation-picker-price">${escapeTripHTML(price)}</span></span><span class="accommodation-picker-meta accommodation-picker-meta--stack">${statusLabel?`<span class="accommodation-status-badge accommodation-status-badge--${escapeTripHTML(statusClass)}">${escapeTripHTML(statusLabel)}</span>`:''}<span class="accommodation-night-line">${escapeTripHTML(nightsLabel)} <b aria-hidden="true">›</b></span></span></button>`;
@@ -118,6 +118,18 @@ function bookingSectionHTML(title,content,options){
   if(content===undefined||content===null||String(content).trim()==='')return '';
   const safe=opts.html?String(content):escapeTripHTML(content).replace(/\n/g,'<br>');
   return `<div class="accommodation-section"><h3>${escapeTripHTML(title)}</h3><p>${safe}</p></div>`;
+}
+
+function accommodationPaymentHTML(booking){
+  const status=booking.paymentLabel||booking.paymentStatus||'';
+  const rows=[
+    ['Total',booking.totalAmount||''],
+    [booking.discountLabel||'Discount',booking.discountAmount||''],
+    ['Cashback',booking.cashbackAmount||booking.cashback||''],
+    [booking.approximateNet?'≈ Net cost':'Net cost',booking.netTotalAUD||booking.netPrice||'']
+  ].filter(function(row){return String(row[1]||'').trim();});
+  if(!status&&!rows.length)return '';
+  return `<section class="accommodation-payment-block"><div class="accommodation-payment-head"><h3>Payment</h3>${status?`<span>${escapeTripHTML(String(status).toUpperCase())}</span>`:''}</div>${rows.length?`<dl>${rows.map(function(row,index){return `<div class="${index===rows.length-1?'payment-net-row':''}"><dt>${escapeTripHTML(row[0])}</dt><dd>${escapeTripHTML(row[1])}</dd></div>`;}).join('')}</dl>`:''}${booking.fxNote?`<p class="payment-fx-note">${escapeTripHTML(booking.fxNote)}</p>`:''}</section>`;
 }
 function bookingGuideButtonHTML(booking){
   return booking&&booking.placeId?`<button class="pill trip-action-btn trip-action-btn--guide" type="button" onclick="openGuideModal('${escapeTripHTML(booking.placeId)}')">Guide</button>`:'';
@@ -157,28 +169,23 @@ function buildAccommodationDetailHTML(booking){
   const via=booking.bookingViaOther||booking.bookingWay||booking.platform||'';
   const arrival=[booking.checkIn||'',booking.checkOut||''].filter(Boolean).join(' → ');
   const reference=[booking.bookingName?`Booked under · ${booking.bookingName}`:'',booking.reference?`${bookingReferenceLabel(booking)} · ${booking.reference}`:''].filter(Boolean).join('\n');
-  const payment=[booking.paymentStatus||'',booking.price||''].filter(Boolean).join('\n');
   const facts=bookingFactGridHTML([
-    ['Status',String(booking.status||'').toUpperCase()],
+    ['Status',booking.displayStatus||bookingStatusText(booking)],
     ['Room',booking.roomType||''],
     ['Check-in / out',arrival],
     ['Booking',reference],
     ['Platform',via],
-    ['Payment',payment],
-    ['Purchased',booking.purchaseDate||''],
-    ['Room price',booking.roomPrice||''],
-    ['Taxes',booking.taxes||''],
-    ['Cashback',booking.cashback||''],
     ['Parking',booking.parking||'']
   ]);
-  const noteDuplicatesParking=booking.parking&&/parking/i.test(booking.notes||'')&&/pre-book/i.test(booking.parking)&&/pre-book/i.test(booking.notes||'');
-  const operationalNotes=[booking.cancellation||'',noteDuplicatesParking?'':booking.notes||''].filter(Boolean).join('\n');
+  const operationalNotes=[booking.cancellation||'',booking.notes||''].filter(Boolean).join('\n');
   const sections=[
+    accommodationPaymentHTML(booking),
     bookingSectionHTML('Important',operationalNotes),
     bookingSectionHTML('Address',address)
   ].join('');
   return `<article class="fact stay-booking accommodation-detail-card accommodation-detail-card--compact"><div class="accommodation-detail-head"><div><span>${escapeTripHTML(booking.stayDates||booking.date||'')}</span></div>${nightsLabel?`<span class="accommodation-night-badge">${escapeTripHTML(nightsLabel)}</span>`:''}</div><div class="accommodation-facts">${facts}</div>${sections}${bookingActionButtonsHTML(booking,place,{includeDay:false})}${accommodationDetailNavigationHTML(booking.id)}</article>`;
 }
+
 function openAccommodationList(){
   openTripCard('stay');
 }

@@ -2230,3 +2230,16 @@ body.home-bg .live-currency-card #currencyCardMeta{position:relative;z-index:2;w
 .guide-content-section p,.guide-stay-section p{margin:0}
 .guide-content-section ul,.guide-stay-section ul{margin:0;padding-left:20px}
 .guide-alternative-back{margin-bottom:14px}
+
+
+/* RC24.8 — compact accommodation payment summary */
+.accommodation-payment-block{margin-top:12px;padding:12px 13px;border-radius:14px;background:rgba(255,255,255,.72);border:1px solid rgba(31,93,89,.12)}
+.accommodation-payment-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px}
+.accommodation-payment-head h3{margin:0;font-size:.76rem;letter-spacing:.05em;text-transform:uppercase;opacity:.68}
+.accommodation-payment-head span{font-size:.72rem;font-weight:900;letter-spacing:.04em}
+.accommodation-payment-block dl{margin:0}.accommodation-payment-block dl>div{display:flex;justify-content:space-between;gap:14px;padding:5px 0;border-top:1px solid rgba(31,93,89,.08)}
+.accommodation-payment-block dt,.accommodation-payment-block dd{margin:0}.accommodation-payment-block dt{font-size:.82rem;opacity:.72}.accommodation-payment-block dd{font-size:.86rem;font-weight:800;text-align:right}
+.accommodation-payment-block .payment-net-row{margin-top:3px;padding-top:9px;border-top:1px solid rgba(31,93,89,.2)}
+.accommodation-payment-block .payment-net-row dt{font-weight:900;opacity:1;text-transform:uppercase}.accommodation-payment-block .payment-net-row dd{font-size:1.08rem;font-weight:950}
+.payment-fx-note{margin:6px 0 0;font-size:.68rem;opacity:.62;text-align:right}
+@media(max-width:370px){.timeline-action--alternative{font-size:.73rem;padding-inline:9px}.accommodation-payment-block dl>div{gap:8px}}

@@ -85,7 +85,7 @@ const PLACES={
     "emoji": "🏨",
     "cat": "STAY",
     "sub": "Day 4 primary choice · Reconfirm before travel",
-    "hours": "Check current Expedia booking",
+    "hours": "2:00 PM → 11:00 AM",
     "maps": "https://maps.google.com/?q=Sudima+Queenstown+Five+Mile",
     "address": "22 Grant Road, Frankton, Queenstown 9300, New Zealand",
     "desc": "A one-night Queenstown transition booking for the Lee family while the shared Airbnb dates are being reviewed around the Fowlers' 26 September arrival.",
@@ -100,7 +100,7 @@ const PLACES={
       "Five Mile is practical for groceries, food and the next-day transition to the group accommodation."
     ],
     "categoryLabel": "🏨 Stay",
-    "price": "NZD 407.20 · pay at property · AUD 17.79 cashback",
+    "price": "NZD 407.20 · pay at hotel · approx. net AUD 324.26",
     "transport": "Self-drive / walk",
     "audit": "SUPPLIED BOOKING · DETAILS PARTIALLY AVAILABLE",
     "status": "planned"
@@ -1600,7 +1600,7 @@ const PLACES={
     "desc": "Walk to Riverside Market and C1, explore central Christchurch without parking, then collect the car for Tekapo.",
     "signature": [
       "STAY · 2:00 PM → 10:00 AM",
-      "PARKING · NZD 15 · pre-book",
+      "PARKING · Confirmed · NZD 15 · pay at hotel",
       "NEARBY · C1 · 6 min walk",
       "NEARBY · Riverside · 14 min walk",
       "NEARBY · PAK’nSAVE Moorhouse · ~5 min drive"
@@ -2302,7 +2302,13 @@ const BOOKINGS_DATA={
     "price": "AUD 397.65 prepaid · net AUD 329.44 after AUD 68.21 savings",
     "checkInInstructions": "Check in at reception. Confirm any late-arrival instructions directly with the property before travel.",
     "platform": "Trip.com",
-    "cancellation": "Non-refundable; cannot be modified"
+    "cancellation": "Non-refundable; cannot be modified",
+    "paymentLabel": "PAID",
+    "totalAmount": "AUD 397.65",
+    "discountLabel": "Savings",
+    "discountAmount": "\u2212AUD 68.21",
+    "netTotalAUD": "AUD 329.44",
+    "approximateNet": false
   },
   "queenstown-booking": {
     "id": "queenstown-booking",
@@ -2331,7 +2337,11 @@ const BOOKINGS_DATA={
     "price": "Revised price pending · original 25–29 Sep booking AUD 6,904.77",
     "checkInInstructions": "Do not treat revised dates as final until Airbnb confirms the change.",
     "platform": "Airbnb",
-    "referenceLabel": "Airbnb reference"
+    "referenceLabel": "Airbnb reference",
+    "paymentLabel": "DATE CHANGE PENDING",
+    "totalAmount": "Revised price pending",
+    "netTotalAUD": "",
+    "approximateNet": false
   },
   "car-rental": {
     "id": "car-rental",
@@ -2394,7 +2404,13 @@ const BOOKINGS_DATA={
     "checkInInstructions": "Check in at reception. Keep the Milford Sound departure items ready the night before.",
     "platform": "Luxury Escapes",
     "cancellation": "Free cancellation until 21 Sep 2026, 4:00 pm local property time",
-    "referenceLabel": "Luxury Escapes reference"
+    "referenceLabel": "Luxury Escapes reference",
+    "paymentLabel": "PAID",
+    "totalAmount": "AUD 1,541.13",
+    "discountLabel": "Savings",
+    "discountAmount": "\u2212AUD 150.00",
+    "netTotalAUD": "AUD 1,391.13",
+    "approximateNet": false
   },
   "edgewater-booking": {
     "id": "edgewater-booking",
@@ -2422,7 +2438,12 @@ const BOOKINGS_DATA={
     "price": "AUD 402.47 paid · net AUD 343.82 after AUD 58.65 cashback",
     "platform": "Expedia",
     "cancellation": "Free cancellation before 2:00 pm on 10 Sep 2026",
-    "checkInInstructions": ""
+    "checkInInstructions": "",
+    "paymentLabel": "PAID",
+    "totalAmount": "AUD 402.47",
+    "cashbackAmount": "\u2212AUD 58.65",
+    "netTotalAUD": "AUD 343.82",
+    "approximateNet": false
   },
   "ultimate-alpine-booking": {
     "id": "ultimate-alpine-booking",
@@ -2470,25 +2491,31 @@ const BOOKINGS_DATA={
     "placeId": "sudima-five-mile",
     "dayId": "day4",
     "guests": 4,
-    "reference": "See Expedia confirmation",
+    "reference": "",
     "paymentStatus": "pay at property",
     "notes": "Lee family transition stay.",
     "stayDates": "25–26 Sep 2026",
     "nights": 1,
     "roomType": "Two-bedroom accommodation",
-    "checkIn": "Check Expedia confirmation",
-    "checkOut": "Check Expedia confirmation",
+    "checkIn": "2:00 PM",
+    "checkOut": "11:00 AM",
     "address": "22 Grant Road, Frankton, Queenstown 9300, New Zealand",
     "phone": "",
-    "price": "NZD 407.20 · pay at property · less AUD 17.79 cashback",
+    "price": "NZD 407.20 · pay at hotel · approx. net AUD 324.26",
     "cashback": "AUD 17.79",
-    "netPrice": "NZD 407.20 less AUD 17.79 cashback (mixed currencies; not converted)",
+    "netPrice": "AUD 324.26",
     "displayStatus": "TO CONFIRM",
     "guideDayLabel": "Day 4",
     "guideStatus": "confirmed",
     "checkInInstructions": "Use this as the Lee family transition stay if the shared Airbnb changes to 26–29 September.",
     "platform": "Expedia",
-    "cancellation": "Check current Expedia booking terms"
+    "cancellation": "Check current Expedia booking terms",
+    "paymentLabel": "PAY AT HOTEL",
+    "totalAmount": "NZD 407.20 \u00b7 \u2248 AUD 342.05",
+    "cashbackAmount": "\u2212AUD 17.79",
+    "netTotalAUD": "AUD 324.26",
+    "approximateNet": true,
+    "fxNote": "Planning estimate \u00b7 1 NZD \u2248 0.84 AUD"
   },
   "luxe-milford-booking": {
     "id": "luxe-milford-booking",
@@ -2576,8 +2603,13 @@ const BOOKINGS_DATA={
     "taxes": "AUD 26.67",
     "price": "AUD 204.47",
     "cashback": "AUD 28.98",
-    "parking": "NZD 15 · pre-book",
-    "notes": "Parking must be pre-booked."
+    "parking": "Confirmed · NZD 15 · pay at hotel",
+    "notes": "Parking booked · pay at hotel · NZD 15.",
+    "paymentLabel": "PAID",
+    "totalAmount": "AUD 204.47",
+    "cashbackAmount": "\u2212AUD 28.98",
+    "netTotalAUD": "AUD 175.49",
+    "approximateNet": false
   }
 };
 

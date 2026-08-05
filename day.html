@@ -94,7 +94,7 @@
   function buildTripInfoButton(booking){
     if(!booking)return '';
     if(booking.type==='accommodation'){
-      return `<button class="timeline-action timeline-action--trip" onclick="openAccommodationDetail('${esc(booking.id)}')">🧳 Trip Info</button>`;
+      return `<button class="timeline-action timeline-action--trip" onclick="openAccommodationDetail('${esc(booking.id)}')">🎟️ Booking</button>`;
     }
     if(booking.type==='activity'){
       return `<button class="timeline-action timeline-action--trip" onclick="openActivityBookingDetail('${esc(booking.id)}')">🎟️ Booking</button>`;
@@ -123,8 +123,8 @@
     const worthBadge=buildWorthBadge(item,place);
     const directoryHtml=!nonPlace&&item.showShoppingDirectory?`<button class="timeline-action timeline-action--directory" onclick="NAVIGATION.goPage('guide',{hash:'shoppingDirectory'})">🛍 Shopping List</button>`:'';
     const primaryGuideHtml=primaryGuideId?`<button class="timeline-action timeline-action--guide" onclick='openGuideGroupFromDay(${JSON.stringify([primaryGuideId])},${JSON.stringify(item.id)})'>📖 Guide</button>`:'';
-    const alternativeLabel=item.optionsLabel||'Alternative options';
-    const alternativeGuideHtml=alternativeGuideIds.length?`<button class="timeline-action timeline-action--alternative" onclick='openGuideGroupFromDay(${JSON.stringify(alternativeGuideIds)},${JSON.stringify(item.id)})'>🔄 ${esc(alternativeLabel)}</button>`:'';
+    const alternativeLabel='Options';
+    const alternativeGuideHtml=alternativeGuideIds.length?`<button class="timeline-action timeline-action--alternative" title="${esc(item.optionsLabel||'Alternative options')}" onclick='openGuideGroupFromDay(${JSON.stringify(alternativeGuideIds)},${JSON.stringify(item.id)})'>🔄 ${esc(alternativeLabel)}</button>`:'';
     const guideHtml=primaryGuideHtml+alternativeGuideHtml;
     const parkingGuideId=!nonPlace&&item.parkingGuideId&&DAY_PLACES[item.parkingGuideId]?item.parkingGuideId:'';
     const parkingHtml=parkingGuideId?`<button class="timeline-action timeline-action--parking" onclick='openGuideGroupFromDay(${JSON.stringify([parkingGuideId])},${JSON.stringify(item.id)})'>🚗 Parking</button>`:'';

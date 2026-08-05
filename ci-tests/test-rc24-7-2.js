@@ -34,10 +34,10 @@ for(const [bookingId,placeId] of Object.entries(expected)){
 assert(!/archway/i.test(JSON.stringify({PLACES,CATEGORIES,GUIDE_ORDER,DAY_LINKS,BOOKINGS_DATA,ITINERARY_DATA})),'Archway remains in active trip data.');
 const southwark=BOOKINGS_DATA['southwark-booking'];
 assert(southwark.platform==='Expedia'&&southwark.paymentStatus!=='Not supplied','Southwark Expedia/payment regression remains.');
-assert(southwark.cashback==='AUD 28.98'&&southwark.parking==='NZD 15 · pre-book','Southwark cashback/parking regression remains.');
+assert(southwark.cashback==='AUD 28.98'&&southwark.parking==='Confirmed · NZD 15 · pay at hotel','Southwark cashback/parking regression remains.');
 assert(southwark.checkIn==='2:00 PM'&&southwark.checkOut==='10:00 AM','Southwark check-in/out regression remains.');
 const southwarkGuide=PLACES.southwark;
-for(const line of ['STAY · 2:00 PM → 10:00 AM','PARKING · NZD 15 · pre-book','NEARBY · C1 · 6 min walk','NEARBY · Riverside · 14 min walk','NEARBY · PAK’nSAVE Moorhouse · ~5 min drive'])assert((southwarkGuide.signature||[]).includes(line),`Southwark Guide line missing: ${line}`);
+for(const line of ['STAY · 2:00 PM → 10:00 AM','PARKING · Confirmed · NZD 15 · pay at hotel','NEARBY · C1 · 6 min walk','NEARBY · Riverside · 14 min walk','NEARBY · PAK’nSAVE Moorhouse · ~5 min drive'])assert((southwarkGuide.signature||[]).includes(line),`Southwark Guide line missing: ${line}`);
 assert(guide.includes('${guideStaySections(g)}${routeStopsHTML(g)}'),'Standalone Guide pages omit accommodation practical content.');
 assert(trip.includes("join(' → ')")&&!trip.includes('`Check-in · ${booking.checkIn}`'),'Shared booking timing is duplicated.');
 assert(accommodationBookings.every(item=>!/^(?:Proposed )?\d{1,2}[^A-Za-z]{0,2}[A-Za-z]{3}.*(?:confirmed|booking|rooms?)/i.test(item.notes||'')),'Booking notes duplicate visit dates/status/room data.');
