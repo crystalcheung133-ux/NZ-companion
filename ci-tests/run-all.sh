@@ -5,31 +5,35 @@
 cd "$(dirname "$0")"
 overall=0
 
-echo "== 1/7 JS syntax gate =="
+echo "== 1/8 JS syntax gate =="
 sh test-syntax.sh || overall=1
 echo ""
 
-echo "== 2/7 Release integrity (checksums + manifest) =="
+echo "== 2/8 Release integrity (checksums + manifest) =="
 sh test-checksums.sh || overall=1
 echo ""
 
-echo "== 3/7 HTML structure =="
+echo "== 3/8 Release file separation =="
+sh test-release-file-separation.sh || overall=1
+echo ""
+
+echo "== 4/8 HTML structure =="
 sh test-html-structure.sh || overall=1
 echo ""
 
-echo "== 4/7 Entity linkage (places/bookings/itinerary/parties) =="
+echo "== 5/8 Entity linkage (places/bookings/itinerary/parties) =="
 node test-entity-integrity.js || overall=1
 echo ""
 
-echo "== 5/7 Guide address integrity =="
+echo "== 6/8 Guide address integrity =="
 python3 address-integrity-test.py || overall=1
 echo ""
 
-echo "== 6/7 Timeline integrity =="
+echo "== 7/8 Timeline integrity =="
 node test-timeline-integrity.js || overall=1
 echo ""
 
-echo "== 7/7 UX contract =="
+echo "== 8/8 UX contract =="
 node test-ux-contract.js || overall=1
 echo ""
 

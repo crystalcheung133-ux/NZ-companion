@@ -15,6 +15,11 @@ if(!trip.includes('accommodation-detail-card--compact')) failures.push('Compact 
 if(!trip.includes('usefulCheckInInstructions')) failures.push('Generic accommodation check-in wording filter missing.');
 if(!guide.includes("g.cat==='STAY'?'':")) failures.push('Guide STAY header-description duplication guard missing.');
 if(!data.includes('"checkIn":"2:00 PM","checkOut":"10:00 AM"')) failures.push('Sudima check-in/check-out contract missing.');
+// RC24.4 confirmed-stay cleanup
+if(!data.includes('"ACTIVITIES":[{"key":"ultimate-alpine"},{"key":"hooker-valley"}')) failures.push('Ultimate Alpine Guide missing from Activities.');
+if(data.includes('"white-water-rafting"')) failures.push('Cancelled White Water Rafting still exists in active data.');
+if(data.includes('"archway"') || data.includes('"archway-booking"')) failures.push('Cancelled Archway accommodation still exists in active data.');
+if(!data.includes('"edgewater-booking"') || !data.includes('"guideStatus":"confirmed"')) failures.push('Edgewater confirmed contract missing.');
 if(admin.includes('trip-studio-selector-arrow')) failures.push('Studio selector arrow returned.');
 if(!admin.includes('Leave Studio Mode')) failures.push('Leave Studio Mode action missing.');
 if(!expenses.includes('canManageExpense') || !expenses.includes('This cannot be undone.')) failures.push('Expense ownership/delete confirmation contract missing.');
