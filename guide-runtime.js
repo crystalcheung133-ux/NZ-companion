@@ -12,12 +12,9 @@ function visitDayHTML(key){
   const days=GUIDE_NAVIGATION.dayLinks(key);
   if(!days.length) return '';
   const place=PRODUCTION_GUIDE.places[key]||{};
-  const isStay=place.cat==='STAY';
-  const booking=isStay&&window.BOOKING_AUTHORITY?BOOKING_AUTHORITY.byPlace(key):null;
+  if(place.cat==='STAY') return '';
   const buttons=days.map(([label,href])=>`<a class="day-jump-button" href="${href}">${label} →</a>`).join('');
-  const nights=Number(booking?.nights||0);
-  const stayLength=nights?`<span class="stay-length-note">Staying ${nights} night${nights===1?'':'s'}</span>`:'';
-  return `<div class="quick-info-row visit-row"><span class="quick-info-icon">📅</span><span><span class="quick-info-label">${isStay?'Check-in Day':'Visit Day'}</span><span class="quick-info-value day-link-row">${buttons}${stayLength}</span></span></div>`;
+  return `<div class="quick-info-row visit-row"><span class="quick-info-icon">📅</span><span><span class="quick-info-label">Visit Day</span><span class="quick-info-value day-link-row">${buttons}</span></span></div>`;
 }
 
 
@@ -143,7 +140,9 @@ function guideListRow(item){
  // Guide is experiential content. Booking operations remain in Trip · Accommodation.
  const action=`openGuideModal('${item.key}')`;
  const status=item.cat==='STAY'?guideStayStatusHTML(item):guideStatusHTML(PRODUCTION_GUIDE.places[item.key]||{});
- return `<button onclick="${action}"><span><span class="guide-list-title">${item.emoji} ${item.title}</span><span class="guide-list-sub">${item.sub||''}</span></span><span class="guide-list-meta">${status}<span class="guide-list-chevron">›</span></span></button>`;
+ const booking=(item.cat==='STAY'&&window.BOOKING_AUTHORITY)?BOOKING_AUTHORITY.byPlace(item.key):null;
+ const subtitle=booking?[booking.stayDates||'',booking.nights?`${booking.nights} night${Number(booking.nights)===1?'':'s'}`:''].filter(Boolean).join(' · '):(item.sub||'');
+ return `<button onclick="${action}"><span><span class="guide-list-title">${item.emoji} ${item.title}</span><span class="guide-list-sub">${subtitle}</span></span><span class="guide-list-meta">${status}<span class="guide-list-chevron">›</span></span></button>`;
 }
 function groupedGuideRows(cat,list){
  if(cat==='ATTRACTIONS'||cat==='DINING'||cat==='STAY'){
@@ -281,7 +280,7 @@ function openGuideModal(key){
  const tripModal=document.getElementById('tripModal');
  if(tripModal?.classList.contains('show')) tripModal.classList.remove('show');
  const g=PRODUCTION_GUIDE.places[key]; if(!g)return;
- $('guideModalContent').innerHTML=`<div class="guide-onepage"><p class="kicker">Guide</p><h2>${g.emoji} ${g.title}</h2><p class="guide-onepage-sub"><strong>${g.sub}</strong></p><p class="guide-onepage-desc">${g.desc}</p>${quickInfoHTML(g,key)}${guideStaySections(g)}${routeStopsHTML(g)}${compactGuideSections(g)}${guideNavButtons(key)}</div>`;
+ $('guideModalContent').innerHTML=`<div class="guide-onepage"><p class="kicker">Guide</p><h2>${g.emoji} ${g.title}</h2><p class="guide-onepage-sub"><strong>${g.sub}</strong></p>${g.desc?`<p class="guide-onepage-desc">${g.desc}</p>`:''}${quickInfoHTML(g,key)}${guideStaySections(g)}${routeStopsHTML(g)}${compactGuideSections(g)}${guideNavButtons(key)}</div>`;
  $('guideModal').classList.add('show');
  const sheet=document.querySelector('#guideModal .guide-sheet');
  if(sheet){ sheet.scrollTop=0; if(typeof window.applyNearFitModal==='function') window.applyNearFitModal(sheet,'guide-near-fit'); }
@@ -303,7 +302,7 @@ function renderPlacePage(key){
   mount.innerHTML = `
 <button class="place-detail-close" type="button" aria-label="Close place detail" onclick="closePlaceDetail()">×</button>
 <div class="page-hero"><p class="kicker">Guide</p><h1>${g.emoji} ${g.title}</h1><p class="lead">${g.sub||''}</p></div>
-<section class="prose-block guide-overview"><h2>Why Go</h2><p>${g.desc||''}</p></section>
+${g.desc?`<section class="prose-block guide-overview"><h2>Why Go</h2><p>${g.desc}</p></section>`:''}
 <section aria-label="Quick Info" class="quick-info-card">${quickInfoInnerHTML(g,key)}</section>
 ${guideStaySections(g)}${routeStopsHTML(g)}${compactGuideSections(g)}${guideNavButtons(key,'page')}`;
   document.title = `${g.title} · ${TRIP_CONFIG.tripName}`;
@@ -319,7 +318,7 @@ function renderPlaceGroupPage(keys){
     const g=PRODUCTION_GUIDE.places[key];
     return `<article class="place-group-card" id="guide-${key}">
       <div class="page-hero place-group-hero"><p class="kicker">Option ${index+1}</p><h1>${g.emoji} ${g.title}</h1><p class="lead">${g.sub||''}</p></div>
-      <section class="prose-block guide-overview"><h2>Why Go</h2><p>${g.desc||''}</p></section>
+      ${g.desc?`<section class="prose-block guide-overview"><h2>Why Go</h2><p>${g.desc}</p></section>`:''}
       <section aria-label="Quick Info" class="quick-info-card">${quickInfoInnerHTML(g,key)}</section>
       ${guideStaySections(g)}${routeStopsHTML(g)}${compactGuideSections(g)}
     </article>`;

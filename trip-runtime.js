@@ -120,7 +120,7 @@ function bookingSectionHTML(title,content,options){
   return `<div class="accommodation-section"><h3>${escapeTripHTML(title)}</h3><p>${safe}</p></div>`;
 }
 function bookingGuideButtonHTML(booking){
-  return booking&&booking.placeId?`<button class="pill trip-action-btn trip-action-btn--guide" type="button" onclick="NAVIGATION.goPage('place',{query:{placeId:'${escapeTripHTML(booking.placeId)}'}})">Guide</button>`:'';
+  return booking&&booking.placeId?`<a class="pill trip-action-btn trip-action-btn--guide" href="place.html?id=${encodeURIComponent(booking.placeId)}">Guide</a>`:'';
 }
 function bookingDayButtonHTML(booking){
   const dayNumber=bookingDayNumber(booking);if(!dayNumber)return '';
@@ -159,12 +159,15 @@ function buildAccommodationDetailHTML(booking){
   const reference=[booking.bookingName?`Booked under · ${booking.bookingName}`:'',booking.reference?`${bookingReferenceLabel(booking)} · ${booking.reference}`:''].filter(Boolean).join('\n');
   const payment=[booking.paymentStatus||'',booking.price||''].filter(Boolean).join('\n');
   const facts=bookingFactGridHTML([
-    ['Status',bookingStatusText(booking)],
+    ['Status',String(booking.status||'').toUpperCase()],
     ['Room',booking.roomType||''],
     ['Check-in / out',arrival],
     ['Booking',reference],
     ['Platform',via],
     ['Payment',payment],
+    ['Purchased',booking.purchaseDate||''],
+    ['Room price',booking.roomPrice||''],
+    ['Taxes',booking.taxes||''],
     ['Cashback',booking.cashback||''],
     ['Parking',booking.parking||'']
   ]);
@@ -213,7 +216,7 @@ function buildActivityBookingDetailHTML(booking){
   if(!booking)return '<p class="timestamp">Activity booking not found.</p>';
   const place=bookingPlace(booking);
   const facts=bookingFactGridHTML([
-    ['Status',bookingStatusText(booking)],['Day',bookingDayNumber(booking)?'Day '+bookingDayNumber(booking):''],['Date',booking.date||''],['Time',booking.time||''],
+    ['Status',String(booking.status||'').toUpperCase()],['Day',bookingDayNumber(booking)?'Day '+bookingDayNumber(booking):''],['Date',booking.date||''],['Time',booking.time||''],
     ['Tour type',booking.tourType||''],['Guests',booking.guests?`${booking.guests} · ${booking.adults||0} adults · ${booking.children||0} children`:''],
     ['Booked under',booking.bookingName||''],[bookingReferenceLabel(booking),booking.reference||''],['Booked via',booking.bookingViaOther||booking.bookingWay||booking.platform||''],
     ['Payment',booking.paymentStatus||''],['Original total',booking.originalTotal||''],['Discount',booking.discount||''],['Balance due',booking.price||'']

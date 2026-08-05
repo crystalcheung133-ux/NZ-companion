@@ -1,6 +1,6 @@
 CCMV Travel Engine Production File Manifest
 Generated: 2026-08-05
-Release: NZ-RC24.7.2-REGRESSION-FIX
+Release: NZ-RC24.7.3-ACCOMMODATION-UX-FIX
 Production root files:
 
 - VERSION.txt

@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 const fs=require('fs');
-function read(path){return fs.readFileSync(path,'utf8');}
-const trip=read('../trip-runtime.js');
-const admin=read('../admin.js');
-const expenses=read('../expenses.js');
-const moments=read('../moments.js');
+const path=require('path');
+const root=path.resolve(__dirname,'..');
+function read(file){return fs.readFileSync(path.join(root,file),'utf8');}
+const trip=read('trip-runtime.js');
+const admin=read('admin.js');
+const expenses=read('expenses.js');
+const moments=read('moments.js');
 
 const failures=[];
 if(trip.includes('accommodation-about-stay') || trip.includes("bookingContactSectionsHTML(booking,place),bookingSectionHTML('Cancellation'")){
