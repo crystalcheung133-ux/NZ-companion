@@ -1255,6 +1255,114 @@ const PLACES={
     "audit": "NZ Master Itinerary v3.0",
     "status": "planned"
   },
+  "hustl-five-mile": {
+    "title": "Hustl. Cafe",
+    "emoji": "☕",
+    "cat": "DINING",
+    "sub": "Primary Day 5 brunch · Five Mile",
+    "hours": "7:00 AM–4:00 PM",
+    "maps": "https://maps.google.com/?q=Hustl+Cafe+Five+Mile+Queenstown",
+    "address": "Five Mile, Frankton, Queenstown, New Zealand",
+    "desc": "An easy all-day brunch stop near Sudima, with strong coffee and a broad breakfast-and-lunch menu before heading into Queenstown.",
+    "signature": [
+      "TRY · Eggs on toast or the breakfast bun",
+      "DRINK · Coffee",
+      "GOOD FOR · Relaxed 11:00 AM brunch after a sleep-in"
+    ],
+    "worth": [
+      "Primary choice because it is close to Sudima and keeps the morning unhurried."
+    ],
+    "categoryLabel": "🍽 Dining",
+    "transport": "Walk / short drive",
+    "audit": "OFFICIAL WEBSITE VERIFIED",
+    "status": "planned"
+  },
+  "moinho-five-mile": {
+    "title": "Moinho Cafe & Eatery",
+    "emoji": "☕",
+    "cat": "DINING",
+    "sub": "Day 5 brunch option · Five Mile",
+    "hours": "7:00 AM–5:00 PM",
+    "maps": "https://maps.google.com/?q=Moinho+Cafe+6%2F32+Grant+Road+Frankton+Queenstown",
+    "address": "6/32 Grant Road, Five Mile, Frankton, Queenstown, New Zealand",
+    "desc": "A Brazilian-style cafe with Kiwi breakfast dishes and a pay-by-weight lunch buffet, useful when the group wants more variety.",
+    "signature": [
+      "TRY · Kiwi breakfast favourites or Brazilian dishes",
+      "LUNCH · Pay-by-weight buffet from 10:30 AM",
+      "GOOD FOR · Mixed appetites"
+    ],
+    "worth": [
+      "Choose this when the group prefers buffet variety over a standard brunch menu."
+    ],
+    "categoryLabel": "🍽 Dining",
+    "transport": "Walk / short drive",
+    "audit": "OFFICIAL WEBSITE VERIFIED",
+    "status": "optional"
+  },
+  "joes-five-mile": {
+    "title": "Joe's Garage Five Mile",
+    "emoji": "🍳",
+    "cat": "DINING",
+    "sub": "Family-friendly Day 5 brunch option",
+    "maps": "https://maps.google.com/?q=Joe%27s+Garage+Five+Mile+36+Grant+Road+Queenstown",
+    "address": "Building 8, 36 Grant Road, Five Mile, Queenstown 9371, New Zealand",
+    "desc": "A reliable family-friendly cafe for breakfast, burgers and coffee, with an easy menu for adults and children.",
+    "signature": [
+      "TRY · Brekkie, burgers or rolls",
+      "DRINK · Coffee",
+      "GOOD FOR · Easy family choice"
+    ],
+    "worth": [
+      "Best backup when the group wants a familiar menu and straightforward seating."
+    ],
+    "categoryLabel": "🍽 Dining",
+    "transport": "Walk / short drive",
+    "audit": "OFFICIAL LISTING VERIFIED",
+    "status": "optional"
+  },
+  "queenstown-market": {
+    "title": "Queenstown Market",
+    "emoji": "🛍️",
+    "cat": "ATTRACTIONS",
+    "sub": "Saturday lakefront artisan market",
+    "hours": "Saturday · winter 9:30 AM–3:30 PM",
+    "maps": "https://maps.google.com/?q=Queenstown+Market+Earnslaw+Park+Queenstown",
+    "address": "Earnslaw Park, Queenstown 9300, New Zealand",
+    "desc": "A Saturday artisan market on the Lake Wakatipu waterfront, combining local crafts, gifts, snacks and an easy lakefront wander before Airbnb check-in.",
+    "signature": [
+      "SEE · Local art and handmade products",
+      "EAT · Market snacks",
+      "SETTING · Earnslaw Park lakefront"
+    ],
+    "worth": [
+      "Arrive by early afternoon so there is time to browse before the winter closing time."
+    ],
+    "categoryLabel": "📍 Experience",
+    "transport": "Self-drive / walk",
+    "audit": "OFFICIAL MARKET WEBSITE VERIFIED",
+    "status": "planned",
+    "addressAudit": "OFFICIAL / VERIFIED"
+  },
+  "freshchoice-queenstown": {
+    "title": "FreshChoice Queenstown",
+    "emoji": "🛒",
+    "cat": "SHOPPING",
+    "sub": "Airbnb grocery stop",
+    "hours": "7:00 AM–10:00 PM",
+    "maps": "https://maps.google.com/?q=FreshChoice+Queenstown+64+Gorge+Road+Queenstown",
+    "address": "64 Gorge Road, Queenstown 9300, New Zealand",
+    "desc": "Full-range supermarket for Airbnb breakfast supplies, drinks and snacks.",
+    "signature": [
+      "BUY · Breakfast, drinks and snacks",
+      "TIMING · After Airbnb check-in"
+    ],
+    "worth": [],
+    "categoryLabel": "🛒 Shopping",
+    "transport": "Self-drive",
+    "audit": "OFFICIAL STORE WEBSITE VERIFIED",
+    "status": "planned",
+    "addressAudit": "OFFICIAL / VERIFIED"
+  },
   "queenstown-central": {
     "title": "Queenstown Central",
     "emoji": "📍",
@@ -3261,92 +3369,86 @@ const ITINERARY_DATA={
   "5": {
     "title": "Day 5 · New Zealand Companion",
     "kicker": "Day 5 · 26 Sep • Saturday",
-    "heading": "Queenstown Wander, Market & Family Check-in",
+    "heading": "Sleep In, Five Mile Brunch & Queenstown Market",
     "legend": [
-      "🚶 Easy Queenstown wander",
+      "😴 Sleep in",
+      "☕ Five Mile brunch",
       "🛍️ Queenstown Market",
       "🏡 Airbnb check-in"
     ],
     "drive": {
-      "route": "Sudima Five Mile → Queenstown town / market → Windsor Lodge",
-      "distance": "≈ 12 km",
-      "drivingTime": "≈ 25 min total",
+      "route": "Sudima Five Mile → Queenstown Market → Windsor Lodge → FreshChoice → Windsor Lodge",
+      "distance": "≈ 20 km",
+      "drivingTime": "≈ 40 min total",
       "road": "Local Queenstown roads",
       "stops": [
-        "Queenstown town centre",
-        "Queenstown Market",
-        "Windsor Lodge"
+        "Five Mile brunch",
+        "Queenstown Market · Earnslaw Park",
+        "Windsor Lodge",
+        "FreshChoice Queenstown"
       ],
-      "note": "Keep the morning flexible for the two families already in Queenstown. Meet the Fowlers before the shared Airbnb check-in.",
-      "contingency": "If arrival timing changes, shorten the town wander and go directly to Windsor Lodge for 3:00 PM check-in.",
-      "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=Sudima+Queenstown+Five+Mile%2C+22+Grant+Road%2C+Frankton%2C+Queenstown&destination=7+Windsor+Place%2C+Queenstown%2C+New+Zealand&travelmode=driving&waypoints=Queenstown+Central%2C+Queenstown%2C+New+Zealand"
+      "note": "Sleep in, check out at 11:00 AM and brunch near Sudima before heading to the Saturday market. Check in first, then buy Airbnb supplies.",
+      "contingency": "If the market runs late, one person can complete check-in while the others finish browsing; FreshChoice is open into the evening.",
+      "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=Sudima+Queenstown+Five+Mile%2C+22+Grant+Road%2C+Frankton%2C+Queenstown&destination=7+Windsor+Place%2C+Queenstown%2C+New+Zealand&travelmode=driving&waypoints=Queenstown+Market%2C+Earnslaw+Park%2C+Queenstown%7CFreshChoice+Queenstown%2C+64+Gorge+Road%2C+Queenstown"
     },
     "items": [
       {
-        "id": "airbnb-breakfast-d5",
-        "time": "Morning",
-        "title": "🥣 Breakfast at Sudima Queenstown Five Mile",
+        "id": "sudima-checkout-d5",
+        "time": "11:00 AM",
+        "title": "🏨 Check out · Sudima Five Mile",
         "details": [
-          "Breakfast before checking out."
+          "Sleep in, pack slowly and check out by 11:00 AM."
         ],
-        "route": "Next: check out, then drive into Queenstown town centre.",
-        "type": "meal",
+        "route": "Next: brunch at Five Mile · walk or take a short drive.",
+        "map": "https://maps.google.com/?q=Sudima+Queenstown+Five+Mile+22+Grant+Road+Frankton+Queenstown",
+        "type": "rest",
         "dayId": "day5",
         "placeId": "sudima-five-mile",
         "bookingId": "sudima-booking"
       },
       {
-        "id": "queenstown-wander-d5",
-        "time": "Late morning",
-        "title": "🚶 Wander around Queenstown",
+        "id": "five-mile-brunch-d5",
+        "time": "11:15 AM–12:30 PM",
+        "title": "☕ Brunch · Hustl. Cafe",
         "details": [
-          "Easy lakefront, town-centre and shopping time for the two families already in Queenstown."
+          "Relaxed brunch near Sudima before driving into Queenstown.",
+          "Options: Moinho Cafe or Joe's Garage Five Mile."
         ],
-        "route": "Next: Queenstown Market · walk from the town centre.",
-        "map": "https://maps.google.com/?q=Queenstown+Central+New+Zealand",
-        "type": "experience",
+        "route": "Next: drive to Queenstown CBD, park and walk to Earnslaw Park.",
+        "map": "https://maps.google.com/?q=Hustl+Cafe+Five+Mile+Queenstown",
+        "type": "meal",
         "dayId": "day5",
-        "placeId": "queenstown-central",
-        "bookingId": null
+        "placeId": "hustl-five-mile",
+        "bookingId": null,
+        "guideIds": [
+          "hustl-five-mile",
+          "moinho-five-mile",
+          "joes-five-mile"
+        ],
+        "optionsLabel": "Brunch options"
       },
       {
         "id": "queenstown-market-d5",
-        "time": "Midday",
-        "title": "🛍️ Queenstown Market",
+        "time": "1:00 PM–2:40 PM",
+        "title": "🛍️ Queenstown Market + lakefront",
         "details": [
-          "Browse the Saturday market and lakefront while waiting for the Fowlers to arrive."
+          "Browse local crafts, gifts and snacks at Earnslaw Park, then enjoy a short lakefront wander."
         ],
-        "route": "Next: flexible lunch, then meet the Fowlers for Airbnb check-in.",
+        "route": "Next: Windsor Lodge · leave by about 2:40 PM for 3:00 PM check-in.",
+        "map": "https://maps.google.com/?q=Queenstown+Market+Earnslaw+Park+Queenstown",
         "type": "experience",
         "dayId": "day5",
-        "placeId": null,
-        "bookingId": null,
-        "nonPlace": true,
-        "nonPlaceRole": "market"
-      },
-      {
-        "id": "queenstown-lunch-wait-d5",
-        "time": "Early afternoon",
-        "title": "🍽️ Flexible lunch · wait for Fowlers",
-        "details": [
-          "Keep lunch easy and timing flexible around the Fowlers' arrival."
-        ],
-        "route": "Next: Windsor Lodge · check-in from 3:00 PM.",
-        "type": "meal",
-        "dayId": "day5",
-        "placeId": null,
-        "bookingId": null,
-        "nonPlace": true,
-        "nonPlaceRole": "flexible-meal"
+        "placeId": "queenstown-market",
+        "bookingId": null
       },
       {
         "id": "airbnb-checkin-d5",
         "time": "3:00 PM",
         "title": "🏡 Check in · Windsor Lodge",
         "details": [
-          "All three families check in together and settle into the shared Airbnb."
+          "Check in together, allocate rooms and unload the cars."
         ],
-        "route": "Next: easy reunion evening and flexible dinner.",
+        "route": "Next: FreshChoice Queenstown for breakfast, drinks and snacks.",
         "map": "https://maps.google.com/?q=7+Windsor+Place+Queenstown",
         "type": "rest",
         "dayId": "day5",
@@ -3354,11 +3456,25 @@ const ITINERARY_DATA={
         "bookingId": "queenstown-booking"
       },
       {
+        "id": "freshchoice-d5",
+        "time": "3:45 PM",
+        "title": "🛒 FreshChoice Queenstown · Airbnb supplies",
+        "details": [
+          "Buy breakfast food, drinks and snacks for the shared stay."
+        ],
+        "route": "Return to Windsor Lodge and relax.",
+        "map": "https://maps.google.com/?q=FreshChoice+Queenstown+64+Gorge+Road+Queenstown",
+        "type": "shopping",
+        "dayId": "day5",
+        "placeId": "freshchoice-queenstown",
+        "bookingId": null
+      },
+      {
         "id": "reunion-evening-d5",
         "time": "Evening",
-        "title": "👨‍👩‍👧‍👦 Family reunion evening",
+        "title": "👨‍👩‍👧‍👦 Settle in & easy dinner",
         "details": [
-          "Settle in, organise rooms and choose an easy dinner together."
+          "Unpack, organise the house and keep dinner flexible."
         ],
         "route": null,
         "type": "rest",
