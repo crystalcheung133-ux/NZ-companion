@@ -1,5 +1,5 @@
 importScripts('./theme-config.js', './asset-config.js', './locale-config.js', './formatter.js', './navigation-config.js', './trip-config.js', './storage-config.js');
-const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-rc25-2-3-admin-safe-day3-greedy-cow`;
+const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-rc25-2-3-admin-safe-day3-breakfast-options`;
 const CRITICAL_EXTENSIONS = /\.(?:css|js)$/i;
 const ASSETS = [
   './',

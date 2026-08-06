@@ -1,6 +1,6 @@
 Travel Engine Production File Manifest
 Generated: 2026-08-06
-Release: NZ-RC25.2.4-DAY3-GREEDY-COW
+Release: NZ-RC25.2.5-DAY3-BREAKFAST-OPTIONS
 Production root files:
 
 - .vercelignore

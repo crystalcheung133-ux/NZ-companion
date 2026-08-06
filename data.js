@@ -1,4 +1,4 @@
-// data.js — New Zealand Companion RC25.2.4 · Day 3 optional Greedy Cow breakfast
+// data.js — New Zealand Companion RC25.2.5 · Day 3 breakfast options
 // Generated from the frozen Travel Engine without UI redesign.
 
 /* Trip identity is owned exclusively by TRIP_CONFIG. */
@@ -3080,24 +3080,12 @@ const ITINERARY_DATA={
         "type": "meal",
         "dayId": "day3",
         "placeId": "peppers",
-        "bookingId": "peppers-booking"
-      },
-      {
-        "id": "greedy-cow-breakfast",
-        "time": "Optional · 07:30",
-        "title": "☕ Optional breakfast · The Greedy Cow Cafe",
-        "details": [
-          "Optional alternative to breakfast at Peppers.",
-          "Keep the stop efficient so the 08:30 departure and 11:55 scenic-flight check-in stay protected."
-        ],
-        "route": "Next: depart Lake Tekapo for Lake Pukaki · ≈ 45–50 min drive.",
-        "type": "meal",
-        "dayId": "day3",
-        "placeId": "greedy-cow",
-        "bookingId": null,
+        "bookingId": "peppers-booking",
         "guideIds": [
+          "peppers",
           "greedy-cow"
-        ]
+        ],
+        "optionsLabel": "Breakfast option · The Greedy Cow Cafe"
       },
       {
         "id": "leave-tekapo",
