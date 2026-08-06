@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* CCMV Travel Engine — data.js entity-linkage regression test.
+/* Travel Engine — data.js entity-linkage regression test.
    Loads the real PLACES / CATEGORIES / GUIDE_ORDER / DAY_LINKS / FRIENDS /
    BOOKINGS_DATA / ITINERARY_DATA objects from data.js in a sandbox and
    checks cross-references for orphans. Reviewed against the

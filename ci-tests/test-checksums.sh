@@ -1,5 +1,5 @@
 #!/bin/sh
-# CCMV Travel Engine — release integrity gate.
+# Travel Engine — release integrity gate.
 # Production files live at the repository root. Repository-only folders such as
 # ci-tests/ and .github/ are intentionally outside the production manifest.
 

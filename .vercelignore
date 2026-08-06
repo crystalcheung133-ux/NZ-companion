@@ -1,0 +1,6 @@
+# Keep QA and release metadata in the source archive, but do not publish them.
+ci-tests/
+PRODUCTION-FILE-MANIFEST.txt
+SHA256SUMS.txt
+VERSION.txt
+RC25.2.2-Production-Freeze-Certificate.md

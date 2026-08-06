@@ -1,5 +1,5 @@
 #!/bin/sh
-# CCMV Travel Engine — full regression test suite.
+# Travel Engine — full regression test suite.
 # Runs every check against the repository-root production files and exits non-zero if any fails.
 # Usage: sh ci-tests/run-all.sh
 cd "$(dirname "$0")"

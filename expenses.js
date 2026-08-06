@@ -546,7 +546,7 @@ let editingExpenseIndex=null;
     const a=document.createElement('a');
     const date=new Date().toISOString().slice(0,10);
     a.href=url;
-    a.download=`CCMV-New-Zealand-Expenses-${date}.csv`;
+    a.download=`New-Zealand-Expenses-${date}.csv`;
     document.body.appendChild(a);
     a.click();
     a.remove();

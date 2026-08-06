@@ -1,4 +1,4 @@
-/* CCMV Front Page Cleanup Phase 1
+/* Travel Engine Front Page Cleanup Phase 1
    Behaviour-preserving home runtime extracted from index.html.
    No DOM structure or layout ownership changes. */
 (function(){

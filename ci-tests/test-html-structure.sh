@@ -1,5 +1,5 @@
 #!/bin/sh
-# CCMV Travel Engine — HTML structure sanity check. Confirms every shipped
+# Travel Engine — HTML structure sanity check. Confirms every shipped
 # .html file has balanced <div>/</div> tags. Run from repo root:
 # sh ci-tests/test-html-structure.sh
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)

@@ -48,7 +48,7 @@
     themeName: root.THEME_CONFIG.name,
 
     /* Existing presentation labels retained here so identity has one owner. */
-    engineName: 'CCMV Travel Engine',
+    engineName: 'Travel Engine',
     shortName: 'NZ Family',
     navLabel: 'New Zealand Companion',
     familyLabel: 'MELBOURNE · SYDNEY · NEWCASTLE',
@@ -92,7 +92,7 @@
       completedMessage: 'Thanks for the moments'
     }),
     guide: Object.freeze({ excludedPlaceIds: Object.freeze(['airport-queenstown','christchurch-airport','rental-cars-247','lake-tekapo','good-shepherd','firebirds','wolf-coffee','queenstown-central','te-anau','freshchoice-queenstown']) }),
-    exports: Object.freeze({ expenseSummaryTitle: 'CCMV NEW ZEALAND EXPENSE SUMMARY' }),
+    exports: Object.freeze({ expenseSummaryTitle: 'NEW ZEALAND EXPENSE SUMMARY' }),
     heroLine1: 'New Zealand',
     heroEmphasis: 'Companion',
     tagline: 'Drive · Discover · Adventure',
