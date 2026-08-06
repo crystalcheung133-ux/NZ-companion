@@ -1,4 +1,4 @@
-// data.js — New Zealand Companion RC25.2.1 · Guide runtime integrity fix
+// data.js — New Zealand Companion RC25.2.4 · Day 3 optional Greedy Cow breakfast
 // Generated from the frozen Travel Engine without UI redesign.
 
 /* Trip identity is owned exclusively by TRIP_CONFIG. */
@@ -135,7 +135,7 @@ const PLACES={
     "title": "The Greedy Cow Cafe",
     "emoji": "☕",
     "cat": "DINING",
-    "sub": "Tekapo lunch",
+    "sub": "Optional Lake Tekapo breakfast / brunch",
     "hours": "Daily 7:30 AM–4:00 PM · kitchen closes 2:00 PM",
     "maps": "https://www.google.com/maps/search/?api=1&query=The+Greedy+Cow%2C+16+Rapuwai+Lane%2C+Lake+Tekapo+7945",
     "address": "16 Rapuwai Lane, Lake Tekapo 7945, New Zealand",
@@ -152,7 +152,7 @@ const PLACES={
     "price": "$–$",
     "transport": "Self-drive / walk",
     "audit": "OFFICIAL / VERIFIED",
-    "status": "planned",
+    "status": "optional",
     "addressAudit": "OFFICIAL / VERIFIED"
   },
   "c1-espresso": {
@@ -3055,7 +3055,7 @@ const ITINERARY_DATA={
       "drivingTime": "≈ 4 hr 35 min",
       "road": "SH8 / SH80 / SH8 / SH6",
       "stops": [
-        "Light breakfast at Peppers",
+        "Breakfast at Peppers or optional Greedy Cow",
         "Lake Pukaki Lookout",
         "Mt Cook Alpine Salmon",
         "Ultimate Alpine Experience",
@@ -3081,6 +3081,23 @@ const ITINERARY_DATA={
         "dayId": "day3",
         "placeId": "peppers",
         "bookingId": "peppers-booking"
+      },
+      {
+        "id": "greedy-cow-breakfast",
+        "time": "Optional · 07:30",
+        "title": "☕ Optional breakfast · The Greedy Cow Cafe",
+        "details": [
+          "Optional alternative to breakfast at Peppers.",
+          "Keep the stop efficient so the 08:30 departure and 11:55 scenic-flight check-in stay protected."
+        ],
+        "route": "Next: depart Lake Tekapo for Lake Pukaki · ≈ 45–50 min drive.",
+        "type": "meal",
+        "dayId": "day3",
+        "placeId": "greedy-cow",
+        "bookingId": null,
+        "guideIds": [
+          "greedy-cow"
+        ]
       },
       {
         "id": "leave-tekapo",
