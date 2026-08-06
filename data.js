@@ -85,26 +85,24 @@ const PLACES={
     "title": "Sudima Queenstown Five Mile",
     "emoji": "🏨",
     "cat": "STAY",
-    "sub": "Day 4 primary choice · Reconfirm before travel",
+    "sub": "Confirmed stay · 25–26 Sep",
     "hours": "2:00 PM → 11:00 AM",
     "maps": "https://maps.google.com/?q=Sudima+Queenstown+Five+Mile",
     "address": "22 Grant Road, Frankton, Queenstown 9300, New Zealand",
-    "desc": "A one-night Queenstown transition booking for the Lee family while the shared Airbnb dates are being reviewed around the Fowlers' 26 September arrival.",
+    "desc": "A practical one-night Five Mile base before moving to Windsor Lodge the next day.",
     "signature": [
       "Two-bedroom accommodation",
       "Convenient Five Mile / Frankton location",
       "One-night transition before the group stay"
     ],
     "worth": [
-      "Current primary choice for the Lee family on 25 September while the shared Airbnb dates are reviewed.",
-      "Reconfirm the final stay before travel.",
-      "Five Mile is practical for groceries, food and the next-day transition to the group accommodation."
+      "Five Mile is practical for brunch, groceries and the next-day move to Windsor Lodge."
     ],
     "categoryLabel": "🏨 Stay",
     "price": "NZD 407.20 · pay at hotel · approx. net AUD 324.26",
     "transport": "Self-drive / walk",
     "audit": "SUPPLIED BOOKING · DETAILS PARTIALLY AVAILABLE",
-    "status": "planned"
+    "status": "confirmed"
   },
   "riverside": {
     "title": "Riverside Market",
@@ -1365,6 +1363,29 @@ const PLACES={
     "status": "planned",
     "addressAudit": "OFFICIAL / VERIFIED"
   },
+  "freshchoice-te-anau": {
+    "title": "FreshChoice Te Anau",
+    "emoji": "🛒",
+    "cat": "SHOP",
+    "sub": "Te Anau stay supplies",
+    "hours": "Check live hours",
+    "maps": "https://maps.google.com/?q=FreshChoice+Te+Anau+5+Milford+Crescent+Te+Anau",
+    "address": "5 Milford Crescent, Te Anau 9600, New Zealand",
+    "desc": "A practical full supermarket stop for Te Anau breakfast supplies, snacks, drinks and Milford-day provisions.",
+    "signature": [
+      "BUY · Breakfast supplies and fresh food",
+      "PACK · Snacks and drinks for Milford day",
+      "TIMING · Stop before settling into Lakefront Lodge"
+    ],
+    "worth": [
+      "Buy only what is needed for the Te Anau stay rather than carrying extra groceries from Queenstown."
+    ],
+    "categoryLabel": "🛒 Shopping",
+    "transport": "Self-drive",
+    "audit": "PLANNED SUPPLY STOP",
+    "status": "planned",
+    "addressAudit": "KNOWN STORE ADDRESS"
+  },
   "queenstown-central": {
     "title": "Queenstown Central",
     "emoji": "📍",
@@ -1934,6 +1955,9 @@ const CATEGORIES={
   "SHOP": [
     {
       "key": "paknsave-moorhouse"
+    },
+    {
+      "key": "freshchoice-te-anau"
     }
   ]
 };
@@ -1998,7 +2022,8 @@ const GUIDE_ORDER=[
   "lakefront-cafe-te-anau",
   "milford-road-merchant",
   "redcliff",
-  "paknsave-moorhouse"
+  "paknsave-moorhouse",
+  "freshchoice-te-anau"
 ];
 
 const DAY_LINKS={
@@ -2012,6 +2037,12 @@ const DAY_LINKS={
     [
       "Day 5",
       "day.html?day=5#airbnb-checkin-d5"
+    ]
+  ],
+  "freshchoice-te-anau": [
+    [
+      "Day 8",
+      "day.html?day=8#freshchoice-te-anau-d8"
     ]
   ],
   "riverside": [
@@ -2561,7 +2592,7 @@ const BOOKINGS_DATA={
     "id": "sudima-booking",
     "type": "accommodation",
     "title": "Sudima Queenstown Five Mile",
-    "status": "monitoring",
+    "status": "confirmed",
     "date": "2026-09-25",
     "time": "Check-in",
     "placeId": "sudima-five-mile",
@@ -2580,10 +2611,10 @@ const BOOKINGS_DATA={
     "price": "NZD 407.20 · pay at hotel · approx. net AUD 324.26",
     "cashback": "AUD 17.79",
     "netPrice": "AUD 324.26",
-    "displayStatus": "TO CONFIRM",
+    "displayStatus": "CONFIRMED",
     "guideDayLabel": "Day 4",
     "guideStatus": "confirmed",
-    "checkInInstructions": "Use this as the Lee family transition stay if the shared Airbnb changes to 26–29 September.",
+    "checkInInstructions": "",
     "platform": "Expedia",
     "cancellation": "Check current Expedia booking terms",
     "paymentLabel": "PAY AT HOTEL",
@@ -3646,10 +3677,8 @@ const ITINERARY_DATA={
         "route": "Next: Historic Arrowtown · ≈ 20–25 min drive.",
         "type": "meal",
         "dayId": "day7",
-        "placeId": null,
-        "bookingId": null,
-        "nonPlace": true,
-        "nonPlaceRole": "accommodation-meal"
+        "placeId": "queenstown-house",
+        "bookingId": "queenstown-booking"
       },
       {
         "id": "arrowtown",
@@ -3743,17 +3772,18 @@ const ITINERARY_DATA={
       "🐦 Bird Sanctuary"
     ],
     "drive": {
-      "route": "Queenstown → Kingston / Mossburn → Te Anau",
+      "route": "Queenstown → Kingston / Mossburn → FreshChoice Te Anau → Lakefront Lodge",
       "distance": "≈ 175 km",
       "drivingTime": "≈ 2 hr 20 min",
       "road": "SH6 / SH97 / SH94",
       "stops": [
         "Kingston / Mossburn",
+        "FreshChoice Te Anau",
         "Lakefront Lodge"
       ],
-      "note": "Leave around 09:30.",
+      "note": "Leave around 09:30. Buy Te Anau supplies locally before settling into the lodge.",
       "contingency": "Keep the slow-holiday pace and adjust for weather, road conditions and family energy.",
-      "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=6+Earnslaw+Terrace%2C+Queenstown%2C+New+Zealand&destination=Lakefront+Lodge%2C+58+Lakefront+Drive%2C+Te+Anau%2C+New+Zealand&travelmode=driving&waypoints=Kingston%2C+Southland%2C+New+Zealand%7CMossburn%2C+Southland%2C+New+Zealand"
+      "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=6+Earnslaw+Terrace%2C+Queenstown%2C+New+Zealand&destination=Lakefront+Lodge%2C+58+Lakefront+Drive%2C+Te+Anau%2C+New+Zealand&travelmode=driving&waypoints=Kingston%2C+Southland%2C+New+Zealand%7CMossburn%2C+Southland%2C+New+Zealand%7CFreshChoice+Te+Anau%2C+5+Milford+Crescent%2C+Te+Anau"
     },
     "items": [
       {
@@ -3766,10 +3796,8 @@ const ITINERARY_DATA={
         "route": "Next: check out, then optional fuel stop before leaving Queenstown.",
         "type": "meal",
         "dayId": "day8",
-        "placeId": null,
-        "bookingId": null,
-        "nonPlace": true,
-        "nonPlaceRole": "accommodation-meal"
+        "placeId": "queenstown-house",
+        "bookingId": "queenstown-booking"
       },
       {
         "id": "queenstown-fuel-check",
@@ -3824,11 +3852,25 @@ const ITINERARY_DATA={
         "details": [
           "A casual Te Anau cafe serving breakfast, brunch, coffee and light lunch dishes — a practical first meal after the drive from Queenstown."
         ],
-        "route": "Next: Lakefront Lodge · ≈ 5 min drive.",
+        "route": "Next: FreshChoice Te Anau · ≈ 2–4 min drive.",
         "map": "https://maps.google.com/?q=Sandfly%20Cafe",
         "type": "meal",
         "dayId": "day8",
         "placeId": "sandfly-cafe",
+        "bookingId": null
+      },
+      {
+        "id": "freshchoice-te-anau-d8",
+        "time": "Afternoon",
+        "title": "🛒 FreshChoice Te Anau",
+        "details": [
+          "Buy breakfast supplies, fresh food, drinks and Milford-day snacks for the Te Anau stay."
+        ],
+        "route": "Next: Lakefront Lodge · ≈ 3–5 min drive.",
+        "map": "https://maps.google.com/?q=FreshChoice+Te+Anau+5+Milford+Crescent+Te+Anau",
+        "type": "shopping",
+        "dayId": "day8",
+        "placeId": "freshchoice-te-anau",
         "bookingId": null
       },
       {

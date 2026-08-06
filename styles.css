@@ -2334,3 +2334,34 @@ body.guide-booking-stack-open #tripModal{z-index:5100!important;}
   visibility:visible!important;
   opacity:1!important;
 }
+
+
+/* RC25.1.5 — balanced fixed-nav clearance for Moments and Expenses. */
+:root{--action-modal-nav-clearance:calc(104px + env(safe-area-inset-bottom,0px));}
+#momentsModal.show,#expenseModal.show{
+  align-items:flex-start!important;
+  padding:12px 12px var(--action-modal-nav-clearance)!important;
+  overflow:hidden!important;
+}
+#momentsModal .moments-sheet,#expenseModal .tools-sheet{
+  height:auto!important;
+  max-height:calc(100dvh - var(--action-modal-nav-clearance) - 24px)!important;
+  padding:18px 18px 16px!important;
+  scroll-padding-bottom:20px!important;
+}
+#momentsModal .moments-form,#expenseModal .expense-form{
+  min-height:0!important;
+  overflow-y:auto!important;
+  padding-bottom:20px!important;
+  scroll-padding-bottom:20px!important;
+}
+#momentsModal .moments-form>.btn:last-child,#expenseModal #expenseSaveButton{
+  flex:0 0 auto!important;
+  margin:8px 0 0!important;
+}
+@media(max-width:760px){
+  :root{--action-modal-nav-clearance:calc(110px + env(safe-area-inset-bottom,0px));}
+  #momentsModal .moments-sheet,#expenseModal .tools-sheet{
+    max-height:calc(100dvh - var(--action-modal-nav-clearance) - 16px)!important;
+  }
+}

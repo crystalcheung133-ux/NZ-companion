@@ -1,10 +1,10 @@
 CCMV Travel Engine Production File Manifest
 Generated: 2026-08-06
-Release: NZ-RC25.1.4-WINDSOR-DINNER-OPTIONS
+Release: NZ-RC25.1.5-ACCOMMODATION-GROCERY-LAYOUT
 Production root files:
 
-- RC25.1.4-Implementation-Report.md
-- RC25.1.4-Regression-Report.md
+- RC25.1.5-Implementation-Report.md
+- RC25.1.5-Regression-Report.md
 - TRAVEL-ENGINE-UX-RULES-v1.0.md
 - VERSION.txt
 - admin.js

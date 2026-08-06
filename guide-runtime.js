@@ -325,10 +325,15 @@ function compactGuideSections(g){
 }
 function guideStaySections(g){
  if(g.cat!=='STAY')return '';
+ const booking=window.BOOKING_AUTHORITY?BOOKING_AUTHORITY.byPlace(g.key):null;
+ const stay=[];
+ if(g.hours)stay.push(g.hours);
+ if(booking?.nights)stay.push(`${booking.nights} night${Number(booking.nights)===1?'':'s'}`);
+ if(booking?.guests)stay.push(`${booking.guests} guest${Number(booking.guests)===1?'':'s'}`);
+ const useful=practicalGuideItems(g).filter(item=>!stay.includes(item));
  const why=guideWhyGo(g);
- const fit=practicalGuideItems(g);
- const showWhy=why&&g.key==='southwark';
- return `${showWhy?`<section class="guide-stay-section guide-why-go"><h3>Why Go</h3><p>${why}</p></section>`:''}${guideListSection('Stay Info',fit,'guide-stay-info')}`;
+ const showWhy=!!why&&['southwark','queenstown-house'].includes(g.key);
+ return `${guideListSection('Stay',stay,'guide-stay-info')}${guideListSection('Useful',useful,'guide-stay-useful')}${showWhy?`<section class="guide-stay-section guide-why-go"><h3>Why Stay</h3><p>${why}</p></section>`:''}`;
 }
 
 let guideAlternativeKeys=[];
