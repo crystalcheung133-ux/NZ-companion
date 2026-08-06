@@ -37,19 +37,21 @@ const PLACES={
     "hours": "3:00 PM → 10:00 AM",
     "maps": "https://maps.google.com/?q=7+Windsor+Place+Queenstown",
     "address": "7 Windsor Place, Queenstown, New Zealand",
-    "desc": "A shared Queenstown base for all three families, close enough to settle in together before the group activities begin.",
+    "desc": "A spacious lodge for the three families to stay together, with lake and mountain views, a hot tub and plenty of shared living space close to Queenstown.",
     "signature": [
-      "Shared home for 9 guests and 2 children",
-      "Three-night Queenstown base",
-      "Group check-in from 3:00 PM"
+      "GROUP FIT · 6 bedrooms · 14 beds · 3 bathrooms",
+      "RELAX · Outdoor hot tub with lake and mountain views",
+      "PRACTICAL · Large kitchen, garage and off-street parking",
+      "ACCESS · Smart-lock self check-in · about 15 min walk downhill to town"
     ],
     "worth": [
-      "Use Day 5 for an easy Queenstown wander and market visit while waiting for the Fowlers, then check in together in the afternoon."
+      "Maximum 10 adults over 16 plus 4 children; functions are not permitted.",
+      "The walk into town is downhill, so allow more time or use a car/taxi for the return uphill."
     ],
     "categoryLabel": "🏡 Stay",
     "price": "AUD 4,683.99 · charge scheduled 17 Sep 2026",
     "transport": "Self-drive / walk",
-    "audit": "SUPPLIED AIRBNB CONFIRMATION",
+    "audit": "SUPPLIED AIRBNB CONFIRMATION + AIRBNB LISTING VERIFIED",
     "status": "confirmed",
     "addressAudit": "PRIVATE BOOKING ADDRESS · supplied by traveller"
   },
@@ -3374,10 +3376,11 @@ const ITINERARY_DATA={
       "😴 Sleep in",
       "☕ Five Mile brunch",
       "🛍️ Queenstown Market",
-      "🏡 Airbnb check-in"
+      "🏡 Airbnb check-in",
+      "🍖 Pedro's dinner"
     ],
     "drive": {
-      "route": "Sudima Five Mile → Queenstown Market → Windsor Lodge → FreshChoice → Windsor Lodge",
+      "route": "Sudima Five Mile → Queenstown Market → Windsor Lodge → FreshChoice → Pedro's → Windsor Lodge",
       "distance": "≈ 20 km",
       "drivingTime": "≈ 40 min total",
       "road": "Local Queenstown roads",
@@ -3385,9 +3388,10 @@ const ITINERARY_DATA={
         "Five Mile brunch",
         "Queenstown Market · Earnslaw Park",
         "Windsor Lodge",
-        "FreshChoice Queenstown"
+        "FreshChoice Queenstown",
+        "Pedro's House of Lamb"
       ],
-      "note": "Sleep in, check out at 11:00 AM and brunch near Sudima before heading to the Saturday market. Check in first, then buy Airbnb supplies.",
+      "note": "Sleep in, check out at 11:00 AM and brunch near Sudima before the Saturday market. Check in, buy Airbnb supplies, then collect an easy shared dinner.",
       "contingency": "If the market runs late, one person can complete check-in while the others finish browsing; FreshChoice is open into the evening.",
       "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=Sudima+Queenstown+Five+Mile%2C+22+Grant+Road%2C+Frankton%2C+Queenstown&destination=7+Windsor+Place%2C+Queenstown%2C+New+Zealand&travelmode=driving&waypoints=Queenstown+Market%2C+Earnslaw+Park%2C+Queenstown%7CFreshChoice+Queenstown%2C+64+Gorge+Road%2C+Queenstown"
     },
@@ -3470,17 +3474,25 @@ const ITINERARY_DATA={
         "bookingId": null
       },
       {
-        "id": "reunion-evening-d5",
-        "time": "Evening",
-        "title": "👨‍👩‍👧‍👦 Settle in & easy dinner",
+        "id": "pedros-dinner-d5",
+        "time": "6:30 PM",
+        "title": "🍖 Dinner · Pedro's House of Lamb",
         "details": [
-          "Unpack, organise the house and keep dinner flexible."
+          "Pick up slow-cooked lamb and potatoes to share at Windsor Lodge.",
+          "Options: Winnie's Gourmet Pizza Bar or Lone Star Queenstown for a sit-down group dinner."
         ],
-        "route": null,
-        "type": "rest",
+        "route": "Order ahead, collect from Gorge Road and return to Windsor Lodge.",
+        "map": "https://maps.google.com/?q=Pedro%27s+House+of+Lamb+47+Gorge+Road%2C+Queenstown+9300%2C+New+Zealand",
+        "type": "meal",
         "dayId": "day5",
-        "placeId": "queenstown-house",
-        "bookingId": "queenstown-booking"
+        "placeId": "pedros",
+        "bookingId": null,
+        "guideIds": [
+          "pedros",
+          "winnies",
+          "lone-star"
+        ],
+        "optionsLabel": "Dinner options"
       }
     ],
     "dayId": "day5"

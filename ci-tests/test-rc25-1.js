@@ -21,6 +21,10 @@ ok(q.guestSummary==='9 guests + 2 children'&&q.host==='Alison','Airbnb guest/hos
 const d5=ITINERARY_DATA['5'],d6=ITINERARY_DATA['6'];
 ok(d5.heading.includes('Market')&&d5.items.some(x=>x.id==='queenstown-market-d5'),'Day 5 market plan missing.');
 ok(d5.items.some(x=>x.id==='airbnb-checkin-d5'&&x.time==='3:00 PM'&&x.bookingId==='queenstown-booking'),'Day 5 Airbnb check-in missing.');
+ok(PLACES['queenstown-house'].signature.some(x=>/hot tub/i.test(x))&&PLACES['queenstown-house'].signature.some(x=>/6 bedrooms/i.test(x)),'Windsor Lodge guide highlights are incomplete.');
+const d5Dinner=d5.items.find(x=>x.id==='pedros-dinner-d5');
+ok(d5Dinner&&d5Dinner.placeId==='pedros'&&Array.isArray(d5Dinner.guideIds)&&d5Dinner.guideIds.join('|')==='pedros|winnies|lone-star','Day 5 dinner primary/options are incorrect.');
+ok(!d5.items.some(x=>x.id==='reunion-evening-d5'),'Old generic Day 5 dinner item remains.');
 ok(!d5.items.some(x=>/Skyline|Luge|Kiwi Park/.test(x.title)),'Original Day 5 activities were not moved.');
 ok(d6.items.some(x=>/Skyline/.test(x.title))&&d6.items.some(x=>/Luge/.test(x.title))&&d6.items.some(x=>/Kiwi Park/.test(x.title)),'Day 6 does not contain original Day 5 activities.');
 ok((DAY_LINKS.skyline||[]).some(x=>x[0]==='Day 6'),'Skyline Guide day link is not Day 6.');
