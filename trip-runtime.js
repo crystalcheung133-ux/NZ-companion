@@ -199,6 +199,7 @@ function openAccommodationDetail(bookingId,bookingOverride,showSaved){
   const content=document.getElementById('tripModalContent');
   const modal=document.getElementById('tripModal');
   if(!content||!modal)return;
+  if(!booking){ content.innerHTML='<p class="kicker">Trip</p><h2>Booking unavailable</h2><p>Please close and reopen Trip Booking.</p>'; modal.classList.add('show'); return; }
   content.innerHTML=`<div class="trip-onepage trip-onepage-stay accommodation-onepage-detail"><button class="accommodation-back" type="button" onclick="openAccommodationList()">‹ All accommodation</button><p class="kicker">Trip · Accommodation</p><h2>${escapeTripHTML(booking?booking.title:'Accommodation')}</h2>${showSaved?'<p class="timestamp booking-save-success" role="status">Saved ✓</p>':''}${buildAccommodationDetailHTML(booking)}<p class="timestamp trip-build-summary">${tripSyncSummary()}</p></div>`;
   modal.classList.add('show');
   const sheet=document.querySelector('#tripModal .trip-sheet');

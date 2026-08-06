@@ -2273,3 +2273,64 @@ body.guide-booking-stack-open #tripModal{z-index:5100!important;}
     --fixed-nav-safe-clearance: calc(136px + env(safe-area-inset-bottom, 0px));
   }
 }
+
+/* RC25.1.1 — canonical modal/menu visibility hotfix.
+   Prevent mixed legacy rules from collapsing an opened sheet to its handle. */
+.guide-modal,
+.trip-modal,
+.moments-modal,
+.tools-modal,
+.mama-modal{
+  position:fixed!important;
+  inset:0!important;
+}
+.guide-modal.show,
+.trip-modal.show,
+.moments-modal.show,
+.tools-modal.show,
+.mama-modal.show{
+  display:grid!important;
+  visibility:visible!important;
+  opacity:1!important;
+  pointer-events:auto!important;
+  align-items:start!important;
+  justify-items:center!important;
+}
+#guideModal .guide-sheet,
+#tripModal .trip-sheet{
+  display:block!important;
+  width:min(760px,100%)!important;
+  min-height:180px!important;
+  height:auto!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  transform:none!important;
+  opacity:1!important;
+  visibility:visible!important;
+}
+#guideModalContent,
+#tripModalContent{
+  display:block!important;
+  min-height:80px!important;
+  visibility:visible!important;
+  opacity:1!important;
+}
+.mini-menu.show,
+#tripMenu.show,
+#guideMenu.show,
+#daysMenu.show{
+  display:block!important;
+  min-height:52px!important;
+  max-height:min(62dvh,520px)!important;
+  overflow-y:auto!important;
+  visibility:visible!important;
+  opacity:1!important;
+  pointer-events:auto!important;
+}
+.mini-menu.show > *,
+#tripMenu.show > *,
+#guideMenu.show > *,
+#daysMenu.show > *{
+  visibility:visible!important;
+  opacity:1!important;
+}
