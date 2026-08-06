@@ -1,4 +1,4 @@
-// data.js — New Zealand Companion RC25.2 · Guide Card Standardisation
+// data.js — New Zealand Companion RC25.2.1 · Guide runtime integrity fix
 // Generated from the frozen Travel Engine without UI redesign.
 
 /* Trip identity is owned exclusively by TRIP_CONFIG. */
@@ -2020,7 +2020,9 @@ const GUIDE_ORDER=[
   "milford-road-merchant",
   "redcliff",
   "paknsave-moorhouse",
-  "freshchoice-te-anau"
+  "freshchoice-queenstown",
+  "freshchoice-te-anau",
+  "queenstown-market"
 ];
 
 const DAY_LINKS={

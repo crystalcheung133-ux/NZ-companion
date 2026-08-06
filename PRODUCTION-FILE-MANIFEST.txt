@@ -1,6 +1,6 @@
 CCMV Travel Engine Production File Manifest
 Generated: 2026-08-06
-Release: NZ-RC25.2-GUIDE-STANDARD
+Release: NZ-RC25.2.1-INTEGRITY-FIX
 Production root files:
 
 - RC25.2-Guide-Audit-Matrix.md
