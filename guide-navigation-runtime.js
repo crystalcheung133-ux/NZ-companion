@@ -26,7 +26,10 @@
   function categoryKeys(category){
     const guide=source(); if(!guide)return [];
     const skip=excluded();
-    const items=(guide.categories&&guide.categories[category]||[]).map(function(item){const key=keyOf(item);return key&&guide.places[key]?Object.assign({key:key},guide.places[key]):null;}).filter(function(item){return item&&!skip.has(item.key);});
+    const explicit=(guide.categories&&guide.categories[category]||[]).map(function(item){return keyOf(item);}).filter(Boolean);
+    const inferred=Object.keys(guide.places||{}).filter(function(key){return String((guide.places[key]||{}).cat||'')===String(category);});
+    const keys=explicit.concat(inferred.filter(function(key){return !explicit.includes(key);}));
+    const items=keys.map(function(key){return key&&guide.places[key]?Object.assign({key:key},guide.places[key]):null;}).filter(function(item){return item&&!skip.has(item.key);});
     if(category==='ATTRACTIONS')items.sort(function(a,b){return dayNumber(a.key)-dayNumber(b.key)||String(a.title||'').localeCompare(String(b.title||''));});
     else if(category==='ACTIVITIES')items.sort(function(a,b){return activityGroup(a).localeCompare(activityGroup(b))||String(a.title||'').localeCompare(String(b.title||''));});
     else items.sort(function(a,b){return String(a.title||'').localeCompare(String(b.title||''));});
