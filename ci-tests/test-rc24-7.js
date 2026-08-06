@@ -16,7 +16,7 @@ assert(!/commodore/i.test(all),'Old Day 1 hotel remains in active data.');
 assert(booking.placeId==='southwark','Southwark booking does not use the canonical place ID.');
 assert(booking.checkIn==='2:00 PM'&&booking.checkOut==='10:00 AM','Southwark timing is incorrect.');
 assert(booking.cashback==='AUD 28.98','Southwark cashback is incorrect.');
-assert(booking.parking==='Confirmed · NZD 15 · pay at hotel'&&/pay at hotel/i.test(booking.notes||''),'Southwark parking requirement is incomplete.');
+assert(booking.parking==='Confirmed · NZD 15 · pay at hotel'&&!String(booking.notes||'').trim(),'Southwark parking should be confirmed once without a duplicate note.');
 assert((southwark.signature||[]).some(x=>/C1 · 6 min walk/.test(x)),'C1 walking time is missing.');
 assert((southwark.signature||[]).some(x=>/Riverside · 14 min walk/.test(x)),'Riverside walking time is missing.');
 assert(/destination=Southwark/.test(day1.drive.primaryMap)&&!day1.drive.primaryMap.includes('Riverside'),'Day 1 driving route does not end at Southwark.');

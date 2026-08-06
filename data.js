@@ -22,7 +22,7 @@ const PLACES={
       "Keep the afternoon flexible for the lakefront, Tekapo Springs or stargazing, depending on weather and energy."
     ],
     "categoryLabel": "🏨 Stay",
-    "price": "AUD 397.65 prepaid · net AUD 329.44 after AUD 68.21 savings",
+    "price": "AUD 397.65 prepaid · net AUD 329.44 after AUD 68.21 cashback",
     "transport": "Self-drive / walk",
     "audit": "OFFICIAL / VERIFIED",
     "status": "planned",
@@ -30,29 +30,28 @@ const PLACES={
     "website": "https://www.peppers.com.au/Bluewater"
   },
   "queenstown-house": {
-    "title": "Queenstown Airbnb · Tonic Lodge",
+    "title": "Windsor Lodge · Alpine Luxury for large groups",
     "emoji": "🏡",
     "cat": "STAY",
-    "sub": "Days 5–7 primary choice · Dates to confirm",
-    "hours": "Check-in after 3:00 pm · Check-out before 10:00 am",
-    "maps": "https://maps.google.com/?q=6+Earnslaw+Terrace+Queenstown",
-    "address": "6 Earnslaw Terrace, Queenstown 9300, New Zealand",
-    "desc": "Proposed shared Queenstown home for Lee, Fowlers and Yau from 26–29 September, reflecting the Fowlers arriving in Queenstown on 26 September.",
+    "sub": "Confirmed Airbnb · 26–29 Sep",
+    "hours": "3:00 PM → 10:00 AM",
+    "maps": "https://maps.google.com/?q=7+Windsor+Place+Queenstown",
+    "address": "7 Windsor Place, Queenstown, New Zealand",
+    "desc": "A shared Queenstown base for all three families, close enough to settle in together before the group activities begin.",
     "signature": [
-      "Shared home for all three families",
-      "Proposed three-night Queenstown base",
-      "Dates still being reviewed"
+      "Shared home for 9 guests and 2 children",
+      "Three-night Queenstown base",
+      "Group check-in from 3:00 PM"
     ],
     "worth": [
-      "Do not treat the revised 26–29 September dates as final until the Airbnb change is confirmed.",
-      "Sudima Queenstown Five Mile is currently held for the Lee family on 25 September."
+      "Use Day 5 for an easy Queenstown wander and market visit while waiting for the Fowlers, then check in together in the afternoon."
     ],
     "categoryLabel": "🏡 Stay",
-    "price": "Original 25–29 Sep booking AUD 6,904.77 · revised price pending",
+    "price": "AUD 4,683.99 · charge scheduled 17 Sep 2026",
     "transport": "Self-drive / walk",
-    "audit": "DATE CHANGE PENDING CONFIRMATION",
-    "status": "monitoring",
-    "addressAudit": "PRIVATE BOOKING ADDRESS · retained from supplied trip data; not externally verified"
+    "audit": "SUPPLIED AIRBNB CONFIRMATION",
+    "status": "confirmed",
+    "addressAudit": "PRIVATE BOOKING ADDRESS · supplied by traveller"
   },
   "ultimate-alpine": {
     "title": "Ultimate Alpine Experience · Helicopter + Ski Plane",
@@ -1983,26 +1982,14 @@ const DAY_LINKS={
   ],
   "skyline": [
     [
-      "Day 5",
-      "day.html?day=5#luge"
+      "Day 6",
+      "day.html?day=6#luge-d6"
     ]
   ],
   "kiwi-park": [
     [
-      "Day 5",
-      "day.html?day=5#kiwi-park"
-    ]
-  ],
-  "winnies": [
-    [
       "Day 6",
-      "day.html?day=6#winnies"
-    ]
-  ],
-  "onsen": [
-    [
-      "Day 6",
-      "day.html?day=6#slow-morning"
+      "day.html?day=6#kiwi-park-d6"
     ]
   ],
   "arrowtown": [
@@ -2087,44 +2074,20 @@ const DAY_LINKS={
       "day.html?day=4#flex-lunch"
     ],
     [
-      "Day 5",
-      "day.html?day=5#lunch-skyline"
+      "Day 6",
+      "day.html?day=6#lunch-skyline-d6"
     ]
   ],
   "flame": [
     [
-      "Day 5",
-      "day.html?day=5#flame"
+      "Day 6",
+      "day.html?day=6#flame-d6"
     ]
   ],
   "saigon-kingdom": [
     [
       "Day 10",
       "day.html?day=10#departure-lunch"
-    ]
-  ],
-  "glenorchy-paradise": [
-    [
-      "Day 6",
-      "day.html?day=6#slow-morning"
-    ]
-  ],
-  "mrs-woollys": [
-    [
-      "Day 6",
-      "day.html?day=6#glenorchy-lunch"
-    ]
-  ],
-  "skippers-4wd": [
-    [
-      "Day 6",
-      "day.html?day=6#slow-morning"
-    ]
-  ],
-  "white-water-rafting": [
-    [
-      "Day 6",
-      "day.html?day=6#slow-morning"
     ]
   ],
   "arrowtown-bakery": [
@@ -2299,13 +2262,13 @@ const BOOKINGS_DATA={
     "checkOut": "10:00 AM",
     "address": "State Highway 8, Lake Tekapo 7945, New Zealand",
     "phone": "+64 3 360 1063",
-    "price": "AUD 397.65 prepaid · net AUD 329.44 after AUD 68.21 savings",
+    "price": "AUD 397.65 prepaid · net AUD 329.44 after AUD 68.21 cashback",
     "checkInInstructions": "Check in at reception. Confirm any late-arrival instructions directly with the property before travel.",
     "platform": "Trip.com",
     "cancellation": "Non-refundable; cannot be modified",
     "paymentLabel": "PAID",
     "totalAmount": "AUD 397.65",
-    "discountLabel": "Savings",
+    "discountLabel": "Cashback",
     "discountAmount": "\u2212AUD 68.21",
     "netTotalAUD": "AUD 329.44",
     "approximateNet": false
@@ -2313,34 +2276,37 @@ const BOOKINGS_DATA={
   "queenstown-booking": {
     "id": "queenstown-booking",
     "type": "accommodation",
-    "title": "Queenstown Airbnb · Tonic Lodge",
-    "status": "monitoring",
-    "displayStatus": "PENDING",
+    "title": "Windsor Lodge · Alpine Luxury for large groups",
+    "status": "confirmed",
+    "displayStatus": "CONFIRMED",
     "guideDayLabel": "Days 5–7",
     "guideStatus": "confirmed",
     "date": "2026-09-26",
-    "time": "After 15:00",
+    "time": "3:00 PM",
     "placeId": "queenstown-house",
     "dayId": "day5",
     "timelineItemId": "airbnb-checkin-d5",
     "guests": 11,
-    "reference": "HMDXBCZAWF",
-    "paymentStatus": "date change pending",
-    "notes": "All three families · Fowlers arrive 26 Sep",
-    "stayDates": "Proposed 26–29 Sep 2026",
+    "guestSummary": "9 guests + 2 children",
+    "reference": "HMMTJ38BES",
+    "paymentStatus": "Charge scheduled 17 Sep 2026",
+    "notes": "Hosted by Alison · all three families",
+    "stayDates": "26–29 Sep 2026",
     "nights": 3,
-    "roomType": "Shared accommodation for all three families",
-    "checkIn": "After 3:00 PM",
-    "checkOut": "Before 10:00 AM",
-    "address": "6 Earnslaw Terrace, Queenstown 9300, New Zealand",
+    "roomType": "Windsor Lodge · Alpine Luxury for large groups",
+    "checkIn": "3:00 PM",
+    "checkOut": "10:00 AM",
+    "address": "7 Windsor Place, Queenstown, New Zealand",
     "phone": "",
-    "price": "Revised price pending · original 25–29 Sep booking AUD 6,904.77",
-    "checkInInstructions": "Do not treat revised dates as final until Airbnb confirms the change.",
+    "price": "AUD 4,683.99 · charge scheduled 17 Sep 2026",
     "platform": "Airbnb",
-    "referenceLabel": "Airbnb reference",
-    "paymentLabel": "DATE CHANGE PENDING",
-    "totalAmount": "Revised price pending",
-    "netTotalAUD": "",
+    "host": "Alison",
+    "cancellation": "Free cancellation before 3:00 PM on 25 Sep 2026; cancellation before check-in at 3:00 PM on 26 Sep qualifies for a partial refund.",
+    "referenceLabel": "Airbnb confirmation code",
+    "paymentLabel": "CHARGE SCHEDULED",
+    "chargeDate": "17 Sep 2026",
+    "totalAmount": "AUD 4,683.99",
+    "netTotalAUD": "AUD 4,683.99",
     "approximateNet": false
   },
   "car-rental": {
@@ -2407,7 +2373,7 @@ const BOOKINGS_DATA={
     "referenceLabel": "Luxury Escapes reference",
     "paymentLabel": "PAID",
     "totalAmount": "AUD 1,541.13",
-    "discountLabel": "Savings",
+    "discountLabel": "Cashback",
     "discountAmount": "\u2212AUD 150.00",
     "netTotalAUD": "AUD 1,391.13",
     "approximateNet": false
@@ -2604,7 +2570,7 @@ const BOOKINGS_DATA={
     "price": "AUD 204.47",
     "cashback": "AUD 28.98",
     "parking": "Confirmed · NZD 15 · pay at hotel",
-    "notes": "Parking booked · pay at hotel · NZD 15.",
+    "notes": "",
     "paymentLabel": "PAID",
     "totalAmount": "AUD 204.47",
     "cashbackAmount": "\u2212AUD 28.98",
@@ -3295,23 +3261,25 @@ const ITINERARY_DATA={
   "5": {
     "title": "Day 5 · New Zealand Companion",
     "kicker": "Day 5 · 26 Sep • Saturday",
-    "heading": "Queenstown High Views, Kiwi Birds & Family Reunion",
+    "heading": "Queenstown Wander, Market & Family Check-in",
     "legend": [
-      "🚡 Skyline",
-      "🐦 Kiwi Park",
-      "👨‍👩‍👧‍👦 Families unite"
+      "🚶 Easy Queenstown wander",
+      "🛍️ Queenstown Market",
+      "🏡 Airbnb check-in"
     ],
     "drive": {
-      "route": "Sudima Five Mile → Skyline / Kiwi Park → proposed Queenstown Airbnb · Tonic Lodge",
-      "distance": "≈ 6 km",
-      "drivingTime": "≈ 20 min",
+      "route": "Sudima Five Mile → Queenstown town / market → Windsor Lodge",
+      "distance": "≈ 12 km",
+      "drivingTime": "≈ 25 min total",
       "road": "Local Queenstown roads",
       "stops": [
-        "Skyline Queenstown / Kiwi Park"
+        "Queenstown town centre",
+        "Queenstown Market",
+        "Windsor Lodge"
       ],
-      "note": "Most of the day is walkable once parked near Brecon Street.",
-      "contingency": "Keep the slow-holiday pace and adjust for weather, road conditions and family energy.",
-      "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=Sudima+Queenstown+Five+Mile%2C+22+Grant+Road%2C+Frankton%2C+Queenstown&destination=6+Earnslaw+Terrace%2C+Queenstown%2C+New+Zealand&travelmode=driving&waypoints=Skyline+Queenstown%2C+53+Brecon+Street%2C+Queenstown%2C+New+Zealand"
+      "note": "Keep the morning flexible for the two families already in Queenstown. Meet the Fowlers before the shared Airbnb check-in.",
+      "contingency": "If arrival timing changes, shorten the town wander and go directly to Windsor Lodge for 3:00 PM check-in.",
+      "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=Sudima+Queenstown+Five+Mile%2C+22+Grant+Road%2C+Frankton%2C+Queenstown&destination=7+Windsor+Place%2C+Queenstown%2C+New+Zealand&travelmode=driving&waypoints=Queenstown+Central%2C+Queenstown%2C+New+Zealand"
     },
     "items": [
       {
@@ -3319,18 +3287,128 @@ const ITINERARY_DATA={
         "time": "Morning",
         "title": "🥣 Breakfast at Sudima Queenstown Five Mile",
         "details": [
-          "Breakfast at the accommodation before checking out."
+          "Breakfast before checking out."
         ],
-        "route": "Next: Skyline Queenstown · ≈ 8–12 min drive, plus parking / walk.",
+        "route": "Next: check out, then drive into Queenstown town centre.",
+        "type": "meal",
+        "dayId": "day5",
+        "placeId": "sudima-five-mile",
+        "bookingId": "sudima-booking"
+      },
+      {
+        "id": "queenstown-wander-d5",
+        "time": "Late morning",
+        "title": "🚶 Wander around Queenstown",
+        "details": [
+          "Easy lakefront, town-centre and shopping time for the two families already in Queenstown."
+        ],
+        "route": "Next: Queenstown Market · walk from the town centre.",
+        "map": "https://maps.google.com/?q=Queenstown+Central+New+Zealand",
+        "type": "experience",
+        "dayId": "day5",
+        "placeId": "queenstown-central",
+        "bookingId": null
+      },
+      {
+        "id": "queenstown-market-d5",
+        "time": "Midday",
+        "title": "🛍️ Queenstown Market",
+        "details": [
+          "Browse the Saturday market and lakefront while waiting for the Fowlers to arrive."
+        ],
+        "route": "Next: flexible lunch, then meet the Fowlers for Airbnb check-in.",
+        "map": "https://maps.google.com/?q=Queenstown+Market+Queenstown+New+Zealand",
+        "type": "experience",
+        "dayId": "day5",
+        "placeId": null,
+        "bookingId": null,
+        "nonPlace": true,
+        "nonPlaceRole": "market"
+      },
+      {
+        "id": "queenstown-lunch-wait-d5",
+        "time": "Early afternoon",
+        "title": "🍽️ Flexible lunch · wait for Fowlers",
+        "details": [
+          "Keep lunch easy and timing flexible around the Fowlers' arrival."
+        ],
+        "route": "Next: Windsor Lodge · check-in from 3:00 PM.",
         "type": "meal",
         "dayId": "day5",
         "placeId": null,
         "bookingId": null,
         "nonPlace": true,
-        "nonPlaceRole": "accommodation-meal"
+        "nonPlaceRole": "flexible-meal"
       },
       {
-        "id": "skyline",
+        "id": "airbnb-checkin-d5",
+        "time": "3:00 PM",
+        "title": "🏡 Check in · Windsor Lodge",
+        "details": [
+          "All three families check in together and settle into the shared Airbnb."
+        ],
+        "route": "Next: easy reunion evening and flexible dinner.",
+        "map": "https://maps.google.com/?q=7+Windsor+Place+Queenstown",
+        "type": "rest",
+        "dayId": "day5",
+        "placeId": "queenstown-house",
+        "bookingId": "queenstown-booking"
+      },
+      {
+        "id": "reunion-evening-d5",
+        "time": "Evening",
+        "title": "👨‍👩‍👧‍👦 Family reunion evening",
+        "details": [
+          "Settle in, organise rooms and choose an easy dinner together."
+        ],
+        "route": null,
+        "type": "rest",
+        "dayId": "day5",
+        "placeId": "queenstown-house",
+        "bookingId": "queenstown-booking"
+      }
+    ],
+    "dayId": "day5"
+  },
+  "6": {
+    "title": "Day 6 · New Zealand Companion",
+    "kicker": "Day 6 · 27 Sep • Sunday",
+    "heading": "Skyline, Luge, Kiwi Park & Group Day",
+    "legend": [
+      "🚡 Skyline",
+      "🏎️ Luge",
+      "🐦 Kiwi Park"
+    ],
+    "drive": {
+      "route": "Windsor Lodge → Skyline / Kiwi Park → Queenstown town → Windsor Lodge",
+      "distance": "≈ 8 km local",
+      "drivingTime": "≈ 25 min total",
+      "road": "Local Queenstown roads",
+      "stops": [
+        "Skyline Queenstown",
+        "Kiwi Park",
+        "Queenstown town centre"
+      ],
+      "note": "All three families do the original Day 5 activities together. Most movement around Brecon Street and town is on foot once parked.",
+      "contingency": "Keep Kiwi Park optional if Skyline runs late or the group is tired.",
+      "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=7+Windsor+Place%2C+Queenstown%2C+New+Zealand&destination=7+Windsor+Place%2C+Queenstown%2C+New+Zealand&travelmode=driving&waypoints=Skyline+Queenstown%2C+53+Brecon+Street%2C+Queenstown%2C+New+Zealand%7CQueenstown+Central%2C+Queenstown%2C+New+Zealand"
+    },
+    "items": [
+      {
+        "id": "airbnb-breakfast-d6",
+        "time": "Morning",
+        "title": "🥣 Breakfast at Windsor Lodge",
+        "details": [
+          "Breakfast together before heading to Skyline."
+        ],
+        "route": "Next: Skyline Queenstown · allow for parking and the walk to Brecon Street.",
+        "type": "meal",
+        "dayId": "day6",
+        "placeId": "queenstown-house",
+        "bookingId": "queenstown-booking"
+      },
+      {
+        "id": "skyline-d6",
         "time": "Morning",
         "title": "🚡 Skyline Queenstown Gondola",
         "details": [
@@ -3339,186 +3417,69 @@ const ITINERARY_DATA={
         "route": "Next: Luge · within the Skyline complex.",
         "map": "https://maps.google.com/?q=Skyline+Queenstown+53+Brecon+Street%2C+Queenstown+9300%2C+New+Zealand",
         "type": "experience",
-        "dayId": "day5",
+        "dayId": "day6",
         "placeId": "skyline",
         "bookingId": null
       },
       {
-        "id": "luge",
+        "id": "luge-d6",
         "time": "Morning",
         "title": "🏎️ Luge",
         "details": [
           "Consider a multi-ride family pass."
         ],
-        "route": "Next: Fergbaker / town lunch · gondola down, then ≈ 5–10 min walk.",
+        "route": "Next: Fergbaker / town lunch · gondola down, then walk.",
         "map": "https://maps.google.com/?q=Skyline+Queenstown+53+Brecon+Street%2C+Queenstown+9300%2C+New+Zealand",
         "type": "experience",
-        "dayId": "day5",
+        "dayId": "day6",
         "placeId": "skyline",
         "bookingId": null
       },
       {
-        "id": "lunch-skyline",
+        "id": "lunch-skyline-d6",
         "time": "Afternoon",
         "title": "🍽️ Lunch · Fergbaker",
         "details": [
-          "A busy Queenstown bakery beside Fergburger, known for pies, pastries, sandwiches and sweet baked goods."
+          "Pies, pastries, sandwiches and sweet baked goods beside Fergburger."
         ],
-        "route": "Next: Kiwi Park · ≈ 10 min walk.",
+        "route": "Next: Kiwi Park · about 10 min walk.",
         "map": "https://maps.google.com/?q=Fergbaker",
         "type": "meal",
-        "dayId": "day5",
+        "dayId": "day6",
         "placeId": "fergbaker",
         "bookingId": null,
         "guideIds": [
           "fergbaker",
           "saigon-kingdom"
         ],
-        "optionsLabel": "Alternative options"
+        "optionsLabel": "Options"
       },
       {
-        "id": "kiwi-park",
+        "id": "kiwi-park-d6",
         "time": "Afternoon",
         "title": "🐦 Kiwi Park Queenstown",
         "details": [
           "Optional if the group is tired or Skyline runs late."
         ],
-        "route": "Next: Queenstown Airbnb · Tonic Lodge · ≈ 10 min drive.",
+        "route": "Next: dinner in Queenstown town centre.",
         "map": "https://maps.google.com/?q=Kiwi+Park+Queenstown+51+Brecon+Street%2C+Queenstown+9300%2C+New+Zealand",
         "type": "experience",
-        "dayId": "day5",
+        "dayId": "day6",
         "placeId": "kiwi-park",
         "bookingId": null
       },
       {
-        "id": "airbnb-checkin-d5",
-        "time": "After 15:00",
-        "title": "🏡 Check in · Queenstown Airbnb · Tonic Lodge",
-        "details": [
-          "Shared accommodation for all three families."
-        ],
-        "route": "Next: Flame Bar & Grill · ≈ 5–10 min drive.",
-        "map": "https://maps.google.com/?q=6+Earnslaw+Terrace+Queenstown",
-        "type": "rest",
-        "dayId": "day5",
-        "placeId": "queenstown-house",
-        "bookingId": "queenstown-booking"
-      },
-      {
-        "id": "flame",
+        "id": "flame-d6",
         "time": "Evening",
         "title": "🔥 Dinner · Flame Bar & Grill",
         "details": [
-          "A central Queenstown grill restaurant best suited to a hearty group dinner, with ribs, steaks, burgers and other flame-grilled dishes."
+          "A hearty central Queenstown group dinner with ribs, steaks, burgers and flame-grilled dishes."
         ],
-        "route": null,
+        "route": "Return to Windsor Lodge.",
         "map": "https://maps.google.com/?q=Flame%20Bar%20%26%20Grill",
         "type": "meal",
-        "dayId": "day5",
+        "dayId": "day6",
         "placeId": "flame",
-        "bookingId": null
-      }
-    ],
-    "dayId": "day5"
-  },
-  "6": {
-    "title": "Day 6 · New Zealand Companion",
-    "kicker": "Day 6 · 27 Sep • Sunday",
-    "heading": "Queenstown Flexible Day",
-    "legend": [
-      "😴 Slow morning",
-      "⭐ Choose one experience",
-      "🍕 Flexible dinner"
-    ],
-    "drive": {
-      "route": "Queenstown local base route",
-      "distance": "≈ 6 km local · more if optional trip chosen",
-      "drivingTime": "≈ 20 min local",
-      "road": "Depends on selected activity",
-      "stops": [
-        "Queenstown Central",
-        "Optional Glenorchy or activity route"
-      ],
-      "note": "The main map covers the local base only. Open the selected activity card for its own route.",
-      "contingency": "Keep the slow-holiday pace and adjust for weather, road conditions and family energy.",
-      "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=6+Earnslaw+Terrace%2C+Queenstown%2C+New+Zealand&destination=6+Earnslaw+Terrace%2C+Queenstown%2C+New+Zealand&travelmode=driving&waypoints=Queenstown+Central%2C+Queenstown%2C+New+Zealand"
-    },
-    "items": [
-      {
-        "id": "airbnb-breakfast-d6",
-        "time": "Morning",
-        "title": "🥣 Breakfast at Queenstown Airbnb · Tonic Lodge",
-        "details": [
-          "Breakfast at the accommodation."
-        ],
-        "route": "Next: Slow Airbnb morning or choose one half-day activity.",
-        "type": "meal",
-        "dayId": "day6",
-        "placeId": null,
-        "bookingId": null,
-        "nonPlace": true,
-        "nonPlaceRole": "accommodation-meal"
-      },
-      {
-        "id": "slow-morning",
-        "time": "Morning",
-        "title": "😴 Slow Airbnb morning or choose one half-day activity",
-        "details": [
-          "Choose one option only; a quiet lakefront / Airbnb rest day remains valid."
-        ],
-        "route": "Choose a free-time option.",
-        "map": "https://maps.google.com/?q=6+Earnslaw+Terrace+Queenstown",
-        "type": "rest",
-        "dayId": "day6",
-        "placeId": "queenstown-house",
-        "bookingId": null,
-        "guideIds": [
-          "glenorchy-paradise",
-          "onsen",
-          "skippers-4wd",
-          "white-water-rafting"
-        ]
-      },
-      {
-        "id": "flex-afternoon",
-        "time": "Afternoon",
-        "title": "⭐ Continue the chosen activity or return to Queenstown",
-        "details": [
-          "Keep timing flexible according to weather, queues and family energy."
-        ],
-        "route": "Next: Lunch · Mrs Woolly's if choosing Glenorchy.",
-        "map": "https://maps.google.com/?q=Queenstown%20Central",
-        "type": "experience",
-        "dayId": "day6",
-        "placeId": "queenstown-central",
-        "bookingId": null
-      },
-      {
-        "id": "glenorchy-lunch",
-        "time": "Afternoon",
-        "title": "🥪 Lunch · Mrs Woolly's if choosing Glenorchy",
-        "details": [
-          "Otherwise choose a flexible Queenstown lunch."
-        ],
-        "route": "Next: Dinner · Winnie's Gourmet Pizza Bar.",
-        "map": "https://maps.google.com/?q=Mrs%20Woolly's%20General%20Store",
-        "type": "meal",
-        "dayId": "day6",
-        "placeId": "mrs-woollys",
-        "bookingId": null
-      },
-      {
-        "id": "winnies",
-        "time": "Evening",
-        "title": "🍕 Dinner · Winnie's Gourmet Pizza Bar",
-        "details": [
-          "Book ahead for 11 people."
-        ],
-        "route": "Return to Queenstown Airbnb · Tonic Lodge.",
-        "map": "https://maps.google.com/?q=Winnie%27s+Gourmet+Pizza+Bar+7%E2%80%939+The+Mall%2C+Queenstown+9300%2C+New+Zealand",
-        "type": "meal",
-        "dayId": "day6",
-        "placeId": "winnies",
         "bookingId": null
       }
     ],
@@ -3551,7 +3512,7 @@ const ITINERARY_DATA={
       {
         "id": "airbnb-breakfast-d7",
         "time": "Morning",
-        "title": "🥣 Breakfast at Queenstown Airbnb · Tonic Lodge",
+        "title": "🥣 Breakfast at Windsor Lodge",
         "details": [
           "Breakfast at the accommodation."
         ],
@@ -3635,7 +3596,7 @@ const ITINERARY_DATA={
         "details": [
           "A casual Queenstown restaurant serving large portions of ribs, steaks, burgers and other hearty New Zealand-style meals."
         ],
-        "route": "Next: Queenstown Airbnb · Tonic Lodge · ≈ 10 min drive.",
+        "route": "Next: Windsor Lodge · ≈ 10 min drive.",
         "map": "https://maps.google.com/?q=Lone+Star+Queenstown+14+Brecon+Street%2C+Queenstown+9300%2C+New+Zealand",
         "type": "meal",
         "dayId": "day7",
@@ -3671,7 +3632,7 @@ const ITINERARY_DATA={
       {
         "id": "airbnb-breakfast-d8",
         "time": "Morning",
-        "title": "🥣 Breakfast at Queenstown Airbnb · Tonic Lodge",
+        "title": "🥣 Breakfast at Windsor Lodge",
         "details": [
           "Breakfast at the accommodation."
         ],
@@ -3708,7 +3669,7 @@ const ITINERARY_DATA={
           "Kingston remains an optional comfort stop."
         ],
         "route": "Next: optional Kingston lakefront stop · ≈ 35–40 min drive.",
-        "map": "https://maps.google.com/?q=6+Earnslaw+Terrace+Queenstown",
+        "map": "https://maps.google.com/?q=7+Windsor+Place+Queenstown",
         "type": "transport",
         "dayId": "day8",
         "placeId": "queenstown-house",

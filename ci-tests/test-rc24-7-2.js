@@ -26,9 +26,9 @@ for(const [bookingId,placeId] of Object.entries(expected)){
   const items=Object.values(ITINERARY_DATA).flatMap(day=>day.items||[]);
   assert(items.some(item=>item.bookingId===bookingId),`${bookingId}: Timeline FAIL.`);
   const drives=Object.values(ITINERARY_DATA).map(day=>JSON.stringify(day.drive||{}));
-  const routeNeedle={southwark:'Southwark',peppers:'Peppers',edgewater:'Edgewater','sudima-five-mile':'Sudima','queenstown-house':'Earnslaw','lakefront-lodge':'Lakefront'}[placeId];
+  const routeNeedle={southwark:'Southwark',peppers:'Peppers',edgewater:'Edgewater','sudima-five-mile':'Sudima','queenstown-house':'Windsor','lakefront-lodge':'Lakefront'}[placeId];
   assert(drives.some(text=>text.includes(routeNeedle)),`${bookingId}: Driving Route FAIL.`);
-  const nextNeedle={southwark:'Southwark',peppers:'Peppers',edgewater:'Edgewater','sudima-five-mile':'Sudima','queenstown-house':'Queenstown Airbnb','lakefront-lodge':'Lakefront Lodge'}[placeId];
+  const nextNeedle={southwark:'Southwark',peppers:'Peppers',edgewater:'Edgewater','sudima-five-mile':'Sudima','queenstown-house':'Windsor Lodge','lakefront-lodge':'Lakefront Lodge'}[placeId];
   assert(items.some(item=>String(item.route||'').includes(nextNeedle)),`${bookingId}: Next Leg FAIL.`);
 }
 assert(!/archway/i.test(JSON.stringify({PLACES,CATEGORIES,GUIDE_ORDER,DAY_LINKS,BOOKINGS_DATA,ITINERARY_DATA})),'Archway remains in active trip data.');

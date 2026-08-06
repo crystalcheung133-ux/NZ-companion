@@ -50,6 +50,7 @@ function saveGuideNavigationContext(category, options){
   }catch(e){}
 }
 function openGuideGroupFromDay(keys,itemId){
+  window.GUIDE_MODAL_RETURN_SCROLL_Y=window.scrollY||window.pageYOffset||0;
   const excluded=new Set(TRIP_CONFIG.guide?.excludedPlaceIds||[]);
   const clean=[...new Set((Array.isArray(keys)?keys:[]).filter(key=>key&&typeof PRODUCTION_GUIDE.places!=='undefined'&&PRODUCTION_GUIDE.places[key]&&!excluded.has(key)))];
   if(!clean.length)return;
@@ -151,9 +152,9 @@ function guideSortedCategoryItems(cat){
 function guideStayStatusHTML(item){
  const booking=(window.BOOKING_AUTHORITY&&item?.cat==='STAY')?BOOKING_AUTHORITY.byPlace(item.key):null;
  if(!booking)return '';
- const confirmed=String(booking.guideStatus||booking.status||'')==='confirmed';
- const label=confirmed?'CONFIRMED':'TO CONFIRM';
- const cls=confirmed?'confirmed':'to-confirm';
+ const raw=String(booking.displayStatus||booking.status||'TO CONFIRM').toUpperCase();
+ const label=raw==='CONFIRMED'?'CONFIRMED':(raw==='PENDING'?'PENDING':'TO CONFIRM');
+ const cls=label==='CONFIRMED'?'confirmed':'to-confirm';
  return `<span class="guide-status guide-status-${cls}">${label}</span>`;
 }
 function guideListRow(item){
@@ -363,11 +364,16 @@ function openGuideModal(key,options){
  if(sheet){sheet.scrollTop=0;if(typeof window.applyNearFitModal==='function')window.applyNearFitModal(sheet,'guide-near-fit');}
 }
 function closeGuideModal(){
+ const returnScroll=Number(window.GUIDE_MODAL_RETURN_SCROLL_Y);
  const modal=$('guideModal');if(modal)modal.classList.remove('show');
  guideAlternativeKeys=[];
  closeMiniMenus();
  document.body.classList.remove('admin-overlay-open');
  clearGuideNavigationContext();
+ if(Number.isFinite(returnScroll)){
+  window.GUIDE_MODAL_RETURN_SCROLL_Y=null;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo({top:returnScroll,left:0,behavior:'auto'})));
+ }
 }
 
 function renderPlacePage(key){

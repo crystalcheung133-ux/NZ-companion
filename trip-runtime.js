@@ -123,6 +123,7 @@ function bookingSectionHTML(title,content,options){
 function accommodationPaymentHTML(booking){
   const status=booking.paymentLabel||booking.paymentStatus||'';
   const rows=[
+    ['Charge date',booking.chargeDate||''],
     ['Total',booking.totalAmount||''],
     [booking.discountLabel||'Discount',booking.discountAmount||''],
     ['Cashback',booking.cashbackAmount||booking.cashback||''],
@@ -172,6 +173,8 @@ function buildAccommodationDetailHTML(booking){
   const facts=bookingFactGridHTML([
     ['Status',booking.displayStatus||bookingStatusText(booking)],
     ['Room',booking.roomType||''],
+    ['Guests',booking.guestSummary||''],
+    ['Host',booking.host||''],
     ['Check-in / out',arrival],
     ['Booking',reference],
     ['Platform',via],
