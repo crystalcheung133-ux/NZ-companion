@@ -28,11 +28,12 @@ function openGuideLinkedBooking(bookingId){
   const booking=window.BOOKING_AUTHORITY?BOOKING_AUTHORITY.byId(bookingId):null;
   if(!booking)return;
   window.TRIP_MODAL_RETURN_TO_GUIDE=true;
-  if(booking.type==='activity'&&typeof window.openActivityBookingDetail==='function'){
-    window.openActivityBookingDetail(bookingId,booking);
+  document.body.classList.add('guide-booking-stack-open');
+  if(booking.type==='activity'){
+    openActivityBookingDetail(bookingId,booking);
     return;
   }
-  if(typeof window.openAccommodationDetail==='function') window.openAccommodationDetail(bookingId,booking);
+  openAccommodationDetail(bookingId,booking);
 }
 const GUIDE_NAV_CONTEXT_KEY=STORAGE_CONFIG.keys.guideNavContext;
 const GUIDE_NAV_REOPEN_KEY=STORAGE_CONFIG.keys.guideNavReopen;

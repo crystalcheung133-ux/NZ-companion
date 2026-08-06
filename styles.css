@@ -2243,3 +2243,8 @@ body.home-bg .live-currency-card #currencyCardMeta{position:relative;z-index:2;w
 .accommodation-payment-block .payment-net-row dt{font-weight:900;opacity:1;text-transform:uppercase}.accommodation-payment-block .payment-net-row dd{font-size:1.08rem;font-weight:950}
 .payment-fx-note{margin:6px 0 0;font-size:.68rem;opacity:.62;text-align:right}
 @media(max-width:370px){.timeline-action--alternative{font-size:.73rem;padding-inline:9px}.accommodation-payment-block dl>div{gap:8px}}
+
+/* RC25 modal stack freeze: Booking opened from a Guide stays above the Guide,
+   then closing Booking reveals the original Guide card and page context. */
+body.guide-booking-stack-open #guideModal{z-index:5000!important;}
+body.guide-booking-stack-open #tripModal{z-index:5100!important;}

@@ -7,6 +7,7 @@ const trip=read('trip-runtime.js');
 const admin=read('admin.js');
 const expenses=read('expenses.js');
 const moments=read('moments.js');
+const styles=read('styles.css');
 
 const failures=[];
 if(trip.includes('accommodation-about-stay') || trip.includes("bookingContactSectionsHTML(booking,place),bookingSectionHTML('Cancellation'")){
@@ -27,6 +28,10 @@ if(!moments.includes('canManageMoment') || !moments.includes('This cannot be und
 
 if(!guide.includes("openGuideLinkedBooking") || !guide.includes("TRIP_MODAL_RETURN_TO_GUIDE=true")) failures.push('Stay Guide Booking must open the in-page booking modal and preserve Guide context.');
 if(!trip.includes("const returnToGuide=window.TRIP_MODAL_RETURN_TO_GUIDE===true") || !trip.includes("if(guideModal&&!returnToGuide)")) failures.push('Closing a booking opened from Guide must return to the original Guide card.');
+
+if(!guide.includes("document.body.classList.add('guide-booking-stack-open')")) failures.push('Guide → Booking stacked modal state is missing.');
+if(!trip.includes("document.body.classList.remove('guide-booking-stack-open')")) failures.push('Closing Booking does not clear stacked modal state.');
+if(!styles.includes('body.guide-booking-stack-open #tripModal{z-index:5100!important;}')) failures.push('Booking modal is not layered above the originating Guide modal.');
 if(failures.length){
   console.error('UX CONTRACT: FAILED');
   failures.forEach(x=>console.error('- '+x));
