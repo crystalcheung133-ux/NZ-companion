@@ -3317,7 +3317,6 @@ const ITINERARY_DATA={
           "Browse the Saturday market and lakefront while waiting for the Fowlers to arrive."
         ],
         "route": "Next: flexible lunch, then meet the Fowlers for Airbnb check-in.",
-        "map": "https://maps.google.com/?q=Queenstown+Market+Queenstown+New+Zealand",
         "type": "experience",
         "dayId": "day5",
         "placeId": null,

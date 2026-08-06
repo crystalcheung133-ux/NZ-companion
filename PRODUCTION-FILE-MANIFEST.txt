@@ -1,8 +1,10 @@
 CCMV Travel Engine Production File Manifest
 Generated: 2026-08-06
-Release: NZ-RC25.1.1-MODAL-RUNTIME-SYNC
+Release: NZ-RC25.1.2-INTEGRITY-RUNTIME-FIX
 Production root files:
 
+- RC25.1.2-Implementation-Report.md
+- RC25.1.2-Regression-Report.md
 - VERSION.txt
 - admin.js
 - app-runtime.js
