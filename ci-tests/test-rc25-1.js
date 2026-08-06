@@ -1,0 +1,36 @@
+#!/usr/bin/env node
+'use strict';
+const fs=require('fs'),path=require('path'),vm=require('vm');
+const root=path.resolve(__dirname,'..');
+const source=fs.readFileSync(path.join(root,'data.js'),'utf8');
+const day=fs.readFileSync(path.join(root,'day.html'),'utf8');
+const guide=fs.readFileSync(path.join(root,'guide-runtime.js'),'utf8');
+const trip=fs.readFileSync(path.join(root,'trip-runtime.js'),'utf8');
+const context={};vm.createContext(context);
+vm.runInContext(source+'\n;globalThis.__release={PLACES,BOOKINGS_DATA,ITINERARY_DATA,DAY_LINKS};',context);
+const {PLACES,BOOKINGS_DATA,ITINERARY_DATA,DAY_LINKS}=context.__release;
+const f=[];const ok=(v,m)=>{if(!v)f.push(m)};
+const q=BOOKINGS_DATA['queenstown-booking'];
+ok(q.title==='Windsor Lodge · Alpine Luxury for large groups','Airbnb title not updated.');
+ok(q.displayStatus==='CONFIRMED'&&q.status==='confirmed','Airbnb status is not confirmed.');
+ok(q.reference==='HMMTJ38BES','Airbnb confirmation code is wrong.');
+ok(q.address==='7 Windsor Place, Queenstown, New Zealand','Airbnb address is wrong.');
+ok(q.checkIn==='3:00 PM'&&q.checkOut==='10:00 AM','Airbnb check-in/out is wrong.');
+ok(q.totalAmount==='AUD 4,683.99'&&q.paymentLabel==='CHARGE SCHEDULED'&&q.chargeDate==='17 Sep 2026','Airbnb payment schedule is wrong.');
+ok(q.guestSummary==='9 guests + 2 children'&&q.host==='Alison','Airbnb guest/host data missing.');
+const d5=ITINERARY_DATA['5'],d6=ITINERARY_DATA['6'];
+ok(d5.heading.includes('Market')&&d5.items.some(x=>x.id==='queenstown-market-d5'),'Day 5 market plan missing.');
+ok(d5.items.some(x=>x.id==='airbnb-checkin-d5'&&x.time==='3:00 PM'&&x.bookingId==='queenstown-booking'),'Day 5 Airbnb check-in missing.');
+ok(PLACES['queenstown-house'].signature.some(x=>/hot tub/i.test(x))&&PLACES['queenstown-house'].signature.some(x=>/6 bedrooms/i.test(x)),'Windsor Lodge guide highlights are incomplete.');
+const d5Dinner=d5.items.find(x=>x.id==='pedros-dinner-d5');
+ok(d5Dinner&&d5Dinner.placeId==='pedros'&&Array.isArray(d5Dinner.guideIds)&&d5Dinner.guideIds.join('|')==='pedros|winnies|lone-star','Day 5 dinner primary/options are incorrect.');
+ok(!d5.items.some(x=>x.id==='reunion-evening-d5'),'Old generic Day 5 dinner item remains.');
+ok(!d5.items.some(x=>/Skyline|Luge|Kiwi Park/.test(x.title)),'Original Day 5 activities were not moved.');
+ok(d6.items.some(x=>/Skyline/.test(x.title))&&d6.items.some(x=>/Luge/.test(x.title))&&d6.items.some(x=>/Kiwi Park/.test(x.title)),'Day 6 does not contain original Day 5 activities.');
+ok((DAY_LINKS.skyline||[]).some(x=>x[0]==='Day 6'),'Skyline Guide day link is not Day 6.');
+ok(day.includes('booking.displayStatus||booking.status'),'Timeline does not prefer displayStatus.');
+ok(guide.includes('GUIDE_MODAL_RETURN_SCROLL_Y'),'Guide modal scroll restore contract missing.');
+ok(trip.includes("['Charge date',booking.chargeDate||'']"),'Charge date is not rendered in payment block.');
+ok(!String(BOOKINGS_DATA['southwark-booking'].notes||'').trim(),'Southwark duplicate parking note remains.');
+if(f.length){console.error('RC25.1 CONTRACT: FAILED');f.forEach(x=>console.error('- '+x));process.exit(1)}
+console.log('RC25.1 CONTRACT: PASS — Airbnb, Day 5–6 itinerary, status consistency and scroll/payment contracts are correct.');

@@ -1,0 +1,32 @@
+#!/usr/bin/env node
+'use strict';
+const fs=require('fs'),path=require('path'),vm=require('vm');
+const root=path.resolve(__dirname,'..');
+const data=fs.readFileSync(path.join(root,'data.js'),'utf8');
+const guide=fs.readFileSync(path.join(root,'guide-runtime.js'),'utf8');
+const trip=fs.readFileSync(path.join(root,'trip-runtime.js'),'utf8');
+const context={};vm.createContext(context);
+vm.runInContext(data+'\n;globalThis.__release={PLACES,BOOKINGS_DATA,ITINERARY_DATA,DAY_LINKS};',context);
+const {PLACES,BOOKINGS_DATA,ITINERARY_DATA,DAY_LINKS}=context.__release;
+const failures=[];const assert=(condition,message)=>{if(!condition)failures.push(message);};
+const all=JSON.stringify({PLACES,BOOKINGS_DATA,ITINERARY_DATA,DAY_LINKS});
+const southwark=PLACES.southwark||{},booking=BOOKINGS_DATA['southwark-booking']||{};
+const day1=ITINERARY_DATA['1']||{},day2=ITINERARY_DATA['2']||{};
+assert(!/commodore/i.test(all),'Old Day 1 hotel remains in active data.');
+assert(booking.placeId==='southwark','Southwark booking does not use the canonical place ID.');
+assert(booking.checkIn==='2:00 PM'&&booking.checkOut==='10:00 AM','Southwark timing is incorrect.');
+assert(booking.cashback==='AUD 28.98','Southwark cashback is incorrect.');
+assert(booking.parking==='Confirmed · NZD 15 · pay at hotel'&&!String(booking.notes||'').trim(),'Southwark parking should be confirmed once without a duplicate note.');
+assert((southwark.signature||[]).some(x=>/C1 · 6 min walk/.test(x)),'C1 walking time is missing.');
+assert((southwark.signature||[]).some(x=>/Riverside · 14 min walk/.test(x)),'Riverside walking time is missing.');
+assert(/destination=Southwark/.test(day1.drive.primaryMap)&&!day1.drive.primaryMap.includes('Riverside'),'Day 1 driving route does not end at Southwark.');
+assert(/travelmode=walking/.test(day1.items.find(x=>x.id==='riverside')?.map||''),'Day 1 Riverside leg is not walking.');
+assert(!day2.drive.primaryMap.includes('C1+Espresso')&&!day2.drive.primaryMap.includes('Quake+City'),'Day 2 walking stops remain in the driving map.');
+assert(day2.drive.primaryMap.indexOf('PAK%27nSAVE')<day2.drive.primaryMap.indexOf('Fairlie'),'PAK’nSAVE is not before Fairlie/Tekapo.');
+assert(day2.items.findIndex(x=>x.id==='return-southwark')<day2.items.findIndex(x=>x.id==='paknsave-moorhouse'),'Driving begins before returning to Southwark.');
+assert(!guide.includes('Website</a>')&&!guide.includes('websiteButton'),'Guide still renders a Website action.');
+assert(guide.includes("query:{bookingId:bookingId}")&&trip.includes("new URLSearchParams(window.location.search).get('bookingId')"),'Stable booking deep-link contract is missing.');
+assert(guide.includes('const bookingButton=linkedBooking?'),'Conditional Guide Booking action is missing.');
+assert(trip.includes("join(' → ')")&&!trip.includes('`Check-in · ${booking.checkIn}`'),'Accommodation timing is still duplicated.');
+if(failures.length){console.error('RC24.7 FOCUSED CONTRACT: FAILED');failures.forEach(x=>console.error('- '+x));process.exit(1);}
+console.log('RC24.7 FOCUSED CONTRACT: PASS — Southwark, Guide actions, deep-links, walking legs and routes are consistent.');
