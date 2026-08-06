@@ -139,7 +139,7 @@ function guideDayNumber(item){
 }
 function guideActivityGroup(item){
  const text=`${item.title||''} ${item.sub||''} ${item.categoryLabel||''}`.toLowerCase();
- if(/cruise|tour|4wd|glowworm|milford|doubtful|gold panning/.test(text)) return 'Tours & Cruises';
+ if(/cruise|tour|4wd|glowworm|milford|gold panning/.test(text)) return 'Tours & Cruises';
  if(/track|hike|walk|blue lakes|deer park/.test(text)) return 'Walks & Outdoor';
  return 'Experiences & Attractions';
 }
@@ -228,14 +228,14 @@ function quickInfoInnerHTML(g,key){
  const showPrice=g.cat!=='STAY'&&g.cat!=='ACTIVITIES'&&price&&!unknown.test(price);
  const priceRow=showPrice?`<div class="quick-info-row"><span class="quick-info-icon">💰</span><span><span class="quick-info-label">Price</span><span class="quick-info-value">${price}</span></span></div>`:'';
  const hours=String(g.hours||'').trim();
- const hoursRow=g.cat!=='STAY'&&hours&&!unknown.test(hours)?`<div class="quick-info-row"><span class="quick-info-icon">🕘</span><span><span class="quick-info-label">Hours</span><span class="quick-info-value">${hours}</span></span></div>`:'';
+ const hoursRow='';
  const address=String(g.address||'').trim();
  const addressRow=address?`<div class="quick-info-row"><span class="quick-info-icon">📍</span><span><span class="quick-info-label">Address</span><span class="quick-info-value">${address}</span></span></div>`:'';
  const copyButton=address?`<button class="utility-button" type="button" onclick="copyGuideAddress('${key}')">📍 Copy Address</button>`:'';
  const navButton=g.maps?`<a class="map-button" href="${g.maps}" target="_blank" rel="noopener">🧭 Navigate</a>`:'';
  const roleBadge=g.itineraryRole?`<span class="itinerary-role-badge">${g.itineraryRole}</span>`:'';
  const reminder=String(g.visitorReminder||'').trim();
- const reminderRow=reminder?`<p class="visitor-reminder"><strong>Reminder:</strong> ${reminder}</p>`:'';
+ const reminderRow=(reminder&&g.cat!=='ACTIVITIES')?`<p class="visitor-reminder"><strong>Reminder:</strong> ${reminder}</p>`:'';
  const linkedBooking=window.BOOKING_AUTHORITY?BOOKING_AUTHORITY.byPlace(key):null;
  const bookingStatus=linkedBooking?String(linkedBooking.displayStatus||linkedBooking.status||'').toUpperCase():'';
  const bookingRow='';
@@ -287,7 +287,7 @@ function uniqueGuideItems(items){
  return [...new Set((items||[]).map(x=>String(x||'').trim()).filter(Boolean))];
 }
 function guideWhyGo(g){
- const tagged=taggedGuideItems(g.signature||g.highlights||[],['WHY GO','WHY WE PICKED THIS','WHY STOP','WHY WE CHOSE IT']);
+ const tagged=taggedGuideItems(g.signature||g.highlights||[],['WHY GO','WHY WE PICKED THIS','WHY STOP','WHY WE CHOSE IT','WHY STAY']);
  return tagged[0]||String(g.desc||'').trim();
 }
 function restaurantDishItems(g){
@@ -301,7 +301,7 @@ function bookingAdviceItems(g){
 }
 function practicalGuideItems(g){
  const all=[...(g.signature||[]),...(g.worth||[]),...(g.tips||[])];
- const excluded=/^(WHY GO|WHY WE PICKED THIS|WHY STOP|WHY WE CHOSE IT|TRY|FOOD|MUST ORDER|ORDER|SIGNATURE|WORTH IT)\s*[·:]/i;
+ const excluded=/^(WHY GO|WHY WE PICKED THIS|WHY STOP|WHY WE CHOSE IT|WHY STAY|TRY|FOOD|MUST ORDER|ORDER|SIGNATURE|WORTH IT|SUGGESTED TIME|BEST TIME|ROUTE FIT)\s*[·:]/i;
  return uniqueGuideItems(all.filter(x=>{
   const text=String(x||'').trim();
   if(!text||excluded.test(text))return false;
@@ -315,14 +315,63 @@ function guideListSection(title,items,cls=''){
  if(!clean.length)return '';
  return `<section class="guide-content-section ${cls}"><h3>${title}</h3><ul>${clean.map(x=>`<li>${x}</li>`).join('')}</ul></section>`;
 }
+function criticalGuideItems(g){
+ return practicalGuideItems(g).filter(item=>/pre[- ]?book|required|arrive|depart|promptly|weather|cash only|limited (mobile|reception|signal)|last (entry|admission)|closed|sell out|pickup|delivery|parking/i.test(String(item)));
+}
+function guideShopSections(g){
+ if(g.cat!=='SHOP'&&g.cat!=='SHOPPING')return '';
+ const why=guideWhyGo(g);
+ const hours=String(g.hours||'').trim();
+ const all=practicalGuideItems(g);
+ const parking=all.filter(item=>/park/i.test(String(item)));
+ const critical=criticalGuideItems(g).filter(item=>!parking.includes(item));
+ return `${why?`<section class="guide-content-section guide-why-go"><h3>Why Stop</h3><p>${why}</p></section>`:''}${hours?`<section class="guide-content-section guide-trading-hours"><h3>Trading Hours</h3><p>${hours}</p></section>`:''}${guideListSection('Parking',parking,'guide-parking-info')}${guideListSection('Good to Know',critical,'guide-practical-info')}`;
+}
 function compactGuideSections(g){
  const why=guideWhyGo(g);
  const dishes=g.cat==='DINING'?restaurantDishItems(g):[];
  const booking=bookingAdviceItems(g);
  const practical=practicalGuideItems(g);
  const whyRequired=g.cat==='DINING'||g.cat==='ACTIVITIES'||g.cat==='ATTRACTIONS';
- return `${(why&&(whyRequired||g.cat!=='STAY'))?`<section class="guide-content-section guide-why-go"><h3>Why Go</h3><p>${why}</p></section>`:''}${guideListSection('Suggested Dishes',dishes,'guide-suggested-dishes')}${guideListSection('Booking',booking,'guide-booking-advice')}${guideListSection(g.cat==='DINING'?'Good to Know':'Practical Info',practical,'guide-practical-info')}`;
+ const hours=(g.cat==='DINING'&&String(g.hours||'').trim())
+  ? `<section class="guide-content-section guide-trading-hours"><h3>Trading Hours</h3><p>${String(g.hours).trim()}</p></section>`
+  : '';
+ const goodToKnow=g.cat==='DINING'?criticalGuideItems(g):practical;
+ return `${(why&&(whyRequired||g.cat!=='STAY'))?`<section class="guide-content-section guide-why-go"><h3>Why Go</h3><p>${why}</p></section>`:''}${guideListSection('Suggested Dishes',dishes,'guide-suggested-dishes')}${hours}${guideListSection('Booking',booking,'guide-booking-advice')}${guideListSection(g.cat==='DINING'?'Good to Know':'Practical Info',goodToKnow,'guide-practical-info')}`;
 }
+
+
+function guideAttractionSections(g){
+ if(g.cat!=='ATTRACTIONS')return '';
+ const why=guideWhyGo(g);
+ const raw=[...(g.signature||[]),...(g.highlights||[])];
+ const highlights=uniqueGuideItems(raw.filter(x=>!/^WHY (GO|STOP|WE PICKED THIS|WE CHOSE IT|STAY)|^SUGGESTED TIME|^BEST TIME|^ROUTE FIT|^NOTE/i.test(String(x))).map(cleanGuideLine));
+ const guideType=String(g.guideType||'').toUpperCase();
+ const admission=guideType==='ADMISSION';
+ const timedEntry=admission||guideType==='MARKET';
+ const hours=timedEntry&&String(g.hours||'').trim()?String(g.hours).trim():'';
+ const price=admission&&String(g.price||'').trim()?String(g.price).trim():'';
+ const practical=practicalGuideItems(g).filter(item=>![...highlights,hours,price].includes(item));
+ return `${why?`<section class="guide-content-section guide-why-go"><h3>Why Go</h3><p>${why}</p></section>`:''}${guideListSection('Highlights',highlights,'guide-attraction-highlights')}${hours?`<section class="guide-content-section guide-opening-hours"><h3>Opening Hours</h3><p>${hours}</p></section>`:''}${price?`<section class="guide-content-section guide-admission"><h3>Admission</h3><p>${price}</p></section>`:''}${guideListSection('Good to Know',criticalGuideItems(g).filter(item=>![...highlights,hours,price].includes(item)),'guide-practical-info')}`;
+}
+
+function guideExperienceSections(g,key){
+ if(g.cat!=='ACTIVITIES')return '';
+ const linked=window.BOOKING_AUTHORITY?BOOKING_AUTHORITY.byPlace(key):null;
+ const why=guideWhyGo(g);
+ const highlights=uniqueGuideItems((g.signature||[]).filter(x=>!/^WHY (GO|WE PICKED THIS)|^BOOKING|^TIME|^SUGGESTED TIME|^NOTE|^ROLE/i.test(String(x))).map(cleanGuideLine));
+ const booking=[];
+ const bookingTime=String(linked?.time||g.experienceTime||'').trim();
+ const bookingNote=String(g.bookingNote||'').trim();
+ if(bookingTime)booking.push(bookingTime);
+ if(bookingNote)booking.push(bookingNote);
+ const duration=String(linked?.duration||g.duration||'').trim();
+ const meeting=String(linked?.meetingPoint||linked?.pickupAddress||g.meetingPoint||'').trim();
+ const arrival=String(linked?.checkInRequirement||g.arrival||'').trim();
+ const practical=practicalGuideItems(g).filter(item=>![...booking,duration,meeting,arrival].includes(item));
+ return `${why?`<section class="guide-content-section guide-why-go"><h3>Why Go</h3><p>${why}</p></section>`:''}${guideListSection('Highlights',highlights,'guide-experience-highlights')}${guideListSection('Booking',booking,'guide-experience-booking')}${duration?`<section class="guide-content-section guide-experience-duration"><h3>Duration</h3><p>${duration}</p></section>`:''}${meeting?`<section class="guide-content-section guide-experience-meeting"><h3>Meeting Point</h3><p>${meeting}</p></section>`:''}${arrival?`<section class="guide-content-section guide-experience-arrival"><h3>Arrive</h3><p>${arrival}</p></section>`:''}${guideListSection('Good to Know',criticalGuideItems(g).filter(item=>![...booking,duration,meeting,arrival].includes(item)),'guide-practical-info')}`;
+}
+
 function guideStaySections(g){
  if(g.cat!=='STAY')return '';
  const booking=window.BOOKING_AUTHORITY?BOOKING_AUTHORITY.byPlace(g.key):null;
@@ -332,7 +381,7 @@ function guideStaySections(g){
  if(booking?.guests)stay.push(`${booking.guests} guest${Number(booking.guests)===1?'':'s'}`);
  const useful=practicalGuideItems(g).filter(item=>!stay.includes(item));
  const why=guideWhyGo(g);
- const showWhy=!!why&&['southwark','queenstown-house'].includes(g.key);
+ const showWhy=!!why;
  return `${guideListSection('Stay',stay,'guide-stay-info')}${guideListSection('Useful',useful,'guide-stay-useful')}${showWhy?`<section class="guide-stay-section guide-why-go"><h3>Why Stay</h3><p>${why}</p></section>`:''}`;
 }
 
@@ -362,7 +411,7 @@ function openGuideModal(key,options){
  const g=PRODUCTION_GUIDE.places[key];if(!g)return;
  const opts=options||{};
  const back=opts.fromAlternatives?guideAlternativeBackButton():'';
- $('guideModalContent').innerHTML=`<div class="guide-onepage">${back}<p class="kicker">Guide</p><h2>${g.emoji} ${g.title}</h2><p class="guide-onepage-sub"><strong>${g.sub||''}</strong></p>${quickInfoHTML(g,key)}${guideStaySections(Object.assign({key},g))}${routeStopsHTML(g)}${compactGuideSections(g)}${guideNavButtons(key)}</div>`;
+ $('guideModalContent').innerHTML=`<div class="guide-onepage">${back}<p class="kicker">Guide</p><h2>${g.emoji} ${g.title}</h2><p class="guide-onepage-sub"><strong>${g.sub||''}</strong></p>${quickInfoHTML(g,key)}${guideStaySections(Object.assign({key},g))}${guideExperienceSections(g,key)}${guideAttractionSections(g)}${guideShopSections(g)}${routeStopsHTML(g)}${(['ACTIVITIES','ATTRACTIONS','SHOP','SHOPPING'].includes(g.cat))?'':compactGuideSections(g)}${guideNavButtons(key)}</div>`;
  closeMiniMenus();
  $('guideModal').classList.add('show');
  const sheet=document.querySelector('#guideModal .guide-sheet');
@@ -388,9 +437,8 @@ function renderPlacePage(key){
   mount.innerHTML = `
 <button class="place-detail-close" type="button" aria-label="Close place detail" onclick="closePlaceDetail()">×</button>
 <div class="page-hero"><p class="kicker">Guide</p><h1>${g.emoji} ${g.title}</h1><p class="lead">${g.sub||''}</p></div>
-${g.desc?`<section class="prose-block guide-overview"><h2>Why Go</h2><p>${g.desc}</p></section>`:''}
 <section aria-label="Quick Info" class="quick-info-card">${quickInfoInnerHTML(g,key)}</section>
-${guideStaySections(g)}${routeStopsHTML(g)}${compactGuideSections(g)}${guideNavButtons(key,'page')}`;
+${guideStaySections(g)}${routeStopsHTML(g)}${guideExperienceSections(g,key)}${guideAttractionSections(g)}${guideShopSections(g)}${(['ACTIVITIES','ATTRACTIONS','SHOP','SHOPPING'].includes(g.cat))?'':compactGuideSections(g)}${guideNavButtons(key,'page')}`;
   document.title = `${g.title} · ${TRIP_CONFIG.tripName}`;
 }
 
@@ -404,9 +452,8 @@ function renderPlaceGroupPage(keys){
     const g=PRODUCTION_GUIDE.places[key];
     return `<article class="place-group-card" id="guide-${key}">
       <div class="page-hero place-group-hero"><p class="kicker">Option ${index+1}</p><h1>${g.emoji} ${g.title}</h1><p class="lead">${g.sub||''}</p></div>
-      ${g.desc?`<section class="prose-block guide-overview"><h2>Why Go</h2><p>${g.desc}</p></section>`:''}
-      <section aria-label="Quick Info" class="quick-info-card">${quickInfoInnerHTML(g,key)}</section>
-      ${guideStaySections(g)}${routeStopsHTML(g)}${compactGuideSections(g)}
+            <section aria-label="Quick Info" class="quick-info-card">${quickInfoInnerHTML(g,key)}</section>
+      ${guideStaySections(g)}${routeStopsHTML(g)}${guideExperienceSections(g,key)}${guideAttractionSections(g)}${guideShopSections(g)}${(['ACTIVITIES','ATTRACTIONS','SHOP','SHOPPING'].includes(g.cat))?'':compactGuideSections(g)}
     </article>`;
   }).join('');
   mount.innerHTML=`<button class="place-detail-close" type="button" aria-label="Close guide options" onclick="closePlaceDetail()">×</button><div class="page-hero"><p class="kicker">Guide</p><h1>Choose an option</h1><p class="lead">Compare the planned choices, then use Navigate inside the restaurant card you choose.</p></div>${cards}`;

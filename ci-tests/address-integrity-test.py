@@ -3,7 +3,7 @@ DATA_JS=pathlib.Path(__file__).resolve().parent.parent / "data.js"
 s=DATA_JS.read_text(encoding="utf-8")
 a=s.index("const PLACES=")+len("const PLACES="); b=s.index("\n\nconst CATEGORIES=",a)
 p=json.loads(s[a:b].rstrip(";"))
-allowed={"glenorchy-paradise","queenstown-central","te-anau","lake-tekapo-village","christchurch-cbd-discovery-walk","white-water-rafting"}
+allowed={"glenorchy-paradise","queenstown-central","te-anau","lake-tekapo-village","christchurch-cbd-discovery-walk"}
 bad=[]
 for k,v in p.items():
     if k in allowed: continue

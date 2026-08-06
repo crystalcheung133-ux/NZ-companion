@@ -60,3 +60,16 @@ Trip, Guide, Days or Studio.
 ## 7. Mobile Priority
 Operational information must be reachable without long scrolling.
 Guide content may be longer because it is optional reading.
+
+## Guide Card Standard v1.0 (RC25.2)
+
+- Why Go / Why Stop / Why Stay must explain the trip-specific purpose in one concise statement.
+- Good to Know is optional and appears only for information that can change the traveller's action (for example pre-booking, arrival deadlines, weather dependence, cash-only payment, limited signal or last entry).
+- Restaurants and cafes show Suggested Dishes, Trading Hours and booking advice when applicable.
+- Shops, supermarkets and markets show Why Stop, Trading Hours and parking only when useful.
+- Experiences show booking/session information, duration, meeting point and arrival requirement; ordinary trading hours are not forced onto booked tours.
+- Open-access scenic spots do not show hours. Paid, gated or scheduled attractions may show Opening Hours and Admission.
+- Accommodation uses Stay, Useful and Why Stay; reception/check-in boilerplate is not repeated.
+- Every Guide detail uses the shared Navigate / Booking / Previous / Next action system according to available relationships.
+- Seasonal information outside the September–October trip season is omitted, while same-season day variations remain useful.
+

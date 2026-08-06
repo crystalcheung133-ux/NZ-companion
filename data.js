@@ -1,4 +1,4 @@
-// data.js — New Zealand Companion RC23.3 · Timeline + Days Menu Hotfix
+// data.js — New Zealand Companion RC25.2 · Guide Card Standardisation
 // Generated from the frozen Travel Engine without UI redesign.
 
 /* Trip identity is owned exclusively by TRIP_CONFIG. */
@@ -8,18 +8,18 @@ const PLACES={
     "title": "Peppers Bluewater Resort",
     "emoji": "🏨",
     "cat": "STAY",
-    "sub": "Confirmed resort · 23–24 Sep",
-    "hours": "24 Hours",
+    "sub": "Confirmed · 23–24 Sep",
+    "hours": "2:00 PM → 10:00 AM",
     "maps": "https://maps.google.com/?q=Peppers+Bluewater+Resort+Lake+Tekapo",
     "address": "State Highway 8, Lake Tekapo 7945, New Zealand",
-    "desc": "A convenient one-night Lake Tekapo base between Christchurch and Aoraki / Mt Cook, close to the lakefront and evening activities.",
+    "desc": "A practical Lake Tekapo base that keeps the lakefront, dinner and evening activities close after the Christchurch drive.",
     "signature": [
-      "Lake Tekapo base",
-      "Close to lakefront activities",
-      "Mountain setting"
+      "Two-bedroom suite for the Lee family",
+      "Easy access to the lakefront and Tekapo village",
+      "On-site parking for the road-trip vehicle"
     ],
     "worth": [
-      "Keep the afternoon flexible for the lakefront, Tekapo Springs or stargazing, depending on weather and energy."
+      "Keep the evening flexible for the lakefront or stargazing, depending on weather and energy."
     ],
     "categoryLabel": "🏨 Stay",
     "price": "AUD 397.65 prepaid · net AUD 329.44 after AUD 68.21 cashback",
@@ -33,11 +33,11 @@ const PLACES={
     "title": "Windsor Lodge · Alpine Luxury for large groups",
     "emoji": "🏡",
     "cat": "STAY",
-    "sub": "Confirmed Airbnb · 26–29 Sep",
+    "sub": "Confirmed · 26–29 Sep",
     "hours": "3:00 PM → 10:00 AM",
     "maps": "https://maps.google.com/?q=7+Windsor+Place+Queenstown",
     "address": "7 Windsor Place, Queenstown, New Zealand",
-    "desc": "A spacious lodge for the three families to stay together, with lake and mountain views, a hot tub and plenty of shared living space close to Queenstown.",
+    "desc": "A spacious Queenstown base where all three families can stay together, with shared living space, a full kitchen and room to relax.",
     "signature": [
       "GROUP FIT · 6 bedrooms · 14 beds · 3 bathrooms",
       "RELAX · Outdoor hot tub with lake and mountain views",
@@ -60,7 +60,10 @@ const PLACES={
     "emoji": "🚁",
     "cat": "ACTIVITIES",
     "sub": "45-minute Mt Cook scenic flight with alpine snow landing",
-    "hours": "",
+    "experienceTime": "11:55 AM check-in · 12:30 PM departure",
+    "duration": "45 minutes",
+    "meetingPoint": "Mt Cook Glacier Guiding, Aoraki Mt Cook Airport, Unit 2, State Highway 80, 7999, New Zealand",
+    "arrival": "Arrive 35 minutes before departure.",
     "maps": "https://maps.google.com/?q=Mt+Cook+Glacier+Guiding+Aoraki+Mt+Cook+Airport+Unit+2+State+Highway+80+7999",
     "address": "Mt Cook Glacier Guiding, Aoraki Mt Cook Airport, Unit 2, State Highway 80, 7999, New Zealand",
     "desc": "See Aoraki / Mt Cook, the Tasman Glacier and the Southern Alps from both a helicopter and a ski plane, with one alpine snow landing when conditions permit.",
@@ -85,18 +88,18 @@ const PLACES={
     "title": "Sudima Queenstown Five Mile",
     "emoji": "🏨",
     "cat": "STAY",
-    "sub": "Confirmed stay · 25–26 Sep",
+    "sub": "Confirmed · 25–26 Sep",
     "hours": "2:00 PM → 11:00 AM",
     "maps": "https://maps.google.com/?q=Sudima+Queenstown+Five+Mile",
     "address": "22 Grant Road, Frankton, Queenstown 9300, New Zealand",
-    "desc": "A practical one-night Five Mile base before moving to Windsor Lodge the next day.",
+    "desc": "A convenient Five Mile base for a slow morning, brunch and an easy move into Queenstown before the group stay.",
     "signature": [
-      "Two-bedroom accommodation",
-      "Convenient Five Mile / Frankton location",
-      "One-night transition before the group stay"
+      "Two-bedroom accommodation for the Lee family",
+      "Walkable to Five Mile brunch and shopping",
+      "Easy parking and quick access to Queenstown"
     ],
     "worth": [
-      "Five Mile is practical for brunch, groceries and the next-day move to Windsor Lodge."
+      "Sleep in, check out at 11:00 AM and brunch nearby before heading to Queenstown Market."
     ],
     "categoryLabel": "🏨 Stay",
     "price": "NZD 407.20 · pay at hotel · approx. net AUD 324.26",
@@ -109,6 +112,7 @@ const PLACES={
     "emoji": "🍽️",
     "cat": "DINING",
     "sub": "Flexible first-night dinner",
+    "hours": "Mon–Wed 7:30 AM–8:00 PM · Thu–Sat 7:30 AM–9:00 PM · Sun 7:30 AM–8:00 PM · all traders open by 10:00 AM",
     "maps": "https://www.google.com/maps/search/?api=1&query=Riverside+Market%2C+96+Oxford+Terrace%2C+Christchurch+8011",
     "address": "96 Oxford Terrace, Christchurch Central City, Christchurch 8011, New Zealand",
     "desc": "Indoor food stalls; choose dinner on arrival.",
@@ -132,6 +136,7 @@ const PLACES={
     "emoji": "☕",
     "cat": "DINING",
     "sub": "Tekapo lunch",
+    "hours": "Daily 7:30 AM–4:00 PM · kitchen closes 2:00 PM",
     "maps": "https://www.google.com/maps/search/?api=1&query=The+Greedy+Cow%2C+16+Rapuwai+Lane%2C+Lake+Tekapo+7945",
     "address": "16 Rapuwai Lane, Lake Tekapo 7945, New Zealand",
     "desc": "A casual Lake Tekapo cafe serving breakfast, brunch, burgers, sandwiches and cabinet food — useful for an easy meal before afternoon sightseeing.",
@@ -155,6 +160,7 @@ const PLACES={
     "emoji": "☕",
     "cat": "DINING",
     "sub": "Fun Christchurch breakfast stop",
+    "hours": "Mon–Fri 7:00 AM–9:00 PM · Sat–Sun 7:00 AM–5:00 PM",
     "maps": "https://maps.google.com/?q=C1+Espresso+Christchurch",
     "address": "185 High Street, Christchurch Central City, Christchurch 8011, New Zealand",
     "desc": "Breakfast before the central-Christchurch activity sequence.",
@@ -177,6 +183,7 @@ const PLACES={
     "emoji": "🥧",
     "cat": "DINING",
     "sub": "Day 2 optional pit stop · Famous Fairlie pies",
+    "hours": "Daily 6:00 AM–4:30 PM · closed 25–26 Dec",
     "maps": "https://maps.google.com/?q=Fairlie+Bakehouse",
     "address": "74 Main Street, Fairlie 7925, New Zealand",
     "desc": "An optional road-trip break between Christchurch and Lake Tekapo for a quick pie, coffee and stretch. Stop only if timing and appetite suit; skip it when you prefer to continue straight to Tekapo.",
@@ -202,6 +209,7 @@ const PLACES={
     "emoji": "🍣",
     "cat": "DINING",
     "sub": "Day 2 primary dinner · Japanese and local salmon",
+    "hours": "Daily 11:30 AM–2:00 PM · 6:00 PM–8:30 PM",
     "maps": "https://maps.google.com/?q=Kohan+Japanese+Restaurant+Lake+Tekapo",
     "address": "6 Rapuwai Lane, Lake Tekapo 7999, New Zealand",
     "desc": "A relaxed dinner built around fresh salmon and Japanese comfort food after a long drive and an optional soak at Tekapo Springs.",
@@ -227,6 +235,7 @@ const PLACES={
     "emoji": "🐟",
     "cat": "DINING",
     "sub": "Lake Pukaki salmon stop",
+    "hours": "Daily 9:30 AM–4:00 PM · weather permitting",
     "maps": "https://maps.google.com/?q=Mt+Cook+Alpine+Salmon+Lake+Pukaki",
     "address": "Lake Pukaki Visitor Centre, State Highway 80, Canterbury 7999, New Zealand",
     "desc": "A food stop where the setting is part of the meal: salmon beside turquoise water with Aoraki / Mt Cook on the horizon.",
@@ -251,15 +260,14 @@ const PLACES={
     "emoji": "🍽️",
     "cat": "DINING",
     "sub": "Day 3 primary dinner · relaxed bistro and bar",
-    "hours": "Daily 9:00 am–9:00 pm · Breakfast 9:00 am–12:00 pm · All-day menu 12:00 pm–7:30 pm",
+    "hours": "Daily 10:00 AM–9:00 PM · all-day menu 12:00 PM–7:30 PM",
     "maps": "https://maps.google.com/?q=The+Stoaker+Room+3+Mountain+View+Drive+Wanaka+9381+New+Zealand",
     "address": "3 Mountain View Drive, Wānaka 9381, New Zealand",
     "desc": "A distinctive Wānaka bistro built around barrel cooking: meats, seafood and vegetables are cooked inside repurposed wine barrels over manuka and oak, giving the food a smoky, wood-fired character.",
     "signature": [
       "WHY GO · Signature barrel-cooked food over manuka and oak inside repurposed wine barrels",
       "TRY · Barrel-cooked meat, seafood or vegetables with local wine",
-      "GOOD FOR · A distinctive but relaxed family dinner after the Mt Cook drive",
-      "HOURS · All-day menu until 7:30 pm"
+      "GOOD FOR · A distinctive but relaxed family dinner after the Mt Cook drive"
     ],
     "worth": [
       "WORTH IT · ★★★★☆ · Best planned sit-down dinner for Day 3",
@@ -279,6 +287,7 @@ const PLACES={
     "emoji": "🥗",
     "cat": "DINING",
     "sub": "Fast, generous family meal",
+    "hours": "Daily 8:00 AM–8:30 PM · breakfast 8:00–10:00 AM · lunch 11:00 AM–4:00 PM · dinner 5:00–8:30 PM",
     "maps": "https://maps.google.com/?q=Big+Fig+Wanaka",
     "address": "105 Ardmore Street, Wānaka 9305, New Zealand",
     "desc": "A fast-casual Wānaka restaurant serving slow-cooked Middle Eastern and Mediterranean-style dishes by the plate, with generous portions and plenty of vegetables, meats and salads to mix.",
@@ -303,6 +312,7 @@ const PLACES={
     "emoji": "☕",
     "cat": "DINING",
     "sub": "Relaxed Wānaka breakfast",
+    "hours": "Daily 7:00 AM–3:00 PM · walk-ins only",
     "maps": "https://maps.google.com/?q=Federal+Diner+Wanaka",
     "address": "47 Helwick Street, Wānaka 9305, New Zealand",
     "desc": "A Wānaka breakfast and brunch cafe serving eggs, toast, baked dishes, coffee and other modern cafe food before the Crown Range drive.",
@@ -322,11 +332,11 @@ const PLACES={
     "status": "optional"
   },
   "lake-pukaki": {
+    "guideType": "SCENIC",
     "title": "Lake Pukaki Lookout",
     "emoji": "📸",
     "cat": "ATTRACTIONS",
     "sub": "Signature turquoise-lake view",
-    "hours": "Always open",
     "maps": "https://www.google.com/maps/search/?api=1&query=Tapataia+Mahaka+Peters+Lookout%2C+Mount+Cook+Road%2C+Ben+Ohau+7999",
     "address": "Tapataia Mahaka / Peter's Lookout, Mount Cook Road (SH80), Ben Ohau 7999, New Zealand",
     "desc": "The essential photo stop on the Mt Cook day, with turquoise water and Aoraki / Mt Cook framed at the far end of the lake.",
@@ -352,7 +362,8 @@ const PLACES={
     "emoji": "🥾",
     "cat": "ACTIVITIES",
     "sub": "Flexible alpine family walk",
-    "hours": "Daylight and weather dependent",
+    "duration": "40–90 minutes · turn around at the first or second bridge",
+    "meetingPoint": "White Horse Hill Car Park, end of Hooker Valley Road",
     "maps": "https://www.google.com/maps/search/?api=1&query=White+Horse+Hill+Car+Park%2C+Hooker+Valley+Road%2C+Aoraki+Mount+Cook",
     "address": "White Horse Hill Car Park, end of Hooker Valley Road, Aoraki / Mount Cook National Park 7999, New Zealand",
     "desc": "A flexible out-and-back walk: the first suspension bridge already delivers alpine scenery, so there is no pressure to complete the full track.",
@@ -374,11 +385,11 @@ const PLACES={
     "addressAudit": "OFFICIAL / VERIFIED"
   },
   "lindis-pass": {
+    "guideType": "SCENIC",
     "title": "Lindis Pass Lookout",
     "emoji": "🏔️",
     "cat": "ATTRACTIONS",
     "sub": "High-country tussock landscape",
-    "hours": "Road conditions apply",
     "maps": "https://www.google.com/maps/search/?api=1&query=Lindis+Pass+Lookout%2C+State+Highway+8%2C+Otago",
     "address": "Lindis Pass Lookout, State Highway 8, Lindis Pass, Otago, New Zealand",
     "desc": "A short roadside viewpoint over sweeping golden tussock hills on the long run toward Wānaka.",
@@ -400,11 +411,11 @@ const PLACES={
     "addressAudit": "OFFICIAL / VERIFIED"
   },
   "wanaka-tree": {
+    "guideType": "SCENIC",
     "title": "That Wānaka Tree",
     "emoji": "🌳",
     "cat": "ATTRACTIONS",
     "sub": "Flexible lakefront photo stop",
-    "hours": "Always open",
     "maps": "https://maps.google.com/?q=That+Wanaka+Tree",
     "address": "121 Ardmore Street, Wānaka 9305, New Zealand",
     "desc": "A quick iconic photo stop, but not worth forcing into a tired evening if light or weather is poor.",
@@ -449,6 +460,7 @@ const PLACES={
     "addressAudit": "OFFICIAL / VERIFIED"
   },
   "puzzling-world": {
+    "guideType": "ADMISSION",
     "title": "Puzzling World",
     "emoji": "🧩",
     "cat": "ATTRACTIONS",
@@ -478,6 +490,7 @@ const PLACES={
     "emoji": "🍖",
     "cat": "DINING",
     "sub": "First-night Queenstown takeaway",
+    "hours": "Daily 12:00 PM–7:45 PM · pickup and delivery",
     "maps": "https://maps.google.com/?q=Pedro%27s+House+of+Lamb+47+Gorge+Road%2C+Queenstown+9300%2C+New+Zealand",
     "address": "47 Gorge Road, Queenstown 9300, New Zealand",
     "desc": "A Queenstown takeaway specialising in slow-cooked lamb served with potatoes — simple to collect and share at the Airbnb on the first group evening.",
@@ -500,6 +513,10 @@ const PLACES={
     "emoji": "🚡",
     "cat": "ACTIVITIES",
     "sub": "Gondola and Luge",
+    "experienceTime": "Day 6 morning · booking time not set",
+    "duration": "Allow half a day",
+    "meetingPoint": "Skyline Queenstown, 53 Brecon Street, Queenstown",
+    "bookingNote": "Book ahead for 11 travellers.",
     "maps": "https://maps.google.com/?q=Skyline+Queenstown+53+Brecon+Street%2C+Queenstown+9300%2C+New+Zealand",
     "address": "53 Brecon Street, Queenstown 9300, New Zealand",
     "desc": "The main active Queenstown day with the Gondola, Luge and views over Lake Wakatipu.",
@@ -517,15 +534,16 @@ const PLACES={
     "audit": "M4.7 master integration",
     "status": "planned",
     "phone": "+64 3 441 0101",
-    "website": "https://queenstown.skyline.co.nz/pricing-and-packages/",
-    "hours": "Gondola 9:30 am–9:00 pm · Luge 10:00 am–8:00 pm",
-    "visitorReminder": "Please check the official website or Google Maps for the latest opening hours and admission prices."
+    "website": "https://queenstown.skyline.co.nz/pricing-and-packages/"
   },
   "kiwi-park": {
     "title": "Kiwi Park Queenstown",
     "emoji": "🐦",
     "cat": "ACTIVITIES",
     "sub": "Native wildlife park",
+    "duration": "Allow 1.5–2 hours",
+    "meetingPoint": "Kiwi Park Queenstown, 51 Brecon Street, Queenstown",
+    "bookingNote": "Flexible add-on after Skyline · no booking currently recorded.",
     "maps": "https://maps.google.com/?q=Kiwi+Park+Queenstown+51+Brecon+Street%2C+Queenstown+9300%2C+New+Zealand",
     "address": "51 Brecon Street, Queenstown 9300, New Zealand",
     "desc": "A flexible native wildlife visit beside Skyline, planned for the afternoon.",
@@ -548,6 +566,7 @@ const PLACES={
     "emoji": "🍕",
     "cat": "DINING",
     "sub": "Queenstown group dinner",
+    "hours": "Mon–Wed 4:00 PM–late · Thu–Sun 12:00 PM–late",
     "maps": "https://maps.google.com/?q=Winnie%27s+Gourmet+Pizza+Bar+7%E2%80%939+The+Mall%2C+Queenstown+9300%2C+New+Zealand",
     "address": "7–9 The Mall, Queenstown 9300, New Zealand",
     "desc": "A central Queenstown pizza restaurant serving gourmet pizzas, pasta and casual bar food, suitable for a large mixed-age group.",
@@ -565,33 +584,8 @@ const PLACES={
     "audit": "M4.7 master integration",
     "status": "planned"
   },
-  "onsen": {
-    "title": "Onsen Hot Pools",
-    "emoji": "♨️",
-    "cat": "ACTIVITIES",
-    "sub": "Private hot pools",
-    "hours": "Daily 9:00 am–11:00 pm",
-    "maps": "https://maps.google.com/?q=Onsen+Hot+Pools+160+Arthurs+Point+Road%2C+Arthurs+Point+9371%2C+New+Zealand",
-    "address": "160 Arthurs Point Road, Arthurs Point 9371, New Zealand",
-    "desc": "Three Original Onsen private pools are planned for the group at 2:00 pm, subject to booking.",
-    "signature": [
-      "WHY GO · Relaxed shared experience with a view",
-      "TIME · Target 2:00 pm",
-      "BOOKING · 3 Original Onsen private pools"
-    ],
-    "worth": [
-      "Arrive early for the fixed booking slot."
-    ],
-    "categoryLabel": "♨️ Activities",
-    "price": "Original private pool: NZ$117 for 1 · NZ$175 for 2 · NZ$225 for 3 · NZ$260 for 4",
-    "transport": "Self-drive",
-    "audit": "M4.7 master integration",
-    "status": "optional",
-    "phone": "+64 3 442 5707",
-    "website": "https://www.onsen.co.nz/experiences/original-onsen-soak-only/",
-    "visitorReminder": "Please check the official website or Google Maps for the latest opening hours and admission prices."
-  },
   "arrowtown": {
+    "guideType": "SCENIC",
     "title": "Historic Arrowtown",
     "emoji": "🏘️",
     "cat": "ATTRACTIONS",
@@ -614,6 +608,7 @@ const PLACES={
     "status": "planned"
   },
   "chinese-settlement": {
+    "guideType": "SCENIC",
     "title": "Arrowtown Chinese Settlement",
     "emoji": "🏚️",
     "cat": "ATTRACTIONS",
@@ -640,7 +635,9 @@ const PLACES={
     "emoji": "🦌",
     "cat": "ACTIVITIES",
     "sub": "Scenic drive and animals",
-    "hours": "Pre-booked vehicle entry",
+    "experienceTime": "Target 1:30 PM",
+    "meetingPoint": "Deer Park Heights entrance, 432 Peninsula Road, Kelvin Heights",
+    "bookingNote": "Vehicle entry must be booked and linked to the correct registration.",
     "maps": "https://maps.google.com/?q=Deer+Park+Heights+432+Peninsula+Road%2C+Kelvin+Heights%2C+Queenstown+9300%2C+New+Zealand",
     "address": "432 Peninsula Road, Kelvin Heights, Queenstown 9300, New Zealand",
     "desc": "A self-drive scenic experience with animals and wide Queenstown views.",
@@ -663,6 +660,7 @@ const PLACES={
     "emoji": "🍽️",
     "cat": "DINING",
     "sub": "Casual group dinner",
+    "hours": "2:00 PM → 10:00 AM",
     "maps": "https://maps.google.com/?q=Lone+Star+Queenstown+14+Brecon+Street%2C+Queenstown+9300%2C+New+Zealand",
     "address": "14 Brecon Street, Queenstown 9300, New Zealand",
     "desc": "A casual Queenstown restaurant serving large portions of ribs, steaks, burgers and other hearty New Zealand-style meals.",
@@ -685,23 +683,23 @@ const PLACES={
     "emoji": "🏨",
     "cat": "STAY",
     "sub": "Confirmed · 3 rooms · 29 Sep–1 Oct",
-    "hours": "Check-in from 2:00 pm · Check-out by 10:00 am",
+    "hours": "Daily 4:30 PM\u2013late",
     "maps": "https://maps.google.com/?q=Lakefront+Lodge+58+Lakefront+Drive%2C+Te+Anau+9600%2C+New+Zealand",
     "address": "58 Lakefront Drive, corner of Lakefront and Mokoroa, Te Anau 9600, New Zealand",
-    "desc": "Three executive one-bedroom apartments for the shared group, used as the base for Milford Sound.",
+    "desc": "A practical Te Anau base for all three families, with three apartments and an easy pickup point for the Milford Sound tour.",
     "signature": [
-      "Te Anau lakefront base",
-      "Convenient for Milford Sound day",
-      "Three apartments for the group"
+      "Three apartments for the group",
+      "Lakefront location close to Te Anau town",
+      "Convenient hotel pickup for the Milford Sound tour"
     ],
     "worth": [
-      "Prepare breakfast, waterproof layers and devices for Milford the night before."
+      "Prepare breakfast, waterproof layers and charged devices for Milford the night before."
     ],
     "categoryLabel": "🏨 Stay",
     "price": "AUD 1,541.13 paid · actual net cash cost AUD 1,391.13",
     "transport": "Self-drive / walk",
-    "audit": "M4.7 master integration",
-    "status": "planned"
+    "audit": "CONFIRMED BOOKING / GUIDE STANDARDISED",
+    "status": "confirmed"
   },
   "te-anau-bird": {
     "title": "Te Anau Bird Sanctuary",
@@ -730,7 +728,9 @@ const PLACES={
     "emoji": "🚌",
     "cat": "ACTIVITIES",
     "sub": "Confirmed Day 9 premium small-group coach and cruise tour",
-    "hours": "Hotel pickup approximately 9:05–9:15 AM · final pickup time to be advised",
+    "experienceTime": "Be ready 8:55 AM · pickup approximately 9:05–9:15 AM",
+    "duration": "Approximately 8.5 hours · return around 5:30 PM",
+    "meetingPoint": "Lakefront Lodge main entrance near the street",
     "maps": "https://www.google.com/maps/search/?api=1&query=Lakefront+Lodge%2C+58+Lakefront+Drive%2C+Te+Anau+9600%2C+New+Zealand",
     "address": "Hotel pickup: Lakefront Lodge, 58 Lakefront Drive, Te Anau 9600, New Zealand",
     "desc": "A confirmed premium small-group journey from Te Anau to Milford Sound with Luxe Tours, combining a spacious Mercedes coach, local driver-guide, scenic Milford Road stops and a two-hour RealNZ cruise.",
@@ -761,6 +761,8 @@ const PLACES={
     "emoji": "✨",
     "cat": "ACTIVITIES",
     "sub": "Milford backup option",
+    "meetingPoint": "RealNZ Visitor Centre, 85 Lakefront Drive, Te Anau",
+    "bookingNote": "Book only if Milford is cancelled and suitable availability remains.",
     "maps": "https://maps.google.com/?q=Te+Anau+Glowworm+Caves+85+Lakefront+Drive%2C+Te+Anau+9600%2C+New+Zealand",
     "address": "85 Lakefront Drive, Te Anau 9600, New Zealand",
     "desc": "A practical backup only if Milford is cancelled and suitable availability remains.",
@@ -804,19 +806,18 @@ const PLACES={
     "emoji": "🏨",
     "cat": "STAY",
     "sub": "Confirmed · 24–25 Sep",
-    "hours": "Check-in from 3:00 pm · Check-out by 10:30 am",
+    "hours": "3:00 PM → 10:30 AM",
     "maps": "https://maps.google.com/?q=Edgewater",
     "address": "54 Sargood Drive, Wānaka 9305, New Zealand",
     "desc": "Chosen as the preferred Wānaka stop after the long Aoraki / Mt Cook driving day, with a Premium Suite and an easy lakeside setting for a quiet evening.",
     "signature": [
       "Premium Suite for the Lee family",
-      "On-site restaurant supports an easy no-extra-driving dinner",
-      "Lakefront setting suits a slow arrival evening"
+      "Lakefront setting for a quiet arrival evening",
+      "On-site restaurant avoids extra driving after Mt Cook"
     ],
     "worth": [
       "That Wānaka Tree and the lakefront are nearby for the following morning.",
-      "Big Fig is the dinner alternative if the family still wants to go into Wānaka town.",
-      "Reconfirm this primary booking before the free-cancellation deadline."
+      "Big Fig remains the town-centre dinner alternative."
     ],
     "categoryLabel": "🏨 Stay",
     "price": "AUD 402.47 paid; net AUD 343.82 after cashback",
@@ -825,6 +826,7 @@ const PLACES={
     "status": "confirmed"
   },
   "quake-city": {
+    "guideType": "ADMISSION",
     "title": "Quake City",
     "emoji": "📍",
     "cat": "ATTRACTIONS",
@@ -837,10 +839,12 @@ const PLACES={
       "SEE · Interactive liquefaction demonstration and recovery stories",
       "SUGGESTED TIME · 45–60 minutes"
     ],
-    "worth": [],
+    "worth": [
+      "Tickets are available on arrival; individual visitors generally do not need to pre-book."
+    ],
     "categoryLabel": "📍 Experience",
     "transport": "Self-drive / walk",
-    "audit": "NZ Master Itinerary v3.0",
+    "audit": "OFFICIAL TRAVELLER-SUPPLIED SCREENSHOTS · SEP–MAY HOURS AND ADMISSION",
     "status": "planned",
     "hours": "Daily 10:00 am–5:00 pm · Closed Christmas Day",
     "price": "Adult NZ$25 · Student/Senior NZ$20 · Under 15 free with an adult",
@@ -852,6 +856,7 @@ const PLACES={
     "emoji": "🍽️",
     "cat": "DINING",
     "sub": "Day 2 dinner alternative · Cafe bar and grill",
+    "hours": "Daily 11:30 AM–8:00 PM",
     "maps": "https://www.google.com/maps/search/?api=1&query=Mackenzies+Bar+and+Grill%2C+Lake+Tekapo+Shopping+Centre",
     "address": "Unit 1, Lake Tekapo Shopping Centre, State Highway 8, Lake Tekapo 7945, New Zealand",
     "desc": "A Lake Tekapo cafe, bar and grill serving New Zealand-style breakfast, cafe meals and hearty grill dishes; useful for either an easy breakfast or a relaxed dinner near the lakefront.",
@@ -869,22 +874,27 @@ const PLACES={
     "addressAudit": "OFFICIAL / VERIFIED"
   },
   "wanaka-lavender": {
+    "guideType": "ADMISSION",
     "title": "Wānaka Lavender Farm",
     "emoji": "📍",
     "cat": "ATTRACTIONS",
     "sub": "Weather and timing dependent stop",
+    "hours": "September–May · daily 9:00 AM–5:00 PM",
+    "price": "Adult NZD 8 · Child NZD 4 · Infants free",
     "maps": "https://maps.google.com/?q=W%C4%81naka%20Lavender%20Farm",
     "address": "36 Morris Road, Wānaka 9382, New Zealand",
-    "desc": "A family-run lavender farm with seasonal gardens, farm animals and a small shop. It works best as a relaxed outdoor stop when the flowers and weather are favourable.",
+    "desc": "Visit the seasonal lavender gardens, meet the farm animals and browse the artisan shop during the Wānaka stop.",
     "signature": [
       "WHAT IT IS · Seasonal lavender gardens and farm animals",
       "GOOD FOR · Photos and a gentle family stop",
       "SUGGESTED TIME · 45–75 minutes"
     ],
-    "worth": [],
+    "worth": [
+      "Tickets are available on arrival; individual visitors generally do not need to pre-book."
+    ],
     "categoryLabel": "📍 Experience",
     "transport": "Self-drive / walk",
-    "audit": "NZ Master Itinerary v3.0",
+    "audit": "OFFICIAL TRAVELLER-SUPPLIED SCREENSHOTS · SEP–MAY HOURS AND ADMISSION",
     "status": "planned"
   },
   "tasman-blue-lakes": {
@@ -892,6 +902,8 @@ const PLACES={
     "emoji": "📍",
     "cat": "ACTIVITIES",
     "sub": "Poor-weather Hooker Valley alternative",
+    "duration": "About 60–90 minutes return",
+    "meetingPoint": "Tasman Glacier Car Park, end of Tasman Valley Road",
     "maps": "https://www.google.com/maps/search/?api=1&query=Tasman+Glacier+Car+Park%2C+Tasman+Valley+Road%2C+Mount+Cook",
     "address": "Tasman Glacier Car Park, end of Tasman Valley Road, Aoraki / Mount Cook National Park 7999, New Zealand",
     "desc": "A short Aoraki / Mt Cook walk to viewpoints over the Tasman Glacier terminal lake and the former Blue Lakes. Use it as the shorter poor-weather alternative to the Hooker Valley section.",
@@ -912,6 +924,7 @@ const PLACES={
     "emoji": "🍽️",
     "cat": "DINING",
     "sub": "Queenstown bakery option",
+    "hours": "Daily 6:00 AM–2:00 AM",
     "maps": "https://maps.google.com/?q=Fergbaker",
     "address": "40 Shotover Street, Queenstown 9300, New Zealand",
     "desc": "A busy Queenstown bakery beside Fergburger, known for pies, pastries, sandwiches and sweet baked goods. It is useful for a quick breakfast or takeaway lunch rather than a long sit-down meal.",
@@ -931,6 +944,7 @@ const PLACES={
     "emoji": "🍽️",
     "cat": "DINING",
     "sub": "Queenstown group dinner",
+    "hours": "Daily 12:00 PM–10:00 PM · last bookings 9:45 PM",
     "maps": "https://maps.google.com/?q=Flame%20Bar%20%26%20Grill",
     "address": "61 Beach Street, Queenstown 9300, New Zealand",
     "desc": "A central Queenstown grill restaurant best suited to a hearty group dinner, with ribs, steaks, burgers and other flame-grilled dishes.",
@@ -950,6 +964,7 @@ const PLACES={
     "emoji": "🍽️",
     "cat": "DINING",
     "sub": "Queenstown Vietnamese option",
+    "hours": "Daily 12:00 PM–9:30 PM",
     "maps": "https://www.google.com/maps/search/?api=1&query=Saigon+Kingdom%2C+88+Beach+Street%2C+Queenstown+9300",
     "address": "88 Beach Street, Queenstown 9300, New Zealand",
     "desc": "A Vietnamese restaurant in the Frankton area serving familiar noodle soups, rice dishes and other Vietnamese comfort food — practical before the airport or while shopping nearby.",
@@ -966,6 +981,7 @@ const PLACES={
     "addressAudit": "OFFICIAL / VERIFIED"
   },
   "glenorchy-paradise": {
+    "guideType": "SCENIC",
     "title": "Glenorchy / Paradise Scenic Drive",
     "emoji": "📍",
     "cat": "ATTRACTIONS",
@@ -990,6 +1006,7 @@ const PLACES={
     "emoji": "🍽️",
     "cat": "DINING",
     "sub": "Glenorchy lunch option",
+    "hours": "Sun–Thu 8:30 AM–5:30 PM · Fri–Sat 8:30 AM–6:00 PM",
     "maps": "https://maps.google.com/?q=Mrs%20Woolly's%20General%20Store",
     "address": "64 Oban Street, Glenorchy 9372, New Zealand",
     "desc": "A Glenorchy general store and cafe offering cabinet food, pies, sandwiches, coffee and groceries — a convenient lunch stop during the scenic drive.",
@@ -1009,6 +1026,8 @@ const PLACES={
     "emoji": "📍",
     "cat": "ACTIVITIES",
     "sub": "Pre-booked activity option",
+    "meetingPoint": "Info & Track, 37 Shotover Street, Queenstown",
+    "bookingNote": "Operator activity · confirm the final tour time and pickup instructions.",
     "maps": "https://www.google.com/maps/search/?api=1&query=Info+and+Track%2C+37+Shotover+Street%2C+Queenstown+9300",
     "address": "Info & Track, 37 Shotover Street, Queenstown 9300, New Zealand",
     "desc": "A guided four-wheel-drive excursion into historic Skippers Canyon, combining narrow mountain roads, gold-mining history and dramatic river views. This is an operator-led activity rather than a self-drive route.",
@@ -1024,31 +1043,12 @@ const PLACES={
     "status": "optional",
     "addressAudit": "OFFICIAL / VERIFIED"
   },
-  "white-water-rafting": {
-    "title": "Queenstown White Water Rafting",
-    "emoji": "📍",
-    "cat": "ACTIVITIES",
-    "sub": "Activity option",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Queenstown+white+water+rafting",
-    "address": "Meeting point depends on the booked rafting operator and river product — confirm before booking.",
-    "desc": "A guided Queenstown rafting activity with safety equipment, instruction and river transport provided by the operator. The exact river and grade depend on the booked product and conditions.",
-    "signature": [
-      "WHAT IT IS · Guided white-water rafting",
-      "INCLUDES · Safety briefing and specialist equipment",
-      "NOTE · Weather, river level and age restrictions apply"
-    ],
-    "worth": [],
-    "categoryLabel": "📍 Experience",
-    "transport": "Self-drive / walk",
-    "audit": "NZ Master Itinerary v3.0",
-    "status": "optional",
-    "addressAudit": "NEEDS CONFIRMATION · operator-specific meeting point"
-  },
   "arrowtown-bakery": {
     "title": "Arrowtown Bakery",
     "emoji": "🍽️",
     "cat": "DINING",
     "sub": "Arrowtown lunch choice",
+    "hours": "Daily 7:00 AM–3:00 PM",
     "maps": "https://maps.google.com/?q=Arrowtown%20Bakery",
     "address": "14 Buckingham Street, Arrowtown 9302, New Zealand",
     "desc": "A traditional Arrowtown bakery known for savoury pies, pastries and quick takeaway food — useful when the group wants an easy lunch without a full restaurant booking.",
@@ -1068,6 +1068,7 @@ const PLACES={
     "emoji": "🍽️",
     "cat": "DINING",
     "sub": "Arrowtown lunch alternative",
+    "hours": "Daily brunch 11:00 AM–3:00 PM · dinner 5:00 PM–9:00 PM",
     "maps": "https://maps.google.com/?q=Aosta",
     "address": "18 Buckingham Street, Arrowtown 9302, New Zealand",
     "desc": "An Arrowtown restaurant serving northern Italian-inspired dishes with a New Zealand focus. Choose it when the group wants a more substantial sit-down meal rather than bakery food.",
@@ -1087,6 +1088,8 @@ const PLACES={
     "emoji": "📍",
     "cat": "ACTIVITIES",
     "sub": "Optional river activity",
+    "meetingPoint": "Lakes District Museum, 49 Buckingham Street, Arrowtown",
+    "bookingNote": "Optional add-on · confirm availability and equipment on the day.",
     "maps": "https://www.google.com/maps/search/?api=1&query=Lakes+District+Museum%2C+49+Buckingham+Street%2C+Arrowtown+9302",
     "address": "Lakes District Museum, 49 Buckingham Street, Arrowtown 9302, New Zealand",
     "desc": "A hands-on Arrow River activity where visitors try traditional gold-panning techniques associated with Arrowtown’s gold-rush history.",
@@ -1107,6 +1110,7 @@ const PLACES={
     "emoji": "🍽️",
     "cat": "DINING",
     "sub": "Te Anau lunch choice",
+    "hours": "Daily 7:00 AM–4:30 PM",
     "maps": "https://www.google.com/maps/search/?api=1&query=Sandfly+Cafe%2C+9+The+Lane%2C+Te+Anau+9600",
     "address": "9 The Lane, Te Anau 9600, New Zealand",
     "desc": "A casual Te Anau cafe serving breakfast, brunch, coffee and light lunch dishes — a practical first meal after the drive from Queenstown.",
@@ -1127,6 +1131,7 @@ const PLACES={
     "emoji": "🍽️",
     "cat": "DINING",
     "sub": "Te Anau dinner choice",
+    "hours": "Sep–Jun · approx. 6:00 AM–5:00 PM · until sold out",
     "maps": "https://www.google.com/maps/search/?api=1&query=Miles+Better+Pies%2C+17+Town+Centre%2C+Te+Anau+9600",
     "address": "17 Town Centre, Te Anau 9600, New Zealand",
     "desc": "A compact Te Anau pie shop specialising in savoury takeaway pies. It is best for a fast, inexpensive meal rather than a sit-down dinner.",
@@ -1147,6 +1152,7 @@ const PLACES={
     "emoji": "🍽️",
     "cat": "DINING",
     "sub": "Te Anau dinner alternative",
+    "hours": "From 4:30 PM until late · check live opening days",
     "maps": "https://www.google.com/maps/search/?api=1&query=The+Fat+Duck%2C+124+Town+Centre%2C+Te+Anau+9600",
     "address": "124 Town Centre, Te Anau 9600, New Zealand",
     "desc": "A Te Anau cafe and restaurant serving breakfast, cafe meals and New Zealand-style dinner dishes; a sit-down alternative when the group wants more than takeaway pies.",
@@ -1162,31 +1168,12 @@ const PLACES={
     "status": "optional",
     "addressAudit": "OFFICIAL / VERIFIED"
   },
-  "doubtful-sound": {
-    "title": "Doubtful Sound",
-    "emoji": "📍",
-    "cat": "ACTIVITIES",
-    "sub": "Milford cancellation backup only",
-    "maps": "https://www.google.com/maps/search/?api=1&query=RealNZ+Manapouri+Visitor+Centre%2C+64+Waiau+Street%2C+Manapouri+9679",
-    "address": "RealNZ Manapouri Visitor Centre, 64 Waiau Street, Manapouri 9679, New Zealand",
-    "desc": "A remote Fiordland day excursion typically involving travel across Lake Manapouri and Wilmot Pass before a wilderness cruise. Keep it only as a major backup plan, not a quick substitute.",
-    "signature": [
-      "WHAT IT IS · Full-day remote fiord cruise",
-      "WHY DIFFERENT · Quieter and more remote than Milford Sound",
-      "ROLE · Major backup requiring availability"
-    ],
-    "worth": [],
-    "categoryLabel": "📍 Experience",
-    "transport": "Self-drive / walk",
-    "audit": "NZ Master Itinerary v3.0",
-    "status": "optional",
-    "addressAudit": "OFFICIAL / VERIFIED"
-  },
   "edgewater-restaurant": {
     "title": "Edgewater Resort Restaurant",
     "emoji": "🍽️",
     "cat": "DINING",
     "sub": "Wānaka dinner alternative",
+    "hours": "Daily from 7:00 AM until late",
     "maps": "https://maps.google.com/?q=Edgewater%20Resort%20Restaurant",
     "address": "54 Sargood Drive, Wānaka 9305, New Zealand",
     "desc": "The on-site restaurant at Edgewater, useful for a low-effort meal after the long Mt Cook–Wānaka drive. Choose it for convenience rather than adding another drive into town.",
@@ -1238,6 +1225,7 @@ const PLACES={
     "status": "planned"
   },
   "lake-tekapo": {
+    "guideType": "SCENIC",
     "title": "Lake Tekapo",
     "emoji": "📍",
     "cat": "ATTRACTIONS",
@@ -1250,7 +1238,7 @@ const PLACES={
       "SEE · Lakefront, Church of the Good Shepherd and dark sky"
     ],
     "worth": [],
-    "categoryLabel": "📍 Experience",
+    "categoryLabel": "🏞 Scenic Destination",
     "transport": "Self-drive / walk",
     "audit": "NZ Master Itinerary v3.0",
     "status": "planned"
@@ -1260,7 +1248,7 @@ const PLACES={
     "emoji": "☕",
     "cat": "DINING",
     "sub": "Primary Day 5 brunch · Five Mile",
-    "hours": "7:00 AM–4:00 PM",
+    "hours": "Daily 7:00 AM–4:00 PM",
     "maps": "https://maps.google.com/?q=Hustl+Cafe+Five+Mile+Queenstown",
     "address": "Five Mile, Frankton, Queenstown, New Zealand",
     "desc": "An easy all-day brunch stop near Sudima, with strong coffee and a broad breakfast-and-lunch menu before heading into Queenstown.",
@@ -1282,7 +1270,7 @@ const PLACES={
     "emoji": "☕",
     "cat": "DINING",
     "sub": "Day 5 brunch option · Five Mile",
-    "hours": "7:00 AM–5:00 PM",
+    "hours": "Daily 7:00 AM–5:00 PM",
     "maps": "https://maps.google.com/?q=Moinho+Cafe+6%2F32+Grant+Road+Frankton+Queenstown",
     "address": "6/32 Grant Road, Five Mile, Frankton, Queenstown, New Zealand",
     "desc": "A Brazilian-style cafe with Kiwi breakfast dishes and a pay-by-weight lunch buffet, useful when the group wants more variety.",
@@ -1304,6 +1292,7 @@ const PLACES={
     "emoji": "🍳",
     "cat": "DINING",
     "sub": "Family-friendly Day 5 brunch option",
+    "hours": "Mon–Fri 7:00 AM–9:00 PM · Sat–Sun 8:00 AM–9:00 PM",
     "maps": "https://maps.google.com/?q=Joe%27s+Garage+Five+Mile+36+Grant+Road+Queenstown",
     "address": "Building 8, 36 Grant Road, Five Mile, Queenstown 9371, New Zealand",
     "desc": "A reliable family-friendly cafe for breakfast, burgers and coffee, with an easy menu for adults and children.",
@@ -1321,21 +1310,22 @@ const PLACES={
     "status": "optional"
   },
   "queenstown-market": {
+    "guideType": "MARKET",
     "title": "Queenstown Market",
     "emoji": "🛍️",
     "cat": "ATTRACTIONS",
     "sub": "Saturday lakefront artisan market",
-    "hours": "Saturday · winter 9:30 AM–3:30 PM",
+    "hours": "Saturday · 9:30 AM–3:30 PM",
     "maps": "https://maps.google.com/?q=Queenstown+Market+Earnslaw+Park+Queenstown",
     "address": "Earnslaw Park, Queenstown 9300, New Zealand",
-    "desc": "A Saturday artisan market on the Lake Wakatipu waterfront, combining local crafts, gifts, snacks and an easy lakefront wander before Airbnb check-in.",
+    "desc": "Browse local artisan stalls, pick up a snack and enjoy the lakefront before checking into Windsor Lodge.",
     "signature": [
       "SEE · Local art and handmade products",
       "EAT · Market snacks",
       "SETTING · Earnslaw Park lakefront"
     ],
     "worth": [
-      "Arrive by early afternoon so there is time to browse before the winter closing time."
+      "PARKING · Man Street Car Park is the easiest reliable option, about a 5-minute walk."
     ],
     "categoryLabel": "📍 Experience",
     "transport": "Self-drive / walk",
@@ -1346,15 +1336,15 @@ const PLACES={
   "freshchoice-queenstown": {
     "title": "FreshChoice Queenstown",
     "emoji": "🛒",
-    "cat": "SHOPPING",
+    "cat": "SHOP",
     "sub": "Airbnb grocery stop",
-    "hours": "7:00 AM–10:00 PM",
+    "hours": "Daily 7:00 AM–10:00 PM",
     "maps": "https://maps.google.com/?q=FreshChoice+Queenstown+64+Gorge+Road+Queenstown",
     "address": "64 Gorge Road, Queenstown 9300, New Zealand",
-    "desc": "Full-range supermarket for Airbnb breakfast supplies, drinks and snacks.",
+    "desc": "Stock up on groceries, drinks and breakfast supplies for the three-night Windsor Lodge stay.",
     "signature": [
-      "BUY · Breakfast, drinks and snacks",
-      "TIMING · After Airbnb check-in"
+      "BUY · Breakfast supplies, drinks, snacks and shared-house essentials",
+      "TIMING · After Windsor Lodge check-in"
     ],
     "worth": [],
     "categoryLabel": "🛒 Shopping",
@@ -1368,21 +1358,19 @@ const PLACES={
     "emoji": "🛒",
     "cat": "SHOP",
     "sub": "Te Anau stay supplies",
-    "hours": "Check live hours",
+    "hours": "Daily 7:00 AM–8:00 PM",
     "maps": "https://maps.google.com/?q=FreshChoice+Te+Anau+5+Milford+Crescent+Te+Anau",
     "address": "5 Milford Crescent, Te Anau 9600, New Zealand",
-    "desc": "A practical full supermarket stop for Te Anau breakfast supplies, snacks, drinks and Milford-day provisions.",
+    "desc": "Stock up for tomorrow’s Milford Sound day trip, including breakfast, snacks, drinks or an optional packed lunch for the cruise.",
     "signature": [
       "BUY · Breakfast supplies and fresh food",
-      "PACK · Snacks and drinks for Milford day",
+      "PACK · Snacks, drinks and an optional cruise lunch",
       "TIMING · Stop before settling into Lakefront Lodge"
     ],
-    "worth": [
-      "Buy only what is needed for the Te Anau stay rather than carrying extra groceries from Queenstown."
-    ],
+    "worth": [],
     "categoryLabel": "🛒 Shopping",
     "transport": "Self-drive",
-    "audit": "PLANNED SUPPLY STOP",
+    "audit": "OFFICIAL STORE HOURS / PLANNED SUPPLY STOP",
     "status": "planned",
     "addressAudit": "KNOWN STORE ADDRESS"
   },
@@ -1406,6 +1394,7 @@ const PLACES={
     "addressAudit": "AREA / ROUTE CARD · navigation target intentionally uses a route or area, not a storefront address"
   },
   "te-anau": {
+    "guideType": "SCENIC",
     "title": "Te Anau",
     "emoji": "📍",
     "cat": "ATTRACTIONS",
@@ -1429,6 +1418,8 @@ const PLACES={
     "emoji": "📍",
     "cat": "ACTIVITIES",
     "sub": "Optional, not booked; decide on the day",
+    "meetingPoint": "University of Canterbury Mt John Observatory, Mount John Summit",
+    "bookingNote": "Weather dependent · book only if the forecast and energy suit.",
     "maps": "https://www.google.com/maps/search/?api=1&query=University+of+Canterbury+Mt+John+Observatory%2C+Lake+Tekapo",
     "address": "University of Canterbury Mt John Observatory, Mount John Summit, Godley Peaks Road, Lake Takapō 7999, New Zealand",
     "desc": "A guided stargazing experience at the University of Canterbury Mt John Observatory on Mount John Summit, using the Mackenzie Basin’s dark skies for telescope viewing when weather permits.",
@@ -1449,6 +1440,7 @@ const PLACES={
     "emoji": "☕",
     "cat": "DINING",
     "sub": "Te Anau breakfast, coffee and food-to-go",
+    "hours": "Mon–Sat 7:00 AM–4:00 PM · Sun closed",
     "maps": "https://maps.google.com/?q=Milford+Road+Merchant+225+Milford+Road+Te+Anau",
     "address": "225 Milford Road, Te Anau 9600, New Zealand",
     "desc": "A local cafe and general store serving coffee, breakfast cups, pies, sausage rolls and fresh baked treats — practical for an early breakfast or food to take on the road.",
@@ -1470,6 +1462,7 @@ const PLACES={
     "emoji": "☕",
     "cat": "DINING",
     "sub": "Lake-view breakfast and brunch in Te Anau",
+    "hours": "Summer daily 7:30 AM–5:00 PM · winter daily about 8:00 AM–2:00 PM",
     "maps": "https://www.google.com/maps/search/?api=1&query=The+Lakefront+Cafe%2C+94+Te+Anau+Terrace%2C+Te+Anau+9600",
     "address": "94 Te Anau Terrace, Te Anau 9600, New Zealand",
     "desc": "A lakefront cafe serving coffee, fresh pastries, cabinet food and a brunch menu, suitable for a relaxed final-morning breakfast before the drive to Queenstown.",
@@ -1492,6 +1485,7 @@ const PLACES={
     "emoji": "🍽️",
     "cat": "DINING",
     "sub": "Contemporary New Zealand dinner in Te Anau",
+    "hours": "Daily from 3:00 PM · dinner from 4:30 PM",
     "maps": "https://maps.google.com/?q=Redcliff+Cafe+and+Bar+Te+Anau",
     "address": "12 Mokonui Street, Te Anau 9600, New Zealand",
     "desc": "A Te Anau dinner restaurant focused on contemporary New Zealand food, including local meat and seafood, suited to a more special final evening.",
@@ -1513,6 +1507,7 @@ const PLACES={
     "emoji": "🍟",
     "cat": "DINING",
     "sub": "Day 2 flexible meal · Lunch or afternoon tea near Peppers",
+    "hours": "Published hours vary · check same-day hours before visiting",
     "maps": "https://maps.google.com/?q=The+Better+Batter+NZ+Lakeside+Drive+Lake+Tekapo+7999+New+Zealand",
     "address": "Lakeside Drive, Lake Tekapo 7999, New Zealand",
     "desc": "A casual fish-and-chips takeaway close to Peppers Bluewater Resort. Use it after arriving in Tekapo as either lunch or afternoon tea, depending on the day’s timing and whether you stopped in Fairlie.",
@@ -1602,6 +1597,7 @@ const PLACES={
     "addressAudit": "AREA / ROUTE CARD · navigation target intentionally uses a route or area, not a storefront address"
   },
   "lake-tekapo-village": {
+    "guideType": "SCENIC",
     "title": "Lake Tekapo Village",
     "emoji": "📍",
     "cat": "ATTRACTIONS",
@@ -1697,7 +1693,7 @@ const PLACES={
     "emoji": "☕",
     "cat": "DINING",
     "sub": "Day 4 primary breakfast · backcountry-hut inspired café",
-    "hours": "Mon–Fri 7:00 am–3:00 pm · Sat–Sun 8:00 am–3:00 pm · kitchen closes 2:30 pm",
+    "hours": "Daily 7:00 AM–3:00 PM · kitchen closes 2:30 PM",
     "maps": "https://www.google.com/maps/search/?api=1&query=Scroggin+Coffee+and+Eatery%2C+71+Ardmore+Street%2C+Wanaka+9305",
     "address": "71 Ardmore Street, Wānaka 9305, New Zealand",
     "desc": "A relaxed Wānaka café inspired by New Zealand backcountry huts, with a seasonal menu built around local and sustainable produce, house-baked pastries and quality coffee.",
@@ -1725,6 +1721,7 @@ const PLACES={
     "emoji": "🏨",
     "cat": "STAY",
     "sub": "Confirmed · 22–23 Sep",
+    "hours": "2:00 PM → 10:00 AM",
     "maps": "https://www.google.com/maps/search/?api=1&query=Southwark+Hotel+%26+Apartments%2C+25+Southwark+Street%2C+Christchurch+8011",
     "address": "25 Southwark Street, Christchurch Central City, Christchurch 8011, New Zealand",
     "desc": "Walk to Riverside Market and C1, explore central Christchurch without parking, then collect the car for Tekapo.",
@@ -1741,7 +1738,7 @@ const PLACES={
     "categoryLabel": "🏨 Stay",
     "transport": "Walk / self-drive",
     "audit": "SUPPLIED TRIP DETAILS",
-    "status": "planned",
+    "status": "confirmed",
     "addressAudit": "OFFICIAL ADDRESS / SUPPLIED TRIP DETAILS"
   },
   "paknsave-moorhouse": {
@@ -1749,11 +1746,13 @@ const PLACES={
     "emoji": "🛒",
     "cat": "SHOP",
     "sub": "Road-trip supplies before Tekapo",
+    "hours": "Daily 7:00 AM–11:00 PM",
     "maps": "https://www.google.com/maps/search/?api=1&query=PAK%27nSAVE+Moorhouse%2C+297+Moorhouse+Avenue%2C+Christchurch+8011",
     "address": "297 Moorhouse Avenue, Sydenham, Christchurch 8011, New Zealand",
-    "desc": "Buy food and supplies for the following road-trip days.",
+    "desc": "Stock up on road-trip food and supplies before leaving Christchurch for Lake Tekapo.",
     "signature": [
       "STOP · After collecting the vehicle",
+      "PARKING · Free customer parking",
       "BUY · Road-trip food and supplies",
       "NEXT · Fairlie / Lake Tekapo"
     ],
@@ -1919,9 +1918,6 @@ const CATEGORIES={
       "key": "kiwi-park"
     },
     {
-      "key": "onsen"
-    },
-    {
       "key": "deer-park"
     },
     {
@@ -1940,9 +1936,6 @@ const CATEGORIES={
       "key": "gold-panning"
     },
     {
-      "key": "doubtful-sound"
-    },
-    {
       "key": "mt-john"
     },
     {
@@ -1957,7 +1950,13 @@ const CATEGORIES={
       "key": "paknsave-moorhouse"
     },
     {
+      "key": "freshchoice-queenstown"
+    },
+    {
       "key": "freshchoice-te-anau"
+    },
+    {
+      "key": "queenstown-market"
     }
   ]
 };
@@ -2010,14 +2009,12 @@ const GUIDE_ORDER=[
   "hooker-valley",
   "skyline",
   "kiwi-park",
-  "onsen",
   "deer-park",
   "milford",
   "hydro-glowworm",
   "tasman-blue-lakes",
   "skippers-4wd",
   "gold-panning",
-  "doubtful-sound",
   "mt-john",
   "lakefront-cafe-te-anau",
   "milford-road-merchant",
@@ -2269,12 +2266,6 @@ const DAY_LINKS={
     [
       "Day 9",
       "day.html?day=9#final-te-anau"
-    ]
-  ],
-  "doubtful-sound": [
-    [
-      "Day 9",
-      "day.html?day=9#milford-tour"
     ]
   ],
   "edgewater-restaurant": [
@@ -4000,10 +3991,8 @@ const ITINERARY_DATA={
         "bookingId": "luxe-milford-booking",
         "guideIds": [
           "milford",
-          "hydro-glowworm",
-          "doubtful-sound"
-        ],
-        "optionsLabel": "Weather-backup options"
+          "hydro-glowworm",],
+        "optionsLabel": "Related Fiordland guides"
       },
       {
         "id": "tour-lunch",

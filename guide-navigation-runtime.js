@@ -19,7 +19,7 @@
   function activityGroup(item){
     const text=((item&&item.title)||'')+' '+((item&&item.sub)||'')+' '+((item&&item.categoryLabel)||'');
     const lower=text.toLowerCase();
-    if(/cruise|tour|4wd|glowworm|milford|doubtful|gold panning/.test(lower))return 'Tours & Cruises';
+    if(/cruise|tour|4wd|glowworm|milford|gold panning/.test(lower))return 'Tours & Cruises';
     if(/track|hike|walk|blue lakes|deer park/.test(lower))return 'Walks & Outdoor';
     return 'Experiences & Attractions';
   }
