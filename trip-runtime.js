@@ -430,10 +430,16 @@ function closeTripModal() {
   clearBookingEditSession();
   const modal = document.getElementById('tripModal');
   if (modal) modal.classList.remove('show');
+  const returnToGuide=window.TRIP_MODAL_RETURN_TO_GUIDE===true;
+  window.TRIP_MODAL_RETURN_TO_GUIDE=false;
   const guideModal=document.getElementById('guideModal');
-  if(guideModal) guideModal.classList.remove('show');
+  if(guideModal&&!returnToGuide) guideModal.classList.remove('show');
   closeMiniMenus();
   document.body.classList.remove('admin-overlay-open');
+  if(returnToGuide){
+    const sheet=document.querySelector('#guideModal .guide-sheet');
+    if(sheet) requestAnimationFrame(function(){sheet.focus?.({preventScroll:true});});
+  }
   return true;
 }
 

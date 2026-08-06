@@ -24,6 +24,9 @@ if(!admin.includes('Leave Studio Mode')) failures.push('Leave Studio Mode action
 if(!expenses.includes('canManageExpense') || !expenses.includes('This cannot be undone.')) failures.push('Expense ownership/delete confirmation contract missing.');
 if(!moments.includes('canManageMoment') || !moments.includes('This cannot be undone.')) failures.push('Moment ownership/delete confirmation contract missing.');
 
+
+if(!guide.includes("openGuideLinkedBooking") || !guide.includes("TRIP_MODAL_RETURN_TO_GUIDE=true")) failures.push('Stay Guide Booking must open the in-page booking modal and preserve Guide context.');
+if(!trip.includes("const returnToGuide=window.TRIP_MODAL_RETURN_TO_GUIDE===true") || !trip.includes("if(guideModal&&!returnToGuide)")) failures.push('Closing a booking opened from Guide must return to the original Guide card.');
 if(failures.length){
   console.error('UX CONTRACT: FAILED');
   failures.forEach(x=>console.error('- '+x));

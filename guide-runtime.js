@@ -24,6 +24,16 @@ function placeHref(key){
 function guideBookingHref(bookingId){
   return NAVIGATION.build('trip',{query:{bookingId:bookingId}});
 }
+function openGuideLinkedBooking(bookingId){
+  const booking=window.BOOKING_AUTHORITY?BOOKING_AUTHORITY.byId(bookingId):null;
+  if(!booking)return;
+  window.TRIP_MODAL_RETURN_TO_GUIDE=true;
+  if(booking.type==='activity'&&typeof window.openActivityBookingDetail==='function'){
+    window.openActivityBookingDetail(bookingId,booking);
+    return;
+  }
+  if(typeof window.openAccommodationDetail==='function') window.openAccommodationDetail(bookingId,booking);
+}
 const GUIDE_NAV_CONTEXT_KEY=STORAGE_CONFIG.keys.guideNavContext;
 const GUIDE_NAV_REOPEN_KEY=STORAGE_CONFIG.keys.guideNavReopen;
 function saveGuideNavigationContext(category, options){
@@ -227,7 +237,7 @@ function quickInfoInnerHTML(g,key){
  const linkedBooking=window.BOOKING_AUTHORITY?BOOKING_AUTHORITY.byPlace(key):null;
  const bookingStatus=linkedBooking?String(linkedBooking.displayStatus||linkedBooking.status||'').toUpperCase():'';
  const bookingRow='';
- const bookingButton=linkedBooking?`<a class="utility-button" href="${guideBookingHref(linkedBooking.id)}">🎟️ Booking</a>`:'';
+ const bookingButton=linkedBooking?`<button class="utility-button" type="button" onclick="openGuideLinkedBooking('${linkedBooking.id}')">🎟️ Booking</button>`:'';
  const parking=g.parking;
  const parkingHTML=parking?`<div class="recommended-parking"><div class="recommended-parking-head"><span>🚗</span><span><strong>Recommended Parking</strong><small>${parking.name||''}</small></span></div><div class="recommended-parking-grid"><p><span>📍</span><span>${parking.address||''}</span></p><p><span>🚶</span><span>${parking.walk||''}</span></p><p><span>💰</span><span>${parking.fee||''}</span></p></div>${parking.note?`<p class="recommended-parking-note">${parking.note}</p>`:''}${parking.maps?`<a class="map-button recommended-parking-nav" href="${parking.maps}" target="_blank" rel="noopener">🧭 Navigate to Parking</a>`:''}</div>`:'';
  const detailStatus=g.cat==='STAY'?guideStayStatusHTML(Object.assign({key},g)):guideStatusHTML(g);
