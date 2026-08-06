@@ -2371,3 +2371,48 @@ body.guide-booking-stack-open #tripModal{z-index:5100!important;}
 .quick-info-card .guide-content-section h3,.quick-info-card .guide-stay-section h3{font-size:.82rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 7px}
 .quick-info-card .guide-content-section ul,.quick-info-card .guide-stay-section ul{margin:0;padding-left:20px}
 .timeline-action--route-option{white-space:nowrap}
+
+/* RC25.2.3 — canonical admin modal layer.
+   Admin/Studio sheets must sit above the fixed app navigation instead of
+   relying on page-specific bottom padding. This keeps every final action
+   (Apply, Save, Publish, Complete, Leave) reachable on mobile. */
+:root{--admin-modal-layer:7000;}
+.timeline-editor-modal,
+#mamaModal.studio-view,
+#mama-modal.studio-view{
+  z-index:var(--admin-modal-layer)!important;
+}
+.timeline-editor-modal.show,
+#mamaModal.studio-view.show,
+#mama-modal.studio-view.show{
+  isolation:isolate!important;
+}
+.timeline-editor-sheet{
+  max-height:calc(100dvh - 24px)!important;
+}
+.timeline-editor-scroll{
+  scroll-padding-bottom:24px!important;
+}
+.timeline-editor-actions{
+  position:relative!important;
+  z-index:3!important;
+  flex:0 0 auto!important;
+}
+#mamaModal.studio-view .guide-sheet{
+  max-height:calc(100dvh - 24px)!important;
+  padding-bottom:calc(22px + env(safe-area-inset-bottom,0px))!important;
+  scroll-padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))!important;
+}
+@media(max-width:620px){
+  .timeline-editor-sheet{
+    height:100dvh!important;
+    max-height:100dvh!important;
+  }
+  .timeline-editor-actions{
+    padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))!important;
+  }
+  #mamaModal.studio-view .guide-sheet{
+    max-height:calc(100dvh - 12px)!important;
+    padding-bottom:calc(28px + env(safe-area-inset-bottom,0px))!important;
+  }
+}
