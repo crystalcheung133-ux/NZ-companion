@@ -25,7 +25,7 @@ function guideBookingHref(bookingId){
   return NAVIGATION.build('trip',{query:{bookingId:bookingId}});
 }
 function openGuideLinkedBooking(bookingId){
-  const booking=window.BOOKING_AUTHORITY?BOOKING_AUTHORITY.byId(bookingId):null;
+  const booking=window.BOOKING_AUTHORITY?BOOKING_AUTHORITY.get(bookingId):null;
   if(!booking)return;
   window.TRIP_MODAL_RETURN_TO_GUIDE=true;
   document.body.classList.add('guide-booking-stack-open');

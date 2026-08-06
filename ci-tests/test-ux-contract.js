@@ -27,6 +27,7 @@ if(!moments.includes('canManageMoment') || !moments.includes('This cannot be und
 
 
 if(!guide.includes("openGuideLinkedBooking") || !guide.includes("TRIP_MODAL_RETURN_TO_GUIDE=true")) failures.push('Stay Guide Booking must open the in-page booking modal and preserve Guide context.');
+if(!guide.includes("BOOKING_AUTHORITY.get(bookingId)") || guide.includes("BOOKING_AUTHORITY.byId(bookingId)")) failures.push('Guide → Booking must resolve booking IDs through BOOKING_AUTHORITY.get().');
 if(!trip.includes("const returnToGuide=window.TRIP_MODAL_RETURN_TO_GUIDE===true") || !trip.includes("if(guideModal&&!returnToGuide)")) failures.push('Closing a booking opened from Guide must return to the original Guide card.');
 
 if(!guide.includes("document.body.classList.add('guide-booking-stack-open')")) failures.push('Guide → Booking stacked modal state is missing.');
