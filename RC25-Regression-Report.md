@@ -1,10 +1,9 @@
-# RC25.0.1 Regression Report
+# RC25.0.2 Regression Report
 
-## Targeted regression
-- Guide → Booking: fixed booking lookup API.
-- Booking close: existing Guide return-state logic retained.
-- No timeline, route, payment, expense, Studio, or export logic changed.
+## Verified
 
-## Verification
-- Full bundled CI executed against the clean working copy.
-- Release checksums and manifest regenerated after the change.
+- Existing production CI suite passes from the clean extracted delivery copy.
+- Moments and Expense modal styles include fixed-nav and safe-area clearance.
+- Mobile/coarse-pointer photo input retains camera capture behaviour.
+- Desktop photo action uses upload wording and normal file selection behaviour.
+- No changes were made to moment persistence, expense persistence, Supabase sync, compression or storage models.

@@ -1,10 +1,28 @@
-# RC25.0.1 Implementation Report
+# RC25.0.2 Implementation Report
 
-## Fix
-- Corrected Guide → Booking lookup from the nonexistent `BOOKING_AUTHORITY.byId()` method to the canonical `BOOKING_AUTHORITY.get()` method.
-- Preserved the existing stacked modal flow: Guide remains underneath, Booking opens above it, and closing Booking reveals the original Guide card.
-- Bumped the service-worker cache key and release version.
-- Added a UX contract assertion to prevent this API mismatch from returning.
+## Scope
 
-## Root cause
-The Guide Booking button rendered correctly, but its click handler returned immediately because `BOOKING_AUTHORITY.byId` does not exist. The authority exposes `get(id)`.
+Small production patch on RC25.0.1.
+
+## Changes
+
+- Added shared bottom-navigation clearance to the Moments and Expense entry sheets so their final Save buttons can scroll fully above the fixed app navigation and device safe area.
+- Preserved the existing save logic, Supabase sync, photo compression and storage flow.
+- The primary photo action now displays `Take Photo` on touch/coarse-pointer devices and `Upload Photo` on desktop-class devices.
+- Desktop no longer includes the camera capture hint on the primary file input; mobile keeps `capture="environment"`.
+- Updated version and service-worker cache identifier.
+
+## Files changed
+
+- `styles.css`
+- `moments.js`
+- `sw.js`
+- `VERSION.txt`
+- `PRODUCTION-FILE-MANIFEST.txt`
+- `SHA256SUMS.txt`
+- `RC25-Implementation-Report.md`
+- `RC25-Regression-Report.md`
+
+## Limitations
+
+No external Supabase write was exercised in this isolated packaging environment. The sync and save handlers were not changed.

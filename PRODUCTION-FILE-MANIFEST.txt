@@ -1,6 +1,6 @@
 CCMV Travel Engine Production File Manifest
 Generated: 2026-08-06
-Release: NZ-RC25.0.1-GUIDE-BOOKING-HOTFIX
+Release: NZ-RC25.0.2-MODAL-SAFE-AREA-PHOTO-LABEL
 Production root files:
 
 - VERSION.txt

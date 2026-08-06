@@ -278,9 +278,11 @@
       if(host.dataset.photoEnhanced==='true') return;
       host.dataset.photoEnhanced='true';
       host.classList.add('photo-capture-zone');
+      const cameraCapable = (navigator.maxTouchPoints || 0) > 0 || window.matchMedia?.('(pointer: coarse)').matches;
+      const primaryPhotoLabel = cameraCapable ? '📷 Take Photo' : '📤 Upload Photo';
       host.innerHTML=`<div class="photo-capture-heading"><span class="photo-capture-spark">📸</span><span><strong>Add a happy snap</strong><small>We compress it before anything is saved.</small></span></div>
         <div class="photo-capture-actions">
-          <label class="photo-capture-btn photo-capture-btn--camera">📷 Take Photo<input id="momentsPhotoCamera" type="file" accept="image/*" capture="environment" hidden></label>
+          <label class="photo-capture-btn photo-capture-btn--camera">${primaryPhotoLabel}<input id="momentsPhotoCamera" type="file" accept="image/*" ${cameraCapable ? 'capture="environment"' : ''} hidden></label>
           <label class="photo-capture-btn">🖼 Choose Photo<input id="momentsPhotoLibrary" type="file" accept="image/*" hidden></label>
         </div>
         <div id="momentsPhotoPreview" class="photo-prototype-preview" hidden></div>`;

@@ -2248,3 +2248,28 @@ body.home-bg .live-currency-card #currencyCardMeta{position:relative;z-index:2;w
    then closing Booking reveals the original Guide card and page context. */
 body.guide-booking-stack-open #guideModal{z-index:5000!important;}
 body.guide-booking-stack-open #tripModal{z-index:5100!important;}
+
+/* RC25.0.2 — keep final modal actions clear of the fixed app navigation. */
+:root{
+  --fixed-nav-safe-clearance: calc(126px + env(safe-area-inset-bottom, 0px));
+}
+#momentsModal .moments-sheet,
+#expenseModal .tools-sheet{
+  padding-bottom:var(--fixed-nav-safe-clearance)!important;
+  scroll-padding-bottom:var(--fixed-nav-safe-clearance)!important;
+}
+#momentsModal .moments-form,
+#expenseModal .expense-form{
+  padding-bottom:18px!important;
+}
+#momentsModal .moments-form>.btn:last-child,
+#expenseModal #expenseSaveButton{
+  position:relative!important;
+  z-index:2!important;
+  margin-bottom:12px!important;
+}
+@media(max-width:760px){
+  :root{
+    --fixed-nav-safe-clearance: calc(136px + env(safe-area-inset-bottom, 0px));
+  }
+}
