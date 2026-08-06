@@ -215,6 +215,14 @@ function usefulGoodToKnow(items){
  const generic=[/currently planned/i,/recommended only/i,/optional rather than essential/i,/keep .* flexible/i,/validation build/i];
  return (items||[]).filter(x=>x&&generic.every(rule=>!rule.test(x)));
 }
+function guideCoreSections(g,key){
+ if(g.cat==='STAY')return guideStaySections(Object.assign({key},g));
+ if(g.cat==='ACTIVITIES')return guideExperienceSections(g,key);
+ if(g.cat==='ATTRACTIONS')return guideAttractionSections(g);
+ if(g.cat==='SHOP'||g.cat==='SHOPPING')return guideShopSections(g);
+ return compactGuideSections(g);
+}
+
 function quickInfoInnerHTML(g,key){
  const phoneRow=g.phone?`<div class="quick-info-row"><span class="quick-info-icon">☎️</span><span><span class="quick-info-label">Phone</span><span class="quick-info-value">${g.phone}</span></span></div>`:'';
  const callButton=g.phone?`<a class="utility-button" href="tel:${String(g.phone).replace(/[^+\d]/g,'')}">☎️ Call</a>`:'';
@@ -243,7 +251,8 @@ function quickInfoInnerHTML(g,key){
  const parking=g.parking;
  const parkingHTML=parking?`<div class="recommended-parking"><div class="recommended-parking-head"><span>🚗</span><span><strong>Recommended Parking</strong><small>${parking.name||''}</small></span></div><div class="recommended-parking-grid"><p><span>📍</span><span>${parking.address||''}</span></p><p><span>🚶</span><span>${parking.walk||''}</span></p><p><span>💰</span><span>${parking.fee||''}</span></p></div>${parking.note?`<p class="recommended-parking-note">${parking.note}</p>`:''}${parking.maps?`<a class="map-button recommended-parking-nav" href="${parking.maps}" target="_blank" rel="noopener">🧭 Navigate to Parking</a>`:''}</div>`:'';
  const detailStatus=g.cat==='STAY'?guideStayStatusHTML(Object.assign({key},g)):guideStatusHTML(g);
- return `<div class="quick-info-top"><span class="category-tag">${g.categoryLabel||g.cat||'Guide'}</span>${roleBadge}${detailStatus}</div><div class="quick-info-grid">${addressRow}${phoneRow}${hoursRow}${priceRow}${bookingRow}${visitDayHTML(key)}</div>${reminderRow}${parkingHTML}<div class="quick-info-actions">${navButton}${bookingButton}</div>`;
+ const coreSections=guideCoreSections(g,key);
+ return `<div class="quick-info-top"><span class="category-tag">${g.categoryLabel||g.cat||'Guide'}</span>${roleBadge}${detailStatus}</div><div class="quick-info-grid">${addressRow}${phoneRow}${hoursRow}${priceRow}${bookingRow}${visitDayHTML(key)}</div>${coreSections}${reminderRow}${parkingHTML}<div class="quick-info-actions">${navButton}${bookingButton}</div>`;
 }
 
 function quickInfoHTML(g,key){
@@ -411,7 +420,7 @@ function openGuideModal(key,options){
  const g=PRODUCTION_GUIDE.places[key];if(!g)return;
  const opts=options||{};
  const back=opts.fromAlternatives?guideAlternativeBackButton():'';
- $('guideModalContent').innerHTML=`<div class="guide-onepage">${back}<p class="kicker">Guide</p><h2>${g.emoji} ${g.title}</h2><p class="guide-onepage-sub"><strong>${g.sub||''}</strong></p>${quickInfoHTML(g,key)}${guideStaySections(Object.assign({key},g))}${guideExperienceSections(g,key)}${guideAttractionSections(g)}${guideShopSections(g)}${routeStopsHTML(g)}${(['ACTIVITIES','ATTRACTIONS','SHOP','SHOPPING'].includes(g.cat))?'':compactGuideSections(g)}${guideNavButtons(key)}</div>`;
+ $('guideModalContent').innerHTML=`<div class="guide-onepage">${back}<p class="kicker">Guide</p><h2>${g.emoji} ${g.title}</h2><p class="guide-onepage-sub"><strong>${g.sub||''}</strong></p>${quickInfoHTML(g,key)}${routeStopsHTML(g)}${guideNavButtons(key)}</div>`;
  closeMiniMenus();
  $('guideModal').classList.add('show');
  const sheet=document.querySelector('#guideModal .guide-sheet');
@@ -437,8 +446,8 @@ function renderPlacePage(key){
   mount.innerHTML = `
 <button class="place-detail-close" type="button" aria-label="Close place detail" onclick="closePlaceDetail()">×</button>
 <div class="page-hero"><p class="kicker">Guide</p><h1>${g.emoji} ${g.title}</h1><p class="lead">${g.sub||''}</p></div>
-<section aria-label="Quick Info" class="quick-info-card">${quickInfoInnerHTML(g,key)}</section>
-${guideStaySections(g)}${routeStopsHTML(g)}${guideExperienceSections(g,key)}${guideAttractionSections(g)}${guideShopSections(g)}${(['ACTIVITIES','ATTRACTIONS','SHOP','SHOPPING'].includes(g.cat))?'':compactGuideSections(g)}${guideNavButtons(key,'page')}`;
+<section aria-label="Guide details" class="quick-info-card">${quickInfoInnerHTML(g,key)}</section>
+${routeStopsHTML(g)}${guideNavButtons(key,'page')}`;
   document.title = `${g.title} · ${TRIP_CONFIG.tripName}`;
 }
 
@@ -452,8 +461,8 @@ function renderPlaceGroupPage(keys){
     const g=PRODUCTION_GUIDE.places[key];
     return `<article class="place-group-card" id="guide-${key}">
       <div class="page-hero place-group-hero"><p class="kicker">Option ${index+1}</p><h1>${g.emoji} ${g.title}</h1><p class="lead">${g.sub||''}</p></div>
-            <section aria-label="Quick Info" class="quick-info-card">${quickInfoInnerHTML(g,key)}</section>
-      ${guideStaySections(g)}${routeStopsHTML(g)}${guideExperienceSections(g,key)}${guideAttractionSections(g)}${guideShopSections(g)}${(['ACTIVITIES','ATTRACTIONS','SHOP','SHOPPING'].includes(g.cat))?'':compactGuideSections(g)}
+            <section aria-label="Guide details" class="quick-info-card">${quickInfoInnerHTML(g,key)}</section>
+      ${routeStopsHTML(g)}
     </article>`;
   }).join('');
   mount.innerHTML=`<button class="place-detail-close" type="button" aria-label="Close guide options" onclick="closePlaceDetail()">×</button><div class="page-hero"><p class="kicker">Guide</p><h1>Choose an option</h1><p class="lead">Compare the planned choices, then use Navigate inside the restaurant card you choose.</p></div>${cards}`;

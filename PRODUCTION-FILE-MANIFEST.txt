@@ -1,11 +1,11 @@
 CCMV Travel Engine Production File Manifest
 Generated: 2026-08-06
-Release: NZ-RC25.2.1-INTEGRITY-FIX
+Release: NZ-RC25.2.2-GUIDE-ROUTE-FIX
 Production root files:
 
 - RC25.2-Guide-Audit-Matrix.md
-- RC25.2-Implementation-Report.md
-- RC25.2-Regression-Report.md
+- RC25.2.2-Implementation-Report.md
+- RC25.2.2-Regression-Report.md
 - TRAVEL-ENGINE-UX-RULES-v1.0.md
 - VERSION.txt
 - admin.js

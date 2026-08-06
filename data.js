@@ -1909,6 +1909,9 @@ const CATEGORIES={
   ],
   "ACTIVITIES": [
     {
+      "key": "ultimate-alpine"
+    },
+    {
       "key": "hooker-valley"
     },
     {
@@ -2006,6 +2009,7 @@ const GUIDE_ORDER=[
   "christchurch-cbd-discovery-walk",
   "wanaka-lavender",
   "glenorchy-paradise",
+  "ultimate-alpine",
   "hooker-valley",
   "skyline",
   "kiwi-park",
@@ -3253,10 +3257,10 @@ const ITINERARY_DATA={
       "🏨 Sudima transition stay"
     ],
     "drive": {
-      "route": "Edgewater → Wānaka lakefront → Puzzling World → Cardrona → Queenstown / Frankton → Sudima Five Mile",
-      "distance": "≈ 90 km",
-      "drivingTime": "≈ 1 hr 35 min",
-      "road": "Crown Range Road",
+      "route": "Edgewater → Wānaka lakefront → Puzzling World → Queenstown / Frankton → Sudima Five Mile",
+      "distance": "Crown Range ≈ 70 km · via Cromwell ≈ 120 km",
+      "drivingTime": "Crown Range ≈ 1 hr · via Cromwell ≈ 1 hr 30 min",
+      "road": "Choose Crown Range or SH6 via Cromwell after checking conditions",
       "stops": [
         "That Wānaka Tree / lakefront",
         "Wānaka breakfast",
@@ -3266,8 +3270,8 @@ const ITINERARY_DATA={
         "Sudima Queenstown Five Mile",
         "Dinner"
       ],
-      "note": "Leave around 09:30 after Edgewater check-out by 10:30. Fowlers now arrive in Queenstown on 26 September.",
-      "contingency": "The shared Airbnb may move to 26–29 September. Sudima is currently held for the Lee family on 25 September while accommodation plans are finalised.",
+      "note": "Leave after Edgewater check-out. Crown Range is shorter and scenic; SH6 via Cromwell is longer but usually easier in poor weather, darkness or icy conditions.",
+      "contingency": "Check NZTA and the weather before departure. Use extra caution after dark for reduced visibility and wildlife.",
       "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=Edgewater%2C+54+Sargood+Drive%2C+Wanaka%2C+New+Zealand&destination=Sudima+Queenstown+Five+Mile%2C+22+Grant+Road%2C+Frankton%2C+Queenstown%2C+New+Zealand&travelmode=driving&waypoints=That+Wanaka+Tree%2C+Wanaka%7CPuzzling+World%2C+Wanaka%7CCardrona+Hotel%2C+Cardrona"
     },
     "items": [
@@ -3335,15 +3339,26 @@ const ITINERARY_DATA={
         "bookingId": null
       },
       {
-        "id": "cardrona",
+        "id": "wanaka-queenstown-route-choice",
         "time": "Afternoon",
-        "title": "🚙 Crown Range Road · Cardrona pass-by / stop",
+        "title": "🚙 Route choice · Wānaka to Queenstown",
         "details": [
-          "Use Crown Range Road.",
-          "Keep the Cardrona stop flexible according to weather and timing."
+          "Primary: Crown Range Road · shorter and more scenic, but steeper with more bends.",
+          "Alternative: SH6 via Cromwell · about 30 minutes longer, with gentler roads for poor weather, darkness or possible ice.",
+          "Check NZTA and the weather before leaving; use extra caution after dark for wildlife and reduced visibility."
         ],
-        "route": "Next: Frankton / Queenstown · ≈ 45–55 min drive.",
-        "map": "https://maps.google.com/?q=Cardrona+Hotel",
+        "route": "Next: Frankton / Queenstown · Crown Range ≈ 1 hr or SH6 via Cromwell ≈ 1 hr 30 min.",
+        "map": "https://www.google.com/maps/dir/?api=1&origin=Wanaka%2C+New+Zealand&destination=Sudima+Queenstown+Five+Mile%2C+22+Grant+Road%2C+Frankton%2C+Queenstown%2C+New+Zealand&travelmode=driving&waypoints=Cardrona+Hotel%2C+Cardrona",
+        "routeOptions": [
+          {
+            "label": "Crown Range",
+            "map": "https://www.google.com/maps/dir/?api=1&origin=Wanaka%2C+New+Zealand&destination=Sudima+Queenstown+Five+Mile%2C+22+Grant+Road%2C+Frankton%2C+Queenstown%2C+New+Zealand&travelmode=driving&waypoints=Cardrona+Hotel%2C+Cardrona"
+          },
+          {
+            "label": "Via Cromwell",
+            "map": "https://www.google.com/maps/dir/?api=1&origin=Wanaka%2C+New+Zealand&destination=Sudima+Queenstown+Five+Mile%2C+22+Grant+Road%2C+Frankton%2C+Queenstown%2C+New+Zealand&travelmode=driving&waypoints=Cromwell%2C+New+Zealand"
+          }
+        ],
         "type": "transport",
         "dayId": "day4",
         "placeId": "cardrona",

@@ -38,7 +38,7 @@ assert(southwark.cashback==='AUD 28.98'&&southwark.parking==='Confirmed · NZD 1
 assert(southwark.checkIn==='2:00 PM'&&southwark.checkOut==='10:00 AM','Southwark check-in/out regression remains.');
 const southwarkGuide=PLACES.southwark;
 for(const line of ['STAY · 2:00 PM → 10:00 AM','PARKING · Confirmed · NZD 15 · pay at hotel','NEARBY · C1 · 6 min walk','NEARBY · Riverside · 14 min walk','NEARBY · PAK’nSAVE Moorhouse · ~5 min drive'])assert((southwarkGuide.signature||[]).includes(line),`Southwark Guide line missing: ${line}`);
-assert(guide.includes('${guideStaySections(g)}${routeStopsHTML(g)}'),'Standalone Guide pages omit accommodation practical content.');
+assert(guide.includes('function guideCoreSections')&&guide.includes('${coreSections}')&&guide.includes('${quickInfoInnerHTML(g,key)}'),'Standalone Guide pages omit accommodation practical content.');
 assert(trip.includes("join(' → ')")&&!trip.includes('`Check-in · ${booking.checkIn}`'),'Shared booking timing is duplicated.');
 assert(accommodationBookings.every(item=>!/^(?:Proposed )?\d{1,2}[^A-Za-z]{0,2}[A-Za-z]{3}.*(?:confirmed|booking|rooms?)/i.test(item.notes||'')),'Booking notes duplicate visit dates/status/room data.');
 assert(adapter.includes('export:{')&&adapter.includes('itinerary:clone(days)')&&adapter.includes('bookings:{byId:clone(bookings)'), 'Canonical export projection contract is missing.');
