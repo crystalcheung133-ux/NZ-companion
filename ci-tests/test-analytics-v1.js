@@ -28,5 +28,8 @@ function assert(ok,msg){if(!ok){console.error('FAIL:',msg);process.exit(1);}}
   ctx.SUPABASE={isConfigured:()=>true,getSession:async()=>({}),getClient:()=>({from:()=>({insert:async()=>({error:{message:'forced',code:'42501'}}),upsert:async()=>{throw new Error('analytics must not use upsert');}})})};
   ctx.ANALYTICS.track('failure_probe',{entityType:'test',entityId:'failure'});await ctx.ANALYTICS.syncNow();
   assert(ctx.ANALYTICS.readQueue().some(e=>e.event_type==='failure_probe'),'Write failure preserves queue');
-  console.log('ANALYTICS V1.1: PASS — insert-only sync, identity, queue, dedupe, admin separation, reconnect and write-failure isolation verified');
+  const runtimeSource=fs.readFileSync(require('path').join(__dirname,'..','analytics-runtime.js'),'utf8');
+  assert(!runtimeSource.includes("track('expenses_open'"),'Expenses entry uses page_view only');
+  assert(!runtimeSource.includes("track('moments_open'"),'Moments entry uses page_view only');
+  console.log('ANALYTICS V1.2: PASS — page-entry normalization, insert-only sync, identity, queue, dedupe, admin separation, reconnect and write-failure isolation verified');
 })().catch(e=>{console.error(e);process.exit(1);});

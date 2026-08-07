@@ -16,8 +16,6 @@ Analytics is silent and additive. Every event contains `event_id`, `trip_id`, `t
 | `guide_day_link_use` | day | target day + Guide key | Guide → Day usage |
 | `booking_centre_open` | trip_section | flights/vehicle/stay/activities/checklist/emergency | Trip/Booking Centre usage |
 | `booking_open` | booking | booking id + type | Individual booking usage |
-| `expenses_open` | feature | expenses | Bottom-nav Expenses entry |
 | `expense_entry_open` | feature | expense_entry | Expense entry modal usage |
-| `moments_open` | feature | moments | Bottom-nav Moments entry |
 
 Not collected: GPS, typed notes, expense values/details, Moment text/photos, booking personal details, device fingerprint data, scrolling/touch telemetry.

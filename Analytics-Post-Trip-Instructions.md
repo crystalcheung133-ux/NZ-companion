@@ -34,7 +34,7 @@ group by entity_id, metadata->>'category' order by opens desc;
 select event_type, count(*) as uses
 from public.trip_analytics_events
 where trip_id='nz-family-2026' and actor_type='traveller'
-  and event_type in ('navigate_use','options_open','booking_centre_open','expenses_open','expense_entry_open','moments_open')
+  and event_type in ('navigate_use','options_open','booking_centre_open','expense_entry_open')
 group by event_type order by uses desc;
 
 -- Traveller differences
@@ -55,3 +55,6 @@ group by period;
 ```
 
 For CSV export, run a filtered query in Supabase Table Editor / SQL Editor and export the result. Admin/Studio records are retained only for diagnostics and must not be mixed into traveller metrics.
+
+## Analytics v1.2 interpretation note
+Expenses and Moments entry is counted from `event_type='page_view'` with `page_type='Expenses'` or `page_type='Moments'`. Do not look for separate `expenses_open` or `moments_open` events. Action-level events remain separate.

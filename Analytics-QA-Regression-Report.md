@@ -6,7 +6,7 @@ Working method: separate extracted copy; uploaded ZIP was not modified.
 
 ## Result
 
-**Production regression suite: PASS — 15/15 gates.**
+**Production regression suite: PASS — 16/16 gates.**
 
 - JS syntax: PASS (43/43 JS files)
 - Release checksums / manifest: PASS (64 checksum entries; 63 production runtime files)
@@ -22,7 +22,8 @@ Working method: separate extracted copy; uploaded ZIP was not modified.
 - RC25.2.2 guide/route contract: PASS
 - Runtime production integrity: PASS
 - RC25.2.3 admin safe-area contract: PASS
-- Analytics System v1 contract: PASS
+- Analytics System v1.2 runtime contract: PASS
+- Analytics Supabase permission contract: PASS
 
 ## Analytics-specific verification
 
@@ -34,7 +35,7 @@ The added `ci-tests/test-analytics-v1.js` verifies:
 4. Analytics write failure → event remains queued; failure is caught and isolated: PASS.
 5. Existing traveller identity → `fowlers` family selector correctly becomes `traveller_id`: PASS.
 6. Studio/Admin separation → `isAdminMode()` produces `actor_type='admin'`: PASS.
-7. Rapid identical event duplicate → suppressed by short duplicate guard; cloud retry also uses `event_id` conflict-safe upsert: PASS.
+7. Rapid identical event duplicate → suppressed by short duplicate guard; reconnect delivery uses INSERT-only writes with primary-key duplicate recovery: PASS.
 8. Existing Guide/route/button contracts: PASS through existing regression gates.
 9. Mobile modal safe-area / bottom-navigation regression contract: PASS through existing RC25.2.3 and UX gates.
 10. No new JS syntax/runtime-integrity failures: PASS.
@@ -58,3 +59,7 @@ Analytics writes are asynchronous, bounded, failure-isolated and directed only t
 A production permission-contract defect was identified after deployment: Analytics v1 used Supabase `upsert()` while the schema intentionally exposed only INSERT privileges to authenticated browser sessions. v1.1 changes the analytics sync path to INSERT-only and adds duplicate-event recovery without granting browser SELECT/UPDATE access.
 
 Final automated regression after hotfix: **16/16 PASS**, including a new static Supabase permission-contract gate. Browser automation remains unavailable in this sandbox because localhost/file navigation is blocked by environment policy; this limitation is not counted as a browser pass.
+
+## Analytics v1.2 schema cleanup — 2026-08-07
+
+Removed the redundant `expenses_open` and `moments_open` page-entry events. Expenses and Moments page entry are now measured consistently through `page_view` only. Action events such as `expense_entry_open`, `guide_open`, `navigate_use`, `booking_open`, `options_open`, and day/guide actions are unchanged. Service-worker cache key was bumped to analytics-v1-2. No Supabase schema change is required.

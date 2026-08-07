@@ -139,9 +139,7 @@
       if(el.matches('.day-jump-button')||(href&&/day\.html\?day=/.test(href)&&el.closest('.guide-sheet,.place-detail,.guide-card'))){
         const m=href.match(/[?&]day=(\d+)/);track('guide_day_link_use',{pageType:'Guide',entityType:'day',entityId:m?m[1]:'unknown',metadata:{guide_id:state.activeGuideKey||''}});return;
       }
-      if(href==='moments.html'||/moments\.html/.test(href))track('moments_open',{pageType:'Moments',entityType:'feature',entityId:'moments'});
-      else if(href==='expenses.html'||/expenses\.html/.test(href))track('expenses_open',{pageType:'Expenses',entityType:'feature',entityId:'expenses'});
-      else if(/day\.html\?day=/.test(href)){const m=href.match(/[?&]day=(\d+)/);track('day_open',{pageType:'Days',entityType:'day',entityId:m?m[1]:'unknown'});}
+      if(/day\.html\?day=/.test(href)){const m=href.match(/[?&]day=(\d+)/);track('day_open',{pageType:'Days',entityType:'day',entityId:m?m[1]:'unknown'});}
     }catch(e){}
   }
   function initialise(){

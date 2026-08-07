@@ -61,7 +61,7 @@ echo "== 14/16 RC25.2.3 admin modal safe-area contract =="
 node test-rc25-2-3.js || overall=1
 echo ""
 
-echo "== 15/16 Analytics System v1.1 runtime contract =="
+echo "== 15/16 Analytics System v1.2 runtime contract =="
 node test-analytics-v1.js || overall=1
 echo ""
 
