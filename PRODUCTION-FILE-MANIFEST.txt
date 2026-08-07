@@ -1,12 +1,13 @@
 Travel Engine Production File Manifest
-Generated: 2026-08-06
-Release: NZ-RC25.2.5-DAY3-BREAKFAST-OPTIONS
+Generated: 2026-08-07
+Release: NZ-RC25.2.5-ANALYTICS-V1
 Production root files:
 
 - .vercelignore
 - RC25.2.3-Production-Freeze-Certificate.md
 - VERSION.txt
 - admin.js
+- analytics-runtime.js
 - app-runtime.js
 - asset-config.js
 - booking-authority.js

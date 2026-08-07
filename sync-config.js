@@ -24,7 +24,7 @@
     anonKey:String(runtimeOverride.anonKey||runtimeOverride.publishableKey||project.publishableKey||''),
     get tripId(){ return (root.TRIP_CONFIG&&root.TRIP_CONFIG.storageNamespace)||legacyTripIdFallback; },
     schemaVersion:1,
-    tables:Object.freeze({publications:'trip_publications',expenses:'trip_expenses',moments:'trip_moments',generation:'trip_generation'}),
+    tables:Object.freeze({publications:'trip_publications',expenses:'trip_expenses',moments:'trip_moments',generation:'trip_generation',analytics:'trip_analytics_events'}),
     storage:Object.freeze({momentsBucket:'trip-moments'}),
     rpc:Object.freeze({resetTrip:'reset_trip',publishTrip:'publish_trip_snapshot'}),
     requestTimeoutMs:8000,

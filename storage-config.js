@@ -30,7 +30,9 @@
     canonicalExpenseState:namespace+':canonical_expenses:stage_3_2d:v1',
     expenseReadShadowState:namespace+':canonical_expense_read_shadow:stage_3_2e:v1',
     tripGeneration:'travel_engine_trip_generation_v1',
-    bookingOverrides:'travel_engine_booking_overrides_v1'
+    bookingOverrides:'travel_engine_booking_overrides_v1',
+    analyticsQueue:namespace+':analytics_queue:v1',
+    analyticsSession:'travel_engine_analytics_session_v1'
   });
 
   const domains=Object.freeze({
@@ -46,7 +48,8 @@
     bookings:Object.freeze({overrides:keys.bookingOverrides}),
     completion:Object.freeze({state:keys.tripCompletion}),
     journey:Object.freeze({changedPlans:keys.changedPlans}),
-    sync:Object.freeze({snapshot:keys.cloudSnapshot,metadata:keys.cloudSyncMeta,reloadMarker:keys.cloudReloadMarker})
+    sync:Object.freeze({snapshot:keys.cloudSnapshot,metadata:keys.cloudSyncMeta,reloadMarker:keys.cloudReloadMarker}),
+    analytics:Object.freeze({queue:keys.analyticsQueue,session:keys.analyticsSession})
   });
 
   root.STORAGE_CONFIG=Object.freeze({
