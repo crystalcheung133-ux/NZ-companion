@@ -23,10 +23,10 @@ function assert(ok,msg){if(!ok){console.error('FAIL:',msg);process.exit(1);}}
   assert(ctx.ANALYTICS.readQueue().length===before+1,'Rapid duplicate suppressed');
   ctx.isAdminMode=()=>true;ctx.ANALYTICS.track('admin_probe',{entityType:'test',entityId:'admin'});
   assert(ctx.ANALYTICS.readQueue().some(e=>e.event_type==='admin_probe'&&e.actor_type==='admin'),'Admin events separated');
-  ctx.navigator.onLine=true;ctx.SUPABASE={isConfigured:()=>true,getSession:async()=>({}),getClient:()=>({from:()=>({upsert:async rows=>{sent.push(...rows);return{error:null};}})})};
+  ctx.navigator.onLine=true;ctx.SUPABASE={isConfigured:()=>true,getSession:async()=>({}),getClient:()=>({from:()=>({insert:async rows=>{sent.push(...(Array.isArray(rows)?rows:[rows]));return{error:null};},upsert:async()=>{throw new Error('analytics must not use upsert');}})})};
   await ctx.ANALYTICS.syncNow();assert(sent.length>0&&ctx.ANALYTICS.readQueue().length===0,'Reconnect flushes queue');
-  ctx.SUPABASE={isConfigured:()=>true,getSession:async()=>({}),getClient:()=>({from:()=>({upsert:async()=>({error:{message:'forced'}})})})};
+  ctx.SUPABASE={isConfigured:()=>true,getSession:async()=>({}),getClient:()=>({from:()=>({insert:async()=>({error:{message:'forced',code:'42501'}}),upsert:async()=>{throw new Error('analytics must not use upsert');}})})};
   ctx.ANALYTICS.track('failure_probe',{entityType:'test',entityId:'failure'});await ctx.ANALYTICS.syncNow();
   assert(ctx.ANALYTICS.readQueue().some(e=>e.event_type==='failure_probe'),'Write failure preserves queue');
-  console.log('ANALYTICS V1: PASS — identity, queue, dedupe, admin separation, reconnect and write-failure isolation verified');
+  console.log('ANALYTICS V1.1: PASS — insert-only sync, identity, queue, dedupe, admin separation, reconnect and write-failure isolation verified');
 })().catch(e=>{console.error(e);process.exit(1);});

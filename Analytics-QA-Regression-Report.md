@@ -52,3 +52,9 @@ Recommended final deployment gate on a normal developer machine: run the existin
 No layout redesign, Timeline content change, Guide content change, booking data change, expense schema change, Moment content/storage change, Studio workflow refactor, participant/PIN redesign, or operational Supabase table migration was performed.
 
 Analytics writes are asynchronous, bounded, failure-isolated and directed only to `trip_analytics_events`. Operational actions never await analytics success.
+
+## Analytics v1.1 production hotfix — 2026-08-07
+
+A production permission-contract defect was identified after deployment: Analytics v1 used Supabase `upsert()` while the schema intentionally exposed only INSERT privileges to authenticated browser sessions. v1.1 changes the analytics sync path to INSERT-only and adds duplicate-event recovery without granting browser SELECT/UPDATE access.
+
+Final automated regression after hotfix: **16/16 PASS**, including a new static Supabase permission-contract gate. Browser automation remains unavailable in this sandbox because localhost/file navigation is blocked by environment policy; this limitation is not counted as a browser pass.

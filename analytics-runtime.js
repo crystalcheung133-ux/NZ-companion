@@ -75,8 +75,24 @@
         await root.SUPABASE.getSession();
         const client=root.SUPABASE.getClient();
         const batch=q.slice(0,100);
-        const {error}=await client.from(table).upsert(batch,{onConflict:'event_id',ignoreDuplicates:true});
-        if(error)throw error;
+        const api=client.from(table);
+        const {error}=await api.insert(batch);
+        if(error){
+          // A previous request may have reached Supabase but failed before the
+          // local queue was cleared. In that rare case, retry rows one-by-one
+          // and treat primary-key duplicates as already delivered. This keeps
+          // the browser on INSERT-only privileges; analytics never needs
+          // SELECT or UPDATE permission merely to de-duplicate delivery.
+          if(String(error.code||'')!=='23505')throw error;
+          const delivered=[];
+          for(const row of batch){
+            const result=await client.from(table).insert(row);
+            if(!result.error||String(result.error.code||'')==='23505')delivered.push(row.event_id);
+            else throw result.error;
+          }
+          const ids=new Set(delivered); writeQueue(readQueue().filter(x=>!ids.has(x.event_id)));
+          return {ok:true,count:delivered.length,recoveredDuplicates:true};
+        }
         const ids=new Set(batch.map(x=>x.event_id)); writeQueue(readQueue().filter(x=>!ids.has(x.event_id)));
         return {ok:true,count:batch.length};
       }catch(error){
