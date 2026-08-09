@@ -18,6 +18,26 @@
     return String(root.MONEY_CONFIG&&root.MONEY_CONFIG.homeCurrency||'').toUpperCase();
   }
 
+
+  function currencyInfo(code){
+    const normalized=String(code||'').toUpperCase();
+    const trip=tripCurrency();
+    const home=homeCurrency();
+    if(normalized===trip.code) return trip;
+    if(normalized===home) return Object.freeze({code:home,symbol:home==='AUD'?'A$':home,name:home});
+    return Object.freeze({code:normalized,symbol:normalized,name:normalized});
+  }
+
+  function expenseCurrencies(){
+    const trip=tripCurrency().code;
+    const home=homeCurrency();
+    return Object.freeze(trip===home?[home]:[home,trip]);
+  }
+
+  function settlementCurrency(){
+    return String(root.MONEY_CONFIG&&root.MONEY_CONFIG.settlementCurrency||homeCurrency()).toUpperCase();
+  }
+
   function cacheKey(){
     const config=root.MONEY_CONFIG||{};
     return `travel_engine_fx_${tripCurrency().code.toLowerCase()}_${homeCurrency().toLowerCase()}_v${Number(config.storageVersion||1)}`;
@@ -134,24 +154,45 @@
   async function fetchLatestRate(fetchImpl){
     const request=fetchImpl||root.fetch;
     if(typeof request!=='function') throw new Error('rate request unavailable');
-    const response=await request(apiUrl(),{cache:'no-store'});
-    if(!response||!response.ok) throw new Error('rate request failed');
-    const data=await response.json();
-    const rate=data&&data.rates&&Number(data.rates[homeCurrency()]);
-    if(!(rate>0)) throw new Error('invalid rate');
-    return normalizeRateRecord({
-      base:tripCurrency().code,
-      quote:homeCurrency(),
-      rate,
-      date:data.date||new Date().toISOString().slice(0,10),
-      savedAt:new Date().toISOString(),
-      source:'live'
-    },'live');
+    const base=tripCurrency().code, quote=homeCurrency();
+    const attempts=[];
+    attempts.push(async function(){
+      const response=await request(apiUrl(),{cache:'no-store'});
+      if(!response||!response.ok) throw new Error('primary rate request failed');
+      const data=await response.json();
+      const rate=data&&data.rates&&Number(data.rates[quote]);
+      if(!(rate>0)) throw new Error('primary currency unsupported');
+      return {rate,date:data.date||new Date().toISOString().slice(0,10),source:'live-primary'};
+    });
+    const fallbacks=(root.MONEY_CONFIG&&root.MONEY_CONFIG.fallbackApiBases)||[];
+    fallbacks.forEach(function(template){
+      attempts.push(async function(){
+        const url=String(template).replace('{base}',base.toLowerCase()).replace('{quote}',quote.toLowerCase());
+        const response=await request(url,{cache:'no-store'});
+        if(!response||!response.ok) throw new Error('fallback rate request failed');
+        const data=await response.json();
+        const bucket=data&&data[base.toLowerCase()];
+        const rate=Number(bucket&&bucket[quote.toLowerCase()]);
+        if(!(rate>0)) throw new Error('fallback currency unsupported');
+        return {rate,date:data.date||new Date().toISOString().slice(0,10),source:'live-fallback'};
+      });
+    });
+    let lastError=null;
+    for(const attempt of attempts){
+      try{
+        const result=await attempt();
+        return normalizeRateRecord({base,quote,rate:result.rate,date:result.date,savedAt:new Date().toISOString(),source:result.source},result.source);
+      }catch(error){lastError=error;}
+    }
+    throw lastError||new Error('rate request failed');
   }
 
   const service=Object.freeze({
     getTripCurrency:tripCurrency,
     getHomeCurrency:homeCurrency,
+    getCurrencyInfo:currencyInfo,
+    getExpenseCurrencies:expenseCurrencies,
+    getSettlementCurrency:settlementCurrency,
     getCacheKey:cacheKey,
     getApiUrl:apiUrl,
     normalizeAmount,

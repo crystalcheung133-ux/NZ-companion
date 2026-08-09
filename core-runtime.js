@@ -167,11 +167,16 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
 });
 
-function getFriend(){return STORAGE.local.get(STORAGE_CONFIG.keys.friend,TRIP_CONFIG.participants?.defaultKey||'lee');}
+function getStoredFriend(){const identities=TRIP_CONFIG.participants?.identities||{};const saved=STORAGE.local.get(STORAGE_CONFIG.keys.friend,null);return saved&&identities[saved]?saved:null;}
+function getFriend(){const identities=TRIP_CONFIG.participants?.identities||{};const fallback=TRIP_CONFIG.participants?.defaultKey||Object.keys(identities)[0]||'unknown';return getStoredFriend()||fallback;}
+let identitySelectionRequired=false;
 function setFriend(k){
-  STORAGE.local.set(STORAGE_CONFIG.keys.friend,k);
-  closeFriendModal();
-  updateFriendLabels();
+  const identities=TRIP_CONFIG.participants?.identities||{}; if(!identities[k])return;
+  STORAGE.local.set(STORAGE_CONFIG.keys.friend,k); identitySelectionRequired=false;
+  document.documentElement.removeAttribute('data-identity-selection-required'); document.body?.classList.remove('identity-selection-required');
+  const modal=document.getElementById('mamaModal'); modal?.classList.remove('identity-required');
+  const closeBtn=modal?.querySelector('.mama-close'); if(closeBtn){closeBtn.hidden=false;closeBtn.style.display='';closeBtn.removeAttribute('aria-hidden');}
+  closeFriendModal(); updateFriendLabels();
   if(document.getElementById('expenseModal')?.classList.contains('show')&&typeof window.resetExpenseForm==='function')window.resetExpenseForm();
   if(document.getElementById('momentsModal')?.classList.contains('show')&&typeof window.simplifyMomentsAuthor==='function')window.simplifyMomentsAuthor();
   if(typeof window.refreshExpenseAdminUI==='function')window.refreshExpenseAdminUI();
@@ -180,12 +185,25 @@ const FRIEND_IDENTITY=TRIP_CONFIG.participants?.identities||{};
 function friendIdentityHTML(key,compact=false){
   const fallbackKey=TRIP_CONFIG.participants?.defaultKey||Object.keys(FRIEND_IDENTITY)[0];
   const identity=FRIEND_IDENTITY[key]||FRIEND_IDENTITY[fallbackKey];
-  return `<span class="family-identity family-${escapeHTML(key)}${compact?' is-compact':''}"><span class="family-code">${escapeHTML(identity.code)}</span><span class="family-name">${escapeHTML(identity.name)}</span></span>`;
+  return `<span class="family-identity family-${escapeHTML(key)}${compact?' is-compact':''}"><span class="family-code" aria-hidden="true">${escapeHTML(identity.emoji||identity.code)}</span><span class="family-name">${escapeHTML(identity.name)}</span></span>`;
 }
 window.friendIdentityHTML=friendIdentityHTML;
 function updateFriendLabels(){const key=getFriend();document.querySelectorAll('[data-friend-label]').forEach(e=>{e.innerHTML=friendIdentityHTML(key,true);e.dataset.family=key;});}
-function renderFriendChoices(){const list=document.querySelector('#mamaModal .friend-choice-list');if(!list)return;const current=getFriend();list.innerHTML=Object.keys(FRIEND_IDENTITY).map(key=>`<button type="button" class="family-choice${key===current?' active':''}" data-family="${key}" onclick="setFriend('${key}')">${friendIdentityHTML(key)}</button>`).join('');}
-function openFriendModal(){renderFriendChoices();$('mamaModal').classList.add('show')} function closeFriendModal(){$('mamaModal').classList.remove('show')}
+function renderFriendChoices(){const list=document.querySelector('#mamaModal .friend-choice-list');if(!list)return;const current=getStoredFriend();list.innerHTML=Object.keys(FRIEND_IDENTITY).map(key=>`<button type="button" class="family-choice${key===current?' active':''}" data-family="${key}" onclick="setFriend('${key}')">${friendIdentityHTML(key)}</button>`).join('');}
+function openFriendModal(){renderFriendChoices();const modal=$('mamaModal');if(!modal)return;const closeBtn=modal.querySelector('.mama-close');if(identitySelectionRequired){modal.classList.add('identity-required');if(closeBtn){closeBtn.hidden=true;closeBtn.style.display='none';closeBtn.setAttribute('aria-hidden','true');}}else if(closeBtn){closeBtn.hidden=false;closeBtn.style.display='';closeBtn.removeAttribute('aria-hidden');}modal.classList.add('show');}
+function closeFriendModal(){if(identitySelectionRequired&&!getStoredFriend())return;const modal=$('mamaModal');if(modal)modal.classList.remove('show','identity-required');}
+function ensureFriendIdentity(){
+  if(getStoredFriend())return false;
+  identitySelectionRequired=true; document.documentElement.dataset.identitySelectionRequired='true'; document.body?.classList.add('identity-selection-required');
+  const modal=document.getElementById('mamaModal'); if(!modal)return true;
+  const title=modal.querySelector('h2'); if(title)title.textContent=TRIP_CONFIG.participants?.selectionTitle||'Who are you travelling with?';
+  const kicker=modal.querySelector('.kicker'); if(kicker)kicker.textContent=TRIP_CONFIG.participants?.selectionKicker||'SELECT FAMILY';
+  modal.classList.add('identity-required'); const closeBtn=modal.querySelector('.mama-close');
+  if(closeBtn){closeBtn.hidden=true;closeBtn.style.display='none';closeBtn.setAttribute('aria-hidden','true');}
+  renderFriendChoices(); requestAnimationFrame(()=>modal.classList.add('show')); return true;
+}
+window.getStoredFriend=getStoredFriend; window.ensureFriendIdentity=ensureFriendIdentity;
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(ensureFriendIdentity,0));else setTimeout(ensureFriendIdentity,0);
 
 
 

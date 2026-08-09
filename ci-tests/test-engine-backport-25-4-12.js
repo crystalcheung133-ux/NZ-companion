@@ -1,0 +1,14 @@
+const fs=require('fs'),path=require('path'),assert=require('assert');
+const root=path.resolve(__dirname,'..');
+const read=f=>fs.readFileSync(path.join(root,f),'utf8');
+const core=read('core-runtime.js'),trip=read('trip-runtime.js'),expenses=read('expenses.js'),money=read('money-config.js'),styles=read('styles.css'),tripHtml=read('trip.html'),day=read('day.html');
+assert(core.includes('ensureFriendIdentity'),'first-device family selection contract missing');
+assert(core.includes('identity.emoji||identity.code'),'emoji + name identity contract missing');
+assert(!tripHtml.includes("openTripCard('checklist')")&&!tripHtml.includes("openTripCard('emergency')"),'Trip must be booking/logistics hub');
+assert(trip.includes("return ['flights','vehicle','stay','activities']"),'Trip hub order contract missing');
+assert(trip.includes('bookingBrowseNavigationHTML'),'non-circular booking detail navigation missing');
+assert(expenses.includes('expenseCurrencyToggle')&&expenses.includes('homeTotal'),'dual-currency expenses contract missing');
+assert(money.includes("settlementCurrency: 'AUD'"),'AUD settlement contract missing');
+assert(styles.includes('.timeline-actions .timeline-action{border-radius:999px'),'timeline rounded action contract missing');
+assert(!day.includes('Copy Address'),'NZ must not inherit Grab/Uber Copy Address UI');
+console.log('ENGINE BACKPORT 25.4.12: PASS');

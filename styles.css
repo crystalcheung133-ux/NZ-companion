@@ -2416,3 +2416,22 @@ body.guide-booking-stack-open #tripModal{z-index:5100!important;}
     padding-bottom:calc(28px + env(safe-area-inset-bottom,0px))!important;
   }
 }
+
+/* NZ Companion RC25.3.0 — Travel Engine 25.4.12 selected backport */
+.home-trip-line span{border-radius:999px!important;}
+.timeline-actions .timeline-action{border-radius:999px!important;}
+@media(max-width:760px){
+  .timeline-item{grid-template-columns:62px minmax(0,1fr)!important;column-gap:12px!important;align-items:start!important;}
+  .timeline-time{display:block!important;width:62px!important;max-width:62px!important;min-width:0!important;white-space:normal!important;overflow:hidden!important;overflow-wrap:break-word!important;word-break:normal!important;font-size:11px!important;line-height:1.16!important;padding:1px 0!important;}
+  .timeline-main,.timeline-title-row,.timeline-title-row h3{min-width:0!important;max-width:100%!important;}
+}
+.family-identity .family-code,.family-choice .family-code,.friend-pill .family-code,#expenseModal .family-code,#momentsModal .family-code{border:0!important;background:transparent!important;box-shadow:none!important;border-radius:0!important;min-width:0!important;width:auto!important;height:auto!important;padding:0!important;margin:0!important;display:inline!important;line-height:1!important;font-size:20px!important;}
+.identity-required .mama-close{display:none!important}
+.expense-amount-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px}
+.expense-amount-heading>label{margin:0!important}
+.expense-currency-toggle{display:inline-flex;align-items:center;padding:3px;border:1px solid var(--line);border-radius:999px;background:var(--paper);gap:2px}
+.expense-currency-btn{min-height:34px;min-width:56px;padding:7px 12px;border:0;border-radius:999px;background:transparent;font:inherit;font-weight:850;color:var(--muted);cursor:pointer}
+.expense-currency-btn.active{background:var(--ink);color:#fff}
+.expense-fx-helper:empty{display:none!important}.expense-fx-helper{margin:2px 0 8px!important;font-size:12px!important;text-transform:none!important}
+.expense-original-totals{display:flex;flex-wrap:wrap;gap:6px 10px;margin-top:7px}.expense-original-totals span,.expense-card .expense-home-equivalent{font-size:12px;color:var(--muted)}
+.booking-detail-navigation .pill:disabled,.trip-hub-navigation .pill:disabled{opacity:.42;cursor:default}

@@ -88,13 +88,18 @@ function buildAccommodationListHTML(){
     return `<button class="accommodation-picker-row" type="button" role="listitem" onclick="openAccommodationDetail('${escapeTripHTML(booking.id)}')"><span class="accommodation-picker-icon" aria-hidden="true">🏨</span><span class="accommodation-picker-copy"><strong>${escapeTripHTML(booking.title)}</strong><small>${escapeTripHTML(booking.stayDates||booking.date||'')}</small><span class="accommodation-picker-price">${escapeTripHTML(price)}</span></span><span class="accommodation-picker-meta accommodation-picker-meta--stack">${statusLabel?`<span class="accommodation-status-badge accommodation-status-badge--${escapeTripHTML(statusClass)}">${escapeTripHTML(statusLabel)}</span>`:''}<span class="accommodation-night-line">${escapeTripHTML(nightsLabel)} <b aria-hidden="true">›</b></span></span></button>`;
   }).join('')+'</div>';
 }
+function bookingBrowseNavigationHTML(bookings,index,openFunction){
+  if(index<0)return '';
+  const previous=index>0?bookings[index-1]:null;
+  const next=index<bookings.length-1?bookings[index+1]:null;
+  const prevButton=previous?`<button class="pill" type="button" onclick="${openFunction}('${escapeTripHTML(previous.id)}')">‹ Previous</button>`:`<button class="pill" type="button" disabled aria-disabled="true">‹ Previous</button>`;
+  const nextButton=next?`<button class="pill" type="button" onclick="${openFunction}('${escapeTripHTML(next.id)}')">Next ›</button>`:`<button class="pill" type="button" disabled aria-disabled="true">Next ›</button>`;
+  return `<div class="guide-browse-meta">${index+1} / ${bookings.length}</div><div class="guide-next-row booking-detail-navigation">${prevButton}${nextButton}</div>`;
+}
 function accommodationDetailNavigationHTML(bookingId){
   const bookings=getAccommodationBookings();
   const index=bookings.findIndex(function(item){return item.id===bookingId;});
-  if(index<0||bookings.length<2)return '';
-  const previous=bookings[(index-1+bookings.length)%bookings.length];
-  const next=bookings[(index+1)%bookings.length];
-  return `<div class="guide-browse-meta">${index+1} / ${bookings.length}</div><div class="guide-next-row"><button class="pill" type="button" onclick="openAccommodationDetail('${escapeTripHTML(previous.id)}')">‹ Previous</button><button class="pill" type="button" onclick="openAccommodationDetail('${escapeTripHTML(next.id)}')">Next ›</button></div>`;
+  return bookingBrowseNavigationHTML(bookings,index,'openAccommodationDetail');
 }
 function bookingStatusText(booking){
   return String((booking&&((booking.displayStatus||booking.status)))||'').replace(/-/g,' ').toUpperCase();
@@ -429,29 +434,26 @@ function buildRentalCarHTML(){
 function activityDetailNavigationHTML(bookingId){
   const bookings=getActivityBookings();
   const index=bookings.findIndex(function(item){return item.id===bookingId;});
-  if(index<0||bookings.length<2)return '';
-  const previous=bookings[(index-1+bookings.length)%bookings.length];
-  const next=bookings[(index+1)%bookings.length];
-  return `<div class="guide-browse-meta">${index+1} / ${bookings.length}</div><div class="guide-next-row"><button class="pill" type="button" onclick="openActivityBookingDetail('${escapeTripHTML(previous.id)}')">‹ Previous</button><button class="pill" type="button" onclick="openActivityBookingDetail('${escapeTripHTML(next.id)}')">Next ›</button></div>`;
+  return bookingBrowseNavigationHTML(bookings,index,'openActivityBookingDetail');
+}
+function tripHubOrder(){
+  const cards=PRODUCTION_TRIP.cards||{};
+  return ['flights','vehicle','stay','activities'].filter(key=>!!cards[key]);
+}
+function tripHubNavigationHTML(key){
+  const order=tripHubOrder(),idx=order.indexOf(key); if(idx<0)return '';
+  const prev=idx>0?order[idx-1]:null,next=idx<order.length-1?order[idx+1]:null;
+  const prevButton=prev?`<button class="pill" type="button" onclick="openTripCard('${prev}')">‹ Previous</button>`:`<button class="pill" type="button" disabled aria-disabled="true">‹ Previous</button>`;
+  const nextButton=next?`<button class="pill" type="button" onclick="openTripCard('${next}')">Next ›</button>`:`<button class="pill" type="button" disabled aria-disabled="true">Next ›</button>`;
+  return `<div class="guide-browse-meta">${idx+1} / ${order.length}</div><div class="guide-next-row trip-hub-navigation">${prevButton}${nextButton}</div>`;
 }
 function openTripCard(key) {
-  const guideModal=document.getElementById('guideModal');
-  if(guideModal?.classList.contains('show')) guideModal.classList.remove('show');
-  closeMiniMenus();
-  const t = PRODUCTION_TRIP.cards[key];
-  if (!t) return;
-  const idx = PRODUCTION_TRIP.order.indexOf(key);
-  const prev = PRODUCTION_TRIP.order[(idx - 1 + PRODUCTION_TRIP.order.length) % PRODUCTION_TRIP.order.length];
-  const next = PRODUCTION_TRIP.order[(idx + 1) % PRODUCTION_TRIP.order.length];
-  const content = document.getElementById('tripModalContent');
-  const modal = document.getElementById('tripModal');
-  if (!content || !modal) return;
-  const body=key==='emergency'?compactEmergencyHTML(t.body):(key==='stay'?buildAccommodationListHTML():(key==='activities'?buildActivityBookingListHTML():(key==='vehicle'?buildRentalCarHTML():t.body)));
-  content.innerHTML = `<div class="trip-onepage trip-onepage-${key}"><p class="kicker">Trip</p><h2>${t.title}</h2>${body}<div class="guide-next-row"><button class="pill" onclick="openTripCard('${prev}')">‹ Previous</button><button class="pill" onclick="openTripCard('${next}')">Next ›</button></div><p class="timestamp trip-build-summary">${tripSyncSummary()}</p></div>`;
-  modal.classList.add('show');
-  const sheet=document.querySelector('#tripModal .trip-sheet');
-  if(sheet){ sheet.scrollTop=0; if(typeof window.applyNearFitModal==='function') window.applyNearFitModal(sheet,'trip-near-fit'); }
-  if (key === 'checklist') setTimeout(loadChecklist, 0);
+  const guideModal=document.getElementById('guideModal'); if(guideModal?.classList.contains('show'))guideModal.classList.remove('show');
+  closeMiniMenus(); const t=PRODUCTION_TRIP.cards[key]; if(!t||!tripHubOrder().includes(key))return;
+  const content=document.getElementById('tripModalContent'),modal=document.getElementById('tripModal'); if(!content||!modal)return;
+  const body=key==='stay'?buildAccommodationListHTML():(key==='activities'?buildActivityBookingListHTML():(key==='vehicle'?buildRentalCarHTML():t.body));
+  content.innerHTML=`<div class="trip-onepage trip-onepage-${key}"><p class="kicker">Trip Bookings</p><h2>${t.title}</h2>${body}${tripHubNavigationHTML(key)}<p class="timestamp trip-build-summary">${tripSyncSummary()}</p></div>`;
+  modal.classList.add('show'); const sheet=document.querySelector('#tripModal .trip-sheet'); if(sheet){sheet.scrollTop=0;if(typeof window.applyNearFitModal==='function')window.applyNearFitModal(sheet,'trip-near-fit');}
 }
 
 function closeTripModal() {

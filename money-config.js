@@ -1,18 +1,16 @@
-/* money-config.js — Stage 7E-1/7E-2 canonical money/FX configuration.
-   Single source for home currency, exchange provider and FX cache settings.
-   Trip currency remains owned by LOCALE_CONFIG.currency; not duplicated here. */
+/* money-config.js — Travel Engine money / FX configuration. */
 (function(root){
   'use strict';
-
-  const money = Object.freeze({
+  root.MONEY_CONFIG = Object.freeze({
     homeCurrency: 'AUD',
+    settlementCurrency: 'AUD',
+    expenseCurrencyMode: 'home_and_destination',
     exchangeProvider: 'frankfurter',
     apiBase: 'https://api.frankfurter.dev/v1/latest',
+    fallbackApiBases: Object.freeze([
+      'https://latest.currency-api.pages.dev/v1/currencies/{base}.json'
+    ]),
     cacheHours: 12,
-    storageVersion: 1,
-    supportedCurrencies: Object.freeze(['AUD', 'NZD', 'JPY', 'VND'])
+    storageVersion: 2
   });
-
-  root.MONEY_CONFIG = money;
-
 })(globalThis);
