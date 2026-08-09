@@ -3,7 +3,7 @@ const PRODUCTION_TRIP=GenerationSelectionAdapter.view('trip');
 const PRODUCTION_BOOKINGS=GenerationSelectionAdapter.view('bookings');
 function saveChecklist(){const checks=[...document.querySelectorAll('[data-check]')].map(c=>c.checked);STORAGE.local.writeJSON(STORAGE_CONFIG.keys.checklist,checks);const done=checks.filter(Boolean).length;const total=checks.length;const ready=$('readyBox');if(ready)ready.classList.toggle('show',total>0&&checks.every(Boolean));const progress=$('checklistProgress');if(progress)progress.textContent=`${done} / ${total} Complete`;renderDashboard();}
 function loadChecklist(){const stored=STORAGE.local.readJSON(STORAGE_CONFIG.keys.checklist,[]);document.querySelectorAll('[data-check]').forEach((c,i)=>c.checked=!!stored[i]);saveChecklist();}
-document.addEventListener('DOMContentLoaded',()=>{updateFriendLabels();renderMoments();renderUnexpected();renderExpenses();loadChecklist();renderDashboard();});
+document.addEventListener('DOMContentLoaded',()=>{guardTripRoutingShell();updateFriendLabels();renderMoments();renderUnexpected();renderExpenses();loadChecklist();renderDashboard();});
 
 
 function compactEmergencyHTML(html){
@@ -297,7 +297,10 @@ function bookingExpenseActionHTML(booking){
   const status=linked
     ? `<span class="booking-expense-linked">✓ ${linked} payment${linked===1?'':'s'} in Expenses</span>`
     : `<span class="booking-expense-unlinked">Not added to Expenses</span>`;
-  return `<div class="booking-expense-actions"><div>${status}</div><div class="booking-expense-buttons">${linked?'<a class="pill trip-action-btn" href="expenses.html">View Expenses</a>':''}<button class="pill trip-action-btn" type="button" onclick="openBookingExpense('${escapeTripHTML(booking.id)}')">${linked?'Add another payment':'Add payment to Expenses'}</button></div></div>`;
+  const newest=links.slice().sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')))[0]||null;
+  const viewHref=newest?.id?`expenses.html?expenseId=${encodeURIComponent(newest.id)}`:`expenses.html?bookingId=${encodeURIComponent(booking.id)}`;
+  const viewLabel=linked===1?'View Expense':`View ${linked} Expenses`;
+  return `<div class="booking-expense-actions"><div>${status}</div><div class="booking-expense-buttons">${linked?`<a class="pill trip-action-btn" href="${viewHref}">${viewLabel}</a>`:''}<button class="pill trip-action-btn" type="button" onclick="openBookingExpense('${escapeTripHTML(booking.id)}')">${linked?'Add another payment':'Add payment to Expenses'}</button></div></div>`;
 }
 function bookingEditButtonHTML(booking){
   return booking&&window.isAdminMode&&window.isAdminMode()
@@ -472,6 +475,20 @@ function openTripCard(key) {
   modal.classList.add('show'); const sheet=document.querySelector('#tripModal .trip-sheet'); if(sheet){sheet.scrollTop=0;if(typeof window.applyNearFitModal==='function')window.applyNearFitModal(sheet,'trip-near-fit');}
 }
 
+function tripDeepLinkReturnURL(){
+  const params=new URLSearchParams(window.location.search);
+  const raw=params.get('return');
+  if(!raw)return '';
+  if(/^https?:/i.test(raw)||raw.startsWith('//'))return '';
+  return raw;
+}
+function guardTripRoutingShell(){
+  if(!/\btrip\.html$/i.test(window.location.pathname))return;
+  const params=new URLSearchParams(window.location.search);
+  if(!params.get('bookingId')&&!params.get('card')){
+    window.location.replace('index.html');
+  }
+}
 function closeTripModal() {
   if(isBookingEditActive() && !confirmDiscardBookingEdit()) return false;
   clearBookingEditSession();
@@ -487,6 +504,11 @@ function closeTripModal() {
   if(returnToGuide){
     const sheet=document.querySelector('#guideModal .guide-sheet');
     if(sheet) requestAnimationFrame(function(){sheet.focus?.({preventScroll:true});});
+  }
+  const deepReturn=tripDeepLinkReturnURL();
+  if(deepReturn&&/\btrip\.html$/i.test(window.location.pathname)){
+    window.location.href=deepReturn;
+    return true;
   }
   return true;
 }

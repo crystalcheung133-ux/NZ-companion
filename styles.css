@@ -2457,3 +2457,6 @@ body.guide-booking-stack-open #tripModal{z-index:5100!important;}
 .expense-notice-close{position:absolute;right:14px;top:14px;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:#fffaf2;font-size:26px}
 .expense-notice-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
 .expense-notice-actions .pill{text-decoration:none;text-align:center}
+
+/* Travel Engine 25.4.20.2 — focused Booking ↔ Expense handoff */
+.expense-card--focused{outline:3px solid rgba(54,140,153,.28);outline-offset:3px;box-shadow:0 12px 34px rgba(25,60,72,.12)}

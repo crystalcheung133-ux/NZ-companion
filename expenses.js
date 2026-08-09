@@ -129,6 +129,7 @@ let editingExpenseIndex=null;
   let expenseRateRecord=null;
   let expenseRatePromise=null;
   let pendingExpenseSource=null;
+  let bookingExpenseFlowActive=false;
   function bookingAmountSeed(booking){
     const fields=[booking?.netTotalAUD,booking?.netPrice,booking?.totalAmount,booking?.price];
     for(const value of fields){
@@ -479,6 +480,7 @@ let editingExpenseIndex=null;
   function resetExpenseForm(options){
     editingExpenseIndex=null;
     if(!options?.preserveSource) pendingExpenseSource=null;
+    if(!options?.preserveBookingFlow) bookingExpenseFlowActive=false;
     const user=currentUser();
     const item=document.getElementById('expenseItem'); if(item) item.value='';
     window.setExpenseCategory('Meals');
@@ -506,16 +508,17 @@ let editingExpenseIndex=null;
     const split=e.split||[];
     const consumer=e.consumedBy || split[0] || e.paidBy;
     const who=personal ? `Consumed by ${identityFor(consumer,true)}` : `${e.splitMode==='custom'?'Custom':'Equal'} split: ${split.map(k=>identityFor(k,true)).join('<span class="identity-separator">·</span>')}`;
-    const latestId=e._latest?' id="latestExpenseCard"':'';
+    const cardId=e.id?` id="expense-${escapeHTML(e.id)}"`:(e._latest?' id="latestExpenseCard"':'');
+    const latestMarker=e._latest?' data-latest-expense="true"':'';
     const actions=canManageExpense(e)?`<div class="entry-actions"><button class="mini-btn" onclick="editExpense(${e._idx})">✏️ Edit</button><button class="mini-btn" onclick="deleteExpense(${e._idx})">🗑 Delete</button></div>`:`<p class="timestamp entry-owner-note">Added by ${identityFor(expenseOwner(e),true)} · View only</p>`;
     const code=expenseCurrencyCode(e);
     const home=MONEY.getHomeCurrency();
     const homeTotal=homeAmountFor(e);
     const equivalent=code!==home&&homeTotal!==null?`<p class="expense-home-equivalent">≈ ${FORMATTER.decimal(homeTotal,2)} ${home} for settlement</p>`:'';
     const source=e.sourceType==='booking'&&e.sourceBookingId
-      ? `<p class="expense-booking-source">🏨 From booking · <a href="trip.html?bookingId=${encodeURIComponent(e.sourceBookingId)}">${escapeHTML(e.sourceBookingTitle||'View booking')}</a></p>`
+      ? `<p class="expense-booking-source">🏨 From booking · <a href="trip.html?bookingId=${encodeURIComponent(e.sourceBookingId)}&return=${encodeURIComponent(`expenses.html?expenseId=${e.id||''}`)}">${escapeHTML(e.sourceBookingTitle||'View booking')}</a></p>`
       : '';
-    return `<div class="expense-card"${latestId}><strong>${escapeHTML(e.item||'')}</strong><p class="timestamp">${timeLabel(e.createdAt)}${e.editedAt?` · Edited ${timeLabel(e.editedAt)}`:''}</p><p>${FORMATTER.number(MONEY.normalizeAmount(e.total))} ${code} · Paid by ${identityFor(e.paidBy,true)}</p>${equivalent}<p>${personal?'Personal Expense':'Shared Expense'} · ${who}</p>${source}${actions}</div>`;
+    return `<div class="expense-card"${cardId}${latestMarker}><strong>${escapeHTML(e.item||'')}</strong><p class="timestamp">${timeLabel(e.createdAt)}${e.editedAt?` · Edited ${timeLabel(e.editedAt)}`:''}</p><p>${FORMATTER.number(MONEY.normalizeAmount(e.total))} ${code} · Paid by ${identityFor(e.paidBy,true)}</p>${equivalent}<p>${personal?'Personal Expense':'Shared Expense'} · ${who}</p>${source}${actions}</div>`;
   }
   let expensePageScrollY=0;
   function lockExpensePage(){
@@ -552,7 +555,10 @@ let editingExpenseIndex=null;
   window.openBookingExpense=function(bookingId){
     const booking=window.BOOKING_AUTHORITY?.get?window.BOOKING_AUTHORITY.get(bookingId):null;
     if(!booking) return alert('Booking details are unavailable.');
-    resetExpenseForm();
+    bookingExpenseFlowActive=true;
+    document.getElementById('tripModal')?.classList.remove('show');
+    document.body.classList.remove('guide-booking-stack-open');
+    resetExpenseForm({preserveBookingFlow:true});
     pendingExpenseSource={
       sourceType:'booking',
       sourceBookingId:booking.id,
@@ -620,6 +626,9 @@ let editingExpenseIndex=null;
       ? {sourceType:arr[editingExpenseIndex].sourceType||null,sourceBookingId:arr[editingExpenseIndex].sourceBookingId||null,sourceBookingTitle:arr[editingExpenseIndex].sourceBookingTitle||null,sourceBookingType:arr[editingExpenseIndex].sourceBookingType||null}
       : (pendingExpenseSource||{});
     const data={item,details,category,total,currency,homeCurrency,homeTotal,fxRate:currency===homeCurrency?1:fxRate,fxRateDate:currency===homeCurrency?'':String(fxRecord?.date||''),fxRateSource:currency===homeCurrency?'native':String(fxRecord?.source||'cached'),paidBy,type:personal?'personal':'shared',split:personal?[consumedBy]:split,splitMode,shares:personal?null:shares,consumedBy:personal?consumedBy:null,createdAt:now,updatedAt:now,createdBy:currentUser(),editedBy:currentUser(),...source};
+    if(operation==='create'&&!data.id){
+      data.id=(window.crypto?.randomUUID?window.crypto.randomUUID():`expense-${Date.now()}-${Math.random().toString(36).slice(2,8)}`);
+    }
     if(editingExpenseIndex!==null && arr[editingExpenseIndex]){
       data.id=arr[editingExpenseIndex].id;
       data.createdAt=arr[editingExpenseIndex].createdAt || now;
@@ -643,10 +652,18 @@ let editingExpenseIndex=null;
       });
     }catch(error){}
     window.renderExpenses(operation);
+    const savedId=data.id||'';
+    const cameFromBooking=bookingExpenseFlowActive&&data.sourceType==='booking';
     resetExpenseForm();
     closeExpenseModal();
+    document.getElementById('tripModal')?.classList.remove('show');
+    document.getElementById('guideModal')?.classList.remove('show');
+    if(cameFromBooking&&savedId){
+      window.location.href=`expenses.html?expenseId=${encodeURIComponent(savedId)}`;
+      return;
+    }
     setTimeout(()=>{
-      const latest=document.getElementById('latestExpenseCard');
+      const latest=document.querySelector('[data-latest-expense="true"]')||document.getElementById('latestExpenseCard');
       if(latest){
         latest.scrollIntoView({behavior:'auto',block:'center'});
         latest.classList.add('expense-card--new');
@@ -668,8 +685,30 @@ let editingExpenseIndex=null;
       const originalHtml=Object.entries(originalTotals).map(([code,value])=>`<span>${FORMATTER.number(value)} ${code}</span>`).join('');
       const pendingFx=unconverted?`<small>${unconverted} legacy expense${unconverted===1?'':'s'} waiting for an FX rate</small>`:'';
       pageBox.innerHTML=`<div class="expense-dashboard-v33 identity-dashboard"><div class="expense-total-card"><span>Trip Total · Settlement</span><strong>${FORMATTER.decimal(total,2)} ${home}</strong><div class="expense-original-totals">${originalHtml}</div>${pendingFx||'<small>Original currencies retained · final settlement in '+home+'</small>'}</div><div class="expense-focus-grid"><div class="expense-focus-card"><h3>Personal Spend</h3>${spendHtml}</div><div class="expense-focus-card"><h3>Settlement</h3>${balanceHtml}</div></div></div><div class="expense-history-block"><h3>Transaction History</h3><p class="timestamp">Newest transactions appear first.</p><div class="transaction-scroll">${sorted.length?sorted.map(expenseCard).join(''):'<p>No transactions yet.</p>'}</div></div>`;
+      focusExpenseFromURL();
     }
   };
+
+  function focusExpenseFromURL(){
+    const params=new URLSearchParams(window.location.search);
+    const expenseId=params.get('expenseId');
+    const bookingId=params.get('bookingId');
+    let target=null;
+    if(expenseId) target=document.getElementById(`expense-${expenseId}`);
+    if(!target&&bookingId){
+      const linked=readExpenses().filter(e=>e?.sourceType==='booking'&&e.sourceBookingId===bookingId)
+        .sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
+      if(linked[0]?.id) target=document.getElementById(`expense-${linked[0].id}`);
+    }
+    if(target){
+      setTimeout(()=>{
+        target.scrollIntoView({behavior:'auto',block:'center'});
+        target.classList.add('expense-card--new','expense-card--focused');
+        setTimeout(()=>target.classList.remove('expense-card--new','expense-card--focused'),2200);
+      },80);
+    }
+  }
+  window.focusExpenseFromURL=focusExpenseFromURL;
 
   window.exportExpenseData=function(){
     if(currentUser()!==((TRIP_CONFIG.admin&&TRIP_CONFIG.admin.user)||TRIP_CONFIG.participants?.defaultKey||'unknown') || typeof window.isAdminMode!=='function' || !window.isAdminMode()) return alert('Enter Admin Mode to export the complete expense data.');

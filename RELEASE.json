@@ -1,16 +1,16 @@
 {
-  "engine_version": "25.4.20.1",
-  "artifact_version": "NZ Companion RC25.3.9.1 \u00b7 Travel Engine 25.4.20.1 Booking Expense Button Hotfix",
-  "baseline_engine": "25.4.20",
+  "engine_version": "25.4.20.2",
+  "artifact_version": "NZ Companion RC25.3.9.2 \u00b7 Travel Engine 25.4.20.2 Booking Expense Flow Hotfix",
+  "baseline_engine": "25.4.20.1",
   "release_date": "2026-08-09",
-  "release_type": "hotfix",
+  "release_type": "workflow-hotfix",
   "runtime_behavior_change": true,
   "capabilities_changed": [
-    "booking payment prefill into Expenses",
-    "booking-source transaction linkage",
-    "cross-family unseen shared-expense notification",
-    "bidirectional expense currency conversion display",
-    "accommodation detail booking-to-expense action rendering"
+    "foreground booking-to-expense handoff",
+    "post-save exact transaction landing",
+    "exact View Expense deep link",
+    "expense-booking-return flow",
+    "trip routing shell guard"
   ],
   "ci_entrypoint": "sh ci-tests/run-all.sh",
   "rollback_baseline": "25.4.16",
