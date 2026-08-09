@@ -1,82 +1,19 @@
 #!/bin/sh
-# Travel Engine — full regression test suite.
-# Runs every check against the repository-root production files and exits non-zero if any fails.
-# Usage: sh ci-tests/run-all.sh
-cd "$(dirname "$0")"
-overall=0
+set -u
+failed=0
+run(){ echo "== $1 =="; shift; "$@" || failed=1; echo ""; }
 
-echo "== 1/17 JS syntax gate =="
-sh test-syntax.sh || overall=1
-echo ""
+run "FOUNDATION" sh ci-tests/suites/01-foundation.sh
+run "DATA INTEGRITY" sh ci-tests/suites/02-data-integrity.sh
+run "PRODUCT CONTRACTS" sh ci-tests/suites/03-product-contracts.sh
+run "ANALYTICS" sh ci-tests/suites/04-analytics.sh
+run "PORTABILITY" sh ci-tests/suites/05-portability.sh
+run "RUNTIME RELIABILITY" sh ci-tests/suites/06-runtime-reliability.sh
+run "TRIP VALIDATION" sh ci-tests/suites/07-trip-validation.sh
+run "RELEASE ORCHESTRATION" sh ci-tests/suites/08-release-orchestration.sh
+run "DESTRUCTIVE ACTION SECURITY" sh ci-tests/suites/09-destructive-action-security.sh
+run "STAGE 1 GENERICITY" sh ci-tests/suites/10-stage1-genericity.sh
+run "EXPENSE / BOOKING LINKAGE" sh ci-tests/suites/11-expense-booking-linkage.sh
 
-echo "== 2/17 Release integrity (checksums + manifest) =="
-sh test-checksums.sh || overall=1
-echo ""
-
-echo "== 3/17 HTML structure =="
-sh test-html-structure.sh || overall=1
-echo ""
-
-echo "== 4/17 Entity linkage (places/bookings/itinerary/parties) =="
-node test-entity-integrity.js || overall=1
-echo ""
-
-echo "== 5/17 Guide address integrity =="
-python3 address-integrity-test.py || overall=1
-echo ""
-
-echo "== 6/17 Timeline integrity =="
-node test-timeline-integrity.js || overall=1
-echo ""
-
-echo "== 7/17 UX contract =="
-node test-ux-contract.js || overall=1
-echo ""
-
-echo "== 8/17 RC24.7 focused contract =="
-node test-rc24-7.js || overall=1
-echo ""
-
-echo "== 9/17 RC24.7.2 regression contract =="
-node test-rc24-7-2.js || overall=1
-echo ""
-
-echo "== 10/17 RC25.1 contract =="
-node test-rc25-1.js || overall=1
-echo ""
-
-echo "== 11/17 RC25.1.6 consistency contract =="
-node test-rc25-1-6.js || overall=1
-echo ""
-
-echo "== 12/17 RC25.2.2 guide / route contract =="
-node test-rc25-2-2.js || overall=1
-echo ""
-
-echo "== 13/17 Runtime production integrity =="
-node test-runtime-integrity.js || overall=1
-echo ""
-
-echo "== 14/17 RC25.2.3 admin modal safe-area contract =="
-node test-rc25-2-3.js || overall=1
-echo ""
-
-echo "== 15/17 Analytics System v1.2 runtime contract =="
-node test-analytics-v1.js || overall=1
-echo ""
-
-echo "== 16/17 Analytics Supabase permission contract =="
-node test-analytics-permission-contract.js || overall=1
-echo ""
-
-echo "== 17/17 Travel Engine 25.4.12 selective backport =="
-node test-engine-backport-25-4-12.js || overall=1
-echo ""
-
-if [ "$overall" -eq 0 ]; then
-  echo "ALL TESTS PASSED"
-else
-  echo "ONE OR MORE TESTS FAILED"
-fi
-exit $overall
-
+[ "$failed" -eq 0 ] || { echo "MASTER CI SUITE FAILED"; exit 1; }
+echo "MASTER CI SUITE PASSED"

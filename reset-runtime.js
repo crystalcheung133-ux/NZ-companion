@@ -29,7 +29,9 @@
     await root.SUPABASE.getSession();
     const config=root.SYNC_CONFIG||{};
     const rpcName=config.rpc?.resetTrip||'reset_trip';
-    const {data,error}=await root.SUPABASE.getClient().rpc(rpcName,{p_trip_id:config.tripId});
+    const credential=typeof root.getAdminPublishCredential==='function'?root.getAdminPublishCredential():null;
+    if(!credential) throw new Error('Trip Studio credential is unavailable. Close and reopen Trip Studio.');
+    const {data,error}=await root.SUPABASE.getClient().rpc(rpcName,{p_trip_id:config.tripId,p_admin_pin:credential});
     if(error){
       const missing=/could not find|does not exist|schema cache/i.test(error.message||'');
       throw new Error(missing

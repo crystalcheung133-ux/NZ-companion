@@ -1,6 +1,12 @@
-# Keep QA and release metadata in the source archive, but do not publish them.
+# Travel Engine production deploy hygiene
+.github/
 ci-tests/
-PRODUCTION-FILE-MANIFEST.txt
+docs/
+*.md
+*.sql
+*.zip
 SHA256SUMS.txt
+PRODUCTION-FILE-MANIFEST.txt
 VERSION.txt
-RC25.2.2-Production-Freeze-Certificate.md
+RELEASE.json
+supabase/

@@ -2434,3 +2434,26 @@ body.guide-booking-stack-open #tripModal{z-index:5100!important;}
 .expense-fx-helper:empty{display:none!important}.expense-fx-helper{margin:2px 0 8px!important;font-size:12px!important;text-transform:none!important}
 .expense-original-totals{display:flex;flex-wrap:wrap;gap:6px 10px;margin-top:7px}.expense-original-totals span,.expense-card .expense-home-equivalent{font-size:12px;color:var(--muted)}
 .booking-detail-navigation .pill:disabled,.trip-hub-navigation .pill:disabled{opacity:.42;cursor:default}
+
+/* Travel Engine 25.4.19 — Stage 1 genericity */
+.accommodation-status-badge--open,
+.guide-status-open{background:rgba(109,126,111,.11);border-color:rgba(109,126,111,.22);color:#536456}
+.timeline-open-state{display:flex;gap:14px;align-items:flex-start;margin:14px 0 18px;padding:16px 18px;border:1px dashed var(--theme-border);border-radius:var(--theme-surface-radius,20px);background:rgba(255,255,255,.46)}
+.timeline-open-state h3{margin:2px 0 5px}
+.timeline-open-state p{margin:0;color:var(--theme-muted)}
+.timeline-open-icon{font-size:24px;line-height:1}
+
+/* Travel Engine 25.4.20 — Booking ↔ Expense linkage */
+.booking-expense-actions{margin-top:14px;padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.45)}
+.booking-expense-actions>div:first-child{font-size:.86rem;font-weight:800;margin-bottom:8px}
+.booking-expense-linked{color:#58745d}
+.booking-expense-unlinked{color:var(--muted)}
+.booking-expense-buttons{display:flex;gap:8px;flex-wrap:wrap}
+.expense-booking-source{margin:8px 0 2px;font-size:.84rem}
+.expense-booking-source a{font-weight:800;color:inherit;text-decoration:underline;text-underline-offset:3px}
+.expense-notice-modal{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:22px;background:rgba(24,29,31,.38);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+.expense-notice-sheet{position:relative;width:min(420px,100%);background:#fffaf2;border:1px solid rgba(210,190,169,.9);border-radius:26px;padding:24px;box-shadow:0 24px 70px rgba(25,30,32,.28)}
+.expense-notice-sheet h2{margin:4px 0 12px}
+.expense-notice-close{position:absolute;right:14px;top:14px;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:#fffaf2;font-size:26px}
+.expense-notice-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+.expense-notice-actions .pill{text-decoration:none;text-align:center}

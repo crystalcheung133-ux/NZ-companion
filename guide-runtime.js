@@ -153,8 +153,8 @@ function guideStayStatusHTML(item){
  const booking=(window.BOOKING_AUTHORITY&&item?.cat==='STAY')?BOOKING_AUTHORITY.byPlace(item.key):null;
  if(!booking)return '';
  const raw=String(booking.displayStatus||booking.status||'TO CONFIRM').toUpperCase();
- const label=raw==='CONFIRMED'?'CONFIRMED':(raw==='PENDING'?'PENDING':'TO CONFIRM');
- const cls=label==='CONFIRMED'?'confirmed':'to-confirm';
+ const label=raw==='CONFIRMED'?'CONFIRMED':(raw==='PENDING'?'PENDING':(raw==='OPEN'||raw==='UNBOOKED'||raw==='DECIDE LATER'||raw==='TBD'?'OPEN':'TO CONFIRM'));
+ const cls=label==='CONFIRMED'?'confirmed':(label==='OPEN'?'open':'to-confirm');
  return `<span class="guide-status guide-status-${cls}">${label}</span>`;
 }
 function guideListRow(item){

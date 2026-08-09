@@ -1,45 +1,27 @@
-name: CI
+name: Travel Engine CI
 
 on:
   push:
   pull_request:
 
 jobs:
-  ci-suite:
-    name: Production CI Suite
+  test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: '3.12'
 
-      - name: JS syntax gate
-        run: sh ci-tests/test-syntax.sh
-
-      - name: Release integrity (checksums + manifest)
-        run: sh ci-tests/test-checksums.sh
-
-      - name: HTML structure
-        run: sh ci-tests/test-html-structure.sh
-
-      - name: Entity linkage (places/bookings/itinerary/parties)
-        run: node ci-tests/test-entity-integrity.js
-
-      - name: Guide address integrity
-        run: python3 ci-tests/address-integrity-test.py
-
-      - name: Timeline integrity
-        run: node ci-tests/test-timeline-integrity.js
-
-      - name: UX contract
-        run: node ci-tests/test-ux-contract.js
-
+      - name: Run canonical Travel Engine CI
+        shell: bash
+        run: sh ci-tests/run-all.sh

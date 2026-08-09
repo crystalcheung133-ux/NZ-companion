@@ -1,11 +1,9 @@
 Travel Engine Production File Manifest
 Generated: 2026-08-09
-Release: NZ-RC25.3.1-ENGINE-25.4.12
+Release: NZ-RC25.3.9-ENGINE-25.4.20
 Production root files:
 
 - .vercelignore
-- RC25.2.3-Production-Freeze-Certificate.md
-- VERSION.txt
 - admin.js
 - analytics-runtime.js
 - app-runtime.js
@@ -17,6 +15,7 @@ Production root files:
 - data.js
 - day.html
 - engine-integrity.js
+- expense-notification-runtime.js
 - expense-sync-runtime.js
 - expenses.html
 - expenses.js

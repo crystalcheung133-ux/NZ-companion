@@ -82,7 +82,7 @@ function buildAccommodationListHTML(){
   return '<div class="accommodation-picker" role="list">'+bookings.map(function(booking){
     const nights=Number(booking.nights||0);
     const nightsLabel=nights?`${nights} night${nights===1?'':'s'}`:'';
-    const price=booking.netTotalAUD?`${booking.approximateNet?'≈ ':''}Net ${booking.netTotalAUD}`:(booking.price||'Price not added yet');
+    const price=bookingPriceText(booking);
     const statusLabel=booking.displayStatus||bookingStatusText(booking)||'';
     const statusClass=String(booking.status||'').replace(/[^a-z0-9-]/gi,'').toLowerCase();
     return `<button class="accommodation-picker-row" type="button" role="listitem" onclick="openAccommodationDetail('${escapeTripHTML(booking.id)}')"><span class="accommodation-picker-icon" aria-hidden="true">🏨</span><span class="accommodation-picker-copy"><strong>${escapeTripHTML(booking.title)}</strong><small>${escapeTripHTML(booking.stayDates||booking.date||'')}</small><span class="accommodation-picker-price">${escapeTripHTML(price)}</span></span><span class="accommodation-picker-meta accommodation-picker-meta--stack">${statusLabel?`<span class="accommodation-status-badge accommodation-status-badge--${escapeTripHTML(statusClass)}">${escapeTripHTML(statusLabel)}</span>`:''}<span class="accommodation-night-line">${escapeTripHTML(nightsLabel)} <b aria-hidden="true">›</b></span></span></button>`;
@@ -102,7 +102,14 @@ function accommodationDetailNavigationHTML(bookingId){
   return bookingBrowseNavigationHTML(bookings,index,'openAccommodationDetail');
 }
 function bookingStatusText(booking){
-  return String((booking&&((booking.displayStatus||booking.status)))||'').replace(/-/g,' ').toUpperCase();
+  const raw=String((booking&&((booking.displayStatus||booking.status)))||'').replace(/-/g,' ').trim().toUpperCase();
+  if(raw==='OPEN'||raw==='UNBOOKED'||raw==='DECIDE LATER'||raw==='TBD')return 'OPEN';
+  return raw;
+}
+function bookingIsOpen(booking){return bookingStatusText(booking)==='OPEN';}
+function bookingPriceText(booking){
+  if(bookingIsOpen(booking))return booking?.openLabel||'Decide later';
+  return booking?.netTotalAUD?`${booking.approximateNet?'≈ ':''}Net ${booking.netTotalAUD}`:(booking?.price||'Price not added yet');
 }
 function bookingDayNumber(booking){
   const raw=String((booking&&booking.dayId)||'').replace('day','').replace(/\D/g,'');
@@ -242,7 +249,7 @@ function buildActivityBookingDetailHTML(booking){
     accommodationPaymentHTML(booking),activityFamilyBreakdownHTML(booking),bookingSectionHTML('Pickup & drop-off',pickup),bookingSectionHTML('Lunch',booking.lunchStatus||''),
     bookingSectionHTML('Cancellation',booking.cancellation||''),bookingSectionHTML('Notes',booking.notes||'')
   ].join('');
-  return `<article class="fact stay-booking accommodation-detail-card activity-booking-detail"><div class="accommodation-detail-head"><div><strong>${escapeTripHTML(booking.title)}</strong><span>${escapeTripHTML(booking.date||'')}</span></div><span class="accommodation-night-badge activity-confirmed-badge">${escapeTripHTML(bookingStatusText(booking))}</span></div><div class="accommodation-facts">${facts}</div>${sections}${bookingActionButtonsHTML(booking,place)}${activityDetailNavigationHTML(booking.id)}</article>`;
+  return `<article class="fact stay-booking accommodation-detail-card activity-booking-detail"><div class="accommodation-detail-head"><div><strong>${escapeTripHTML(booking.title)}</strong><span>${escapeTripHTML(booking.date||'')}</span></div><span class="accommodation-night-badge activity-confirmed-badge">${escapeTripHTML(bookingStatusText(booking))}</span></div><div class="accommodation-facts">${facts}</div>${sections}${bookingActionButtonsHTML(booking,place)}${bookingExpenseActionHTML(booking)}${activityDetailNavigationHTML(booking.id)}</article>`;
 }
 function openActivityBookingDetail(bookingId,bookingOverride,showSaved){
   activeBookingDetail={type:'activity',id:bookingId};
@@ -283,6 +290,15 @@ window.isBookingEditDirty=isBookingEditDirty;
 window.requestBookingEditClose=requestBookingEditClose;
 
 
+function bookingExpenseActionHTML(booking){
+  if(!booking||!booking.id||typeof window.openBookingExpense!=='function')return '';
+  const links=typeof window.getBookingExpenseLinks==='function'?window.getBookingExpenseLinks(booking.id):[];
+  const linked=links.length;
+  const status=linked
+    ? `<span class="booking-expense-linked">✓ ${linked} payment${linked===1?'':'s'} in Expenses</span>`
+    : `<span class="booking-expense-unlinked">Not added to Expenses</span>`;
+  return `<div class="booking-expense-actions"><div>${status}</div><div class="booking-expense-buttons">${linked?'<a class="pill trip-action-btn" href="expenses.html">View Expenses</a>':''}<button class="pill trip-action-btn" type="button" onclick="openBookingExpense('${escapeTripHTML(booking.id)}')">${linked?'Add another payment':'Add payment to Expenses'}</button></div></div>`;
+}
 function bookingEditButtonHTML(booking){
   return booking&&window.isAdminMode&&window.isAdminMode()
     ?`<button class="pill trip-action-btn booking-edit-btn" type="button" onclick="openBookingEdit('${escapeTripHTML(booking.id)}')">Edit Booking</button>`:'';

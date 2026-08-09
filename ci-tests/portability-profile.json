@@ -1,0 +1,19 @@
+{
+  "trip_name": "New Zealand Companion",
+  "forbidden_tokens": [
+    "Saigon",
+    "Vietnam",
+    "Ho Chi Minh",
+    "Christal",
+    "Vivian",
+    "Mero",
+    "KAI Hakone",
+    "Gotanda",
+    "Hakone"
+  ],
+  "identity_tokens": [
+    "lee",
+    "fowlers",
+    "yau"
+  ]
+}
