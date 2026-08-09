@@ -185,7 +185,7 @@ const FRIEND_IDENTITY=TRIP_CONFIG.participants?.identities||{};
 function friendIdentityHTML(key,compact=false){
   const fallbackKey=TRIP_CONFIG.participants?.defaultKey||Object.keys(FRIEND_IDENTITY)[0];
   const identity=FRIEND_IDENTITY[key]||FRIEND_IDENTITY[fallbackKey];
-  return `<span class="family-identity family-${escapeHTML(key)}${compact?' is-compact':''}"><span class="family-code" aria-hidden="true">${escapeHTML(identity.emoji||identity.code)}</span><span class="family-name">${escapeHTML(identity.name)}</span></span>`;
+  return `<span class="family-identity family-${escapeHTML(key)}${compact?' is-compact':''}"><span class="family-code" aria-hidden="true">${escapeHTML(identity.code)}</span><span class="family-name">${escapeHTML(identity.name)}</span></span>`;
 }
 window.friendIdentityHTML=friendIdentityHTML;
 function updateFriendLabels(){const key=getFriend();document.querySelectorAll('[data-friend-label]').forEach(e=>{e.innerHTML=friendIdentityHTML(key,true);e.dataset.family=key;});}

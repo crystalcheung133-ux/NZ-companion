@@ -58,9 +58,9 @@
       selectionKicker: 'SELECT FAMILY',
       selectionTitle: 'Who are you travelling with?',
       identities: Object.freeze({
-        lee: Object.freeze({code:'MEL',emoji:'👨‍👩‍👧‍👦',name:'Lee'}),
-        fowlers: Object.freeze({code:'SYD',emoji:'👩‍👧‍👦',name:'Fowlers'}),
-        yau: Object.freeze({code:'NTL',emoji:'👨‍👩‍👧‍👦',name:'Yau'})
+        lee: Object.freeze({code:'MEL',name:'Lee'}),
+        fowlers: Object.freeze({code:'SYD',name:'Fowlers'}),
+        yau: Object.freeze({code:'NTL',name:'Yau'})
       })
     }),
     /* Stage 3.2B: additive Party directory. Existing participant selectors
@@ -101,7 +101,7 @@
     splashSlogan: 'ADVENTURE AWAITS',
     splashDestination: 'NEW ZEALAND 2026',
     storageNamespace: 'nz-family-2026',
-    version: 'RC25.3.0',
+    version: 'RC25.3.1',
     buildLabel: 'NZ Companion · Travel Engine 25.4.12 selective backport',
     theme: root.THEME_CONFIG.colors
   });

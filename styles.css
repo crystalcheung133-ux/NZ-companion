@@ -2417,7 +2417,7 @@ body.guide-booking-stack-open #tripModal{z-index:5100!important;}
   }
 }
 
-/* NZ Companion RC25.3.0 — Travel Engine 25.4.12 selected backport */
+/* NZ Companion RC25.3.1 — Travel Engine 25.4.12 selected backport */
 .home-trip-line span{border-radius:999px!important;}
 .timeline-actions .timeline-action{border-radius:999px!important;}
 @media(max-width:760px){
@@ -2425,7 +2425,6 @@ body.guide-booking-stack-open #tripModal{z-index:5100!important;}
   .timeline-time{display:block!important;width:62px!important;max-width:62px!important;min-width:0!important;white-space:normal!important;overflow:hidden!important;overflow-wrap:break-word!important;word-break:normal!important;font-size:11px!important;line-height:1.16!important;padding:1px 0!important;}
   .timeline-main,.timeline-title-row,.timeline-title-row h3{min-width:0!important;max-width:100%!important;}
 }
-.family-identity .family-code,.family-choice .family-code,.friend-pill .family-code,#expenseModal .family-code,#momentsModal .family-code{border:0!important;background:transparent!important;box-shadow:none!important;border-radius:0!important;min-width:0!important;width:auto!important;height:auto!important;padding:0!important;margin:0!important;display:inline!important;line-height:1!important;font-size:20px!important;}
 .identity-required .mama-close{display:none!important}
 .expense-amount-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px}
 .expense-amount-heading>label{margin:0!important}
