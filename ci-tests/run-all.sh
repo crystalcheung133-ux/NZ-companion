@@ -15,6 +15,7 @@ run "DESTRUCTIVE ACTION SECURITY" sh ci-tests/suites/09-destructive-action-secur
 run "STAGE 1 GENERICITY" sh ci-tests/suites/10-stage1-genericity.sh
 run "EXPENSE / BOOKING LINKAGE" sh ci-tests/suites/11-expense-booking-linkage.sh
 run "BOOKING / EXPENSE FLOW" sh ci-tests/suites/12-booking-expense-flow.sh
+run "INLINE BOOKING FROM EXPENSE" sh ci-tests/suites/13-inline-booking-from-expense.sh
 
 [ "$failed" -eq 0 ] || { echo "MASTER CI SUITE FAILED"; exit 1; }
 echo "MASTER CI SUITE PASSED"

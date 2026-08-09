@@ -6,7 +6,6 @@ assert(e.includes("window.location.href=`expenses.html?expenseId=${encodeURIComp
 assert(e.includes("id=\"expense-${escapeHTML(e.id)}\""));
 assert(e.includes("focusExpenseFromURL()"));
 assert(t.includes("expenses.html?expenseId=${encodeURIComponent(newest.id)}"));
-assert(e.includes("&return=${encodeURIComponent(`expenses.html?expenseId=${e.id||''}`)}"));
 assert(t.includes("window.location.replace('index.html')"));
 assert(t.includes("window.location.href=deepReturn"));
 console.log('BOOKING / EXPENSE FLOW CONTRACT: PASS');

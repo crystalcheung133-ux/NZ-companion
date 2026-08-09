@@ -516,7 +516,7 @@ let editingExpenseIndex=null;
     const homeTotal=homeAmountFor(e);
     const equivalent=code!==home&&homeTotal!==null?`<p class="expense-home-equivalent">≈ ${FORMATTER.decimal(homeTotal,2)} ${home} for settlement</p>`:'';
     const source=e.sourceType==='booking'&&e.sourceBookingId
-      ? `<p class="expense-booking-source">🏨 From booking · <a href="trip.html?bookingId=${encodeURIComponent(e.sourceBookingId)}&return=${encodeURIComponent(`expenses.html?expenseId=${e.id||''}`)}">${escapeHTML(e.sourceBookingTitle||'View booking')}</a></p>`
+      ? `<p class="expense-booking-source">🏨 From booking · <button type="button" class="expense-booking-inline-link" onclick="openExpenseSourceBooking('${escapeHTML(e.sourceBookingId)}')">${escapeHTML(e.sourceBookingTitle||'View booking')}</button></p>`
       : '';
     return `<div class="expense-card"${cardId}${latestMarker}><strong>${escapeHTML(e.item||'')}</strong><p class="timestamp">${timeLabel(e.createdAt)}${e.editedAt?` · Edited ${timeLabel(e.editedAt)}`:''}</p><p>${FORMATTER.number(MONEY.normalizeAmount(e.total))} ${code} · Paid by ${identityFor(e.paidBy,true)}</p>${equivalent}<p>${personal?'Personal Expense':'Shared Expense'} · ${who}</p>${source}${actions}</div>`;
   }
@@ -687,6 +687,11 @@ let editingExpenseIndex=null;
       pageBox.innerHTML=`<div class="expense-dashboard-v33 identity-dashboard"><div class="expense-total-card"><span>Trip Total · Settlement</span><strong>${FORMATTER.decimal(total,2)} ${home}</strong><div class="expense-original-totals">${originalHtml}</div>${pendingFx||'<small>Original currencies retained · final settlement in '+home+'</small>'}</div><div class="expense-focus-grid"><div class="expense-focus-card"><h3>Personal Spend</h3>${spendHtml}</div><div class="expense-focus-card"><h3>Settlement</h3>${balanceHtml}</div></div></div><div class="expense-history-block"><h3>Transaction History</h3><p class="timestamp">Newest transactions appear first.</p><div class="transaction-scroll">${sorted.length?sorted.map(expenseCard).join(''):'<p>No transactions yet.</p>'}</div></div>`;
       focusExpenseFromURL();
     }
+  };
+
+  window.openExpenseSourceBooking=function(bookingId){
+    if(typeof window.returnToBookingDetail!=='function'){alert('Booking details are unavailable.');return;}
+    window.returnToBookingDetail(bookingId);
   };
 
   function focusExpenseFromURL(){

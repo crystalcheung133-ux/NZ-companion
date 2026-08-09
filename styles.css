@@ -2460,3 +2460,5 @@ body.guide-booking-stack-open #tripModal{z-index:5100!important;}
 
 /* Travel Engine 25.4.20.2 — focused Booking ↔ Expense handoff */
 .expense-card--focused{outline:3px solid rgba(54,140,153,.28);outline-offset:3px;box-shadow:0 12px 34px rgba(25,60,72,.12)}
+
+.expense-booking-inline-link{appearance:none;border:0;background:transparent;padding:0;margin:0;font:inherit;font-weight:800;color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}

@@ -381,6 +381,7 @@ function returnToBookingDetail(bookingId,bookingOverride,showSaved){
   const booking=bookingOverride||getBookingById(bookingId);if(!booking)return;
   if(booking.type==='activity')openActivityBookingDetail(bookingId,booking,showSaved);else openAccommodationDetail(bookingId,booking,showSaved);
 }
+window.returnToBookingDetail=returnToBookingDetail;
 function saveBookingEdit(event,bookingId){
   event.preventDefault();
   if(!(window.isAdminMode&&window.isAdminMode())){alert('Open Trip Studio before editing bookings.');return false;}
