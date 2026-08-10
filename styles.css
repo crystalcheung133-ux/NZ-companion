@@ -2560,3 +2560,14 @@ body.admin-mode{padding-top:calc(var(--studio-status-height,52px) + var(--studio
 #mamaModal.studio-view.show .complete-trip-control{padding:13px 14px!important}
 #mamaModal.studio-view.show .trip-export-launch,#mamaModal.studio-view.show .reset-trip-data-btn,#mamaModal.studio-view.show .exit-trip-studio-btn{min-height:58px!important;padding:12px 14px!important}
 @media(max-width:560px){#mamaModal.studio-view.show{padding:10px 10px calc(18px + env(safe-area-inset-bottom,0px))!important}#mamaModal.studio-view.show .trip-studio{border-radius:22px!important}#mamaModal.studio-view.show .trip-studio-head{padding:14px 14px 12px!important}#mamaModal.studio-view.show .trip-studio-group{padding:12px 14px!important}#mamaModal.studio-view.show .complete-trip-control{flex-direction:column!important;align-items:stretch!important}#mamaModal.studio-view.show .complete-trip-btn{width:100%!important}}
+
+/* Travel Engine 25.4.33 — self-contained shared-expense notification */
+.expense-notice-sheet{display:flex;flex-direction:column;max-height:min(78dvh,680px);overflow:hidden}
+.expense-notice-list{display:grid;gap:10px;overflow-y:auto;overscroll-behavior:contain;margin-top:8px;padding-right:3px}
+.expense-notice-item{padding:12px 0;border-bottom:1px solid var(--line)}
+.expense-notice-item:last-child{border-bottom:0}
+.expense-notice-item-main{display:flex;justify-content:space-between;gap:14px;align-items:baseline}
+.expense-notice-item .timestamp{margin:4px 0 0}
+.expense-notice-booking{opacity:.82}
+.expense-notice-actions{flex:0 0 auto}
+.expense-notice-done{min-width:110px}
