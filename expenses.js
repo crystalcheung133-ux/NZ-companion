@@ -47,7 +47,13 @@ function markConsumedManual(){
    Active Expenses API lives in the Stage 4F-Q single canonical module
    near the end of this file. Keep closeExpenseModal as a simple modal
    utility because HTML buttons call it directly. */
-function closeExpenseModal(){const m=$('expenseModal'); if(m) m.classList.remove('show'); if(typeof window.unlockExpensePage==='function') window.unlockExpensePage();}
+function closeExpenseModal(){
+    expenseSheetFocusScroll=null;
+    const expenseModal=document.getElementById('expenseModal');
+    const expenseSheet=expenseModal?.querySelector('.tools-sheet');
+    if(expenseModal) expenseModal.scrollTop=0;
+    if(expenseSheet) expenseSheet.scrollTop=0;
+const m=$('expenseModal'); if(m) m.classList.remove('show'); if(typeof window.unlockExpensePage==='function') window.unlockExpensePage();}
 
 function splitAll() {
   document.querySelectorAll('#expenseModal input[data-split]').forEach(x => x.checked = true);
@@ -201,7 +207,13 @@ let editingExpenseIndex=null;
     if(rate>0){
       const converted=MONEY.convert(total||1,rate,code,other);
       const unit=MONEY.convert(1,rate,code,other);
-      const rateText=unit>0 ? `1 ${code} ≈ ${FORMATTER.decimal(unit,2)} ${other}` : '';
+      let basis=1;
+      if(unit>0 && unit<0.0001) basis=100000;
+      else if(unit>0 && unit<0.001) basis=10000;
+      else if(unit>0 && unit<0.01) basis=1000;
+      else if(unit>0 && unit<0.1) basis=100;
+      const basisConverted=unit*basis;
+      const rateText=unit>0 ? `${FORMATTER.decimal(basis,0)} ${code} ≈ ${FORMATTER.decimal(basisConverted,2)} ${other}` : '';
       const convertedText=total&&converted!==null?`≈ ${FORMATTER.decimal(converted,2)} ${other}`:'';
       helper.textContent=[convertedText,rateText].filter(Boolean).join(' · ');
     }else{
@@ -547,6 +559,13 @@ let editingExpenseIndex=null;
   });
 
   window.openExpenseModal=function(){
+    /* Engine 25.4.31 — Expense modal scroll reset */
+    expenseSheetFocusScroll=null;
+    const expenseModal=document.getElementById('expenseModal');
+    const expenseSheet=expenseModal?.querySelector('.tools-sheet');
+    if(expenseModal) expenseModal.scrollTop=0;
+    if(expenseSheet) expenseSheet.scrollTop=0;
+
     resetExpenseForm();
     lockExpensePage();
     const modal=document.getElementById('expenseModal');

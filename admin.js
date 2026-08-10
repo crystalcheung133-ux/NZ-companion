@@ -146,6 +146,12 @@
   function hasDraftChanges(draft){ return !!draft && !!draft.changes && Object.keys(draft.changes).length>0; }
   function updateUI(){
     document.body.classList.toggle('admin-mode',state.mode);
+    const statusBar=document.getElementById('adminModeBanner');
+    const travellerHeader=document.querySelector('.site-nav');
+    const statusHeight=Math.ceil(statusBar?.getBoundingClientRect().height||52);
+    const travellerHeaderHeight=Math.ceil(travellerHeader?.getBoundingClientRect().height||68);
+    document.documentElement.style.setProperty('--studio-status-height',`${statusHeight}px`);
+    document.documentElement.style.setProperty('--studio-traveller-header-height',`${travellerHeaderHeight}px`);
     document.body.classList.toggle('admin-dirty',state.mode&&state.dirty);
     const control=document.getElementById('adminModeControl');
     if(control) control.hidden=!(isAdminUser() && state.mode);
@@ -347,17 +353,32 @@
     originalOpenFriendModal();
     updateUI();
     if(state.mode){
-      const sheet=modal&&modal.querySelector('.guide-sheet');
-      if(sheet) window.requestAnimationFrame(()=>{ sheet.scrollTop=sheet.scrollHeight; });
+      const studio=document.getElementById('adminModeControl');
+      const scrollToStudioCard=()=>{
+        if(!studio) return;
+        studio.scrollIntoView({block:'start',inline:'nearest'});
+      };
+      requestAnimationFrame(()=>requestAnimationFrame(scrollToStudioCard));
+      setTimeout(scrollToStudioCard,120);
+      setTimeout(scrollToStudioCard,350);
     }
   };
 
   const originalSetFriend=window.setFriend||setFriend;
   window.setFriend=function(key){
+    const wasStudioActive=state.mode;
+    const previousFriend=typeof getStoredFriend==='function'?getStoredFriend():null;
     if(state.mode&&state.dirty&&!confirmExit()) return;
     if(state.mode&&state.dirty) window.discardAdminChanges();
     originalSetFriend(key);
-    state.mode=readMode();
+    if(wasStudioActive && key!==previousFriend){
+      state.mode=false;
+      setStoredMode(false);
+      lockAdminSession();
+      closeTripStudioPanel();
+    }else{
+      state.mode=readMode();
+    }
     updateUI();
     if(typeof window.refreshExpenseAdminUI==='function') window.refreshExpenseAdminUI();
     document.dispatchEvent(new CustomEvent('travelengine:adminmodechange',{detail:{enabled:state.mode}}));

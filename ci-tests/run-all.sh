@@ -19,3 +19,6 @@ run "INLINE BOOKING FROM EXPENSE" sh ci-tests/suites/13-inline-booking-from-expe
 
 [ "$failed" -eq 0 ] || { echo "MASTER CI SUITE FAILED"; exit 1; }
 echo "MASTER CI SUITE PASSED"
+
+echo "== ENGINE 25.4.31 INTERACTION =="
+node ci-tests/test-engine-25.4.31-interaction-contract.js
