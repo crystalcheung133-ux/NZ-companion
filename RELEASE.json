@@ -1,6 +1,6 @@
 {
-  "engine_version": "25.4.31",
-  "artifact_version": "NZ Companion RC25.4.1 \u00b7 Travel Engine 25.4.31 Interaction Consolidation",
+  "engine_version": "25.4.32",
+  "artifact_version": "NZ Companion RC25.4.2 \u00b7 Travel Engine 25.4.32 Studio Popup Workspace",
   "baseline_engine": "25.4.20.3",
   "release_date": "2026-08-09",
   "release_type": "nz-production-engine-25.4.31-port",

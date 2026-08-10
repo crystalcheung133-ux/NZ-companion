@@ -22,3 +22,6 @@ echo "MASTER CI SUITE PASSED"
 
 echo "== ENGINE 25.4.31 INTERACTION =="
 node ci-tests/test-engine-25.4.31-interaction-contract.js
+
+echo "== ENGINE 25.4.32 STUDIO POPUP == "
+node ci-tests/test-engine-25.4.32-studio-popup-workspace.js
