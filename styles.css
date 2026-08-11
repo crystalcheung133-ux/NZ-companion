@@ -745,10 +745,6 @@ body.moments-page .moments-capture-choices .btn, body.moments-page .moments-capt
   display:none!important;
 }#momentsModal .moment-context-summary[hidden] {
   display:none!important;
-}#momentsModal .moments-sheet {
-  height:auto!important;
-  max-height:calc(100svh - 20px)!important;
-  overflow-y:auto!important;
 }#momentsModal .moments-form {
   gap:6px!important;
   overflow:visible!important;
@@ -760,10 +756,6 @@ body.moments-page .moments-capture-choices .btn, body.moments-page .moments-capt
   margin:0 0 3px!important;
 }#momentsModal .moments-sheet p:has(#momentsFriend) {
   margin:0 0 4px!important;
-}#momentsModal .moments-sheet p:has(#momentsFriend) .mini-btn {
-  min-height:32px!important;
-  padding:6px 10px!important;
-  font-size:12px!important;
 }#momentsModal .moment-context-panel {
   gap:6px!important;
   margin-bottom:6px!important;
@@ -795,9 +787,6 @@ body.moments-page .moments-capture-choices .btn, body.moments-page .moments-capt
 }#momentsModal .photo-capture-btn {
   min-height:36px!important;
   padding:7px 9px!important;
-}#momentsModal .moments-sheet .btn {
-  min-height:46px!important;
-  padding:8px 12px!important;
 }
 @media(max-width:520px){body.moments-page .moments-capture-choices {
     grid-template-columns:1fr 1fr!important;
@@ -805,14 +794,6 @@ body.moments-page .moments-capture-choices .btn, body.moments-page .moments-capt
     min-height:44px!important;
     padding:9px 8px!important;
     font-size:13px!important;
-  }#momentsModal .moments-sheet {
-    max-height:calc(100svh - 12px)!important;
-    padding:13px 14px 12px!important;
-  }#momentsModal .moments-sheet h2 {
-    font-size:27px!important;
-    margin-bottom:2px!important;
-  }#momentsModal .moments-sheet .kicker {
-    margin-bottom:2px!important;
   }
 }/* ==========================================================================
    Stage 5C-2 — Home Experience Refresh
@@ -2146,44 +2127,6 @@ body.home-bg .live-currency-card #currencyCardMeta{position:relative;z-index:2;w
 }
 
 
-/* RC23.4 modal/nav coexistence: long Trip and Guide cards remain fully reachable. */
-:root{
-  --app-nav-clearance: calc(112px + env(safe-area-inset-bottom, 0px));
-}
-.guide-modal,
-.trip-modal{
-  padding-bottom:var(--app-nav-clearance)!important;
-  align-items:start!important;
-  overflow:hidden!important;
-}
-#guideModal .guide-sheet,
-#tripModal .trip-sheet{
-  max-height:calc(100dvh - var(--app-nav-clearance) - 18px)!important;
-  padding-bottom:24px!important;
-  scroll-padding-bottom:28px!important;
-  overscroll-behavior:contain!important;
-}
-#guideModal .guide-next-row,
-#tripModal .guide-next-row{
-  position:relative!important;
-  z-index:2!important;
-  margin-bottom:8px!important;
-}
-@media (max-width:760px){
-  :root{
-    --app-nav-clearance: calc(118px + env(safe-area-inset-bottom, 0px));
-  }
-  .guide-modal,
-  .trip-modal{
-    padding:8px 8px var(--app-nav-clearance)!important;
-  }
-  #guideModal .guide-sheet,
-  #tripModal .trip-sheet{
-    max-height:calc(100dvh - var(--app-nav-clearance) - 8px)!important;
-  }
-}
-
-
 /* RC24 UX Freeze — Trip = Action; Guide = Knowledge. */
 .accommodation-detail-card--compact{
   gap:12px!important;
@@ -2249,27 +2192,6 @@ body.home-bg .live-currency-card #currencyCardMeta{position:relative;z-index:2;w
 body.guide-booking-stack-open #guideModal{z-index:5000!important;}
 body.guide-booking-stack-open #tripModal{z-index:5100!important;}
 
-/* RC25.0.2 — keep final modal actions clear of the fixed app navigation. */
-:root{
-  --fixed-nav-safe-clearance: calc(126px + env(safe-area-inset-bottom, 0px));
-}
-
-#momentsModal .moments-form,
-#expenseModal .expense-form{
-  padding-bottom:18px!important;
-}
-#momentsModal .moments-form>.btn:last-child,
-#expenseModal #expenseSaveButton{
-  position:relative!important;
-  z-index:2!important;
-  margin-bottom:12px!important;
-}
-@media(max-width:760px){
-  :root{
-    --fixed-nav-safe-clearance: calc(136px + env(safe-area-inset-bottom, 0px));
-  }
-}
-
 /* RC25.1.1 — canonical modal/menu visibility hotfix.
    Prevent mixed legacy rules from collapsing an opened sheet to its handle. */
 .guide-modal,
@@ -2332,74 +2254,22 @@ body.guide-booking-stack-open #tripModal{z-index:5100!important;}
 }
 
 
-/* RC25.1.5 — balanced fixed-nav clearance for Moments and Expenses. */
-:root{--action-modal-nav-clearance:calc(104px + env(safe-area-inset-bottom,0px));}
-
-#momentsModal .moments-sheet,
-#momentsModal .moments-form,#expenseModal .expense-form{
-  min-height:0!important;
-  overflow-y:auto!important;
-  padding-bottom:20px!important;
-  scroll-padding-bottom:20px!important;
-}
-#momentsModal .moments-form>.btn:last-child,#expenseModal #expenseSaveButton{
-  flex:0 0 auto!important;
-  margin:8px 0 0!important;
-}
-@media(max-width:760px){
-  :root{--action-modal-nav-clearance:calc(110px + env(safe-area-inset-bottom,0px));}
-  #momentsModal .moments-sheet,
-}
-
 /* RC25.2.2 — Guide information hierarchy: core content lives inside the main card. */
 .quick-info-card .guide-content-section,.quick-info-card .guide-stay-section{margin:14px 0 0;padding:14px 0 0;border:0;border-top:1px solid var(--line);border-radius:0;background:transparent}
 .quick-info-card .guide-content-section h3,.quick-info-card .guide-stay-section h3{font-size:.82rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 7px}
 .quick-info-card .guide-content-section ul,.quick-info-card .guide-stay-section ul{margin:0;padding-left:20px}
 .timeline-action--route-option{white-space:nowrap}
 
-/* RC25.2.3 — canonical admin modal layer.
-   Admin/Studio sheets must sit above the fixed app navigation instead of
-   relying on page-specific bottom padding. This keeps every final action
-   (Apply, Save, Publish, Complete, Leave) reachable on mobile. */
+/* RC25.2.3 timeline editor layer — Studio ownership moved to Engine 25.4.34. */
 :root{--admin-modal-layer:7000;}
-.timeline-editor-modal,
-#mamaModal.studio-view,
-#mama-modal.studio-view{
-  z-index:var(--admin-modal-layer)!important;
-}
-.timeline-editor-modal.show,
-#mamaModal.studio-view.show,
-#mama-modal.studio-view.show{
-  isolation:isolate!important;
-}
-.timeline-editor-sheet{
-  max-height:calc(100dvh - 24px)!important;
-}
-.timeline-editor-scroll{
-  scroll-padding-bottom:24px!important;
-}
-.timeline-editor-actions{
-  position:relative!important;
-  z-index:3!important;
-  flex:0 0 auto!important;
-}
-#mamaModal.studio-view .guide-sheet{
-  max-height:calc(100dvh - 24px)!important;
-  padding-bottom:calc(22px + env(safe-area-inset-bottom,0px))!important;
-  scroll-padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))!important;
-}
+.timeline-editor-modal{z-index:var(--admin-modal-layer)!important}
+.timeline-editor-modal.show{isolation:isolate!important}
+.timeline-editor-sheet{max-height:calc(100dvh - 24px)!important}
+.timeline-editor-scroll{scroll-padding-bottom:24px!important}
+.timeline-editor-actions{position:relative!important;z-index:3!important;flex:0 0 auto!important}
 @media(max-width:620px){
-  .timeline-editor-sheet{
-    height:100dvh!important;
-    max-height:100dvh!important;
-  }
-  .timeline-editor-actions{
-    padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))!important;
-  }
-  #mamaModal.studio-view .guide-sheet{
-    max-height:calc(100dvh - 12px)!important;
-    padding-bottom:calc(28px + env(safe-area-inset-bottom,0px))!important;
-  }
+  .timeline-editor-sheet{height:100dvh!important;max-height:100dvh!important}
+  .timeline-editor-actions{padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))!important}
 }
 
 /* NZ Companion RC25.3.1 — Travel Engine 25.4.12 selected backport */
@@ -2448,118 +2318,162 @@ body.guide-booking-stack-open #tripModal{z-index:5100!important;}
 
 .expense-booking-inline-link{appearance:none;border:0;background:transparent;padding:0;margin:0;font:inherit;font-weight:800;color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 
-\n/* NZ RC25.4.0 / Engine 25.4.21 — canonical Studio workspace overlay */
-body.admin-mode #adminModeBanner{position:fixed!important;top:0!important;left:0!important;right:0!important;z-index:7300!important;min-height:52px!important;padding:calc(10px + env(safe-area-inset-top,0px)) 18px 10px!important;box-sizing:border-box!important;background:#245f49!important;color:#fff!important;display:flex!important;align-items:flex-end!important;justify-content:space-between!important;border:0!important;box-shadow:none!important}
-body.admin-mode #adminModeBanner strong,body.admin-mode #adminModeBanner span{color:#fff!important}
-#mamaModal.studio-view{position:fixed!important;inset:0!important;width:100%!important;height:100dvh!important;max-width:none!important;max-height:none!important;margin:0!important;padding:calc(52px + env(safe-area-inset-top,0px)) 0 0!important;border-radius:0!important;background:rgba(248,246,238,.98)!important;z-index:7200!important;align-items:stretch!important;justify-content:stretch!important;overflow:hidden!important}
-#mamaModal.studio-view .guide-sheet{width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;margin:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;padding:12px 14px calc(24px + env(safe-area-inset-bottom,0px))!important;overflow-y:auto!important;overscroll-behavior:contain!important;scroll-padding-bottom:28px!important;background:linear-gradient(180deg,#f5faf5 0%,#fbfaf3 100%)!important}
-#mamaModal.studio-view .trip-studio{width:min(100%,760px)!important;margin:0 auto!important;border-radius:20px!important}
-#mamaModal.studio-view .trip-studio-head{padding:16px 16px 14px!important}
-#mamaModal.studio-view .trip-studio-head small{display:block!important}
-#mamaModal.studio-view .trip-studio-group{padding:14px 16px!important}
-#mamaModal.studio-view .trip-studio-label{margin-bottom:9px!important;font-size:9px!important}
-#mamaModal.studio-view .complete-trip-control{padding:13px 14px!important}
-#mamaModal.studio-view .trip-export-launch,#mamaModal.studio-view .reset-trip-data-btn,#mamaModal.studio-view .exit-trip-studio-btn{min-height:58px!important;padding:12px 14px!important}
-@media(max-width:560px){#mamaModal.studio-view{padding-top:calc(52px + env(safe-area-inset-top,0px))!important}#mamaModal.studio-view .guide-sheet{padding:10px 10px calc(20px + env(safe-area-inset-bottom,0px))!important}#mamaModal.studio-view .trip-studio-head{padding:14px 14px 12px!important}#mamaModal.studio-view .trip-studio-head h3{font-size:22px!important}#mamaModal.studio-view .trip-studio-head small{font-size:11px!important;line-height:1.3!important}#mamaModal.studio-view .trip-studio-group{padding:12px 14px!important}#mamaModal.studio-view .complete-trip-control{flex-direction:column!important;align-items:stretch!important}#mamaModal.studio-view .complete-trip-btn{width:100%!important}}
-
-
+\n
+/* Travel Engine 25.4.34 — canonical presentation shell.
+   SINGLE OWNER for persistent Studio chrome and popup geometry.
+   Historical modal/nav-clearance and full-page Studio rules are intentionally removed. */
+:root{
+  --engine-studio-status-fallback:52px;
+  --engine-traveller-header-fallback:68px;
+  --engine-modal-layer:7000;
+  --engine-studio-modal-layer:7200;
+  --engine-traveller-layer:7400;
+  --engine-studio-status-layer:7500;
 }
 
-
-
-
-/* NZ RC25.4.0.4 — Studio mode global chrome stack.
-   While Studio mode is authenticated:
-   1) green Studio status bar stays visible on ordinary pages;
-   2) traveller header/user selector sits directly BELOW it;
-   3) ordinary page content starts below both;
-   4) Studio workspace also starts below both. */
+/* Persistent Studio chrome. */
 body.admin-mode #adminModeBanner{
   display:flex!important;
   position:fixed!important;
-  top:0!important;
-  left:0!important;
-  right:0!important;
-  z-index:7500!important;
-  min-height:52px!important;
+  top:0!important;left:0!important;right:0!important;
+  z-index:var(--engine-studio-status-layer)!important;
+  min-height:var(--engine-studio-status-fallback)!important;
   padding:calc(10px + env(safe-area-inset-top,0px)) 18px 10px!important;
   box-sizing:border-box!important;
-  background:#245f49!important;
-  color:#fff!important;
-  align-items:flex-end!important;
-  justify-content:space-between!important;
-  border:0!important;
-  box-shadow:none!important;
+  background:#245f49!important;color:#fff!important;
+  align-items:flex-end!important;justify-content:space-between!important;
+  border:0!important;box-shadow:none!important;
 }
 body.admin-mode #adminModeBanner strong,
-body.admin-mode #adminModeBanner span{color:#fff!important;}
+body.admin-mode #adminModeBanner span{color:#fff!important}
 
 body.admin-mode .site-nav{
   position:fixed!important;
-  top:var(--studio-status-height,52px)!important;
-  left:0!important;
-  right:0!important;
-  z-index:7400!important;
-  visibility:visible!important;
-  pointer-events:auto!important;
+  top:var(--studio-status-height,var(--engine-studio-status-fallback))!important;
+  left:0!important;right:0!important;
+  z-index:var(--engine-traveller-layer)!important;
+  visibility:visible!important;pointer-events:auto!important;
   background:rgba(255,255,255,.98)!important;
 }
 
-/* Ordinary traveller pages must clear both fixed chrome rows. */
-body.admin-mode:not(:has(#mamaModal.studio-view.show)){
-  padding-top:calc(var(--studio-status-height,52px) + var(--studio-traveller-header-height,68px))!important;
+body.admin-mode{
+  --engine-fixed-chrome-height:calc(
+    var(--studio-status-height,var(--engine-studio-status-fallback))
+    + var(--studio-traveller-header-height,var(--engine-traveller-header-fallback))
+  );
+  padding-top:var(--engine-fixed-chrome-height)!important;
 }
 
-/* Full Studio workspace clears the same two rows. */
-#mamaModal.studio-view{
-  padding-top:calc(var(--studio-status-height,52px) + var(--studio-traveller-header-height,68px))!important;
-  background:#f8f6ee!important;
-}
-@media(max-width:560px){
-  body.admin-mode:not(:has(#mamaModal.studio-view.show)){
-    padding-top:calc(var(--studio-status-height,52px) + var(--studio-traveller-header-height,68px))!important;
-  }
-  #mamaModal.studio-view{
-    padding-top:calc(var(--studio-status-height,52px) + var(--studio-traveller-header-height,68px))!important;
-  }
-}
-
-/* Engine 25.4.31 — canonical full-overlay modal contract. */
+/* Ordinary popup: overlay is the single scroll owner; card remains natural-height. */
 body:has(:is(.guide-modal,.moments-modal,.unexpected-modal,.tools-modal,.mama-modal,.trip-modal).show) .app-nav{
-  pointer-events:none!important;z-index:100!important;
-}
-body :is(.guide-modal,.moments-modal,.unexpected-modal,.tools-modal,.trip-modal,.mama-modal:not(.studio-view)).show{
-  position:fixed!important;left:0!important;right:0!important;top:0!important;bottom:0!important;
-  z-index:7000!important;display:block!important;overflow-y:auto!important;overflow-x:hidden!important;
-  overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important;box-sizing:border-box!important;
-  padding:12px 12px calc(22px + env(safe-area-inset-bottom,0px))!important;
-  background:rgba(43,37,31,.48)!important;scroll-padding-top:12px!important;scroll-padding-bottom:24px!important;
-}
-body.admin-mode :is(.guide-modal,.moments-modal,.unexpected-modal,.tools-modal,.trip-modal,.mama-modal:not(.studio-view)).show{
-  top:calc(var(--studio-status-height,52px) + var(--studio-traveller-header-height,68px))!important;
-}
-body :is(.guide-modal,.moments-modal,.unexpected-modal,.tools-modal,.trip-modal,.mama-modal:not(.studio-view)).show > :is(.guide-sheet,.moments-sheet,.unexpected-sheet,.tools-sheet,.trip-sheet){
-  width:min(760px,100%)!important;height:auto!important;min-height:0!important;max-height:none!important;
-  margin:0 auto!important;overflow:visible!important;box-sizing:border-box!important;padding-bottom:30px!important;
+  pointer-events:none!important;
+  z-index:100!important;
 }
 
-/* Travel Engine 25.4.32 — Studio popup workspace contract.
-   PIN success opens Trip Studio as a centred popup card, never a full-page workspace.
-   Studio authentication keeps the highlighted status bar + traveller header visible.
-   Closing the Studio card closes only the workspace; switching traveller exits Studio. */
-body.admin-mode #adminModeBanner{display:flex!important;position:fixed!important;top:0!important;left:0!important;right:0!important;z-index:7500!important;min-height:52px!important;padding:calc(10px + env(safe-area-inset-top,0px)) 18px 10px!important;box-sizing:border-box!important;background:#245f49!important;color:#fff!important;align-items:flex-end!important;justify-content:space-between!important;border:0!important;box-shadow:none!important}
-body.admin-mode #adminModeBanner strong,body.admin-mode #adminModeBanner span{color:#fff!important}
-body.admin-mode .site-nav{position:fixed!important;top:var(--studio-status-height,52px)!important;left:0!important;right:0!important;z-index:7400!important;visibility:visible!important;pointer-events:auto!important;background:rgba(255,255,255,.98)!important}
-body.admin-mode{padding-top:calc(var(--studio-status-height,52px) + var(--studio-traveller-header-height,68px))!important;--engine-fixed-chrome-height:calc(var(--studio-status-height,52px) + var(--studio-traveller-header-height,68px))}
-#mamaModal.studio-view.show{position:fixed!important;top:calc(var(--studio-status-height,52px) + var(--studio-traveller-header-height,68px))!important;left:0!important;right:0!important;bottom:0!important;width:auto!important;height:auto!important;max-width:none!important;max-height:none!important;margin:0!important;padding:14px 14px calc(22px + env(safe-area-inset-bottom,0px))!important;z-index:7200!important;display:block!important;overflow-y:auto!important;overflow-x:hidden!important;background:rgba(43,37,31,.48)!important;overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important;box-sizing:border-box!important;scroll-padding-top:14px!important;scroll-padding-bottom:24px!important}
-#mamaModal.studio-view.show .guide-sheet{width:min(760px,100%)!important;height:auto!important;min-height:0!important;max-height:none!important;margin:0 auto!important;padding:0!important;overflow:visible!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:transparent!important}
-#mamaModal.studio-view.show .trip-studio{display:block!important;width:100%!important;max-width:760px!important;margin:0 auto!important;border-radius:24px!important;overflow:hidden!important}
+body :is(
+  .guide-modal,.moments-modal,.unexpected-modal,.tools-modal,.trip-modal,
+  .mama-modal:not(.studio-view)
+).show{
+  position:fixed!important;
+  left:0!important;right:0!important;top:0!important;bottom:0!important;
+  z-index:var(--engine-modal-layer)!important;
+  display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;
+  overflow-y:auto!important;overflow-x:hidden!important;
+  overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important;
+  box-sizing:border-box!important;
+  padding:12px 12px calc(22px + env(safe-area-inset-bottom,0px))!important;
+  background:rgba(43,37,31,.48)!important;
+  scroll-padding-top:12px!important;scroll-padding-bottom:24px!important;
+}
+
+body.admin-mode :is(
+  .guide-modal,.moments-modal,.unexpected-modal,.tools-modal,.trip-modal,
+  .mama-modal:not(.studio-view)
+).show{
+  top:var(--engine-fixed-chrome-height)!important;
+}
+
+body :is(
+  .guide-modal,.moments-modal,.unexpected-modal,.tools-modal,.trip-modal,
+  .mama-modal:not(.studio-view)
+).show > :is(.guide-sheet,.moments-sheet,.unexpected-sheet,.tools-sheet,.trip-sheet){
+  display:block!important;
+  width:min(760px,100%)!important;
+  height:auto!important;min-height:0!important;max-height:none!important;
+  margin:0 auto!important;
+  overflow:visible!important;
+  transform:none!important;opacity:1!important;visibility:visible!important;
+  box-sizing:border-box!important;
+  padding-bottom:30px!important;
+}
+
+body :is(
+  .guide-modal,.moments-modal,.unexpected-modal,.tools-modal,.trip-modal,
+  .mama-modal:not(.studio-view)
+) :is(
+  #expenseSaveButton,
+  .moments-form button[onclick*="saveMoments"],
+  .unexpected-sheet button[onclick*="saveUnexpected"],
+  .complete-trip-btn,
+  [data-modal-primary-action],
+  .modal-primary-action
+){
+  position:static!important;
+  inset:auto!important;
+}
+
+/* Studio is a popup workspace, never a full-page route. */
+#mamaModal.studio-view.show{
+  position:fixed!important;
+  top:var(--engine-fixed-chrome-height)!important;
+  left:0!important;right:0!important;bottom:0!important;
+  z-index:var(--engine-studio-modal-layer)!important;
+  display:block!important;
+  width:auto!important;height:auto!important;max-width:none!important;max-height:none!important;
+  margin:0!important;
+  padding:14px 14px calc(22px + env(safe-area-inset-bottom,0px))!important;
+  overflow-y:auto!important;overflow-x:hidden!important;
+  overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important;
+  box-sizing:border-box!important;
+  background:rgba(43,37,31,.48)!important;
+  scroll-padding-top:14px!important;scroll-padding-bottom:24px!important;
+}
+
+#mamaModal.studio-view.show .guide-sheet{
+  display:block!important;
+  width:min(760px,100%)!important;
+  height:auto!important;min-height:0!important;max-height:none!important;
+  margin:0 auto!important;padding:0!important;
+  overflow:visible!important;
+  border:0!important;border-radius:0!important;box-shadow:none!important;
+  background:transparent!important;
+}
+
+#mamaModal.studio-view.show .trip-studio{
+  display:block!important;width:100%!important;max-width:760px!important;margin:0 auto!important;
+  border-radius:24px!important;overflow:hidden!important;
+}
+
 #mamaModal.studio-view.show .trip-studio-head{padding:16px 18px 14px!important}
 #mamaModal.studio-view.show .trip-studio-head small{display:block!important}
 #mamaModal.studio-view.show .trip-studio-group{padding:14px 18px!important}
 #mamaModal.studio-view.show .complete-trip-control{padding:13px 14px!important}
-#mamaModal.studio-view.show .trip-export-launch,#mamaModal.studio-view.show .reset-trip-data-btn,#mamaModal.studio-view.show .exit-trip-studio-btn{min-height:58px!important;padding:12px 14px!important}
-@media(max-width:560px){#mamaModal.studio-view.show{padding:10px 10px calc(18px + env(safe-area-inset-bottom,0px))!important}#mamaModal.studio-view.show .trip-studio{border-radius:22px!important}#mamaModal.studio-view.show .trip-studio-head{padding:14px 14px 12px!important}#mamaModal.studio-view.show .trip-studio-group{padding:12px 14px!important}#mamaModal.studio-view.show .complete-trip-control{flex-direction:column!important;align-items:stretch!important}#mamaModal.studio-view.show .complete-trip-btn{width:100%!important}}
+#mamaModal.studio-view.show .trip-export-launch,
+#mamaModal.studio-view.show .reset-trip-data-btn,
+#mamaModal.studio-view.show .exit-trip-studio-btn{min-height:58px!important;padding:12px 14px!important}
+
+/* Guide → Booking stack remains explicit. */
+body.guide-booking-stack-open #guideModal{z-index:var(--engine-modal-layer)!important}
+body.guide-booking-stack-open #tripModal{z-index:calc(var(--engine-modal-layer) + 100)!important}
+
+@media(max-width:560px){
+  #mamaModal.studio-view.show{padding:10px 10px calc(18px + env(safe-area-inset-bottom,0px))!important}
+  #mamaModal.studio-view.show .trip-studio{border-radius:22px!important}
+  #mamaModal.studio-view.show .trip-studio-head{padding:14px 14px 12px!important}
+  #mamaModal.studio-view.show .trip-studio-group{padding:12px 14px!important}
+  #mamaModal.studio-view.show .complete-trip-control{flex-direction:column!important;align-items:stretch!important}
+  #mamaModal.studio-view.show .complete-trip-btn{width:100%!important}
+}
 
 /* Travel Engine 25.4.33 — self-contained shared-expense notification */
 .expense-notice-sheet{display:flex;flex-direction:column;max-height:min(78dvh,680px);overflow:hidden}
