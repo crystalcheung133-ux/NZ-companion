@@ -3,10 +3,12 @@ const css=fs.readFileSync(process.argv[2]||'styles.css','utf8');
 const fail=[];
 
 if(/^\s*\\n\s*$/m.test(css)) fail.push('literal escaped newline token must not exist as a top-level CSS token');
-if(!/:root\s*\{[^}]*--engine-modal-layer:7000;[^}]*--engine-studio-modal-layer:7600;[^}]*--engine-traveller-layer:7700;[^}]*--engine-studio-status-layer:7800;[^}]*\}/s.test(css)) fail.push('canonical presentation-shell root layer variables missing or malformed');
+if(!/:root\s*\{[^}]*--engine-modal-layer:7000;[^}]*--engine-studio-modal-layer:7600;[^}]*--engine-traveller-layer:7700;[^}]*\}/s.test(css)) fail.push('canonical presentation-shell root layer variables missing or malformed');
 if(!/body :is\([\s\S]*\.moments-modal[\s\S]*\.tools-modal[\s\S]*\)\.show\s*\{[^}]*overflow-y:auto!important;/s.test(css)) fail.push('ordinary popup overlay-scroll owner missing');
 if(/body :is\([\s\S]*?(?:\.guide-modal|\.trip-modal)[\s\S]*?\)\.show\s*\{[^}]*overflow-y:auto!important;/s.test(css)) fail.push('Trip/Guide leaked into ordinary popup overlay-scroll owner');
-if((css.match(/body\.admin-mode #adminModeBanner\s*\{/g)||[]).length!==1) fail.push('status bar must have one owner');
+if(css.includes('adminModeBanner')) fail.push('legacy Studio status bar must be removed');
+if((css.match(/body\.admin-mode \.site-nav\s*\{/g)||[]).length!==1) fail.push('Studio header must have one canonical owner');
+if(!css.includes('.studio-on-badge')) fail.push('Studio ON badge owner missing');
 if(/#expenseModal\s+\.tools-sheet\s*\{[^}]*max-height/s.test(css)) fail.push('legacy Expense max-height remains');
 if(/#momentsModal\s+\.moments-sheet\s*\{[^}]*max-height/s.test(css)) fail.push('legacy Moments max-height remains');
 for(const x of ['--engine-fixed-chrome-height','top:var(--engine-fixed-chrome-height)!important','overflow-y:auto!important','overflow:visible!important','pointer-events:none!important','#mamaModal.studio-view.show']) if(!css.includes(x)) fail.push('missing '+x);

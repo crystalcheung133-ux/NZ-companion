@@ -1,6 +1,6 @@
 Travel Engine Production File Manifest
 Generated: 2026-08-13
-Release: NZ-RC25.4.13-ENGINE-25.4.39
+Release: NZ-RC25.5.2-ENGINE-25.5.2
 Production root files:
 
 - .vercelignore

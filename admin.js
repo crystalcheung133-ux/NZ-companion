@@ -148,11 +148,8 @@
   let studioShellSyncRaf=0;
   function syncStudioShellMetrics(){
     const root=document.documentElement;
-    const banner=document.getElementById('adminModeBanner');
     const travellerHeader=document.querySelector('.site-nav');
-    const statusHeight=Math.ceil(banner?.getBoundingClientRect().height||52);
     const travellerHeaderHeight=Math.ceil(travellerHeader?.getBoundingClientRect().height||68);
-    root.style.setProperty('--studio-status-height',`${statusHeight}px`);
     root.style.setProperty('--studio-traveller-header-height',`${travellerHeaderHeight}px`);
 
     const main=document.querySelector('body.home-bg main.dashboard.home-premium.home-v37');
@@ -178,6 +175,8 @@
   function updateUI(){
     document.body.classList.toggle('admin-mode',state.mode);
     document.body.classList.toggle('admin-dirty',state.mode&&state.dirty);
+    const studioBadge=ensureStudioHeaderBadge();
+    if(studioBadge) studioBadge.hidden=!state.mode;
     const control=document.getElementById('adminModeControl');
     if(control) control.hidden=!(isAdminUser() && state.mode);
     [document.getElementById('adminModeToggle')].filter(Boolean).forEach(toggle=>{
@@ -195,12 +194,8 @@
       const studio=document.getElementById('adminModeControl');
       selectorCard.hidden=!!(active && studio && !studio.hidden);
     }
-    const banner=document.getElementById('adminModeBanner');
-    if(banner) banner.hidden=!state.mode;
     const bar=document.getElementById('adminSaveBar');
     if(bar) bar.hidden=!(state.mode&&state.dirty);
-    const status=document.getElementById('adminDirtyText');
-    if(status) status.textContent=state.dirty?'Unsaved changes':'All changes saved';
     const exportButton=document.getElementById('expenseExportButton');
     if(exportButton){
       const showExport=state.mode && isUnlocked() && isAdminUser();
@@ -214,7 +209,21 @@
     });
     scheduleStudioShellMetrics();
   }
+  function ensureStudioHeaderBadge(){
+    const brand=document.querySelector('.site-nav .brand');
+    if(!brand) return null;
+    let badge=brand.querySelector('.studio-on-badge');
+    if(!badge){
+      badge=document.createElement('span');
+      badge.className='studio-on-badge';
+      badge.textContent='STUDIO ON';
+      badge.hidden=true;
+      brand.appendChild(badge);
+    }
+    return badge;
+  }
   function buildShell(){
+    ensureStudioHeaderBadge();
     const familySheet=document.querySelector('#mamaModal .guide-sheet');
     const familyList=familySheet&&familySheet.querySelector('.friend-choice-list');
     if(familySheet && familyList && !document.getElementById('tripStudioSelectorToggle')){
@@ -275,15 +284,6 @@
       block.querySelector('.trip-studio-close').addEventListener('click',closeTripStudioPanel);
       block.querySelector('#resetTripDataButton').addEventListener('click',window.resetTripData);
       block.querySelector('#exitTripStudioButton').addEventListener('click',exitTripStudioMode);
-    }
-    if(!document.getElementById('adminModeBanner')){
-      const banner=document.createElement('div');
-      banner.id='adminModeBanner';
-      banner.className='admin-mode-banner';
-      banner.setAttribute('role','status');
-      banner.hidden=true;
-      banner.innerHTML='<strong>TRIP STUDIO</strong><span id="adminDirtyText">All changes saved</span>';
-      document.body.prepend(banner);
     }
     if(!document.getElementById('adminSaveBar')){
       const bar=document.createElement('div');
