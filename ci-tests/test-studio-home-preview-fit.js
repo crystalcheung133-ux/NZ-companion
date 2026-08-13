@@ -7,6 +7,9 @@ req(/@media\s*\(min-width:721px\)[\s\S]*?body\.admin-mode\.home-bg\s+main\.dashb
   'Studio Home main must measure available height from persistent Studio chrome');
 req(/@media\s*\(min-width:721px\)\s*and\s*\(max-height:900px\)[\s\S]*?body\.admin-mode\.home-bg\s+section\.home-brand-card\.v37-dashboard-home\s*\{[\s\S]*?scale\(var\(--engine-studio-home-preview-scale\)\)/,
   'short desktop Studio Home must use bounded preview scale');
+req(/@media\s*\(min-width:721px\)\s*and\s*\(max-height:900px\)[\s\S]*?body\.admin-mode\.home-bg\s+section\.home-brand-card\.v37-dashboard-home\s*\{[\s\S]*?transform-origin\s*:\s*center\s+top\s*!important;/,
+  'short desktop Studio Home preview must scale from the top edge');
+if(/body\.admin-mode\.home-bg\s+section\.home-brand-card\.v37-dashboard-home\s*\{[^}]*translateY\(/s.test(css)) fail.push('Studio Home preview must not use translateY that can push hero under fixed chrome');
 req(/body:has\(#mamaModal\.studio-view\.show\)\s+\.app-nav\s*\{[\s\S]*?pointer-events\s*:\s*none\s*!important;[\s\S]*?z-index\s*:\s*100\s*!important;[\s\S]*?\}/,
   'Studio app-nav visible/non-interactive contract missing');
 const studioNavBlock=(css.match(/body:has\(#mamaModal\.studio-view\.show\)\s+\.app-nav\s*\{[\s\S]*?\}/)||[''])[0];
