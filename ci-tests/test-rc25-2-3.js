@@ -10,10 +10,16 @@ must(/--admin-modal-layer\s*:\s*7000/, css, 'admin modal layer variable missing'
 must(/\.timeline-editor-modal[\s\S]*#mamaModal\.studio-view[\s\S]*z-index\s*:\s*var\(--admin-modal-layer\)/, css, 'timeline/studio modal layer contract missing');
 must(/\.timeline-editor-actions[\s\S]*position\s*:\s*relative[\s\S]*z-index\s*:\s*3/, css, 'timeline editor action footer protection missing');
 must(/#mamaModal\.studio-view \.guide-sheet[\s\S]*safe-area-inset-bottom/, css, 'studio safe-area padding missing');
-must(/nz25-3-1-dual-currency-badge-fix/, sw, 'service worker cache identity not updated');
+const cacheMatch=sw.match(/TRIP_CONFIG\.version\}-([^`]+)`/);
+if(!cacheMatch) fail.push('service worker cache identity missing');
+const cacheKey=cacheMatch?cacheMatch[1]:null;
 for(const f of htmls){
   const txt = fs.readFileSync(path.join(root,f),'utf8');
-  if(/styles\.css/.test(txt) && !/styles\.css\?v=nz25-3-1-dual-currency-badge-fix/.test(txt)) fail.push(`${f}: stale styles cache key`);
+  if(/styles\.css/.test(txt)){
+    const m=txt.match(/styles\.css\?v=([^\"']+)/);
+    if(!m) fail.push(`${f}: styles cache key missing`);
+    else if(cacheKey && m[1]!==cacheKey) fail.push(`${f}: styles cache key does not match service worker cache identity`);
+  }
 }
 if(fail.length){ console.error('RC25.2.3 CONTRACT: FAILED'); fail.forEach(x=>console.error('- '+x)); process.exit(1); }
 console.log('RC25.2.3 CONTRACT: PASS — admin modal actions remain above fixed navigation');
