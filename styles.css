@@ -1,9 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap");
 :root{--bg:#f4ede3;--paper:#fffaf2;--card:#fffdf8;--ink:#2b251f;--muted:#433a33;--line:#cfbdab;--accent:#8a4f2d;--green:#315f4e;--lav:#6b4a7a;--blue:#455f86;--surface-radius:var(--theme-surface-radius);--surface-padding:22px;--surface-border:rgba(185,160,135,.88);--surface-shadow:0 14px 38px rgba(54,39,24,.065);--surface-gap:18px;--text-body-size:16px;--text-body-line:1.58;--text-small-size:13px;--text-label-size:12px;--text-title-line:1.08;--control-height:48px;--control-radius:var(--theme-button-radius);--control-gap:8px;--focus-ring:0 0 0 3px rgba(49,95,78,.22);--mobile-action-height:50px;--mobile-action-radius:var(--theme-button-radius);--mobile-action-padding:10px 12px;--mobile-action-font-size:15px;--mobile-action-weight:800;--admin-accent:#8b4b1d;--admin-accent-dark:#60300f;--admin-line:rgba(139,75,29,.28);--admin-soft:rgba(139,75,29,.12);}* {box-sizing:border-box;}a {color:inherit;text-decoration:none;}.brand {display:flex;align-items:center;gap:12px;font-weight:900;font-size:21px;}.friend-pill {border:1.5px solid var(--line);background:var(--card);border-radius:999px;min-height:42px;padding:9px 13px;font-size:15px;}.content-page, .section {max-width:860px;margin:0 auto;padding:30px 18px 112px;}.page-hero {margin:18px 0 22px;}h1, h2 {font-family:"Cormorant Garamond",serif;line-height:.98;margin:6px 0 14px;}h3 {line-height:1.2}.prose-block>h2:first-child, .guide-sheet>h2:first-of-type, .moments-sheet>h2:first-of-type, .tools-sheet>h2:first-of-type, .trip-sheet>h2:first-of-type {margin-top:0}.prose-block p:last-child {margin-bottom:0}.prose-block {background:var(--card);border:1px solid var(--surface-border);border-radius:var(--surface-radius);padding:var(--surface-padding);margin:var(--surface-gap) 0;box-shadow:var(--surface-shadow);}.btn, .pill, .mini-btn {border:1px solid var(--line);background:#fffaf2;border-radius:999px;min-height:46px;padding:12px 16px;font:inherit;font-weight:750;line-height:1.15;display:inline-flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;box-shadow:0 6px 16px rgba(54,39,24,.055);}.app-nav a, .app-nav button {border:0;background:transparent;color:white;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:54px;border-radius:20px;font-size:22px;}#tripMenu {left:12px;}#guideMenu {left:50%;transform:translateX(-50%) translateY(8px);}#guideMenu.show {transform:translateX(-50%) translateY(0);}#daysMenu {right:12px;}.mini-menu a, .mini-menu button {display:grid;grid-template-columns:1fr auto;gap:10px;width:100%;border:0;background:#fffaf2!important;border-radius:16px!important;padding:13px 14px;font:inherit;color:var(--ink);text-align:left;min-height:50px;}.mini-menu a:hover, .mini-menu button:hover {background:#f4eadc!important;}.menu-title, .guide-list-title {display:block;font-weight:700;font-size:15px;}.menu-sub, .guide-list-sub {display:block;font-size:14px;color:var(--muted);margin-top:3px;line-height:1.4;font-weight:620;}.category-pop-list {display:grid;gap:0;margin-top:12px;}.category-pop-list button {border:0;border-bottom:1.5px solid rgba(112,82,48,.30);background:transparent;border-radius:0;min-height:52px;padding:14px 4px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;text-align:left;}.category-pop-list button:last-child {border-bottom:0;}.day-summary {display:grid;grid-template-columns:1fr;gap:14px;max-width:760px;}.day-summary a {position:relative;overflow:hidden;display:grid;grid-template-columns:80px 1fr;gap:14px;text-align:left;background:var(--card);border:1px solid var(--surface-border);border-radius:var(--surface-radius);padding:20px 22px;box-shadow:var(--surface-shadow);}.day-summary a:before {content:"";position:absolute;left:0;top:0;bottom:0;width:7px;background:var(--accent);}.day-summary a:nth-child(2):before {background:var(--green);}.day-summary a:nth-child(3):before {background:var(--lav);}.day-summary a:nth-child(4):before {background:#9a5a2e;}.day-summary a:nth-child(5):before {background:var(--blue);}.day-summary strong {font-family:"Cormorant Garamond",serif;font-size:28px;line-height:1;}.day-card-title {display:block;font-weight:700;}.day-card-meta {display:block;color:var(--muted);font-size:15px;font-weight:620;}/* Stage 4E-19: .timeline-time base weight, .timeline-actions button/a base skin, and .time-legend were relocated to the Days canonical section (see EOF). */
-.guide-modal, .moments-modal, .unexpected-modal, .tools-modal, .mama-modal {position:fixed;inset:0;z-index:110;display:none;background:rgba(43,37,31,.48);padding:18px;overflow:auto;}.guide-modal.show, .moments-modal.show, .unexpected-modal.show, .tools-modal.show, .mama-modal.show {display:grid;place-items:center;}.guide-sheet, .moments-sheet, .unexpected-sheet, .tools-sheet {width:min(760px,100%);max-height:88vh;overflow:auto;background:var(--card);border:1px solid var(--surface-border);border-radius:26px;box-shadow:0 24px 70px rgba(43,37,31,.20);padding:24px;position:relative;}.guide-close, .moments-close, .unexpected-close, .tools-close, .mama-close {float:right;border:1px solid var(--line);background:var(--paper);width:44px;height:44px;border-radius:50%;font-size:24px;cursor:pointer;}.guide-next-row {display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px;}.moments-form textarea, .expense-form input {width:100%;min-height:48px;border:1px solid var(--line);border-radius:16px;background:var(--paper);padding:13px;font:inherit;margin:8px 0;}.moments-form textarea {min-height:120px;}/* Stage 4E-22: .star-row span / .star-row .active relocated to the Moments Mood/Star canonical section (see EOF). */
+.moments-modal, .unexpected-modal, .tools-modal {position:fixed;inset:0;z-index:110;display:none;background:rgba(43,37,31,.48);padding:18px;overflow:auto;}.moments-modal.show, .unexpected-modal.show, .tools-modal.show {display:grid;place-items:center;}.guide-sheet, .moments-sheet, .unexpected-sheet, .tools-sheet {width:min(760px,100%);max-height:88vh;overflow:auto;background:var(--card);border:1px solid var(--surface-border);border-radius:26px;box-shadow:0 24px 70px rgba(43,37,31,.20);padding:24px;position:relative;}.guide-close, .moments-close, .unexpected-close, .tools-close, .mama-close {float:right;border:1px solid var(--line);background:var(--paper);width:44px;height:44px;border-radius:50%;font-size:24px;cursor:pointer;}.guide-next-row {display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px;}.moments-form textarea, .expense-form input {width:100%;min-height:48px;border:1px solid var(--line);border-radius:16px;background:var(--paper);padding:13px;font:inherit;margin:8px 0;}.moments-form textarea {min-height:120px;}/* Stage 4E-22: .star-row span / .star-row .active relocated to the Moments Mood/Star canonical section (see EOF). */
 .check-row {display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:#fff7ed;border-radius:16px;padding:12px 14px;margin:8px 0;cursor:pointer;}.check-row input {width:20px;height:20px;}.ready-box {display:none;background:#eef4e9;border:1px solid #c9d9bf;border-radius:24px;padding:22px;text-align:center;margin-top:16px;}.ready-box.show {display:block;}.fact-grid {display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}.fact {border:1px solid var(--line);border-radius:18px;background:#fff7ed;padding:13px;}.fact strong {display:block;}.expense-card {border:1px solid var(--line);background:#fff7ed;border-radius:18px;padding:13px;}
 @media(max-width:760px){.fact-grid {grid-template-columns:repeat(2,1fr);}.mini-menu {width:206px;}}/* v2.1.1 final refinements */
-.trip-modal {position:fixed;inset:0;z-index:110;display:none;background:rgba(43,37,31,.48);padding:18px;overflow:auto;}.trip-modal.show {display:grid;place-items:center;}.trip-close {float:right;border:1px solid var(--line);background:var(--paper);width:44px;height:44px;border-radius:50%;font-size:24px;cursor:pointer;}/* v2.1.2 final fixes */
+.trip-close {float:right;border:1px solid var(--line);background:var(--paper);width:44px;height:44px;border-radius:50%;font-size:24px;cursor:pointer;}/* v2.1.2 final fixes */
 /* v2.1.3 navigation + moments + expenses */
 /* Stage 4E-22: .mood-btn.active relocated to the Moments Mood/Star canonical section (see EOF). */
 .timestamp {font-size:13px;color:var(--muted);}
@@ -11,7 +11,7 @@
 }/* v2.1.5 practical travel fixes */
 /* v2.1.6 usability fix */
 #expenseTotal {font-size:22px!important;font-weight:700;letter-spacing:.02em;}/* v2.1.7 expense personal/shared */
-#consumedByBlock select, #expensePaidBy {width:100%;margin:8px 0 12px;}#expensePersonal {width:20px;height:20px;}/* v2.1.8 polish */.prose-block, .timeline-item, .day-summary a, .guide-sheet, .moments-sheet, .unexpected-sheet, .tools-sheet, .trip-sheet {position:relative;overflow:hidden;}.prose-block > *, .timeline-item > *, .day-summary a > *, .guide-sheet > *, .moments-sheet > *, .unexpected-sheet > *, .tools-sheet > *, .trip-sheet > * {position:relative;z-index:1;}.prose-block, .timeline-item, .day-summary a, .guide-sheet, .moments-sheet, .unexpected-sheet, .tools-sheet, .trip-sheet {background-color:var(--card)!important;position:relative!important;overflow:hidden!important;}.guide-modal, .moments-modal, .unexpected-modal, .tools-modal, .mama-modal, .trip-modal {position:fixed!important;inset:0!important;z-index:5000!important;}.guide-sheet, .moments-sheet, .unexpected-sheet, .tools-sheet, .trip-sheet {position:relative!important;padding-top:68px!important;}.guide-close, .moments-close, .unexpected-close, .tools-close, .mama-close, .trip-close {position:absolute!important;top:18px!important;right:18px!important;z-index:50!important;pointer-events:auto!important;}
+#consumedByBlock select, #expensePaidBy {width:100%;margin:8px 0 12px;}#expensePersonal {width:20px;height:20px;}/* v2.1.8 polish */.prose-block, .timeline-item, .day-summary a, .guide-sheet, .moments-sheet, .unexpected-sheet, .tools-sheet, .trip-sheet {position:relative;overflow:hidden;}.prose-block > *, .timeline-item > *, .day-summary a > *, .guide-sheet > *, .moments-sheet > *, .unexpected-sheet > *, .tools-sheet > *, .trip-sheet > * {position:relative;z-index:1;}.prose-block, .timeline-item, .day-summary a, .guide-sheet, .moments-sheet, .unexpected-sheet, .tools-sheet, .trip-sheet {background-color:var(--card)!important;position:relative!important;overflow:hidden!important;}.moments-modal, .unexpected-modal, .tools-modal {position:fixed!important;inset:0!important;z-index:5000!important;}.guide-sheet, .moments-sheet, .unexpected-sheet, .tools-sheet, .trip-sheet {position:relative!important;padding-top:68px!important;}.guide-close, .moments-close, .unexpected-close, .tools-close, .mama-close, .trip-close {position:absolute!important;top:18px!important;right:18px!important;z-index:50!important;pointer-events:auto!important;}
 @media(max-width:760px){body {background-size:auto, 118px 118px!important;}.prose-block, .timeline-item, .day-summary a, .guide-sheet, .moments-sheet, .unexpected-sheet, .tools-sheet, .trip-sheet {background-size:auto, 78px 78px!important;}}/* v2.2 Guide UX Upgrade */
 .quick-info-card {margin:var(--surface-gap) 0 24px;padding:20px 22px;border:1px solid var(--surface-border);border-radius:var(--surface-radius);background:linear-gradient(180deg,#fffaf2,#fff8ef);box-shadow:var(--surface-shadow);}.quick-info-top {display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid rgba(142,111,63,.20);flex-wrap:wrap;}.category-tag {display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:999px;background:#f1dfc9;color:var(--ink);font-size:.78rem;font-weight:700;letter-spacing:.02em;}.quick-info-row {display:flex;gap:10px;align-items:flex-start;font-size:.94rem;line-height:1.35;}.quick-info-icon {width:24px;flex:0 0 24px;text-align:center;}.quick-info-label {display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700;margin-bottom:2px;}.quick-info-value {display:block;color:var(--ink);font-weight:600;}.quick-info-actions {display:flex;gap:9px;flex-wrap:wrap;margin-top:14px;padding-top:13px;border-top:1px solid rgba(142,111,63,.20);}.map-button {display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:46px;padding:11px 15px;border-radius:999px;background:#fff7eb;color:var(--ink)!important;text-decoration:none;font-weight:750;border:1px solid var(--line);box-shadow:0 8px 22px rgba(138,79,45,.12);}
 @media (min-width:720px){.quick-info-grid {grid-template-columns:1fr 1fr;}.quick-info-actions {justify-content:flex-start;}}/* v2.3 polish: softer map buttons, compact mobile home, next-stop hints */
@@ -20,8 +20,8 @@
    were relocated to the Days canonical section (see EOF). */
 .map-button:hover, .pill:hover {border-color:var(--accent)!important;}
 @media(max-width:430px){.site-nav {padding:10px 12px;}.brand {font-size:14px;}.brand img {width:28px;height:28px;}.friend-pill {padding:8px 10px;font-size:12px;}.home-bg .dashboard {padding:12px 14px 86px;}}/* v2.3.1 hotfix: modal/card scrolling on mobile */
-.guide-sheet, .moments-sheet, .tools-sheet, .trip-sheet {overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch;max-height:calc(100dvh - 36px)!important;}.guide-modal.show, .moments-modal.show, .tools-modal.show, .trip-modal.show, .mama-modal.show {align-items:start!important;justify-items:center!important;}
-@media(max-width:760px){.guide-modal, .moments-modal, .tools-modal, .trip-modal, .mama-modal {padding:10px!important;}.guide-sheet, .moments-sheet, .tools-sheet, .trip-sheet {width:100%!important;max-height:calc(100dvh - 20px)!important;border-radius:24px!important;padding:58px 18px 22px!important;}}.map-button, .prose-block .pill[href*="maps.google"], a.pill[href*="maps.google"] {background:#fff7eb!important;color:#2b251f!important;border:1px solid #d4b89b!important;box-shadow:0 6px 18px rgba(138,79,45,.10)!important;}/* Stage 4E-19: .timeline-actions a token removed here — dead (superseded by the later shared button-skin rule). */
+.guide-sheet, .moments-sheet, .tools-sheet, .trip-sheet {overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch;max-height:calc(100dvh - 36px)!important;}.moments-modal.show, .tools-modal.show {align-items:start!important;justify-items:center!important;}
+@media(max-width:760px){.moments-modal, .tools-modal {padding:10px!important;}.guide-sheet, .moments-sheet, .tools-sheet, .trip-sheet {width:100%!important;max-height:calc(100dvh - 20px)!important;border-radius:24px!important;padding:58px 18px 22px!important;}}.map-button, .prose-block .pill[href*="maps.google"], a.pill[href*="maps.google"] {background:#fff7eb!important;color:#2b251f!important;border:1px solid #d4b89b!important;box-shadow:0 6px 18px rgba(138,79,45,.10)!important;}/* Stage 4E-19: .timeline-actions a token removed here — dead (superseded by the later shared button-skin rule). */
 /* v2.4 content structure: detailed Guide, compact Days */
 .guide-overview p {font-size:1.02rem;line-height:1.78;}.prose-block h2 {margin-bottom:10px;}.prose-block ul {line-height:1.75;}
 @media(max-width:600px){.guide-overview p {font-size:.98rem;line-height:1.65;}.prose-block {padding:18px!important;}}.guide-sheet, .moments-sheet, .unexpected-sheet, .tools-sheet, .trip-sheet {overflow-y:auto!important;overflow-x:hidden!important;}.prose-block, .timeline-item, .day-summary a {overflow:visible!important;}/* v2.5 premium home + guide routing */
@@ -1838,10 +1838,9 @@ body.admin-mode .app-nav .days-trigger small {color:#fff!important;opacity:.96!i
 
 /* RC17.6 — stable Guide close/open: keep the fixed overlay out of document reflow. */
 html{scrollbar-gutter:stable;}
-.guide-modal{visibility:hidden!important;opacity:0!important;transition:opacity .12s ease,visibility 0s linear .12s;}
-.guide-modal.show{visibility:visible!important;opacity:1!important;transition-delay:0s;}
+
 .guide-sheet{transform:translateZ(0);backface-visibility:hidden;}
-@media (prefers-reduced-motion:reduce){.guide-modal,.guide-modal.show{transition:none!important;}}
+
 
 /* RC17.8 timeline/readability and accommodation guide polish */
 .timeline-time{white-space:nowrap!important;word-break:normal!important;overflow-wrap:normal!important;}
@@ -2295,17 +2294,17 @@ body.home-bg .live-currency-card #currencyCardMeta{position:relative;z-index:2;w
 .expense-booking-inline-link{appearance:none;border:0;background:transparent;padding:0;margin:0;font:inherit;font-weight:800;color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 
 
-/* Travel Engine 25.4.34 — canonical presentation shell.
-   SINGLE OWNER for persistent Studio chrome and popup geometry.
-   Historical modal/nav-clearance and full-page Studio rules are intentionally removed. */
+/* Travel Engine 25.5.0 — canonical presentation shell rewrite.
+   ONE OWNER for Studio chrome, Studio Home preview bounds, ordinary popups,
+   and Traveller Selector geometry. No viewport translation/scaling hacks. */
 :root{
   --engine-studio-status-fallback:52px;
   --engine-traveller-header-fallback:68px;
+  --engine-app-nav-clearance:112px;
   --engine-modal-layer:7000;
   --engine-studio-modal-layer:7600;
   --engine-traveller-layer:7700;
   --engine-studio-status-layer:7800;
-  --engine-studio-home-preview-scale:.90;
 }
 
 /* Persistent Studio chrome. */
@@ -2341,35 +2340,53 @@ body.admin-mode{
   padding-top:var(--engine-fixed-chrome-height)!important;
 }
 
-/* NZ RC25.4.13 — Studio Home preview fit contract.
-   Desktop Home is normally a one-viewport composition. In Studio/admin mode the
-   persistent status bar + traveller header reduce that viewport. The Home main
-   must measure from the bottom of that chrome, and short desktop viewports use
-   a bounded preview scale so the complete hero clears the still-visible app nav.
-   Normal traveller Home and mobile layout are intentionally untouched. */
-@media (min-width:721px){
-  body.admin-mode.home-bg main.dashboard.home-premium.home-v37{
-    height:calc(100dvh - var(--engine-fixed-chrome-height))!important;
-    max-height:calc(100dvh - var(--engine-fixed-chrome-height))!important;
-    min-height:0!important;
-  }
+/* Studio Home preview owns the rectangle between fixed top chrome and app nav.
+   Natural hero geometry is preserved. If a viewport is genuinely too short,
+   this bounded preview area scrolls instead of translating/scaling the hero. */
+body.admin-mode.home-bg main.dashboard.home-premium.home-v37{
+  position:fixed!important;
+  top:var(--engine-fixed-chrome-height)!important;
+  right:0!important;
+  bottom:var(--engine-app-nav-clearance)!important;
+  left:0!important;
+  width:100%!important;
+  max-width:none!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:12px 12px 18px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain!important;
+  box-sizing:border-box!important;
 }
-@media (min-width:721px) and (max-height:900px){
-  body.admin-mode.home-bg section.home-brand-card.v37-dashboard-home{
-    transform:scale(var(--engine-studio-home-preview-scale))!important;
-    transform-origin:center top!important;
+body.admin-mode.home-bg section.home-brand-card.v37-dashboard-home{
+  flex:0 0 auto!important;
+  transform:none!important;
+  translate:none!important;
+  scale:none!important;
+  margin:auto!important;
+}
+@media(max-width:720px){
+  :root{--engine-app-nav-clearance:104px;}
+  body.admin-mode.home-bg main.dashboard.home-premium.home-v37{
+    align-items:flex-start!important;
+    padding:10px 7px 14px!important;
   }
 }
 
-/* Ordinary popup: overlay is the single scroll owner; card remains natural-height. */
+/* Any open popup leaves the persistent app nav visible but non-interactive. */
 body:has(:is(.guide-modal,.moments-modal,.unexpected-modal,.tools-modal,.mama-modal,.trip-modal).show) .app-nav{
   pointer-events:none!important;
   z-index:100!important;
 }
 
-body :is(
-  .moments-modal,.unexpected-modal,.tools-modal
-).show{
+/* Ordinary popup shell: overlay owns scrolling; card remains natural-height. */
+body :is(.moments-modal,.unexpected-modal,.tools-modal).show{
   position:fixed!important;
   left:0!important;right:0!important;top:0!important;bottom:0!important;
   z-index:var(--engine-modal-layer)!important;
@@ -2381,16 +2398,10 @@ body :is(
   background:rgba(43,37,31,.48)!important;
   scroll-padding-top:12px!important;scroll-padding-bottom:24px!important;
 }
-
-body.admin-mode :is(
-  .moments-modal,.unexpected-modal,.tools-modal
-).show{
+body.admin-mode :is(.moments-modal,.unexpected-modal,.tools-modal).show{
   top:var(--engine-fixed-chrome-height)!important;
 }
-
-body :is(
-  .moments-modal,.unexpected-modal,.tools-modal
-).show > :is(.moments-sheet,.unexpected-sheet,.tools-sheet){
+body :is(.moments-modal,.unexpected-modal,.tools-modal).show > :is(.moments-sheet,.unexpected-sheet,.tools-sheet){
   display:block!important;
   width:min(760px,100%)!important;
   height:auto!important;min-height:0!important;max-height:none!important;
@@ -2400,28 +2411,20 @@ body :is(
   box-sizing:border-box!important;
   padding-bottom:30px!important;
 }
-
-body :is(
-  .moments-modal,.unexpected-modal,.tools-modal
-) :is(
+body :is(.moments-modal,.unexpected-modal,.tools-modal) :is(
   #expenseSaveButton,
   .moments-form button[onclick*="saveMoments"],
   .unexpected-sheet button[onclick*="saveUnexpected"],
   .complete-trip-btn,
   [data-modal-primary-action],
   .modal-primary-action
-){
-  position:static!important;
-  inset:auto!important;
-}
+){position:static!important;inset:auto!important;}
 
-/* Travel Engine 25.4.39 — canonical Traveller Selector + Studio workspace shell.
-   The family/user selector is not a Guide modal and must not inherit page or Guide stacking.
-   Selector and Studio are separate shell states: selector centres a bounded card; Studio owns an isolated workspace above page content with bottom navigation suppressed. */
+/* Traveller Selector is a dedicated centred modal, not a Guide shell. */
 #mamaModal:not(.studio-view){
   position:fixed!important;
   inset:0!important;
-  z-index:var(--engine-traveller-layer,7700)!important;
+  z-index:var(--engine-traveller-layer)!important;
   display:none!important;
   overflow:hidden!important;
   isolation:isolate!important;
@@ -2431,16 +2434,8 @@ body :is(
   pointer-events:none!important;
 }
 #mamaModal:not(.studio-view).show{
-  position:fixed!important;
-  inset:0!important;
-  z-index:var(--engine-traveller-layer,7700)!important;
   display:grid!important;
   place-items:center!important;
-  overflow:hidden!important;
-  isolation:isolate!important;
-  padding:12px!important;
-  box-sizing:border-box!important;
-  background:rgba(43,37,31,.48)!important;
   pointer-events:auto!important;
 }
 #mamaModal:not(.studio-view).show > .guide-sheet{
@@ -2458,7 +2453,7 @@ body :is(
   box-sizing:border-box!important;
 }
 
-/* Studio is a popup workspace, never a full-page route. */
+/* Studio management panel is a separate bounded workspace below fixed chrome. */
 #mamaModal.studio-view.show{
   position:fixed!important;
   top:var(--engine-fixed-chrome-height)!important;
@@ -2476,16 +2471,6 @@ body :is(
   scroll-padding-top:14px!important;scroll-padding-bottom:24px!important;
   pointer-events:auto!important;
 }
-
-/* RC25.4.10 hotfix: this rule must not add visibility:hidden — the general
-   "Ordinary popup" .app-nav rule above already covers Studio (.mama-modal is
-   not excluded there) with the correct RC25.4.6 contract: pointer-events:none
-   + z-index:100 only. Bottom nav stays visible, just non-interactive. */
-body:has(#mamaModal.studio-view.show) .app-nav{
-  pointer-events:none!important;
-  z-index:100!important;
-}
-
 #mamaModal.studio-view.show .guide-sheet{
   position:relative!important;
   z-index:1!important;
@@ -2498,7 +2483,6 @@ body:has(#mamaModal.studio-view.show) .app-nav{
   background:transparent!important;
   transform:none!important;opacity:1!important;visibility:visible!important;
 }
-
 #mamaModal.studio-view.show .trip-studio{
   position:relative!important;
   z-index:2!important;
@@ -2507,7 +2491,6 @@ body:has(#mamaModal.studio-view.show) .app-nav{
   background:linear-gradient(180deg,rgba(250,252,248,.98),rgba(244,248,244,.98))!important;
   box-shadow:0 16px 36px rgba(22,54,43,.18)!important;
 }
-
 #mamaModal.studio-view.show .trip-studio-head{padding:16px 18px 14px!important}
 #mamaModal.studio-view.show .trip-studio-head small{display:block!important}
 #mamaModal.studio-view.show .trip-studio-group{padding:14px 18px!important}
@@ -2515,7 +2498,6 @@ body:has(#mamaModal.studio-view.show) .app-nav{
 #mamaModal.studio-view.show .trip-export-launch,
 #mamaModal.studio-view.show .reset-trip-data-btn,
 #mamaModal.studio-view.show .exit-trip-studio-btn{min-height:58px!important;padding:12px 14px!important}
-
 @media(max-width:560px){
   #mamaModal.studio-view.show{padding:10px 10px calc(18px + env(safe-area-inset-bottom,0px))!important}
   #mamaModal.studio-view.show .trip-studio{border-radius:22px!important}

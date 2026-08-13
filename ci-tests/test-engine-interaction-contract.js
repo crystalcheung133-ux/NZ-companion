@@ -4,7 +4,7 @@ const expenses=fs.readFileSync('expenses.js','utf8');
 const css=fs.readFileSync('styles.css','utf8');
 const fail=[];
 
-if(!css.includes('Travel Engine 25.4.34 — canonical presentation shell')) fail.push('canonical presentation shell missing');
+if(!css.includes('Travel Engine 25.5.0 — canonical presentation shell rewrite')) fail.push('canonical presentation shell missing');
 if(!admin.includes("studio.scrollIntoView({block:'start',inline:'nearest'})")) fail.push('Studio re-entry must target Studio card via scrollIntoView');
 if(!admin.includes('key!==previousFriend')) fail.push('traveller-switch Studio exit guard missing');
 for(const token of ['setStoredMode(false);','lockAdminSession();','closeTripStudioPanel();']){

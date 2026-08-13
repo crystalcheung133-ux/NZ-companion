@@ -9,8 +9,8 @@ must(/#tripModal\.show > \.trip-sheet,\s*#guideModal\.show > \.guide-sheet\s*\{[
 must(/body\.guide-booking-stack-open #guideModal\.show\s*\{[^}]*z-index:var\(--engine-modal-layer,7000\)!important;/s,'missing explicit Guide stack layer');
 must(/body\.guide-booking-stack-open #tripModal\.show\s*\{[^}]*z-index:calc\(var\(--engine-modal-layer,7000\) \+ 100\)!important;/s,'missing explicit Booking-over-Guide stack layer');
 
-const ordinaryStart=css.indexOf('/* Ordinary popup: overlay is the single scroll owner; card remains natural-height. */');
-const studioStart=css.indexOf('/* Studio is a popup workspace, never a full-page route. */');
+const ordinaryStart=css.indexOf('/* Ordinary popup shell: overlay owns scrolling; card remains natural-height. */');
+const studioStart=css.indexOf('/* Traveller Selector is a dedicated centred modal, not a Guide shell. */');
 if(ordinaryStart<0||studioStart<ordinaryStart){
   fail.push('ordinary-popup ownership section not found');
 }else{
