@@ -2349,8 +2349,7 @@ body:has(:is(.guide-modal,.moments-modal,.unexpected-modal,.tools-modal,.mama-mo
 }
 
 body :is(
-  .moments-modal,.unexpected-modal,.tools-modal,
-  .mama-modal:not(.studio-view)
+  .moments-modal,.unexpected-modal,.tools-modal
 ).show{
   position:fixed!important;
   left:0!important;right:0!important;top:0!important;bottom:0!important;
@@ -2365,16 +2364,14 @@ body :is(
 }
 
 body.admin-mode :is(
-  .moments-modal,.unexpected-modal,.tools-modal,
-  .mama-modal:not(.studio-view)
+  .moments-modal,.unexpected-modal,.tools-modal
 ).show{
   top:var(--engine-fixed-chrome-height)!important;
 }
 
 body :is(
-  .moments-modal,.unexpected-modal,.tools-modal,
-  .mama-modal:not(.studio-view)
-).show > :is(.moments-sheet,.unexpected-sheet,.tools-sheet,.guide-sheet){
+  .moments-modal,.unexpected-modal,.tools-modal
+).show > :is(.moments-sheet,.unexpected-sheet,.tools-sheet){
   display:block!important;
   width:min(760px,100%)!important;
   height:auto!important;min-height:0!important;max-height:none!important;
@@ -2386,8 +2383,7 @@ body :is(
 }
 
 body :is(
-  .moments-modal,.unexpected-modal,.tools-modal,
-  .mama-modal:not(.studio-view)
+  .moments-modal,.unexpected-modal,.tools-modal
 ) :is(
   #expenseSaveButton,
   .moments-form button[onclick*="saveMoments"],
@@ -2398,6 +2394,49 @@ body :is(
 ){
   position:static!important;
   inset:auto!important;
+}
+
+/* Travel Engine 25.4.38 — canonical Traveller Selector shell.
+   The family/user selector is not a Guide modal and must not inherit page or Guide stacking.
+   It owns a fixed isolated overlay above Home hero/content, with a centred bounded selector card. */
+#mamaModal:not(.studio-view){
+  position:fixed!important;
+  inset:0!important;
+  z-index:var(--engine-traveller-layer,7400)!important;
+  display:none!important;
+  overflow:hidden!important;
+  isolation:isolate!important;
+  padding:12px!important;
+  box-sizing:border-box!important;
+  background:rgba(43,37,31,.48)!important;
+  pointer-events:none!important;
+}
+#mamaModal:not(.studio-view).show{
+  position:fixed!important;
+  inset:0!important;
+  z-index:var(--engine-traveller-layer,7400)!important;
+  display:grid!important;
+  place-items:center!important;
+  overflow:hidden!important;
+  isolation:isolate!important;
+  padding:12px!important;
+  box-sizing:border-box!important;
+  background:rgba(43,37,31,.48)!important;
+  pointer-events:auto!important;
+}
+#mamaModal:not(.studio-view).show > .guide-sheet{
+  position:relative!important;
+  display:block!important;
+  width:min(760px,100%)!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:calc(100% - 4px)!important;
+  margin:0 auto!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  box-sizing:border-box!important;
 }
 
 /* Studio is a popup workspace, never a full-page route. */
@@ -2461,7 +2500,7 @@ body :is(
 .expense-notice-done{min-width:110px}
 
 
-/* Travel Engine 25.4.37 — canonical Trip / Guide modal shell.
+/* Travel Engine 25.4.38 — canonical Trip / Guide modal shell.
    Single ownership: fixed isolated overlay + centred internally-scrollable sheet.
    Ordinary form popups (Expense/Moments/etc.) remain under the 25.4.34 overlay-scroll contract.
    One-page / near-fit content adaptations remain separate below their own selectors. */

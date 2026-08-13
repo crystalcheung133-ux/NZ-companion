@@ -1,10 +1,10 @@
 {
-  "engine_version": "25.4.37",
-  "artifact_version": "NZ Companion RC25.4.7 · Travel Engine 25.4.37 Trip/Guide Modal Shell Consolidation",
+  "engine_version": "25.4.38",
+  "artifact_version": "NZ Companion RC25.4.8 · Travel Engine 25.4.38 Traveller Selector Shell Regression Fix",
   "baseline_engine": "25.4.20.3",
   "release_date": "2026-08-13",
-  "release_type": "trip-guide-modal-shell-consolidation",
-  "runtime_behavior_change": false,
+  "release_type": "traveller-selector-shell-regression-fix",
+  "runtime_behavior_change": true,
   "capabilities_changed": [
     "canonical full-overlay popup interaction contract",
     "single-owner modal and Studio presentation shell",

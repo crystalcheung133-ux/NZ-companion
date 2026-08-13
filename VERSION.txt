@@ -1,1 +1,1 @@
-NZ Companion RC25.4.7 · Travel Engine 25.4.37 Trip/Guide Modal Shell Consolidation
+NZ Companion RC25.4.8 · Travel Engine 25.4.38 Traveller Selector Shell Regression Fix
