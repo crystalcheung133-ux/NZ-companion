@@ -1,20 +1,16 @@
 {
-  "engine_version": "25.5.0",
-  "artifact_version": "NZ Companion RC25.5.0 · Travel Engine 25.5.0 Presentation Shell Rewrite",
-  "baseline_engine": "25.4.20.3",
+  "engine_version": "25.5.1",
+  "artifact_version": "NZ Companion RC25.5.1 · Travel Engine 25.5.1 Studio Home Fit-to-View",
+  "baseline_engine": "25.5.0",
   "release_date": "2026-08-13",
-  "release_type": "nz-presentation-shell-rewrite",
+  "release_type": "nz-studio-home-fit-to-view",
   "runtime_behavior_change": true,
   "capabilities_changed": [
-    "canonical presentation shell rewritten with single ownership boundaries",
-    "Studio Home preview is bounded between fixed Studio chrome and persistent app navigation",
-    "Studio Home hero uses natural geometry with no translate/scale viewport workaround",
-    "short Studio viewports scroll inside the bounded preview area instead of moving the hero under chrome",
-    "Traveller Selector retains a dedicated centred overlay contract",
-    "ordinary popup overlay scrolling remains separate from Traveller Selector and Trip/Guide shells",
-    "Trip/Guide fixed isolated overlay and explicit Guide-to-Booking stacking preserved",
-    "bottom navigation remains visible and non-interactive while popup/Studio overlays are open",
-    "NZ trip data/theme/bookings/Supabase/Analytics/storage/offline behavior preserved"
+    "25.5.0 canonical presentation-shell ownership preserved",
+    "desktop Studio Home preview measures the bounded preview rectangle and scales the complete hero to fit",
+    "Studio Home fit uses one centred scale with no translateY or viewport-offset workaround",
+    "desktop Studio Home preview does not scroll; normal Home and mobile behavior remain unchanged",
+    "Traveller Selector, Trip/Guide modal stacking, Supabase, Analytics, storage and offline behavior preserved"
   ],
   "ci_entrypoint": "sh ci-tests/run-all.sh",
   "rollback_baseline": "25.4.16",
@@ -31,12 +27,9 @@
     "booking appliesTo / partyIds subgroup assignment"
   ],
   "obsolete_or_rejected": [
-    "Studio Home scale-to-fit workaround",
+    "desktop Studio Home internal scroll fallback",
+    "hard-coded Studio hero scale percentages",
     "Studio Home translateY viewport correction",
-    "bounded-bottom-navigation modal clearance model",
-    "full-page Studio workspace model",
-    "multiple competing Traveller/Studio overlay ownership generations",
-    "sticky Save action model",
-    "version-specific CI naming for stable behavior contracts"
+    "multiple competing shell geometry owners"
   ]
 }

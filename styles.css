@@ -2294,13 +2294,15 @@ body.home-bg .live-currency-card #currencyCardMeta{position:relative;z-index:2;w
 .expense-booking-inline-link{appearance:none;border:0;background:transparent;padding:0;margin:0;font:inherit;font-weight:800;color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 
 
-/* Travel Engine 25.5.0 — canonical presentation shell rewrite.
+/* Travel Engine 25.5.1 — canonical presentation shell fit policy.
    ONE OWNER for Studio chrome, Studio Home preview bounds, ordinary popups,
-   and Traveller Selector geometry. No viewport translation/scaling hacks. */
+   and Traveller Selector geometry. Desktop Studio Home uses measured bounded
+   fit-to-view scaling inside the canonical preview rectangle; no translate hacks. */
 :root{
   --engine-studio-status-fallback:52px;
   --engine-traveller-header-fallback:68px;
   --engine-app-nav-clearance:112px;
+  --engine-studio-home-fit-scale:1;
   --engine-modal-layer:7000;
   --engine-studio-modal-layer:7600;
   --engine-traveller-layer:7700;
@@ -2341,8 +2343,9 @@ body.admin-mode{
 }
 
 /* Studio Home preview owns the rectangle between fixed top chrome and app nav.
-   Natural hero geometry is preserved. If a viewport is genuinely too short,
-   this bounded preview area scrolls instead of translating/scaling the hero. */
+   Desktop policy: fit the complete hero into that rectangle by measuring its
+   natural size and applying one bounded scale. The scale is centred, never
+   translated, and never changes normal Home. Mobile keeps natural scrolling. */
 body.admin-mode.home-bg main.dashboard.home-premium.home-v37{
   position:fixed!important;
   top:var(--engine-fixed-chrome-height)!important;
@@ -2356,26 +2359,30 @@ body.admin-mode.home-bg main.dashboard.home-premium.home-v37{
   max-height:none!important;
   margin:0!important;
   padding:12px 12px 18px!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  overflow-x:hidden!important;
-  overflow-y:auto!important;
-  overscroll-behavior:contain!important;
+  display:grid!important;
+  place-items:center!important;
+  overflow:hidden!important;
   box-sizing:border-box!important;
 }
 body.admin-mode.home-bg section.home-brand-card.v37-dashboard-home{
-  flex:0 0 auto!important;
-  transform:none!important;
+  transform:scale(var(--engine-studio-home-fit-scale,1))!important;
+  transform-origin:center center!important;
   translate:none!important;
-  scale:none!important;
-  margin:auto!important;
+  margin:0!important;
 }
 @media(max-width:720px){
   :root{--engine-app-nav-clearance:104px;}
   body.admin-mode.home-bg main.dashboard.home-premium.home-v37{
+    display:flex!important;
     align-items:flex-start!important;
+    justify-content:center!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
     padding:10px 7px 14px!important;
+  }
+  body.admin-mode.home-bg section.home-brand-card.v37-dashboard-home{
+    transform:none!important;
+    margin:auto!important;
   }
 }
 

@@ -39,3 +39,7 @@ Repeat the Expense checks for Moments, including mobile scrolling to the final S
 
 ## Failure rule
 Any clipping, overlap, hidden primary action, inaccessible traveller selector, full-page Studio regression, or usable bottom navigation behind an open popup is a release blocker.
+
+
+## 25.5.1 Studio Home fit-to-view
+On desktop Studio Home, verify the complete hero is visible without preview scrolling and remains inside the rectangle between the traveller header and `.app-nav`. Resize the viewport and verify the fit recomputes without `translateY`.
