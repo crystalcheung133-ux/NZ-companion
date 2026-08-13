@@ -24,6 +24,9 @@ node ci-tests/test-engine-interaction-contract.js
 
 echo "== ENGINE 25.4.32 STUDIO POPUP == "
 
+echo "== STUDIO POPUP WORKSPACE =="
+node ci-tests/test-studio-popup-workspace-contract.js
+
 echo "== PRESENTATION SHELL OWNERSHIP =="
 node ci-tests/test-presentation-shell-ownership.js styles.css
 echo "== PRESENTATION SHELL INTERACTION =="

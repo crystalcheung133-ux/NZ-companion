@@ -2189,14 +2189,12 @@ body.home-bg .live-currency-card #currencyCardMeta{position:relative;z-index:2;w
 /* RC25.1.1 legacy visibility repair retained only for non-Trip/Guide modal families.
    Trip/Guide shell ownership is consolidated in the 25.4.37 canonical contract. */
 .moments-modal,
-.tools-modal,
-.mama-modal{
+.tools-modal{
   position:fixed!important;
   inset:0!important;
 }
 .moments-modal.show,
-.tools-modal.show,
-.mama-modal.show{
+.tools-modal.show{
   display:grid!important;
   visibility:visible!important;
   opacity:1!important;
@@ -2304,9 +2302,9 @@ body.home-bg .live-currency-card #currencyCardMeta{position:relative;z-index:2;w
   --engine-studio-status-fallback:52px;
   --engine-traveller-header-fallback:68px;
   --engine-modal-layer:7000;
-  --engine-studio-modal-layer:7200;
-  --engine-traveller-layer:7400;
-  --engine-studio-status-layer:7500;
+  --engine-studio-modal-layer:7600;
+  --engine-traveller-layer:7700;
+  --engine-studio-status-layer:7800;
 }
 
 /* Persistent Studio chrome. */
@@ -2396,13 +2394,13 @@ body :is(
   inset:auto!important;
 }
 
-/* Travel Engine 25.4.38 — canonical Traveller Selector shell.
+/* Travel Engine 25.4.39 — canonical Traveller Selector + Studio workspace shell.
    The family/user selector is not a Guide modal and must not inherit page or Guide stacking.
-   It owns a fixed isolated overlay above Home hero/content, with a centred bounded selector card. */
+   Selector and Studio are separate shell states: selector centres a bounded card; Studio owns an isolated workspace above page content with bottom navigation suppressed. */
 #mamaModal:not(.studio-view){
   position:fixed!important;
   inset:0!important;
-  z-index:var(--engine-traveller-layer,7400)!important;
+  z-index:var(--engine-traveller-layer,7700)!important;
   display:none!important;
   overflow:hidden!important;
   isolation:isolate!important;
@@ -2414,7 +2412,7 @@ body :is(
 #mamaModal:not(.studio-view).show{
   position:fixed!important;
   inset:0!important;
-  z-index:var(--engine-traveller-layer,7400)!important;
+  z-index:var(--engine-traveller-layer,7700)!important;
   display:grid!important;
   place-items:center!important;
   overflow:hidden!important;
@@ -2451,12 +2449,22 @@ body :is(
   padding:14px 14px calc(22px + env(safe-area-inset-bottom,0px))!important;
   overflow-y:auto!important;overflow-x:hidden!important;
   overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important;
+  isolation:isolate!important;
   box-sizing:border-box!important;
   background:rgba(43,37,31,.48)!important;
   scroll-padding-top:14px!important;scroll-padding-bottom:24px!important;
+  pointer-events:auto!important;
+}
+
+body:has(#mamaModal.studio-view.show) .app-nav{
+  visibility:hidden!important;
+  pointer-events:none!important;
+  z-index:100!important;
 }
 
 #mamaModal.studio-view.show .guide-sheet{
+  position:relative!important;
+  z-index:1!important;
   display:block!important;
   width:min(760px,100%)!important;
   height:auto!important;min-height:0!important;max-height:none!important;
@@ -2464,11 +2472,16 @@ body :is(
   overflow:visible!important;
   border:0!important;border-radius:0!important;box-shadow:none!important;
   background:transparent!important;
+  transform:none!important;opacity:1!important;visibility:visible!important;
 }
 
 #mamaModal.studio-view.show .trip-studio{
+  position:relative!important;
+  z-index:2!important;
   display:block!important;width:100%!important;max-width:760px!important;margin:0 auto!important;
   border-radius:24px!important;overflow:hidden!important;
+  background:linear-gradient(180deg,rgba(250,252,248,.98),rgba(244,248,244,.98))!important;
+  box-shadow:0 16px 36px rgba(22,54,43,.18)!important;
 }
 
 #mamaModal.studio-view.show .trip-studio-head{padding:16px 18px 14px!important}
