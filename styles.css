@@ -1428,7 +1428,7 @@ body.expense-modal-open {position:fixed!important;left:0!important;right:0!impor
 @media(max-width:600px){.quick-info-actions {display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}.quick-info-actions>* {width:100%!important;min-width:0!important}.guide-status {min-width:84px;font-size:.72rem;padding-inline:10px}}/* RC4.6 Guide list status badge */
 .guide-list-meta {display:flex;align-items:center;gap:8px;flex:0 0 auto}.guide-list-chevron {flex:0 0 auto}
 @media(max-width:600px){.category-pop-list button {gap:8px}.guide-list-meta {gap:6px}}/* RC4.8A — lifecycle checklist and persistent Trip menu overlay */
-.before-trip-card {width:100%;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;margin:12px 0 4px;padding:13px 15px;border:1px solid var(--surface-border);border-radius:18px;background:#fffaf2;color:var(--ink);text-align:left;font:inherit;box-shadow:0 8px 22px rgba(54,39,24,.07);cursor:pointer}.checklist-progress {font-weight:800;text-align:center;margin-top:14px}.trip-action-row {display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}.trip-modal {background:rgba(43,37,31,.24)!important}.mini-menu.show {z-index:5001!important}.trip-modal.show {z-index:5002!important}.trip-sheet {z-index:5003!important}/* RC4.8B content utility cleanup */
+.before-trip-card {width:100%;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;margin:12px 0 4px;padding:13px 15px;border:1px solid var(--surface-border);border-radius:18px;background:#fffaf2;color:var(--ink);text-align:left;font:inherit;box-shadow:0 8px 22px rgba(54,39,24,.07);cursor:pointer}.checklist-progress {font-weight:800;text-align:center;margin-top:14px}.trip-action-row {display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}.trip-modal {background:rgba(43,37,31,.24)!important}.mini-menu.show {z-index:5001!important}/* RC4.8B content utility cleanup */
 .stay-booking-list {display:grid;gap:12px}.stay-booking {padding:15px;border:1px solid var(--surface-border);border-radius:18px;background:#fffaf2}.stay-booking .trip-action-row {margin-bottom:0}/* RC5.5 — Stage 9B-1 safe cloud publication builder */
 .trip-studio-action {width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;border:1px solid rgba(18,70,83,.18);border-radius:16px;background:#fff;padding:14px 15px;text-align:left;font:inherit;color:inherit;box-shadow:0 5px 14px rgba(26,62,68,.06);cursor:pointer}.trip-studio-action span:first-child {display:grid;gap:3px}.trip-studio-action strong {font-weight:800}.trip-studio-action small {font-weight:650;line-height:1.35;color:rgba(23,49,56,.7)}.trip-studio-action span:last-child {font-size:1.35rem}.trip-studio-action:disabled {opacity:.62;cursor:wait}.trip-studio-action[hidden] {display:none!important}.publication-prepare-btn {margin-top:10px}/* ============================================================================
    RC5.5 — UX FREEZE
@@ -1838,8 +1838,8 @@ body.admin-mode .app-nav .days-trigger small {color:#fff!important;opacity:.96!i
 
 /* RC17.6 — stable Guide close/open: keep the fixed overlay out of document reflow. */
 html{scrollbar-gutter:stable;}
-.guide-modal{display:grid!important;place-items:center!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;overscroll-behavior:contain;transition:opacity .12s ease,visibility 0s linear .12s;}
-.guide-modal.show{visibility:visible!important;opacity:1!important;pointer-events:auto!important;transition-delay:0s;}
+.guide-modal{visibility:hidden!important;opacity:0!important;transition:opacity .12s ease,visibility 0s linear .12s;}
+.guide-modal.show{visibility:visible!important;opacity:1!important;transition-delay:0s;}
 .guide-sheet{transform:translateZ(0);backface-visibility:hidden;}
 @media (prefers-reduced-motion:reduce){.guide-modal,.guide-modal.show{transition:none!important;}}
 
@@ -2166,8 +2166,7 @@ body.home-bg .live-currency-card #currencyCardMeta{position:relative;z-index:2;w
 }
 
 
-/* RC24.7.5 in-page Guide overlay: preserve the originating Trip/Day page. */
-.guide-modal.show{z-index:5010!important;}
+/* RC24.7.5 Guide content presentation retained; shell z-index ownership consolidated in 25.4.37. */
 .guide-content-section,.guide-stay-section{margin-top:18px;padding:18px 20px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.5)}
 .guide-content-section h3,.guide-stay-section h3{margin:0 0 8px}
 .guide-content-section p,.guide-stay-section p{margin:0}
@@ -2187,23 +2186,14 @@ body.home-bg .live-currency-card #currencyCardMeta{position:relative;z-index:2;w
 .payment-fx-note{margin:6px 0 0;font-size:.68rem;opacity:.62;text-align:right}
 @media(max-width:370px){.timeline-action--alternative{font-size:.73rem;padding-inline:9px}.accommodation-payment-block dl>div{gap:8px}}
 
-/* RC25 modal stack freeze: Booking opened from a Guide stays above the Guide,
-   then closing Booking reveals the original Guide card and page context. */
-body.guide-booking-stack-open #guideModal{z-index:5000!important;}
-body.guide-booking-stack-open #tripModal{z-index:5100!important;}
-
-/* RC25.1.1 — canonical modal/menu visibility hotfix.
-   Prevent mixed legacy rules from collapsing an opened sheet to its handle. */
-.guide-modal,
-.trip-modal,
+/* RC25.1.1 legacy visibility repair retained only for non-Trip/Guide modal families.
+   Trip/Guide shell ownership is consolidated in the 25.4.37 canonical contract. */
 .moments-modal,
 .tools-modal,
 .mama-modal{
   position:fixed!important;
   inset:0!important;
 }
-.guide-modal.show,
-.trip-modal.show,
 .moments-modal.show,
 .tools-modal.show,
 .mama-modal.show{
@@ -2213,18 +2203,6 @@ body.guide-booking-stack-open #tripModal{z-index:5100!important;}
   pointer-events:auto!important;
   align-items:start!important;
   justify-items:center!important;
-}
-#guideModal .guide-sheet,
-#tripModal .trip-sheet{
-  display:block!important;
-  width:min(760px,100%)!important;
-  min-height:180px!important;
-  height:auto!important;
-  overflow-y:auto!important;
-  overflow-x:hidden!important;
-  transform:none!important;
-  opacity:1!important;
-  visibility:visible!important;
 }
 #guideModalContent,
 #tripModalContent{
@@ -2371,7 +2349,7 @@ body:has(:is(.guide-modal,.moments-modal,.unexpected-modal,.tools-modal,.mama-mo
 }
 
 body :is(
-  .guide-modal,.moments-modal,.unexpected-modal,.tools-modal,.trip-modal,
+  .moments-modal,.unexpected-modal,.tools-modal,
   .mama-modal:not(.studio-view)
 ).show{
   position:fixed!important;
@@ -2387,16 +2365,16 @@ body :is(
 }
 
 body.admin-mode :is(
-  .guide-modal,.moments-modal,.unexpected-modal,.tools-modal,.trip-modal,
+  .moments-modal,.unexpected-modal,.tools-modal,
   .mama-modal:not(.studio-view)
 ).show{
   top:var(--engine-fixed-chrome-height)!important;
 }
 
 body :is(
-  .guide-modal,.moments-modal,.unexpected-modal,.tools-modal,.trip-modal,
+  .moments-modal,.unexpected-modal,.tools-modal,
   .mama-modal:not(.studio-view)
-).show > :is(.guide-sheet,.moments-sheet,.unexpected-sheet,.tools-sheet,.trip-sheet){
+).show > :is(.moments-sheet,.unexpected-sheet,.tools-sheet,.guide-sheet){
   display:block!important;
   width:min(760px,100%)!important;
   height:auto!important;min-height:0!important;max-height:none!important;
@@ -2408,7 +2386,7 @@ body :is(
 }
 
 body :is(
-  .guide-modal,.moments-modal,.unexpected-modal,.tools-modal,.trip-modal,
+  .moments-modal,.unexpected-modal,.tools-modal,
   .mama-modal:not(.studio-view)
 ) :is(
   #expenseSaveButton,
@@ -2462,10 +2440,6 @@ body :is(
 #mamaModal.studio-view.show .reset-trip-data-btn,
 #mamaModal.studio-view.show .exit-trip-studio-btn{min-height:58px!important;padding:12px 14px!important}
 
-/* Guide → Booking stack remains explicit. */
-body.guide-booking-stack-open #guideModal{z-index:var(--engine-modal-layer)!important}
-body.guide-booking-stack-open #tripModal{z-index:calc(var(--engine-modal-layer) + 100)!important}
-
 @media(max-width:560px){
   #mamaModal.studio-view.show{padding:10px 10px calc(18px + env(safe-area-inset-bottom,0px))!important}
   #mamaModal.studio-view.show .trip-studio{border-radius:22px!important}
@@ -2487,10 +2461,23 @@ body.guide-booking-stack-open #tripModal{z-index:calc(var(--engine-modal-layer) 
 .expense-notice-done{min-width:110px}
 
 
-/* Travel Engine 25.4.36 — Booking/Guide modal stacking hotfix.
-   Trip/Booking and Guide detail cards use a centred, internally-scrollable sheet
-   above page heroes. Ordinary form popups (Expense/Moments/etc.) retain the
-   25.4.34 single-overlay-scroll contract. */
+/* Travel Engine 25.4.37 — canonical Trip / Guide modal shell.
+   Single ownership: fixed isolated overlay + centred internally-scrollable sheet.
+   Ordinary form popups (Expense/Moments/etc.) remain under the 25.4.34 overlay-scroll contract.
+   One-page / near-fit content adaptations remain separate below their own selectors. */
+#tripModal,
+#guideModal{
+  position:fixed!important;
+  inset:0!important;
+  z-index:var(--engine-modal-layer,7000)!important;
+  display:none!important;
+  overflow:hidden!important;
+  isolation:isolate!important;
+  padding:12px!important;
+  box-sizing:border-box!important;
+  background:rgba(43,37,31,.48)!important;
+  pointer-events:none!important;
+}
 #tripModal.show,
 #guideModal.show{
   position:fixed!important;
@@ -2523,6 +2510,7 @@ body.admin-mode #guideModal.show{
   overscroll-behavior:contain!important;
   -webkit-overflow-scrolling:touch!important;
   box-sizing:border-box!important;
+  padding:48px 14px 12px!important;
   transform:none!important;
   opacity:1!important;
   visibility:visible!important;

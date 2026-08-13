@@ -33,4 +33,7 @@ echo "== RELEASE HYGIENE =="
 node ci-tests/test-release-hygiene.js .
 
 echo "== BOOKING / GUIDE MODAL STACKING == "
-node ci-tests/test-booking-guide-modal-stacking.js styles.css
+node ci-tests/test-booking-guide-modal-stacking.js
+
+echo "== TRIP / GUIDE SHELL CONSOLIDATION =="
+node ci-tests/test-trip-guide-shell-consolidation.js styles.css

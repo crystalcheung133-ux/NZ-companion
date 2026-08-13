@@ -32,7 +32,7 @@ if(!trip.includes("const returnToGuide=window.TRIP_MODAL_RETURN_TO_GUIDE===true"
 
 if(!guide.includes("document.body.classList.add('guide-booking-stack-open')")) failures.push('Guide → Booking stacked modal state is missing.');
 if(!trip.includes("document.body.classList.remove('guide-booking-stack-open')")) failures.push('Closing Booking does not clear stacked modal state.');
-if(!styles.includes('body.guide-booking-stack-open #tripModal{z-index:5100!important;}')) failures.push('Booking modal is not layered above the originating Guide modal.');
+if(!/body\.guide-booking-stack-open #guideModal\.show\s*\{[^}]*z-index:var\(--engine-modal-layer,7000\)!important;/s.test(styles) || !/body\.guide-booking-stack-open #tripModal\.show\s*\{[^}]*z-index:calc\(var\(--engine-modal-layer,7000\) \+ 100\)!important;/s.test(styles)) failures.push('Booking modal is not layered above the originating Guide modal.');
 if(failures.length){
   console.error('UX CONTRACT: FAILED');
   failures.forEach(x=>console.error('- '+x));
