@@ -1,1 +1,1 @@
-NZ Companion RC25.4.9 · Travel Engine 25.4.39 Traveller Selector / Studio Workspace Shell Fix
+NZ Companion RC25.4.10 · Travel Engine 25.4.40 Bottom Navigation Studio Visibility Hotfix

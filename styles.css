@@ -2456,8 +2456,11 @@ body :is(
   pointer-events:auto!important;
 }
 
+/* RC25.4.10 hotfix: this rule must not add visibility:hidden — the general
+   "Ordinary popup" .app-nav rule above already covers Studio (.mama-modal is
+   not excluded there) with the correct RC25.4.6 contract: pointer-events:none
+   + z-index:100 only. Bottom nav stays visible, just non-interactive. */
 body:has(#mamaModal.studio-view.show) .app-nav{
-  visibility:hidden!important;
   pointer-events:none!important;
   z-index:100!important;
 }

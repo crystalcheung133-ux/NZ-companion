@@ -1,9 +1,9 @@
 {
-  "engine_version": "25.4.39",
-  "artifact_version": "NZ Companion RC25.4.9 \u00b7 Travel Engine 25.4.39 Traveller Selector / Studio Workspace Shell Fix",
+  "engine_version": "25.4.40",
+  "artifact_version": "NZ Companion RC25.4.10 \u00b7 Travel Engine 25.4.40 Bottom Navigation Studio Visibility Hotfix",
   "baseline_engine": "25.4.20.3",
   "release_date": "2026-08-13",
-  "release_type": "traveller-selector-studio-workspace-shell-fix",
+  "release_type": "bottom-navigation-studio-visibility-hotfix",
   "runtime_behavior_change": true,
   "capabilities_changed": [
     "canonical full-overlay popup interaction contract",
@@ -14,7 +14,6 @@
     "Studio re-entry targets the Studio card via scrollIntoView",
     "switching to a different traveller exits Studio atomically",
     "ordinary popup overlay is the single scroll owner and popup cards remain natural-height",
-    "bottom navigation is unavailable while an ordinary popup is open",
     "Expense modal resets scroll/focus state on open and close",
     "self-contained scrollable shared-expense notifications with Got it acknowledgement",
     "NZ trip data, bookings, Guide, Analytics and Supabase behavior preserved",
@@ -26,7 +25,8 @@
     "Traveller Selector is isolated from legacy modal visibility ownership",
     "Studio workspace is isolated above Home content and suppresses bottom navigation while open",
     "Studio card remains foreground-owned inside the workspace overlay",
-    "NZ trip data/theme/bookings remain unchanged"
+    "NZ trip data/theme/bookings remain unchanged",
+    "bottom navigation remains visible (non-interactive only) while any popup, including Studio, is open \u2014 never hidden via visibility/display"
   ],
   "ci_entrypoint": "sh ci-tests/run-all.sh",
   "rollback_baseline": "25.4.16",
