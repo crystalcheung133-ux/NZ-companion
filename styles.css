@@ -2305,6 +2305,7 @@ body.home-bg .live-currency-card #currencyCardMeta{position:relative;z-index:2;w
   --engine-studio-modal-layer:7600;
   --engine-traveller-layer:7700;
   --engine-studio-status-layer:7800;
+  --engine-studio-home-preview-scale:.90;
 }
 
 /* Persistent Studio chrome. */
@@ -2338,6 +2339,26 @@ body.admin-mode{
     + var(--studio-traveller-header-height,var(--engine-traveller-header-fallback))
   );
   padding-top:var(--engine-fixed-chrome-height)!important;
+}
+
+/* NZ RC25.4.12 — Studio Home preview fit contract.
+   Desktop Home is normally a one-viewport composition. In Studio/admin mode the
+   persistent status bar + traveller header reduce that viewport. The Home main
+   must measure from the bottom of that chrome, and short desktop viewports use
+   a bounded preview scale so the complete hero clears the still-visible app nav.
+   Normal traveller Home and mobile layout are intentionally untouched. */
+@media (min-width:721px){
+  body.admin-mode.home-bg main.dashboard.home-premium.home-v37{
+    height:calc(100dvh - var(--engine-fixed-chrome-height))!important;
+    max-height:calc(100dvh - var(--engine-fixed-chrome-height))!important;
+    min-height:0!important;
+  }
+}
+@media (min-width:721px) and (max-height:900px){
+  body.admin-mode.home-bg section.home-brand-card.v37-dashboard-home{
+    transform:translateY(var(--home-hero-shift,-6.5vh)) scale(var(--engine-studio-home-preview-scale))!important;
+    transform-origin:center center!important;
+  }
 }
 
 /* Ordinary popup: overlay is the single scroll owner; card remains natural-height. */

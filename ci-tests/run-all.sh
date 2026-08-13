@@ -40,3 +40,6 @@ node ci-tests/test-booking-guide-modal-stacking.js
 
 echo "== TRIP / GUIDE SHELL CONSOLIDATION =="
 node ci-tests/test-trip-guide-shell-consolidation.js styles.css
+
+echo "== STUDIO HOME PREVIEW FIT =="
+node ci-tests/test-studio-home-preview-fit.js styles.css
