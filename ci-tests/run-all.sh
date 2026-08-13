@@ -31,3 +31,6 @@ node ci-tests/test-presentation-shell-interaction.js styles.css admin.js
 
 echo "== RELEASE HYGIENE =="
 node ci-tests/test-release-hygiene.js .
+
+echo "== BOOKING / GUIDE MODAL STACKING == "
+node ci-tests/test-booking-guide-modal-stacking.js styles.css

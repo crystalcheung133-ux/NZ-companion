@@ -2485,3 +2485,56 @@ body.guide-booking-stack-open #tripModal{z-index:calc(var(--engine-modal-layer) 
 .expense-notice-booking{opacity:.82}
 .expense-notice-actions{flex:0 0 auto}
 .expense-notice-done{min-width:110px}
+
+
+/* Travel Engine 25.4.36 — Booking/Guide modal stacking hotfix.
+   Trip/Booking and Guide detail cards use a centred, internally-scrollable sheet
+   above page heroes. Ordinary form popups (Expense/Moments/etc.) retain the
+   25.4.34 single-overlay-scroll contract. */
+#tripModal.show,
+#guideModal.show{
+  position:fixed!important;
+  inset:0!important;
+  z-index:var(--engine-modal-layer,7000)!important;
+  display:grid!important;
+  place-items:center!important;
+  overflow:hidden!important;
+  isolation:isolate!important;
+  padding:12px!important;
+  box-sizing:border-box!important;
+  background:rgba(43,37,31,.48)!important;
+  pointer-events:auto!important;
+}
+body.admin-mode #tripModal.show,
+body.admin-mode #guideModal.show{
+  top:var(--engine-fixed-chrome-height)!important;
+}
+#tripModal.show > .trip-sheet,
+#guideModal.show > .guide-sheet{
+  position:relative!important;
+  display:block!important;
+  width:min(760px,100%)!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:calc(100% - 4px)!important;
+  margin:0 auto!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  box-sizing:border-box!important;
+  transform:none!important;
+  opacity:1!important;
+  visibility:visible!important;
+}
+#tripModal.show .trip-close,
+#guideModal.show .guide-close{
+  z-index:50!important;
+  pointer-events:auto!important;
+}
+body.guide-booking-stack-open #guideModal.show{
+  z-index:var(--engine-modal-layer,7000)!important;
+}
+body.guide-booking-stack-open #tripModal.show{
+  z-index:calc(var(--engine-modal-layer,7000) + 100)!important;
+}

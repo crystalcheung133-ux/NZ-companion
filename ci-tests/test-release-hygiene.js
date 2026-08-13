@@ -6,7 +6,7 @@ const ciDir=path.join(root,'ci-tests');
 const files=fs.readdirSync(ciDir);
 const fail=[];
 
-if(release.engine_version!=='25.4.35') fail.push('engine_version must be 25.4.35');
+if(release.engine_version!=='25.4.36') fail.push('engine_version must be 25.4.36');
 for(const stale of ['25.4.31','25.4.32']){
   for(const f of files){
     if(f.includes(stale)) fail.push('version-specific stable-contract CI filename remains: '+f);
