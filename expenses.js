@@ -694,6 +694,7 @@ let editingExpenseIndex=null;
     window.returnToBookingDetail(bookingId);
   };
 
+
   function focusExpenseFromURL(){
     const params=new URLSearchParams(window.location.search);
     const expenseId=params.get('expenseId');
@@ -705,15 +706,24 @@ let editingExpenseIndex=null;
         .sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
       if(linked[0]?.id) target=document.getElementById(`expense-${linked[0].id}`);
     }
-    if(target){
-      setTimeout(()=>{
-        target.scrollIntoView({behavior:'auto',block:'center'});
-        target.classList.add('expense-card--new','expense-card--focused');
-        setTimeout(()=>target.classList.remove('expense-card--new','expense-card--focused'),2200);
-      },80);
-    }
+    if(!target)return;
+    const history=target.closest('.transaction-scroll');
+    const focus=()=>{
+      if(history&&history.scrollHeight>history.clientHeight){
+        const top=target.offsetTop-history.offsetTop-(history.clientHeight-target.offsetHeight)/2;
+        history.scrollTop=Math.max(0,top);
+      }
+      const block=target.closest('.expense-history-block')||target;
+      block.scrollIntoView({behavior:'auto',block:'start'});
+      target.classList.add('expense-card--new','expense-card--focused');
+      target.setAttribute('tabindex','-1');
+      try{target.focus({preventScroll:true});}catch(_){}
+      setTimeout(()=>target.classList.remove('expense-card--new','expense-card--focused'),3200);
+    };
+    requestAnimationFrame(()=>requestAnimationFrame(focus));
   }
   window.focusExpenseFromURL=focusExpenseFromURL;
+
 
   window.exportExpenseData=function(){
     if(currentUser()!==((TRIP_CONFIG.admin&&TRIP_CONFIG.admin.user)||TRIP_CONFIG.participants?.defaultKey||'unknown') || typeof window.isAdminMode!=='function' || !window.isAdminMode()) return alert('Enter Admin Mode to export the complete expense data.');

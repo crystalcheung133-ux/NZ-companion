@@ -196,14 +196,14 @@ function bookingExpenseActionHTML(booking){
   const viewHref=newest?.id?`expenses.html?expenseId=${encodeURIComponent(newest.id)}`:`expenses.html?bookingId=${encodeURIComponent(booking.id)}`;
   if(linked){
     const label=linked===1?'View Expense':`View ${linked} Expenses`;
-    return `<div class="booking-expense-buttons booking-expense-buttons--compact"><a class="pill trip-action-btn" href="${viewHref}">${label}</a></div>`;
+    return `<div class="trip-action-row trip-action-row--booking-compact booking-expense-buttons booking-expense-buttons--compact"><a class="pill trip-action-btn trip-action-btn--expense" href="${viewHref}">${label}</a></div>`;
   }
   const hasPayment=Boolean(
     booking.depositPaid||booking.depositAmount||booking.paymentStatus||
     booking.totalAmount||booking.price||booking.cashbackAmount||booking.netTotalAUD
   );
   if(!hasPayment)return '';
-  return `<div class="booking-expense-buttons booking-expense-buttons--compact"><button class="pill trip-action-btn" type="button" onclick="openBookingExpense('${escapeTripHTML(booking.id)}')">Add payment to Expenses</button></div>`;
+  return `<div class="trip-action-row trip-action-row--booking-compact booking-expense-buttons booking-expense-buttons--compact"><button class="pill trip-action-btn trip-action-btn--expense" type="button" onclick="openBookingExpense('${escapeTripHTML(booking.id)}')">Add payment to Expenses</button></div>`;
 }
 function bookingActionButtonsHTML(booking,place,options={}){
   const includeDay=options.includeDay!==false;

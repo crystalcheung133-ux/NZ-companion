@@ -2514,3 +2514,144 @@ body:has(#tripStudioModal.show) .app-nav{
   #tripStudioModal{padding:10px 10px calc(18px + env(safe-area-inset-bottom,0px))!important}
   #tripStudioModal .trip-studio{border-radius:22px!important}
 }
+
+/* ENGINE 25.6.1 — Canonical Trip Studio presentation.
+   One calm, theme-aware workspace across Companions; product structure/lifecycle unchanged. */
+#tripStudioModal{
+  background:color-mix(in srgb,var(--ink,#20322d) 22%,transparent)!important;
+  backdrop-filter:blur(10px) saturate(.9)!important;
+  -webkit-backdrop-filter:blur(10px) saturate(.9)!important;
+}
+#tripStudioModal .trip-studio-modal-inner{
+  width:min(94vw,460px)!important;
+  margin:0 auto!important;
+}
+#tripStudioModal .trip-studio{
+  overflow:hidden!important;
+  border:1px solid color-mix(in srgb,var(--primary,#315d50) 20%,#fff)!important;
+  border-radius:26px!important;
+  background:color-mix(in srgb,var(--surface,#fff) 96%,var(--primary,#315d50) 4%)!important;
+  box-shadow:0 28px 70px rgba(18,35,31,.24)!important;
+}
+#tripStudioModal .trip-studio-head{
+  position:relative!important;
+  padding:18px 18px 15px!important;
+  border-bottom:1px solid color-mix(in srgb,var(--primary,#315d50) 12%,transparent)!important;
+  background:linear-gradient(145deg,
+    color-mix(in srgb,var(--primary,#315d50) 10%,#fff),
+    color-mix(in srgb,var(--surface,#fff) 96%,var(--primary,#315d50) 4%))!important;
+}
+#tripStudioModal .trip-studio-kicker{
+  margin-bottom:5px!important;
+  color:var(--primary,#315d50)!important;
+  font-size:9px!important;
+  font-weight:900!important;
+  letter-spacing:.16em!important;
+  text-transform:uppercase!important;
+}
+#tripStudioModal .trip-studio-head h3{
+  margin:0!important;
+  font-size:22px!important;
+  line-height:1.05!important;
+  letter-spacing:-.025em!important;
+}
+#tripStudioModal .trip-studio-head small{
+  display:block!important;
+  margin-top:6px!important;
+  color:color-mix(in srgb,var(--ink,#20322d) 62%,transparent)!important;
+  font-size:11px!important;
+  line-height:1.35!important;
+}
+#tripStudioModal .trip-studio-close{
+  width:36px!important;height:36px!important;flex:0 0 36px!important;
+  border:1px solid color-mix(in srgb,var(--primary,#315d50) 14%,transparent)!important;
+  border-radius:50%!important;
+  background:rgba(255,255,255,.82)!important;
+  box-shadow:0 4px 14px rgba(20,45,38,.08)!important;
+}
+#tripStudioModal .trip-studio-group{
+  margin:0!important;
+  padding:12px 14px!important;
+  border:0!important;
+  border-bottom:1px solid color-mix(in srgb,var(--primary,#315d50) 9%,transparent)!important;
+  background:transparent!important;
+}
+#tripStudioModal .trip-studio-group:last-child{border-bottom:0!important;}
+#tripStudioModal .trip-studio-label{
+  margin:0 0 7px!important;
+  color:color-mix(in srgb,var(--ink,#20322d) 54%,transparent)!important;
+  font-size:9px!important;
+  font-weight:900!important;
+  letter-spacing:.12em!important;
+  text-transform:uppercase!important;
+}
+#tripStudioModal .complete-trip-control,
+#tripStudioModal .trip-export-launch,
+#tripStudioModal .reset-trip-data-btn{
+  min-height:54px!important;
+  padding:10px 12px!important;
+  border:1px solid color-mix(in srgb,var(--primary,#315d50) 11%,transparent)!important;
+  border-radius:16px!important;
+  background:rgba(255,255,255,.72)!important;
+  box-shadow:none!important;
+}
+#tripStudioModal .complete-trip-control{gap:11px!important;}
+#tripStudioModal .trip-studio-copy,
+#tripStudioModal .trip-export-launch>span:first-child,
+#tripStudioModal .reset-trip-data-btn>span:first-child{gap:2px!important;}
+#tripStudioModal .trip-studio-copy strong,
+#tripStudioModal .trip-export-launch strong,
+#tripStudioModal .reset-trip-data-btn strong{
+  font-size:13px!important;line-height:1.15!important;font-weight:850!important;
+}
+#tripStudioModal .trip-studio-copy small,
+#tripStudioModal .trip-export-launch small,
+#tripStudioModal .reset-trip-data-btn small{
+  font-size:10px!important;line-height:1.25!important;
+  color:color-mix(in srgb,var(--ink,#20322d) 58%,transparent)!important;
+}
+#tripStudioModal .complete-trip-btn{
+  min-height:34px!important;
+  padding:7px 11px!important;
+  border-radius:999px!important;
+  font-size:10px!important;
+  font-weight:850!important;
+}
+#tripStudioModal .trip-export-launch,
+#tripStudioModal .reset-trip-data-btn{gap:10px!important;}
+#tripStudioModal .trip-export-launch>span:last-child,
+#tripStudioModal .reset-trip-data-btn>span:last-child{font-size:18px!important;}
+#tripStudioModal .reset-trip-data-btn{
+  color:#7c3d35!important;
+  background:color-mix(in srgb,#fff 94%,#b45c4f 6%)!important;
+  border-color:rgba(155,75,63,.15)!important;
+}
+@media(max-width:560px){
+  #tripStudioModal{padding:12px 10px calc(18px + env(safe-area-inset-bottom,0px))!important;}
+  #tripStudioModal .trip-studio-modal-inner{width:min(96vw,430px)!important;}
+  #tripStudioModal .trip-studio{border-radius:23px!important;}
+  #tripStudioModal .trip-studio-head{padding:15px 15px 12px!important;}
+  #tripStudioModal .trip-studio-head small{display:block!important;font-size:10px!important;}
+  #tripStudioModal .trip-studio-group{padding:10px 12px!important;}
+  #tripStudioModal .complete-trip-control,
+  #tripStudioModal .trip-export-launch,
+  #tripStudioModal .reset-trip-data-btn{min-height:50px!important;padding:9px 10px!important;}
+}
+
+
+/* ENGINE 25.6.1 — Booking → Expense is a first-class Booking action. */
+.booking-expense-buttons.trip-action-row{margin-top:8px!important;}
+.trip-action-btn--expense{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  min-height:38px!important;padding:8px 12px!important;border-radius:12px!important;
+  border:1px solid color-mix(in srgb,var(--primary,#315d50) 18%,transparent)!important;
+  background:color-mix(in srgb,var(--primary,#315d50) 8%,#fff)!important;
+  color:var(--primary,#315d50)!important;font-weight:850!important;
+}
+.expense-card--focused{
+  scroll-margin:110px 0 120px!important;
+  outline:3px solid color-mix(in srgb,var(--primary,#315d50) 30%,transparent)!important;
+  outline-offset:3px!important;
+  box-shadow:0 14px 36px rgba(25,60,72,.16)!important;
+}
+

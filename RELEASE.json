@@ -1,6 +1,6 @@
 {
-  "engine_version": "25.6.0",
-  "artifact_version": "NZ Companion RC25.4.0 · Travel Engine 25.6.0 Production Freeze",
+  "engine_version": "25.6.1",
+  "artifact_version": "NZ Companion RC25.4.1 · Travel Engine 25.6.1 Production Freeze",
   "baseline_engine": "25.6.0",
   "release_date": "2026-08-15",
   "release_type": "production-freeze",
@@ -28,20 +28,25 @@
     "booking appliesTo / partyIds subgroup assignment"
   ],
   "migration_source": "NZ Companion RC25.3.9.3 · Travel Engine 25.4.20.3 Production Freeze",
-  "release_status": "PRODUCTION FREEZE — exact CSS compatibility fix independently Chromium-validated twice on desktop + mobile",
+  "release_status": "PRODUCTION FREEZE — static CI + independent Chromium desktop/mobile PASS",
   "validation": {
-    "static_migration_ci": "PASS",
-    "chromium_desktop_1280x800": "PASS — independently validated twice after exact CSS fix",
-    "chromium_mobile_390x844": "PASS — independently validated twice after exact CSS fix",
-    "browser_release_gate": "PASS — stable second run",
-    "tested_product_change": "styles.css only: RC25.1.1 visibility overrides scoped to #guideModal.show / #tripModal.show",
-    "content_authority": "NZ RC25.3.9.3 Production Freeze content preserved",
-    "architecture_authority": "Travel Engine 25.6.0 Frozen Canonical Baseline"
+    "chromium_desktop_1280x800": "PASS",
+    "chromium_mobile_390x844": "PASS",
+    "studio_lifecycle": "PASS",
+    "booking_expense_exact_card_deeplink": "PASS",
+    "console_application_errors": "PASS — zero JS page errors",
+    "cross_companion_studio_consistency": "PASS — same Engine-level Studio geometry/layout",
+    "validator": "Independent Codex Chromium/Playwright validation of unchanged CI-gate candidates"
   },
   "final_compatibility_fix": {
     "classification": "browser-only CSS scoping defect in legacy NZ modal visibility hotfix",
     "file": "styles.css",
     "change": "Scope guide/trip sheet and modal-content visibility overrides to the .show state",
     "browser_evidence": "Desktop 1280x800 PASS + Mobile 390x844 PASS, repeated twice"
-  }
+  },
+  "changes": [
+    "Canonical theme-aware Trip Studio presentation shared by Engine/NZ/VN",
+    "Booking View Expense action aligned to Booking action language",
+    "Booking → Expense deep-link targets and focuses the exact Transaction History card on desktop/mobile"
+  ]
 }

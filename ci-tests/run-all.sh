@@ -24,6 +24,7 @@ run "DESTRUCTIVE ACTION SECURITY" node ci-tests/test-destructive-action-security
 run "SOLO PARTY" node ci-tests/test-stage1-solo-party.js
 run "BACKWARD COMPAT" node ci-tests/test-stage1-backward-compat.js
 
+run "CANONICAL STUDIO + EXPENSE DEEP-LINK" node ci-tests/test-canonical-studio-expense-deeplink.js
 if [ "$failed" -eq 0 ]; then
   printf '\nNZ 25.6 MIGRATION CI PASSED\n'
   exit 0

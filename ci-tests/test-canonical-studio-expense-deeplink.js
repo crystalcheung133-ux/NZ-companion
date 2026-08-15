@@ -1,0 +1,13 @@
+const fs=require('fs'),assert=require('assert');
+const trip=fs.readFileSync('trip-runtime.js','utf8');
+const expenses=fs.readFileSync('expenses.js','utf8');
+const css=fs.readFileSync('styles.css','utf8');
+assert(trip.includes('trip-action-btn--expense'),'Booking expense action semantic class missing');
+assert(trip.includes('expenses.html?expenseId=${encodeURIComponent(newest.id)}'),'exact expense deep-link missing');
+assert(expenses.includes("target.closest('.transaction-scroll')"),'transaction-scroll targeting missing');
+assert(expenses.includes('history.scrollTop=Math.max(0,top)'),'internal Transaction History scroll targeting missing');
+assert(expenses.includes("target.closest('.expense-history-block')"),'history block page targeting missing');
+assert(expenses.includes("target.setAttribute('tabindex','-1')"),'focused expense accessibility target missing');
+assert(css.includes('ENGINE 25.6.1 — Canonical Trip Studio presentation'),'canonical Studio presentation missing');
+assert(css.includes('.trip-action-btn--expense'),'canonical expense action styling missing');
+console.log('CANONICAL STUDIO + BOOKING EXPENSE DEEP-LINK: PASS');
