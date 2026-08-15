@@ -2655,3 +2655,32 @@ body:has(#tripStudioModal.show) .app-nav{
   box-shadow:0 14px 36px rgba(25,60,72,.16)!important;
 }
 
+
+
+/* ENGINE 25.6.2 — Canonical Studio visual contract.
+   Desktop geometry is deliberately spacious; mobile remains compact.
+   STUDIO ON is always a quiet theme-aware status pill, never title text. */
+.studio-on-badge{
+  display:none!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex:0 0 auto!important;
+  margin-left:12px!important;
+  padding:5px 10px!important;
+  border:1px solid color-mix(in srgb,var(--primary,#315d50) 26%,transparent)!important;
+  border-radius:999px!important;
+  background:color-mix(in srgb,var(--primary,#315d50) 9%,var(--surface,#fff))!important;
+  color:color-mix(in srgb,var(--primary,#315d50) 88%,var(--ink,#20322d))!important;
+  font:900 9px/1 var(--font-sans,system-ui,sans-serif)!important;
+  letter-spacing:.11em!important;
+  white-space:nowrap!important;
+  text-transform:uppercase!important;
+}
+body.admin-mode .studio-on-badge:not([hidden]){display:inline-flex!important;}
+#tripStudioModal .trip-studio-modal-inner{width:min(92vw,760px)!important;}
+#tripStudioModal .trip-studio{width:100%!important;max-width:760px!important;}
+@media(max-width:560px){
+  .studio-on-badge{margin-left:8px!important;padding:4px 8px!important;font-size:8px!important;}
+  #tripStudioModal .trip-studio-modal-inner{width:min(96vw,430px)!important;}
+  #tripStudioModal .trip-studio{max-width:430px!important;}
+}

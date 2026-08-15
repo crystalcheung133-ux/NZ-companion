@@ -1,10 +1,10 @@
 {
-  "engine_version": "25.6.1",
-  "artifact_version": "NZ Companion RC25.4.1 · Travel Engine 25.6.1 Production Freeze",
+  "engine_version": "25.6.2",
+  "artifact_version": "NZ Companion RC25.4.2 · Travel Engine 25.6.2 Production Freeze",
   "baseline_engine": "25.6.0",
-  "release_date": "2026-08-15",
+  "release_date": "2026-08-16",
   "release_type": "production-freeze",
-  "runtime_behavior_change": true,
+  "runtime_behavior_change": false,
   "capabilities_changed": [
     "Travel Engine 25.6.0 dedicated Studio shell and lifecycle",
     "Revision-aware Booking Authority with bookingMasterRevision",
@@ -28,15 +28,15 @@
     "booking appliesTo / partyIds subgroup assignment"
   ],
   "migration_source": "NZ Companion RC25.3.9.3 · Travel Engine 25.4.20.3 Production Freeze",
-  "release_status": "PRODUCTION FREEZE — static CI + independent Chromium desktop/mobile PASS",
+  "release_status": "PRODUCTION FREEZE — static CI + independent Chromium desktop/mobile Studio visual validation PASS",
   "validation": {
-    "chromium_desktop_1280x800": "PASS",
-    "chromium_mobile_390x844": "PASS",
-    "studio_lifecycle": "PASS",
-    "booking_expense_exact_card_deeplink": "PASS",
-    "console_application_errors": "PASS — zero JS page errors",
-    "cross_companion_studio_consistency": "PASS — same Engine-level Studio geometry/layout",
-    "validator": "Independent Codex Chromium/Playwright validation of unchanged CI-gate candidates"
+    "chromium_desktop_1280x800": "PASS — NZ/VN Studio rendered 760px width",
+    "chromium_mobile_390x844": "PASS — NZ/VN Studio rendered 374.4px width, no horizontal overflow",
+    "studio_on_badge": "PASS — identical NZ/VN geometry, compact theme-aware pill",
+    "studio_lifecycle": "PASS — entry/close/re-entry/leave, no ghost overlay",
+    "console_application_errors": "PASS — zero uncaught JS page errors",
+    "booking_expense_regression": "25.6.2 did not modify Booking/Expenses runtime; 25.6.1 exact-card browser evidence retained and 25.6.2 static contract PASS",
+    "validator": "Independent Claude Chromium/Playwright validation of unchanged 25.6.2 visual candidates"
   },
   "final_compatibility_fix": {
     "classification": "browser-only CSS scoping defect in legacy NZ modal visibility hotfix",
@@ -45,8 +45,9 @@
     "browser_evidence": "Desktop 1280x800 PASS + Mobile 390x844 PASS, repeated twice"
   },
   "changes": [
-    "Canonical theme-aware Trip Studio presentation shared by Engine/NZ/VN",
-    "Booking View Expense action aligned to Booking action language",
-    "Booking → Expense deep-link targets and focuses the exact Transaction History card on desktop/mobile"
+    "Canonical desktop Trip Studio geometry: 760px",
+    "Canonical mobile Trip Studio cap: 430px",
+    "STUDIO ON standardized as a compact theme-aware pill",
+    "Studio visual contract enforced by CI"
   ]
 }

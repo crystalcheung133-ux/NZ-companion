@@ -25,6 +25,7 @@ run "SOLO PARTY" node ci-tests/test-stage1-solo-party.js
 run "BACKWARD COMPAT" node ci-tests/test-stage1-backward-compat.js
 
 run "CANONICAL STUDIO + EXPENSE DEEP-LINK" node ci-tests/test-canonical-studio-expense-deeplink.js
+run "CANONICAL STUDIO VISUAL CONTRACT 25.6.2" node ci-tests/test-studio-visual-contract-2562.js
 if [ "$failed" -eq 0 ]; then
   printf '\nNZ 25.6 MIGRATION CI PASSED\n'
   exit 0

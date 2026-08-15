@@ -1,0 +1,10 @@
+const fs=require('fs'),assert=require('assert');
+const css=fs.readFileSync('styles.css','utf8');
+assert(css.includes('ENGINE 25.6.2 — Canonical Studio visual contract.'),'25.6.2 Studio visual contract missing');
+assert(css.includes('width:min(92vw,760px)!important'),'desktop Studio canonical width missing');
+assert(css.includes('max-width:760px!important'),'desktop Studio max-width missing');
+assert(css.includes('width:min(96vw,430px)!important'),'mobile Studio width missing');
+assert(css.includes('.studio-on-badge{'),'Studio ON badge owner missing');
+assert(css.includes('border-radius:999px!important'),'Studio ON pill geometry missing');
+assert(css.includes('body.admin-mode .studio-on-badge:not([hidden])'),'Studio ON visible-state contract missing');
+console.log('CANONICAL STUDIO VISUAL CONTRACT 25.6.2: PASS');
