@@ -27,7 +27,9 @@ function guideBookingHref(bookingId){
 function openGuideLinkedBooking(bookingId){
   const booking=window.BOOKING_AUTHORITY?BOOKING_AUTHORITY.get(bookingId):null;
   if(!booking)return;
-  window.TRIP_MODAL_RETURN_TO_GUIDE=true;
+  // Navigation contract: a Guide opened from Day Timeline is an intermediate layer.
+  // Closing its linked Booking returns directly to Timeline; Guide-origin flows return to Guide.
+  window.TRIP_MODAL_RETURN_TO_GUIDE=window.GUIDE_MODAL_ORIGIN!=='timeline';
   document.body.classList.add('guide-booking-stack-open');
   if(booking.type==='activity'){
     openActivityBookingDetail(bookingId,booking);
@@ -50,7 +52,9 @@ function saveGuideNavigationContext(category, options){
   }catch(e){}
 }
 function openGuideGroupFromDay(keys,itemId){
+  window.GUIDE_MODAL_ORIGIN='timeline';
   window.GUIDE_MODAL_RETURN_SCROLL_Y=window.scrollY||window.pageYOffset||0;
+  window.GUIDE_MODAL_RETURN_ITEM_ID=itemId||null;
   const excluded=new Set(TRIP_CONFIG.guide?.excludedPlaceIds||[]);
   const clean=[...new Set((Array.isArray(keys)?keys:[]).filter(key=>key&&typeof PRODUCTION_GUIDE.places!=='undefined'&&PRODUCTION_GUIDE.places[key]&&!excluded.has(key)))];
   if(!clean.length)return;
@@ -90,12 +94,28 @@ function applyGuideHashView(){
  document.body.classList.toggle('shopping-directory-view',directoryOnly);
  if(directoryOnly)requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'auto'}));
 }
-function openShoppingDirectoryView(){
- closeGuideModal();closeMiniMenus();
- const onGuide=NAVIGATION.isPage('guide');
- if(!onGuide){NAVIGATION.goPage('guide',{hash:'shoppingDirectory'});return;}
- if(NAVIGATION.hasHash('shoppingDirectory'))applyGuideHashView();
- else NAVIGATION.setHash('shoppingDirectory');
+function shoppingDirectoryDay(card){
+ const text=String(card||'');
+ const match=text.match(/Best with<\/strong>\s*Day\s*(\d+)/i);
+ return match?Number(match[1]):null;
+}
+function openShoppingDirectoryView(requestedDay){
+ const raw=Array.isArray(globalThis.TRIP_SHOPPING_DIRECTORY_CARDS)?globalThis.TRIP_SHOPPING_DIRECTORY_CARDS:[];
+ const day=Number(requestedDay)||0;
+ const cards=day?raw.filter(card=>shoppingDirectoryDay(card)===day):raw;
+ const config=(globalThis.TRIP_CONFIG&&TRIP_CONFIG.shoppingDirectory)||{};
+ const dayLabels=config.dayLabels||{};
+ const dayNumbers=[...new Set(raw.map(card=>shoppingDirectoryDay(card)).filter(Boolean))].sort((a,b)=>a-b);
+ const section=(label,rows)=>rows.length?`<section class="directory-route-group"><h3>${label}</h3><div class="directory-route-grid">${rows.join('')}</div></section>`:'';
+ const grouped=day
+   ? section(dayLabels[day]||`Day ${day}`,cards)
+   : dayNumbers.map(n=>section(dayLabels[n]||`Day ${n}`,raw.filter(card=>shoppingDirectoryDay(card)===n))).join('');
+ const optional=day?'':section(config.optionalLabel||'Optional Detours',raw.filter(card=>!shoppingDirectoryDay(card)));
+ const title=day?`🛍 Day ${day} Shopping Directory`:(config.title||'🛍 Shopping Directory');
+ const lead=day?(config.dayLead||'Nearby options for this day. Choose what suits the time and energy available.'):(config.lead||'Browse by day or neighbourhood and choose what fits.');
+ $('guideModalContent').innerHTML=`<p class="kicker">Shopping Directory</p><h2>${title}</h2><p class="lead">${lead}</p><div class="directory-grid">${grouped}${optional}</div>`;
+ closeMiniMenus();$('guideModal').classList.add('show');
+ const sheet=document.querySelector('#guideModal .guide-sheet');if(sheet)sheet.scrollTop=0;
 }
 window.addEventListener('hashchange',applyGuideHashView);
 document.addEventListener('DOMContentLoaded',applyGuideHashView);
@@ -111,13 +131,39 @@ function openRequestedGuideCard(){
 document.addEventListener('DOMContentLoaded',openRequestedGuideCard);
 
 
+function guideSemanticCategory(cat){
+ const raw=String(cat||'').toUpperCase();
+ if(['RESTAURANTS','CAFÉS','CAFES'].includes(raw))return 'DINING';
+ if(['ACTIVITIES','EXPERIENCE','EXPERIENCES'].includes(raw))return 'EXPERIENCES';
+ if(['SPA','WELLNESS'].includes(raw))return 'WELLNESS';
+ if(raw==='SHOPPING')return 'SHOP';
+ return raw;
+}
+function guideCategorySources(cat){
+ const semantic=guideSemanticCategory(cat);
+ const configured=TRIP_CONFIG.guide&&TRIP_CONFIG.guide.categoryMap&&TRIP_CONFIG.guide.categoryMap[semantic];
+ if(Array.isArray(configured)&&configured.length)return configured.map(String);
+ const defaults={
+  ATTRACTIONS:['ATTRACTIONS'],
+  EXPERIENCES:['ACTIVITIES','EXPERIENCE','EXPERIENCES'],
+  WELLNESS:['SPA','WELLNESS'],
+  DINING:['DINING','RESTAURANTS','CAFÉS','CAFES'],
+  STAY:['STAY'],
+  SHOP:['SHOP','SHOPPING'],
+  PRACTICAL:['PRACTICAL']
+ };
+ return defaults[semantic]||[semantic];
+}
+function guideDisplayCategory(item){ return guideSemanticCategory(item&&item.cat); }
 function guideCategoryItems(cat){
  const excluded=new Set(TRIP_CONFIG.guide?.excludedPlaceIds||[]);
- return (PRODUCTION_GUIDE.categories[cat]||[])
-  .map(item=>{const key=typeof item==='string'?item:item&&item.key;return key&&PRODUCTION_GUIDE.places[key]?Object.assign({key},PRODUCTION_GUIDE.places[key]):null;})
+ const sourceRows=guideCategorySources(cat).flatMap(source=>PRODUCTION_GUIDE.categories[source]||[]);
+ const seen=new Set();
+ return sourceRows
+  .map(item=>{const key=typeof item==='string'?item:item&&item.key;if(!key||seen.has(key))return null;seen.add(key);return PRODUCTION_GUIDE.places[key]?Object.assign({key},PRODUCTION_GUIDE.places[key]):null;})
   .filter(item=>{
     if(!item||excluded.has(item.key))return false;
-    if(cat==='STAY'&&window.BOOKING_AUTHORITY){
+    if(guideSemanticCategory(cat)==='STAY'&&window.BOOKING_AUTHORITY){
       const booking=BOOKING_AUTHORITY.byPlace(item.key);
       // Guide Stay shows the current intended stay only: confirmed or primary choice.
       // Booked backups remain exclusively in Trip · Accommodation.
@@ -127,9 +173,9 @@ function guideCategoryItems(cat){
   });
 }
 function guideCategoryHeading(cat){
- if(cat==='ATTRACTIONS') return 'SIGHTS';
- if(cat==='ACTIVITIES') return 'ACTIVITIES';
- return cat;
+ const semantic=guideSemanticCategory(cat);
+ if(semantic==='ATTRACTIONS') return 'ATTRACTIONS';
+ return semantic;
 }
 
 function guideDayNumber(item){
@@ -145,38 +191,40 @@ function guideActivityGroup(item){
 }
 function guideSortedCategoryItems(cat){
  const items=guideCategoryItems(cat).slice();
- if(cat==='ATTRACTIONS'||cat==='DINING'||cat==='STAY') return items.sort((a,b)=>guideDayNumber(a)-guideDayNumber(b)||String(a.title||'').localeCompare(String(b.title||'')));
- if(cat==='ACTIVITIES') return items.sort((a,b)=>guideActivityGroup(a).localeCompare(guideActivityGroup(b))||String(a.title||'').localeCompare(String(b.title||'')));
+ const semantic=guideSemanticCategory(cat);
+ if(semantic==='ATTRACTIONS'||semantic==='DINING'||semantic==='STAY') return items.sort((a,b)=>guideDayNumber(a)-guideDayNumber(b)||String(a.title||'').localeCompare(String(b.title||'')));
+ if(semantic==='EXPERIENCES') return items.sort((a,b)=>guideActivityGroup(a).localeCompare(guideActivityGroup(b))||String(a.title||'').localeCompare(String(b.title||'')));
  return items.sort((a,b)=>String(a.title||'').localeCompare(String(b.title||'')));
 }
 function guideStayStatusHTML(item){
  const booking=(window.BOOKING_AUTHORITY&&item?.cat==='STAY')?BOOKING_AUTHORITY.byPlace(item.key):null;
  if(!booking)return '';
  const raw=String(booking.displayStatus||booking.status||'TO CONFIRM').toUpperCase();
- const label=raw==='CONFIRMED'?'CONFIRMED':(raw==='PENDING'?'PENDING':(raw==='OPEN'||raw==='UNBOOKED'||raw==='DECIDE LATER'||raw==='TBD'?'OPEN':'TO CONFIRM'));
- const cls=label==='CONFIRMED'?'confirmed':(label==='OPEN'?'open':'to-confirm');
+ const label=raw==='CONFIRMED'?'CONFIRMED':(raw==='PENDING'?'PENDING':'TO CONFIRM');
+ const cls=label==='CONFIRMED'?'confirmed':'to-confirm';
  return `<span class="guide-status guide-status-${cls}">${label}</span>`;
 }
 function guideListRow(item){
  // Guide is experiential content. Booking operations remain in Trip · Accommodation.
  const action=`openGuideModal('${item.key}')`;
- const status=item.cat==='STAY'?guideStayStatusHTML(item):guideStatusHTML(PRODUCTION_GUIDE.places[item.key]||{});
+ const status=item.cat==='STAY'?guideStayStatusHTML(item):guideStatusHTML(Object.assign({key:item.key},PRODUCTION_GUIDE.places[item.key]||{}));
  const booking=(item.cat==='STAY'&&window.BOOKING_AUTHORITY)?BOOKING_AUTHORITY.byPlace(item.key):null;
  const subtitle=booking?[booking.stayDates||'',booking.nights?`${booking.nights} night${Number(booking.nights)===1?'':'s'}`:''].filter(Boolean).join(' · '):(item.sub||'');
  return `<button onclick="${action}"><span><span class="guide-list-title">${item.emoji} ${item.title}</span><span class="guide-list-sub">${subtitle}</span></span><span class="guide-list-meta">${status}<span class="guide-list-chevron">›</span></span></button>`;
 }
 function groupedGuideRows(cat,list){
- if(cat==='ATTRACTIONS'||cat==='DINING'||cat==='STAY'){
+ const semantic=guideSemanticCategory(cat);
+ if(semantic==='ATTRACTIONS'||semantic==='DINING'||semantic==='STAY'){
   const groups=new Map();
   list.forEach(item=>{
-   const booking=(cat==='STAY'&&window.BOOKING_AUTHORITY)?BOOKING_AUTHORITY.byPlace(item.key):null;
+   const booking=(semantic==='STAY'&&window.BOOKING_AUTHORITY)?BOOKING_AUTHORITY.byPlace(item.key):null;
    const day=guideDayNumber(item);
-   const label=(cat==='STAY'&&booking?.guideDayLabel)?booking.guideDayLabel:(day===999?'Optional / Flexible':`Day ${day}`);
+   const label=(semantic==='STAY'&&booking?.guideDayLabel)?booking.guideDayLabel:(day===999?'Optional / Flexible':`Day ${day}`);
    (groups.get(label)||groups.set(label,[]).get(label)).push(item);
   });
   return [...groups.entries()].map(([label,items])=>`<section class="guide-category-group"><h3 class="guide-category-group-title">${label}</h3>${items.map(guideListRow).join('')}</section>`).join('');
  }
- if(cat==='ACTIVITIES'){
+ if(semantic==='EXPERIENCES'){
   const groups=new Map();
   list.forEach(item=>{const label=guideActivityGroup(item);(groups.get(label)||groups.set(label,[]).get(label)).push(item);});
   return [...groups.entries()].map(([label,items])=>`<section class="guide-category-group"><h3 class="guide-category-group-title">${label}</h3>${items.map(guideListRow).join('')}</section>`).join('');
@@ -184,23 +232,31 @@ function groupedGuideRows(cat,list){
  return list.map(guideListRow).join('');
 }
 function openGuideCategory(cat){
- saveGuideNavigationContext(cat);
- const list=guideSortedCategoryItems(cat);
- if(cat==='SHOP'){
+ window.GUIDE_MODAL_ORIGIN='guide';
+ const semantic=guideSemanticCategory(cat);
+ saveGuideNavigationContext(semantic);
+ const list=guideSortedCategoryItems(semantic);
+ // A single-entry category is already the destination; skip a redundant chooser.
+ if(list.length===1){closeMiniMenus();openGuideModal(list[0].key);return;}
+ if(semantic==='SHOP'){
   const directoryRow=`<button onclick="openShoppingDirectoryView()"><span><span class="guide-list-title">🛍 Shopping Directory</span><span class="guide-list-sub">Optional shops · Near · Best with Day</span></span><span>↓</span></button>`;
-  const rows=directoryRow+list.map(i=>`<button onclick="openGuideModal('${i.key}')"><span><span class="guide-list-title">${i.emoji} ${i.title}</span><span class="guide-list-sub">${i.sub||''}</span></span><span class="guide-list-meta">${guideStatusHTML(PRODUCTION_GUIDE.places[i.key]||{})}<span class="guide-list-chevron">›</span></span></button>`).join('');
+  const rows=directoryRow+list.map(i=>guideListRow(i)).join('');
   $('guideModalContent').innerHTML=`<p class="kicker">Guide</p><h2>SHOP</h2><div class="category-pop-list">${rows}</div>`;
   closeMiniMenus();$('guideModal').classList.add('show');return;
  }
- const rows=groupedGuideRows(cat,list);
- $('guideModalContent').innerHTML=`<p class="kicker">Guide</p><h2>${guideCategoryHeading(cat)}</h2><div class="category-pop-list guide-category-grouped">${rows}</div>`;
+ const rows=groupedGuideRows(semantic,list);
+ $('guideModalContent').innerHTML=`<p class="kicker">Guide</p><h2>${guideCategoryHeading(semantic)}</h2><div class="category-pop-list guide-category-grouped">${rows}</div>`;
  closeMiniMenus();$('guideModal').classList.add('show');
 }
 
 function guideStatusHTML(g){
  const audit=String(g.audit||'');
  const optionalPattern=/optional|option|alternative|backup|recommended|flexible|weather-dependent/i;
- const status=(g.status==='optional'||(!g.status&&optionalPattern.test(audit)))?'OPTIONAL':'PLANNED';
+ const linked=(g&&guideSemanticCategory(g.cat)==='DINING'&&window.BOOKING_AUTHORITY&&g.key)?BOOKING_AUTHORITY.byPlace(g.key):null;
+ const explicit=String(g.status||'').toLowerCase();
+ const status=(linked&&String(linked.status||'').toLowerCase()==='confirmed')||explicit==='booked'
+  ?'BOOKED'
+  :((explicit==='optional'||(!explicit&&optionalPattern.test(audit)))?'OPTIONAL':'PLANNED');
  return `<span class="guide-status guide-status-${status.toLowerCase()}">${status}</span>`;
 }
 function copyGuideAddress(key){
@@ -216,11 +272,13 @@ function usefulGoodToKnow(items){
  return (items||[]).filter(x=>x&&generic.every(rule=>!rule.test(x)));
 }
 function guideCoreSections(g,key){
- if(g.cat==='STAY')return guideStaySections(Object.assign({key},g));
- if(g.cat==='ACTIVITIES')return guideExperienceSections(g,key);
- if(g.cat==='ATTRACTIONS')return guideAttractionSections(g);
- if(g.cat==='SHOP'||g.cat==='SHOPPING')return guideShopSections(g);
- return compactGuideSections(g);
+ const semantic=guideSemanticCategory(g.cat);
+ const normalized=semantic===g.cat?g:Object.assign({},g,{cat:semantic});
+ if(semantic==='STAY')return guideStaySections(Object.assign({key},normalized));
+ if(semantic==='ACTIVITIES')return guideExperienceSections(normalized,key);
+ if(semantic==='ATTRACTIONS')return guideAttractionSections(normalized);
+ if(semantic==='SHOP')return guideShopSections(normalized);
+ return compactGuideSections(normalized);
 }
 
 function quickInfoInnerHTML(g,key){
@@ -250,7 +308,7 @@ function quickInfoInnerHTML(g,key){
  const bookingButton=linkedBooking?`<button class="utility-button" type="button" onclick="openGuideLinkedBooking('${linkedBooking.id}')">🎟️ Booking</button>`:'';
  const parking=g.parking;
  const parkingHTML=parking?`<div class="recommended-parking"><div class="recommended-parking-head"><span>🚗</span><span><strong>Recommended Parking</strong><small>${parking.name||''}</small></span></div><div class="recommended-parking-grid"><p><span>📍</span><span>${parking.address||''}</span></p><p><span>🚶</span><span>${parking.walk||''}</span></p><p><span>💰</span><span>${parking.fee||''}</span></p></div>${parking.note?`<p class="recommended-parking-note">${parking.note}</p>`:''}${parking.maps?`<a class="map-button recommended-parking-nav" href="${parking.maps}" target="_blank" rel="noopener">🧭 Navigate to Parking</a>`:''}</div>`:'';
- const detailStatus=g.cat==='STAY'?guideStayStatusHTML(Object.assign({key},g)):guideStatusHTML(g);
+ const detailStatus=g.cat==='STAY'?guideStayStatusHTML(Object.assign({key},g)):guideStatusHTML(Object.assign({key},g));
  const coreSections=guideCoreSections(g,key);
  return `<div class="quick-info-top"><span class="category-tag">${g.categoryLabel||g.cat||'Guide'}</span>${roleBadge}${detailStatus}</div><div class="quick-info-grid">${addressRow}${phoneRow}${hoursRow}${priceRow}${bookingRow}${visitDayHTML(key)}</div>${coreSections}${reminderRow}${parkingHTML}<div class="quick-info-actions">${navButton}${bookingButton}</div>`;
 }
@@ -300,9 +358,13 @@ function guideWhyGo(g){
  return tagged[0]||String(g.desc||'').trim();
 }
 function restaurantDishItems(g){
+ const explicit=uniqueGuideItems(g.signatureDishes||[]);
+ if(explicit.length)return explicit;
  const tagged=taggedGuideItems(g.signature||g.highlights||[],['TRY','FOOD','MUST ORDER','ORDER','SIGNATURE']);
  if(tagged.length)return uniqueGuideItems(tagged);
- return [];
+ // Reconciled Master files historically stored restaurant signatures as plain array items.
+ // Preserve those useful, curated items instead of rendering an empty section.
+ return uniqueGuideItems(g.signature||[]).map(cleanGuideLine);
 }
 function bookingAdviceItems(g){
  const all=[...(g.signature||[]),...(g.worth||[]),...(g.tips||[])];
@@ -330,7 +392,8 @@ function criticalGuideItems(g){
 function guideShopSections(g){
  if(g.cat!=='SHOP'&&g.cat!=='SHOPPING')return '';
  const why=guideWhyGo(g);
- const hours=String(g.hours||'').trim();
+ const rawHours=String(g.hours||'').trim();
+ const hours=/出發前|before (departure|visit)|reconfirm|confirm.*hours/i.test(rawHours)?'':rawHours;
  const all=practicalGuideItems(g);
  const parking=all.filter(item=>/park/i.test(String(item)));
  const critical=criticalGuideItems(g).filter(item=>!parking.includes(item));
@@ -342,11 +405,13 @@ function compactGuideSections(g){
  const booking=bookingAdviceItems(g);
  const practical=practicalGuideItems(g);
  const whyRequired=g.cat==='DINING'||g.cat==='ACTIVITIES'||g.cat==='ATTRACTIONS';
- const hours=(g.cat==='DINING'&&String(g.hours||'').trim())
-  ? `<section class="guide-content-section guide-trading-hours"><h3>Trading Hours</h3><p>${String(g.hours).trim()}</p></section>`
+ const rawHours=String(g.hours||'').trim();
+ const meaningfulHours=rawHours&&!/出發前|before (departure|visit)|reconfirm|confirm.*hours/i.test(rawHours);
+ const hours=(g.cat==='DINING'&&meaningfulHours)
+  ? `<section class="guide-content-section guide-trading-hours"><h3>Trading Hours</h3><p>${rawHours}</p></section>`
   : '';
  const goodToKnow=g.cat==='DINING'?criticalGuideItems(g):practical;
- return `${(why&&(whyRequired||g.cat!=='STAY'))?`<section class="guide-content-section guide-why-go"><h3>Why Go</h3><p>${why}</p></section>`:''}${guideListSection('Suggested Dishes',dishes,'guide-suggested-dishes')}${hours}${guideListSection('Booking',booking,'guide-booking-advice')}${guideListSection(g.cat==='DINING'?'Good to Know':'Practical Info',goodToKnow,'guide-practical-info')}`;
+ return `${(why&&(whyRequired||g.cat!=='STAY'))?`<section class="guide-content-section guide-why-go"><h3>Why Go</h3><p>${why}</p></section>`:''}${guideListSection('Signature / Must Try',dishes,'guide-suggested-dishes')}${hours}${guideListSection('Booking',booking,'guide-booking-advice')}${guideListSection(g.cat==='DINING'?'Good to Know':'Practical Info',goodToKnow,'guide-practical-info')}`;
 }
 
 
@@ -385,7 +450,6 @@ function guideStaySections(g){
  if(g.cat!=='STAY')return '';
  const booking=window.BOOKING_AUTHORITY?BOOKING_AUTHORITY.byPlace(g.key):null;
  const stay=[];
- if(g.hours)stay.push(g.hours);
  if(booking?.nights)stay.push(`${booking.nights} night${Number(booking.nights)===1?'':'s'}`);
  if(booking?.guests)stay.push(`${booking.guests} guest${Number(booking.guests)===1?'':'s'}`);
  const useful=practicalGuideItems(g).filter(item=>!stay.includes(item));
@@ -426,17 +490,25 @@ function openGuideModal(key,options){
  const sheet=document.querySelector('#guideModal .guide-sheet');
  if(sheet){sheet.scrollTop=0;if(typeof window.applyNearFitModal==='function')window.applyNearFitModal(sheet,'guide-near-fit');}
 }
+function restoreGuideTimelineOrigin(){
+ const raw=window.GUIDE_MODAL_RETURN_SCROLL_Y;
+ const returnScroll=(typeof raw==='number'&&Number.isFinite(raw))?raw:null;
+ const itemId=window.GUIDE_MODAL_RETURN_ITEM_ID||null;
+ window.GUIDE_MODAL_RETURN_SCROLL_Y=null;
+ window.GUIDE_MODAL_RETURN_ITEM_ID=null;
+ if(returnScroll===null)return;
+ const restore=()=>window.scrollTo({top:returnScroll,left:0,behavior:'auto'});
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{restore();setTimeout(restore,60);}));
+}
 function closeGuideModal(){
- const returnScroll=Number(window.GUIDE_MODAL_RETURN_SCROLL_Y);
+ const shouldRestore=window.GUIDE_MODAL_ORIGIN==='timeline';
+ window.GUIDE_MODAL_ORIGIN=null;
  const modal=$('guideModal');if(modal)modal.classList.remove('show');
  guideAlternativeKeys=[];
  closeMiniMenus();
  document.body.classList.remove('admin-overlay-open');
  clearGuideNavigationContext();
- if(Number.isFinite(returnScroll)){
-  window.GUIDE_MODAL_RETURN_SCROLL_Y=null;
-  requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo({top:returnScroll,left:0,behavior:'auto'})));
- }
+ if(shouldRestore)restoreGuideTimelineOrigin();
 }
 
 function renderPlacePage(key){

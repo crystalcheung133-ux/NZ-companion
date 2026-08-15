@@ -23,27 +23,23 @@
   function isAdminUser(){ return true; } // Studio access is PIN-based and independent of selected family.
   function isUnlocked(){ return sessionStorage.getItem(SESSION_KEY)==='1'; }
   function lockAdminSession(){ sessionStorage.removeItem(SESSION_KEY); }
+  function getTripStudioModal(){ return document.getElementById('tripStudioModal'); }
   function scrollTripStudioToBottom(){
-    const modal=document.getElementById('mamaModal');
-    const sheet=modal&&modal.querySelector('.guide-sheet');
+    const modal=getTripStudioModal();
     const studio=document.getElementById('adminModeControl');
-    if(!modal||!sheet||!studio) return;
+    if(!modal||!studio) return;
     window.requestAnimationFrame(()=>window.requestAnimationFrame(()=>{
-      sheet.scrollTop=0;
       modal.scrollTop=0;
       studio.scrollIntoView({block:'start'});
     }));
   }
   function closeTripStudioPanel(){
-    const modal=document.getElementById('mamaModal');
-    const studio=document.getElementById('adminModeControl');
-    if(studio) studio.hidden=true;
+    const modal=getTripStudioModal();
     if(modal){
-      modal.classList.remove('studio-view');
       modal.classList.remove('show');
+      modal.setAttribute('aria-hidden','true');
     }
-    const selector=document.getElementById('tripStudioSelectorToggle');
-    if(selector) selector.hidden=false;
+    updateUI();
   }
   function exitTripStudioMode(){
     const disabled=window.setAdminMode(false);
@@ -53,14 +49,14 @@
   }
   function openTripStudioPanel(){
     if(typeof renderFriendChoices==='function') renderFriendChoices();
-    const modal=document.getElementById('mamaModal');
+    if(typeof window.closeFriendModal==='function') window.closeFriendModal();
+    const modal=getTripStudioModal();
     const studio=document.getElementById('adminModeControl');
     if(!modal||!studio) return false;
-    studio.hidden=false;
     const selector=document.getElementById('tripStudioSelectorToggle');
     if(selector) selector.hidden=true;
-    modal.classList.add('studio-view');
     modal.classList.add('show');
+    modal.setAttribute('aria-hidden','false');
     scrollTripStudioToBottom();
     return true;
   }
@@ -191,8 +187,8 @@
       selectorCard.setAttribute('aria-label',active?'Open Trip Studio':'Open Studio Mode');
       const status=selectorCard.querySelector('.trip-studio-selector-status');
       if(status) status.textContent=active?'Studio active · Tap to reopen Trip Studio':'PIN protected · Enter PIN to access';
-      const studio=document.getElementById('adminModeControl');
-      selectorCard.hidden=!!(active && studio && !studio.hidden);
+      const studioModal=getTripStudioModal();
+      selectorCard.hidden=!!(active && studioModal && studioModal.classList.contains('show'));
     }
     const bar=document.getElementById('adminSaveBar');
     if(bar) bar.hidden=!(state.mode&&state.dirty);
@@ -222,12 +218,13 @@
     }
     return badge;
   }
-  function buildShell(){
-    ensureStudioHeaderBadge();
+  function ensureStudioSelectorToggle(){
     const familySheet=document.querySelector('#mamaModal .guide-sheet');
     const familyList=familySheet&&familySheet.querySelector('.friend-choice-list');
-    if(familySheet && familyList && !document.getElementById('tripStudioSelectorToggle')){
-      const selectorToggle=document.createElement('div');
+    if(!familySheet||!familyList) return null;
+    let selectorToggle=document.getElementById('tripStudioSelectorToggle');
+    if(!selectorToggle){
+      selectorToggle=document.createElement('div');
       selectorToggle.id='tripStudioSelectorToggle';
       selectorToggle.className='trip-studio-selector-toggle';
       selectorToggle.setAttribute('role','button');
@@ -235,7 +232,6 @@
       selectorToggle.setAttribute('aria-label','Open Studio Mode');
       selectorToggle.setAttribute('aria-pressed','false');
       selectorToggle.innerHTML=`<span class="trip-studio-selector-copy"><strong>⚙ Studio Mode</strong><small>Editing, Complete Trip, Export Centre and trip controls</small><em class="trip-studio-selector-status">PIN protected · Enter PIN to access</em></span>`;
-      familyList.insertAdjacentElement('afterend',selectorToggle);
       const activateStudio=()=>{
         if(state.mode && isUnlocked() && isAdminUser()){
           openTripStudioPanel();
@@ -251,11 +247,30 @@
         }
       });
     }
-    if(familySheet && !document.getElementById('adminModeControl')){
+    /* Product rule: Studio is a selector-level action, not a traveller.
+       Keep it visually last, underneath every traveller choice. */
+    if(selectorToggle.parentElement!==familySheet || familyList.nextElementSibling!==selectorToggle){
+      familyList.insertAdjacentElement('afterend',selectorToggle);
+    }
+    return selectorToggle;
+  }
+
+  function buildShell(){
+    ensureStudioHeaderBadge();
+    ensureStudioSelectorToggle();
+    if(!document.getElementById('tripStudioModal')){
+      const studioModal=document.createElement('div');
+      studioModal.id='tripStudioModal';
+      studioModal.className='trip-studio-modal';
+      studioModal.setAttribute('aria-hidden','true');
+      studioModal.innerHTML='<div class="trip-studio-modal-inner"></div>';
+      document.body.appendChild(studioModal);
+      studioModal.addEventListener('click',event=>{ if(event.target===studioModal) closeTripStudioPanel(); });
+    }
+    if(!document.getElementById('adminModeControl')){
       const block=document.createElement('section');
       block.id='adminModeControl';
       block.className='admin-mode-control trip-studio';
-      block.hidden=true;
       block.innerHTML=`
         <header class="trip-studio-head">
           <div>
@@ -280,7 +295,7 @@
             <span><strong>Leave Studio Mode</strong><small>Return to traveller mode. The Studio PIN will be required next time.</small></span><span aria-hidden="true">Leave</span>
           </button>
         </div>`;
-      familySheet.appendChild(block);
+      document.querySelector('#tripStudioModal .trip-studio-modal-inner').appendChild(block);
       block.querySelector('.trip-studio-close').addEventListener('click',closeTripStudioPanel);
       block.querySelector('#resetTripDataButton').addEventListener('click',window.resetTripData);
       block.querySelector('#exitTripStudioButton').addEventListener('click',exitTripStudioMode);
@@ -374,30 +389,29 @@
 
   const originalOpenFriendModal=window.openFriendModal||openFriendModal;
   window.openFriendModal=function(){
-    const modal=document.getElementById('mamaModal');
-    if(modal) modal.classList.remove('studio-view');
-    originalOpenFriendModal();
-    updateUI();
-    if(state.mode){
-      const studio=document.getElementById('adminModeControl');
-      const scrollToStudioCard=()=>{
-        if(!studio) return;
-        studio.scrollIntoView({block:'start',inline:'nearest'});
-      };
-      requestAnimationFrame(()=>requestAnimationFrame(scrollToStudioCard));
-      setTimeout(scrollToStudioCard,120);
-      setTimeout(scrollToStudioCard,350);
+    /* Product rule: once Studio is unlocked, User Selector is the re-entry
+       affordance for the Studio workspace rather than another selector step. */
+    if(state.mode && isUnlocked() && isAdminUser()){
+      closeFriendModal();
+      openTripStudioPanel();
+      return;
     }
+    originalOpenFriendModal();
+    ensureStudioSelectorToggle();
+    updateUI();
   };
 
   const originalSetFriend=window.setFriend||setFriend;
   window.setFriend=function(key){
     const wasStudioActive=state.mode;
     const previousFriend=typeof getStoredFriend==='function'?getStoredFriend():null;
-    if(state.mode&&state.dirty&&!confirmExit()) return;
-    if(state.mode&&state.dirty) window.discardAdminChanges();
+    if(state.mode&&state.dirty&&!confirmExit())return;
+    if(state.mode&&state.dirty)window.discardAdminChanges();
     originalSetFriend(key);
-    if(wasStudioActive && key!==previousFriend){
+
+    /* Switching to a different traveller terminates the Studio session atomically.
+       Re-selecting the current traveller is a no-op and keeps Studio active. */
+    if(wasStudioActive&&key!==previousFriend){
       state.mode=false;
       setStoredMode(false);
       lockAdminSession();
@@ -405,8 +419,9 @@
     }else{
       state.mode=readMode();
     }
+
     updateUI();
-    if(typeof window.refreshExpenseAdminUI==='function') window.refreshExpenseAdminUI();
+    if(typeof window.refreshExpenseAdminUI==='function')window.refreshExpenseAdminUI();
     document.dispatchEvent(new CustomEvent('travelengine:adminmodechange',{detail:{enabled:state.mode}}));
   };
 

@@ -14,8 +14,8 @@
   function readJson(key, fallback){try{return STORAGE.local.readJSON(key,fallback);}catch(e){return fallback;}}
   function writeJson(key, value){STORAGE.local.writeJSON(key,value);}
   function currentMomentParty(){
-    try{return (typeof getFriend==='function'?getFriend():STORAGE.local.get(STORAGE_CONFIG.keys.friend))||(TRIP_CONFIG?.participants?.defaultKey||Object.keys(TRIP_CONFIG?.participants?.identities||{})[0]||'unknown');}
-    catch(e){return (TRIP_CONFIG?.participants?.defaultKey||Object.keys(TRIP_CONFIG?.participants?.identities||{})[0]||'unknown');}
+    try{const ids=TRIP_CONFIG.participants?.identities||{};return (typeof getFriend==='function'?getFriend():STORAGE.local.get(STORAGE_CONFIG.keys.friend))||TRIP_CONFIG.participants?.defaultKey||Object.keys(ids)[0]||'unknown';}
+    catch(e){return 'unknown';}
   }
   function isStudioManager(){
     try{return typeof window.isAdminMode==='function' && window.isAdminMode();}
@@ -136,13 +136,21 @@
     const match=String(dayId||'').match(/day(10|[1-9])/);
     return match ? match[1] : null;
   }
+  const MOMENT_PLANNED_ALLOWED_TYPES=new Set([
+    'meal','experience','shoppingWindow','spa','openList','optional'
+  ]);
+  function isMomentPlannable(item){
+    if(!item || item.momentsEligible===false) return false;
+    if(item.momentsEligible===true) return true;
+    return MOMENT_PLANNED_ALLOWED_TYPES.has(String(item.type||'').trim());
+  }
   function currentDayItems(dayNumber){
     const key=String(dayNumber);
     const master=((typeof ITINERARY_DATA!=='undefined'&&ITINERARY_DATA)||{})[key];
-    if(window.ITINERARY_AUTHORITY&&typeof ITINERARY_AUTHORITY.resolveDayItems==='function'){
-      return ITINERARY_AUTHORITY.resolveDayItems(key,master?.items||[]);
-    }
-    return (master?.items||[]).map(item=>({...item}));
+    const resolved=(window.ITINERARY_AUTHORITY&&typeof ITINERARY_AUTHORITY.resolveDayItems==='function')
+      ? ITINERARY_AUTHORITY.resolveDayItems(key,master?.items||[])
+      : (master?.items||[]).map(item=>({...item}));
+    return resolved.filter(isMomentPlannable);
   }
   function itineraryItems(){
     const out=[];
@@ -336,13 +344,13 @@
       photoPrototype:currentMomentPhoto ? {...currentMomentPhoto.meta, retained:false} : null,
       createdAt:now,
       updatedAt:now,
-      createdBy:(typeof getFriend==='function'?getFriend():(TRIP_CONFIG?.participants?.defaultKey||Object.keys(TRIP_CONFIG?.participants?.identities||{})[0]||'unknown')),
-      editedBy:(typeof getFriend==='function'?getFriend():(TRIP_CONFIG?.participants?.defaultKey||Object.keys(TRIP_CONFIG?.participants?.identities||{})[0]||'unknown'))
+      createdBy:(typeof getFriend==='function'?getFriend():(TRIP_CONFIG.participants?.defaultKey||Object.keys(TRIP_CONFIG.participants?.identities||{})[0]||'unknown')),
+      editedBy:(typeof getFriend==='function'?getFriend():(TRIP_CONFIG.participants?.defaultKey||Object.keys(TRIP_CONFIG.participants?.identities||{})[0]||'unknown'))
     };
     if(editingMomentId){
       const existing=arr.find(e=>e.id===editingMomentId);
       if(!currentMomentPhoto && existing?.photoPrototype) entry.photoPrototype=existing.photoPrototype;
-      arr=arr.map(e=> e.id===editingMomentId ? {...e,...entry,createdAt:e.createdAt||now,createdBy:e.createdBy||entry.createdBy,editedAt:now,updatedAt:now,editedBy:(typeof getFriend==='function'?getFriend():(TRIP_CONFIG?.participants?.defaultKey||Object.keys(TRIP_CONFIG?.participants?.identities||{})[0]||'unknown'))} : e);
+      arr=arr.map(e=> e.id===editingMomentId ? {...e,...entry,createdAt:e.createdAt||now,createdBy:e.createdBy||entry.createdBy,editedAt:now,updatedAt:now,editedBy:(typeof getFriend==='function'?getFriend():(TRIP_CONFIG.participants?.defaultKey||Object.keys(TRIP_CONFIG.participants?.identities||{})[0]||'unknown'))} : e);
     }else{
       arr.push(entry);
     }

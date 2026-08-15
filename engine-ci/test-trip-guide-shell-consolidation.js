@@ -1,5 +1,5 @@
 const fs=require('fs');
-const css=fs.readFileSync(process.argv[2]||'starter/styles.css','utf8');
+const css=fs.readFileSync(process.argv[2]||'styles.css','utf8');
 const fail=[];
 const must=(re,msg)=>{if(!re.test(css)) fail.push(msg)};
 

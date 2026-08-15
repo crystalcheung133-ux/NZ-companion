@@ -753,6 +753,7 @@ const PLACES={
     "status": "booked",
     "phone": "+64 21 090 75802",
     "website": "https://www.luxetours.co.nz/luxe-milford-sound-day-tour",
+    "bookingUrl": "https://www.luxetours.co.nz/luxe-milford-sound-day-tour",
     "bookingId": "luxe-milford-booking",
     "addressAudit": "OFFICIAL TOUR DETAILS + SUPPLIED BOOKING CONFIRMATION"
   },
@@ -2686,6 +2687,7 @@ const BOOKINGS_DATA={
     "phone": "+64 21 090 75802",
     "email": "bookings@luxetours.co.nz",
     "website": "https://www.luxetours.co.nz/luxe-milford-sound-day-tour",
+    "bookingUrl": "https://www.luxetours.co.nz/luxe-milford-sound-day-tour",
     "lunchStatus": "Not arranged yet · the group may prepare food or purchase food onboard; confirm later.",
     "snacks": "6 sweet muffin snacks + 5 savoury muffin/scone snacks selected",
     "cancellation": "Full refund up to 5 days before departure.",
@@ -3182,7 +3184,7 @@ const ITINERARY_DATA={
         "placeId": null,
         "bookingId": null,
         "nonPlace": true,
-        "nonPlaceRole": "flexible-meal"
+        "nonPlaceRole": "meal-choice"
       },
       {
         "id": "omarama-fuel-check",
@@ -3420,7 +3422,7 @@ const ITINERARY_DATA={
         "placeId": null,
         "bookingId": null,
         "nonPlace": true,
-        "nonPlaceRole": "flexible-meal"
+        "nonPlaceRole": "meal-choice"
       }
     ],
     "dayId": "day4"

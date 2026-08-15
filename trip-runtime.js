@@ -3,7 +3,7 @@ const PRODUCTION_TRIP=GenerationSelectionAdapter.view('trip');
 const PRODUCTION_BOOKINGS=GenerationSelectionAdapter.view('bookings');
 function saveChecklist(){const checks=[...document.querySelectorAll('[data-check]')].map(c=>c.checked);STORAGE.local.writeJSON(STORAGE_CONFIG.keys.checklist,checks);const done=checks.filter(Boolean).length;const total=checks.length;const ready=$('readyBox');if(ready)ready.classList.toggle('show',total>0&&checks.every(Boolean));const progress=$('checklistProgress');if(progress)progress.textContent=`${done} / ${total} Complete`;renderDashboard();}
 function loadChecklist(){const stored=STORAGE.local.readJSON(STORAGE_CONFIG.keys.checklist,[]);document.querySelectorAll('[data-check]').forEach((c,i)=>c.checked=!!stored[i]);saveChecklist();}
-document.addEventListener('DOMContentLoaded',()=>{guardTripRoutingShell();updateFriendLabels();renderMoments();renderUnexpected();renderExpenses();loadChecklist();renderDashboard();});
+document.addEventListener('DOMContentLoaded',()=>{updateFriendLabels();renderMoments();renderUnexpected();renderExpenses();loadChecklist();renderDashboard();});
 
 
 function compactEmergencyHTML(html){
@@ -69,12 +69,26 @@ function getBookingsByType(type){
   const items=window.BOOKING_AUTHORITY?BOOKING_AUTHORITY.byType(type,PRODUCTION_BOOKINGS&&PRODUCTION_BOOKINGS.byId):[];
   return items.sort(function(a,b){return String(a.date||'').localeCompare(String(b.date||''));});
 }
-let activeBookingDetail=null;
+function getBookingsByCategory(category){
+  const target=String(category||'').toLowerCase();
+  const items=window.BOOKING_AUTHORITY?BOOKING_AUTHORITY.all(PRODUCTION_BOOKINGS&&PRODUCTION_BOOKINGS.byId):[];
+  return items.filter(function(item){
+    const explicit=String((item&&item.bookingCategory)||(item&&item.category)||'').toLowerCase();
+    const type=String(item&&item.type||'').toLowerCase();
+    if(target==='accommodation')return explicit==='accommodation'||explicit==='stay'||explicit==='hotel'||type==='accommodation';
+    if(target==='activities')return explicit==='activities'||explicit==='activity'||explicit==='experience'||type==='activity';
+    if(target==='transport')return explicit==='transport'||explicit==='transfer'||type==='transport';
+    if(target==='restaurants')return explicit==='restaurant'||explicit==='restaurants'||type==='restaurant';
+    if(target==='spa')return explicit==='spa'||type==='spa';
+    return false;
+  }).sort(function(a,b){return String(a.date||'').localeCompare(String(b.date||''))||String(a.time||'').localeCompare(String(b.time||''));});
+}
+var activeBookingDetail=null;
 function bookingReferenceLabel(booking){
   return booking&&booking.referenceLabel?booking.referenceLabel:'Booking reference';
 }
 function getAccommodationBookings(){
-  return getBookingsByType('accommodation');
+  return getBookingsByCategory('accommodation');
 }
 function buildAccommodationListHTML(){
   const bookings=getAccommodationBookings();
@@ -82,7 +96,11 @@ function buildAccommodationListHTML(){
   return '<div class="accommodation-picker" role="list">'+bookings.map(function(booking){
     const nights=Number(booking.nights||0);
     const nightsLabel=nights?`${nights} night${nights===1?'':'s'}`:'';
-    const price=bookingPriceText(booking);
+    const priceParts=[];
+    if(booking.totalAmount||booking.price)priceParts.push(`Total ${booking.totalAmount||booking.price}`);
+    if(booking.cashbackAmount||booking.cashback)priceParts.push(`Cashback ${booking.cashbackAmount||booking.cashback}`);
+    if(booking.netTotalAUD||booking.netPrice)priceParts.push(`${booking.approximateNet?'≈ ':''}Net ${booking.netTotalAUD||booking.netPrice}`);
+    const price=priceParts.join(' · ')||'Price not added yet';
     const statusLabel=booking.displayStatus||bookingStatusText(booking)||'';
     const statusClass=String(booking.status||'').replace(/[^a-z0-9-]/gi,'').toLowerCase();
     return `<button class="accommodation-picker-row" type="button" role="listitem" onclick="openAccommodationDetail('${escapeTripHTML(booking.id)}')"><span class="accommodation-picker-icon" aria-hidden="true">🏨</span><span class="accommodation-picker-copy"><strong>${escapeTripHTML(booking.title)}</strong><small>${escapeTripHTML(booking.stayDates||booking.date||'')}</small><span class="accommodation-picker-price">${escapeTripHTML(price)}</span></span><span class="accommodation-picker-meta accommodation-picker-meta--stack">${statusLabel?`<span class="accommodation-status-badge accommodation-status-badge--${escapeTripHTML(statusClass)}">${escapeTripHTML(statusLabel)}</span>`:''}<span class="accommodation-night-line">${escapeTripHTML(nightsLabel)} <b aria-hidden="true">›</b></span></span></button>`;
@@ -101,15 +119,14 @@ function accommodationDetailNavigationHTML(bookingId){
   const index=bookings.findIndex(function(item){return item.id===bookingId;});
   return bookingBrowseNavigationHTML(bookings,index,'openAccommodationDetail');
 }
+function normalizedBookingStatus(booking){
+  const raw=String((booking&&booking.status)||'pending').toLowerCase();
+  return raw==='confirmed'?'confirmed':'pending';
+}
 function bookingStatusText(booking){
   const raw=String((booking&&((booking.displayStatus||booking.status)))||'').replace(/-/g,' ').trim().toUpperCase();
   if(raw==='OPEN'||raw==='UNBOOKED'||raw==='DECIDE LATER'||raw==='TBD')return 'OPEN';
-  return raw;
-}
-function bookingIsOpen(booking){return bookingStatusText(booking)==='OPEN';}
-function bookingPriceText(booking){
-  if(bookingIsOpen(booking))return booking?.openLabel||'Decide later';
-  return booking?.netTotalAUD?`${booking.approximateNet?'≈ ':''}Net ${booking.netTotalAUD}`:(booking?.price||'Price not added yet');
+  return normalizedBookingStatus(booking)==='confirmed'?'CONFIRMED':'PENDING';
 }
 function bookingDayNumber(booking){
   const raw=String((booking&&booking.dayId)||'').replace('day','').replace(/\D/g,'');
@@ -132,16 +149,33 @@ function bookingSectionHTML(title,content,options){
   return `<div class="accommodation-section"><h3>${escapeTripHTML(title)}</h3><p>${safe}</p></div>`;
 }
 
+function bookingHumanValue(value,trueLabel){
+  if(value===true)return trueLabel||'PAID';
+  if(value===false||value===null||value===undefined)return '';
+  return String(value);
+}
+function bookingDepositDisplay(booking){
+  const amount=String(booking&&booking.depositAmount||'').replace(/,/g,'').trim();
+  const currency=String(booking&&booking.depositCurrency||'').trim();
+  let main='';
+  if(amount&&/^\d+(?:\.\d+)?$/.test(amount)){
+    main=`${Number(amount).toLocaleString('en-US')}${currency?` ${currency}`:''}`;
+  }else{
+    main=bookingHumanValue(booking&&booking.depositPaid,'PAID');
+  }
+  const aud=String(booking&&booking.depositAUD||'').trim();
+  return [main,aud].filter(Boolean).join(' · ');
+}
 function accommodationPaymentHTML(booking){
-  const status=booking.paymentLabel||booking.paymentStatus||'';
+  const status=bookingHumanValue(booking.paymentLabel||booking.paymentStatus||'');
   const rows=[
-    ['Charge date',booking.chargeDate||''],
-    ['Total',booking.totalAmount||''],
-    ['Deposit paid',booking.depositPaid||''],
-    ['Balance due',booking.balanceDue||booking.payAtPickup||''],
-    [booking.discountLabel||'Discount',booking.discountAmount||''],
-    ['Cashback',booking.cashbackAmount||booking.cashback||''],
-    [booking.approximateNet?'≈ Net cost':'Net cost',booking.netTotalAUD||booking.netPrice||'']
+    ['Charge date',bookingHumanValue(booking.chargeDate||'')],
+    ['Total',bookingHumanValue(booking.totalAmount||'')],
+    ['Deposit',bookingDepositDisplay(booking)],
+    ['Balance due',bookingHumanValue(booking.balanceDue||booking.payAtPickup||'')],
+    [booking.discountLabel||'Discount',bookingHumanValue(booking.discountAmount||'')],
+    ['Cashback',bookingHumanValue(booking.cashbackAmount||booking.cashback||'')],
+    [booking.approximateNet?'≈ Net cost':'Net cost',bookingHumanValue(booking.netTotalAUD||booking.netPrice||'')]
   ].filter(function(row){return String(row[1]||'').trim();});
   if(!status&&!rows.length)return '';
   return `<section class="accommodation-payment-block"><div class="accommodation-payment-head"><h3>Payment</h3>${status?`<span>${escapeTripHTML(String(status).toUpperCase())}</span>`:''}</div>${rows.length?`<dl>${rows.map(function(row,index){return `<div class="${index===rows.length-1?'payment-net-row':''}"><dt>${escapeTripHTML(row[0])}</dt><dd>${escapeTripHTML(row[1])}</dd></div>`;}).join('')}</dl>`:''}${booking.fxNote?`<p class="payment-fx-note">${escapeTripHTML(booking.fxNote)}</p>`:''}</section>`;
@@ -154,18 +188,35 @@ function bookingDayButtonHTML(booking){
   const anchor=booking.timelineItemId?`#${escapeTripHTML(booking.timelineItemId)}`:'';
   return `<a class="pill trip-action-btn trip-action-btn--day" href="day.html?day=${escapeTripHTML(dayNumber)}${anchor}">Day ${escapeTripHTML(dayNumber)} Timeline</a>`;
 }
+function bookingExpenseActionHTML(booking){
+  if(!booking||!booking.id||typeof window.openBookingExpense!=='function')return '';
+  const links=typeof window.getBookingExpenseLinks==='function'?window.getBookingExpenseLinks(booking.id):[];
+  const linked=links.length;
+  const newest=links.slice().sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')))[0]||null;
+  const viewHref=newest?.id?`expenses.html?expenseId=${encodeURIComponent(newest.id)}`:`expenses.html?bookingId=${encodeURIComponent(booking.id)}`;
+  if(linked){
+    const label=linked===1?'View Expense':`View ${linked} Expenses`;
+    return `<div class="booking-expense-buttons booking-expense-buttons--compact"><a class="pill trip-action-btn" href="${viewHref}">${label}</a></div>`;
+  }
+  const hasPayment=Boolean(
+    booking.depositPaid||booking.depositAmount||booking.paymentStatus||
+    booking.totalAmount||booking.price||booking.cashbackAmount||booking.netTotalAUD
+  );
+  if(!hasPayment)return '';
+  return `<div class="booking-expense-buttons booking-expense-buttons--compact"><button class="pill trip-action-btn" type="button" onclick="openBookingExpense('${escapeTripHTML(booking.id)}')">Add payment to Expenses</button></div>`;
+}
 function bookingActionButtonsHTML(booking,place,options={}){
-  const address=bookingAddress(booking,place);
   const includeDay=options.includeDay!==false;
-  const includeGuide=options.includeGuide!==false;
+  const whatsappContact=String(booking&&booking.whatsapp||'').trim();
+  const whatsappDigits=whatsappContact.replace(/[^0-9]/g,'');
+  const whatsapp=(whatsappContact&&whatsappDigits)?`https://wa.me/${whatsappDigits}`:'';
   const buttons=[
-    includeGuide?bookingGuideButtonHTML(booking):'',
     includeDay?bookingDayButtonHTML(booking):'',
-    address?`<a class="pill trip-action-btn" href="${escapeTripHTML(accommodationMapURL(address))}" target="_blank" rel="noopener">Navigate</a>`:'',
-    address?`<button class="pill trip-action-btn" type="button" onclick="navigator.clipboard&&navigator.clipboard.writeText(${JSON.stringify(address).replace(/"/g,'&quot;')})">Copy Address</button>`:'',
-    bookingEditButtonHTML(booking)
+    booking&&booking.bookingUrl?`<a class="pill trip-action-btn trip-action-btn--book" href="${escapeTripHTML(booking.bookingUrl)}" target="_blank" rel="noopener">Book Online</a>`:'',
+    whatsapp?`<a class="pill trip-action-btn trip-action-btn--whatsapp" href="${escapeTripHTML(whatsapp)}" target="_blank" rel="noopener">WhatsApp</a>`:'',
+    booking&&booking.email?`<a class="pill trip-action-btn trip-action-btn--email" href="mailto:${escapeTripHTML(booking.email)}">Email</a>`:''
   ].filter(Boolean);
-  return buttons.length?`<div class="trip-action-row">${buttons.join('')}</div>`:'';
+  return buttons.length?`<div class="trip-action-row trip-action-row--booking-compact">${buttons.join('')}</div>`:'';
 }
 function bookingContactSectionsHTML(booking,place){
   const phone=(booking&&booking.phone)||(place&&place.phone)||'';
@@ -222,7 +273,7 @@ function openAccommodationDetail(bookingId,bookingOverride,showSaved){
 
 
 function getActivityBookings(){
-  return getBookingsByType('activity');
+  return getBookingsByCategory('activities');
 }
 function buildActivityBookingListHTML(){
   const bookings=getActivityBookings();
@@ -261,6 +312,57 @@ function openActivityBookingDetail(bookingId,bookingOverride,showSaved){
 }
 
 
+function getTransportBookings(){ return getBookingsByCategory('transport'); }
+function buildTransportBookingListHTML(){
+  const bookings=getTransportBookings();
+  if(!bookings.length)return '<p class="timestamp">No transport bookings have been added yet.</p>';
+  return '<div class="accommodation-picker transport-booking-picker" role="list">'+bookings.map(function(booking){
+    const price=booking.netTotalAUD||booking.netPrice||booking.totalAmount||booking.price||'';
+    return `<button class="accommodation-picker-row transport-booking-row" type="button" role="listitem" onclick="openGenericBookingDetail('${escapeTripHTML(booking.id)}')"><span class="accommodation-picker-icon" aria-hidden="true">🚐</span><span class="accommodation-picker-copy"><strong>${escapeTripHTML(booking.title)}</strong><small>Day ${escapeTripHTML(bookingDayNumber(booking)||'')} · ${escapeTripHTML(booking.date||'')}</small>${price?`<span class="accommodation-picker-price">${escapeTripHTML(price)}</span>`:''}</span><span class="accommodation-picker-meta"><span class="activity-status-badge">${escapeTripHTML(bookingStatusText(booking))}</span><b aria-hidden="true">›</b></span></button>`;
+  }).join('')+'</div>';
+}
+
+function bookingCategoryLabel(booking){
+  const explicit=String((booking&&booking.bookingCategory)||(booking&&booking.category)||'').trim().toLowerCase();
+  if(explicit==='restaurant'||explicit==='restaurants')return 'Restaurants';
+  if(explicit==='spa')return 'Spa';
+  if(explicit==='activity'||explicit==='activities'||explicit==='experience')return 'Activities';
+  if(explicit==='transport'||explicit==='transfer')return 'Transport';
+  if(explicit==='accommodation'||explicit==='stay'||explicit==='hotel')return 'Accommodation';
+  const type=String((booking&&booking.type)||'').toLowerCase();
+  if(type==='accommodation')return 'Accommodation';
+  if(type==='restaurant')return 'Restaurants';
+  if(type==='spa')return 'Spa';
+  if(type==='transport'||type==='rentalcar')return 'Transport';
+  return 'Activities';
+}
+function buildGenericBookingDetailHTML(booking){
+  if(!booking)return '<p class="timestamp">Booking not found.</p>';
+  const place=bookingPlace(booking);
+  const facts=bookingFactGridHTML([
+    ['Status',bookingStatusText(booking)],['Day',bookingDayNumber(booking)?'Day '+bookingDayNumber(booking):''],['Date',booking.date||''],['Time',booking.time||''],
+    ['Booked under',booking.bookingName||''],[bookingReferenceLabel(booking),booking.reference||''],['Booking method',booking.bookingMethod||booking.bookingViaOther||booking.bookingWay||booking.platform||''],
+    ['WhatsApp',booking.whatsapp||''],['Email',booking.email||'']
+  ]);
+  const payment=normalizedBookingStatus(booking)==='confirmed'?accommodationPaymentHTML(booking):'';
+  const sections=[
+    payment,
+    bookingSectionHTML('Address',bookingAddress(booking,place)),
+    bookingSectionHTML('Notes',booking.notes||''),
+    bookingSectionHTML('Cancellation',booking.cancellation||'')
+  ].join('');
+  return `<article class="fact stay-booking accommodation-detail-card generic-booking-detail"><div class="accommodation-detail-head"><div><strong>${escapeTripHTML(booking.title)}</strong><span>${escapeTripHTML(booking.date||'')}</span></div><span class="accommodation-night-badge">${escapeTripHTML(bookingStatusText(booking))}</span></div><div class="accommodation-facts">${facts}</div>${sections}${bookingActionButtonsHTML(booking,place)}${bookingExpenseActionHTML(booking)}${genericBookingDetailNavigationHTML(booking)}</article>`;
+}
+function openGenericBookingDetail(bookingId,bookingOverride,showSaved){
+  const booking=bookingOverride||getBookingById(bookingId);if(!booking)return;
+  activeBookingDetail={type:'generic',id:bookingId};
+  closeMiniMenus();
+  const content=document.getElementById('tripModalContent');const modal=document.getElementById('tripModal');if(!content||!modal)return;
+  content.innerHTML=`<div class="trip-onepage accommodation-onepage-detail"><button class="accommodation-back" type="button" onclick="openBookingCategoryCard('${escapeTripHTML(bookingCategoryLabel(booking))}')">‹ All ${escapeTripHTML(bookingCategoryLabel(booking).toLowerCase())}</button><p class="kicker">Trip · ${escapeTripHTML(bookingCategoryLabel(booking))}</p><h2>${escapeTripHTML(booking.title||'Booking')}</h2>${showSaved?'<p class="timestamp booking-save-success" role="status">Saved ✓</p>':''}${buildGenericBookingDetailHTML(booking)}<p class="timestamp trip-build-summary">${tripSyncSummary()}</p></div>`;
+  modal.classList.add('show');const sheet=document.querySelector('#tripModal .trip-sheet');if(sheet)sheet.scrollTop=0;
+}
+
+
 let bookingEditSession=null;
 function bookingEditFormSnapshot(form){
   if(!form) return '';
@@ -290,21 +392,9 @@ window.isBookingEditDirty=isBookingEditDirty;
 window.requestBookingEditClose=requestBookingEditClose;
 
 
-function bookingExpenseActionHTML(booking){
-  if(!booking||!booking.id||typeof window.openBookingExpense!=='function')return '';
-  const links=typeof window.getBookingExpenseLinks==='function'?window.getBookingExpenseLinks(booking.id):[];
-  const linked=links.length;
-  const status=linked
-    ? `<span class="booking-expense-linked">✓ ${linked} payment${linked===1?'':'s'} in Expenses</span>`
-    : `<span class="booking-expense-unlinked">Not added to Expenses</span>`;
-  const newest=links.slice().sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')))[0]||null;
-  const viewHref=newest?.id?`expenses.html?expenseId=${encodeURIComponent(newest.id)}`:`expenses.html?bookingId=${encodeURIComponent(booking.id)}`;
-  const viewLabel=linked===1?'View Expense':`View ${linked} Expenses`;
-  return `<div class="booking-expense-actions"><div>${status}</div><div class="booking-expense-buttons">${linked?`<a class="pill trip-action-btn" href="${viewHref}">${viewLabel}</a>`:''}<button class="pill trip-action-btn" type="button" onclick="openBookingExpense('${escapeTripHTML(booking.id)}')">${linked?'Add another payment':'Add payment to Expenses'}</button></div></div>`;
-}
 function bookingEditButtonHTML(booking){
-  return booking&&window.isAdminMode&&window.isAdminMode()
-    ?`<button class="pill trip-action-btn booking-edit-btn" type="button" onclick="openBookingEdit('${escapeTripHTML(booking.id)}')">Edit Booking</button>`:'';
+  return booking&&window.BOOKING_PERMISSIONS&&BOOKING_PERMISSIONS.canEdit()
+    ?`<button class="pill trip-action-btn booking-edit-btn" type="button" onclick="openBookingEdit('${escapeTripHTML(booking.id)}')">${escapeTripHTML(BOOKING_PERMISSIONS.editLabel())}</button>`:'';
 }
 function bookingField(label,name,value,options){
   const opts=options||{};
@@ -329,7 +419,7 @@ function bookingEditFields(booking){
   const via=bookingViaValue(booking);
   const rawVia=String(booking.bookingViaOther||booking.bookingWay||booking.platform||'').trim();
   const common=[
-    bookingField('Status','status',booking.status,{type:'select',choices:['pending','confirmed','backup-booked','monitoring','cancelled','waitlist','not required']}),
+    bookingField('Status','status',normalizedBookingStatus(booking),{type:'select',choices:['pending','confirmed']}),
     bookingField('Date','date',booking.date),
     bookingField('Booking title','title',booking.title,{wide:true}),
     bookingField('Booked under','bookingName',booking.bookingName),bookingField('Booking reference','reference',booking.reference),
@@ -356,11 +446,11 @@ function bookingEditFields(booking){
   return common.join('');
 }
 function openBookingEdit(bookingId){
-  if(!(window.isAdminMode&&window.isAdminMode()))return;
+  if(!(window.BOOKING_PERMISSIONS&&BOOKING_PERMISSIONS.canEdit()))return;
   const booking=getBookingById(bookingId);if(!booking)return;
   const content=document.getElementById('tripModalContent');const modal=document.getElementById('tripModal');if(!content||!modal)return;
   activeBookingDetail={type:booking.type,id:bookingId};
-  content.innerHTML=`<div class="trip-onepage booking-edit-onepage"><button class="accommodation-back" type="button" onclick="requestBookingEditClose('${escapeTripHTML(bookingId)}')">‹ Booking details</button><p class="kicker">Trip Studio · Booking</p><h2>Edit ${escapeTripHTML(booking.title)}</h2><form id="bookingEditForm" class="booking-edit-form" novalidate onsubmit="return saveBookingEdit(event,'${escapeTripHTML(bookingId)}')"><div class="booking-edit-grid">${bookingEditFields(booking)}</div><div class="booking-edit-actions"><button class="pill" type="button" onclick="requestBookingEditClose('${escapeTripHTML(bookingId)}')">Cancel</button><button class="pill booking-edit-save" type="submit">Save Booking</button></div><p class="timestamp">Saving replaces the existing details for this booking ID. Guide and Timeline links are preserved.</p></form></div>`;
+  content.innerHTML=`<div class="trip-onepage booking-edit-onepage"><button class="accommodation-back" type="button" onclick="requestBookingEditClose('${escapeTripHTML(bookingId)}')">‹ Booking details</button><p class="kicker">Trip Studio · Booking</p><h2>Edit ${escapeTripHTML(booking.title)}</h2><form id="bookingEditForm" class="booking-edit-form" novalidate onsubmit="return saveBookingEdit(event,'${escapeTripHTML(bookingId)}')"><div class="booking-edit-grid">${bookingEditFields(booking)}</div><div class="booking-edit-actions"><button class="pill" type="button" onclick="requestBookingEditClose('${escapeTripHTML(bookingId)}')">Cancel</button><button class="pill booking-delete-btn" type="button" onclick="deleteBookingRecord('${escapeTripHTML(bookingId)}')">Delete Booking</button><button class="pill booking-edit-save" type="submit">Save Booking</button></div><p class="timestamp">Pending and not booked are the same state. Remove bookings that are cancelled and no longer needed.</p></form></div>`;
   modal.classList.add('show');
   const form=document.getElementById('bookingEditForm');
   bookingEditSession={bookingId:bookingId,initialSnapshot:bookingEditFormSnapshot(form)};
@@ -379,15 +469,35 @@ function openBookingEdit(bookingId){
 }
 function returnToBookingDetail(bookingId,bookingOverride,showSaved){
   const booking=bookingOverride||getBookingById(bookingId);if(!booking)return;
-  if(booking.type==='activity')openActivityBookingDetail(bookingId,booking,showSaved);else openAccommodationDetail(bookingId,booking,showSaved);
+  if(booking.type==='accommodation')return openAccommodationDetail(bookingId,booking,showSaved);
+  if(booking.type==='activity'&&bookingCategoryLabel(booking)==='Activities')return openActivityBookingDetail(bookingId,booking,showSaved);
+  if(booking.type==='rentalCar')return openTripCard('vehicle');
+  return openGenericBookingDetail(bookingId,booking,showSaved);
 }
 window.returnToBookingDetail=returnToBookingDetail;
-function saveBookingEdit(event,bookingId){
+async function deleteBookingRecord(bookingId){
+  if(!(window.BOOKING_PERMISSIONS&&BOOKING_PERMISSIONS.canEdit()))return false;
+  const booking=getBookingById(bookingId);if(!booking||!window.BOOKING_AUTHORITY||typeof BOOKING_AUTHORITY.remove!=='function')return false;
+  if(!window.confirm('Delete this booking from the current trip?'))return false;
+  const liveTarget=typeof PRODUCTION_BOOKINGS!=='undefined'&&PRODUCTION_BOOKINGS&&PRODUCTION_BOOKINGS.byId?PRODUCTION_BOOKINGS.byId:null;
+  try{
+    if(window.BOOKING_SYNC&&BOOKING_SYNC.enabled()){
+      const remote=await BOOKING_SYNC.remove(booking);
+      if(!remote||!remote.ok)throw new Error('remote-delete-failed');
+    }
+    const result=BOOKING_AUTHORITY.remove(bookingId,liveTarget);
+    if(!result||!result.ok)throw new Error((result&&result.reason)||'delete-failed');
+    clearBookingEditSession();activeBookingDetail=null;closeTripModal();renderTripMenuFromConfig();return true;
+  }catch(error){console.error('Booking delete failed',error);alert('Could not delete this booking. Please check your connection and try again.');return false;}
+}
+window.deleteBookingRecord=deleteBookingRecord;
+async function saveBookingEdit(event,bookingId){
   event.preventDefault();
-  if(!(window.isAdminMode&&window.isAdminMode())){alert('Open Trip Studio before editing bookings.');return false;}
+  if(!(window.BOOKING_PERMISSIONS&&BOOKING_PERMISSIONS.canEdit())){alert(window.BOOKING_PERMISSIONS?BOOKING_PERMISSIONS.denialMessage():'Booking editing is not available.');return false;}
   const form=event.currentTarget;const current=getBookingById(bookingId);if(!current||!window.BOOKING_AUTHORITY){alert('Booking editor is not ready. Please close and reopen this booking.');return false;}
   const formData=new FormData(form);const next=Object.assign({},current);
   formData.forEach(function(value,key){next[key]=String(value).trim();});
+  next.status=String(next.status||'pending').toLowerCase()==='confirmed'?'confirmed':'pending';
   const viaChoice=next.bookingVia||'';
   const viaOther=next.bookingViaOther||'';
   const viaValue=viaChoice==='Other'?viaOther:viaChoice;
@@ -402,6 +512,11 @@ function saveBookingEdit(event,bookingId){
   if(saveButton){saveButton.disabled=true;saveButton.textContent='Saving…';}
   let result;
   try{
+    if(window.BOOKING_SYNC&&BOOKING_SYNC.enabled()){
+      const remote=await BOOKING_SYNC.push(next);
+      if(!remote||!remote.ok)throw new Error('remote-save-failed');
+      next=remote.booking||next;
+    }
     result=BOOKING_AUTHORITY.save(bookingId,next,liveTarget);
     if(!result||!result.ok)throw new Error((result&&result.reason)||'save-failed');
     clearBookingEditSession();
@@ -420,6 +535,11 @@ function reopenSavedBooking(){
   STORAGE.session.remove('travel_engine_booking_reopen_v1');
   setTimeout(function(){returnToBookingDetail(marker.bookingId);},80);
 }
+document.addEventListener('travelengine:bookingpermissionchange',function(){
+  if(!activeBookingDetail)return;
+  const modal=document.getElementById('tripModal');if(!modal||!modal.classList.contains('show'))return;
+  returnToBookingDetail(activeBookingDetail.id);
+});
 document.addEventListener('travelengine:adminmodechange',function(){
   if(!activeBookingDetail)return;
   const modal=document.getElementById('tripModal');if(!modal||!modal.classList.contains('show'))return;
@@ -437,7 +557,7 @@ document.addEventListener('DOMContentLoaded',openDeepLinkedBooking);
 
 
 function buildRentalCarHTML(){
-  const booking=getBookingById('car-rental');
+  const booking=getBookingsByType('rentalCar')[0]||null;
   if(!booking)return '<p class="timestamp">Rental-car booking unavailable.</p>';
   const facts=bookingFactGridHTML([
     ['Status',bookingStatusText(booking)],
@@ -448,7 +568,8 @@ function buildRentalCarHTML(){
     ['Return',booking.returnDateTime||'']
   ]);
   const depots=`<div class="fact-grid rental-depot-grid"><div class="fact rental-depot-card"><strong>Pickup depot</strong>${escapeTripHTML(booking.pickupDepotAddress||booking.pickupAddress||'')}<div class="trip-action-row rental-depot-actions"><a class="pill" href="${escapeTripHTML(booking.pickupNavigationDestination||accommodationMapURL(booking.pickupDepotAddress||booking.pickupAddress||''))}" target="_blank" rel="noopener">Navigate to pickup</a></div></div><div class="fact rental-depot-card"><strong>Return depot</strong>${escapeTripHTML(booking.returnDepotAddress||booking.returnAddress||'')}<div class="trip-action-row rental-depot-actions"><a class="pill" href="${escapeTripHTML(booking.returnNavigationDestination||accommodationMapURL(booking.returnDepotAddress||booking.returnAddress||''))}" target="_blank" rel="noopener">Navigate to return</a></div></div></div>`;
-  const pickup=`<h3>Pickup instructions</h3><ol><li>Call <a href="tel:0800247727">0800 247 727</a>.</li><li>Choose <strong>Option 2</strong>.</li><li>Exit Christchurch Airport via <strong>Door 1 or Door 2</strong>.</li><li>Wait at the <strong>Park & Ride pickup area</strong>.</li><li>Take the Airpark Canterbury shuttle showing <strong>Russley Road</strong>.</li></ol><p class="timestamp">Shuttle collection point: ${escapeTripHTML(booking.shuttleCollectionAddress||'')}</p>`;
+  const instructions=Array.isArray(booking.pickupInstructions)?booking.pickupInstructions.filter(Boolean):[];
+  const pickup=instructions.length?`<h3>Pickup instructions</h3><ol>${instructions.map(line=>`<li>${escapeTripHTML(line)}</li>`).join('')}</ol>${booking.shuttleCollectionAddress?`<p class="timestamp">Shuttle collection point: ${escapeTripHTML(booking.shuttleCollectionAddress)}</p>`:''}`:'';
   return `<article class="fact stay-booking accommodation-detail-card rental-booking-detail"><div class="accommodation-facts">${facts}</div>${accommodationPaymentHTML(booking)}${depots}${pickup}</article>`;
 }
 function activityDetailNavigationHTML(bookingId){
@@ -456,40 +577,63 @@ function activityDetailNavigationHTML(bookingId){
   const index=bookings.findIndex(function(item){return item.id===bookingId;});
   return bookingBrowseNavigationHTML(bookings,index,'openActivityBookingDetail');
 }
-function tripHubOrder(){
+function genericBookingDetailNavigationHTML(booking){
+  if(!booking)return '';
+  const category=bookingCategoryLabel(booking);
+  const bookings=getBookingsByCategory(category);
+  const index=bookings.findIndex(function(item){return item.id===booking.id;});
+  return bookingBrowseNavigationHTML(bookings,index,'openGenericBookingDetail');
+}
+function tripHubEntries(){
   const cards=PRODUCTION_TRIP.cards||{};
-  return ['flights','vehicle','stay','activities'].filter(key=>!!cards[key]);
+  const modules=TRIP_CONFIG.tripModules||{};
+  const enabled=(name,fallback)=>Object.prototype.hasOwnProperty.call(modules,name)?modules[name]!==false:fallback;
+  const entries=[];
+  if(cards.flights)entries.push({id:'flights',action:"openTripCard('flights')"});
+  if(enabled('stay',!!getAccommodationBookings().length)&&getAccommodationBookings().length)entries.push({id:'stay',action:"openTripCard('stay')"});
+  if(getBookingsByCategory('restaurants').length)entries.push({id:'restaurants',action:"openBookingCategoryCard('Restaurants')"});
+  if(getBookingsByCategory('spa').length)entries.push({id:'spa',action:"openBookingCategoryCard('Spa')"});
+  const groups=Array.isArray(TRIP_CONFIG.tripMenuGroups)?TRIP_CONFIG.tripMenuGroups:[];
+  const groupedModules=new Set();
+  groups.forEach(group=>{
+    const mods=Array.isArray(group&&group.modules)?group.modules:[];
+    const hasActivity=mods.includes('activities')&&enabled('activities',!!getActivityBookings().length)&&getActivityBookings().length;
+    const hasTransport=mods.includes('transport')&&enabled('transport',!!getTransportBookings().length)&&getTransportBookings().length;
+    if(hasActivity||hasTransport){entries.push({id:'group:'+group.id,action:`openTripModuleGroup('${group.id}')`});mods.forEach(m=>groupedModules.add(m));}
+  });
+  if(!groupedModules.has('activities')&&enabled('activities',!!getActivityBookings().length)&&getActivityBookings().length)entries.push({id:'activities',action:"openTripCard('activities')"});
+  if(!groupedModules.has('transport')&&enabled('transport',!!getTransportBookings().length)&&getTransportBookings().length)entries.push({id:'transport',action:"openTripCard('transport')"});
+  if(enabled('rentalCar',!!cards.vehicle)&&cards.vehicle)entries.push({id:'vehicle',action:"openTripCard('vehicle')"});
+  return entries;
 }
-function tripHubNavigationHTML(key){
-  const order=tripHubOrder(),idx=order.indexOf(key); if(idx<0)return '';
-  const prev=idx>0?order[idx-1]:null,next=idx<order.length-1?order[idx+1]:null;
-  const prevButton=prev?`<button class="pill" type="button" onclick="openTripCard('${prev}')">‹ Previous</button>`:`<button class="pill" type="button" disabled aria-disabled="true">‹ Previous</button>`;
-  const nextButton=next?`<button class="pill" type="button" onclick="openTripCard('${next}')">Next ›</button>`:`<button class="pill" type="button" disabled aria-disabled="true">Next ›</button>`;
-  return `<div class="guide-browse-meta">${idx+1} / ${order.length}</div><div class="guide-next-row trip-hub-navigation">${prevButton}${nextButton}</div>`;
-}
-function openTripCard(key) {
-  const guideModal=document.getElementById('guideModal'); if(guideModal?.classList.contains('show'))guideModal.classList.remove('show');
-  closeMiniMenus(); const t=PRODUCTION_TRIP.cards[key]; if(!t||!tripHubOrder().includes(key))return;
-  const content=document.getElementById('tripModalContent'),modal=document.getElementById('tripModal'); if(!content||!modal)return;
-  const body=key==='stay'?buildAccommodationListHTML():(key==='activities'?buildActivityBookingListHTML():(key==='vehicle'?buildRentalCarHTML():t.body));
-  content.innerHTML=`<div class="trip-onepage trip-onepage-${key}"><p class="kicker">Trip Bookings</p><h2>${t.title}</h2>${body}${tripHubNavigationHTML(key)}<p class="timestamp trip-build-summary">${tripSyncSummary()}</p></div>`;
-  modal.classList.add('show'); const sheet=document.querySelector('#tripModal .trip-sheet'); if(sheet){sheet.scrollTop=0;if(typeof window.applyNearFitModal==='function')window.applyNearFitModal(sheet,'trip-near-fit');}
+function tripHubNavigationHTML(currentId){
+  const entries=tripHubEntries();
+  const index=entries.findIndex(entry=>entry.id===currentId);
+  if(index<0||!entries.length)return '';
+  const previous=index>0?entries[index-1]:null,next=index<entries.length-1?entries[index+1]:null;
+  const prev=previous?`<button class="pill" type="button" onclick="${previous.action}">‹ Previous</button>`:`<button class="pill" type="button" disabled aria-disabled="true">‹ Previous</button>`;
+  const nxt=next?`<button class="pill" type="button" onclick="${next.action}">Next ›</button>`:`<button class="pill" type="button" disabled aria-disabled="true">Next ›</button>`;
+  return `<div class="guide-browse-meta">${index+1} / ${entries.length}</div><div class="guide-next-row trip-hub-navigation">${prev}${nxt}</div>`;
 }
 
-function tripDeepLinkReturnURL(){
-  const params=new URLSearchParams(window.location.search);
-  const raw=params.get('return');
-  if(!raw)return '';
-  if(/^https?:/i.test(raw)||raw.startsWith('//'))return '';
-  return raw;
+function openTripCard(key) {
+  const guideModal=document.getElementById('guideModal');
+  if(guideModal?.classList.contains('show')) guideModal.classList.remove('show');
+  closeMiniMenus();
+  const t = PRODUCTION_TRIP.cards[key];
+  if (!t) return;
+
+  const content = document.getElementById('tripModalContent');
+  const modal = document.getElementById('tripModal');
+  if (!content || !modal) return;
+  const body=key==='emergency'?compactEmergencyHTML(t.body):(key==='stay'?buildAccommodationListHTML():(key==='activities'?buildActivityBookingListHTML():(key==='transport'?buildTransportBookingListHTML():(key==='vehicle'?buildRentalCarHTML():t.body))));
+  content.innerHTML = `<div class="trip-onepage trip-onepage-${key}"><p class="kicker">Trip</p><h2>${t.title}</h2>${body}${tripHubNavigationHTML(key)}<p class="timestamp trip-build-summary">${tripSyncSummary()}</p></div>`;
+  modal.classList.add('show');
+  const sheet=document.querySelector('#tripModal .trip-sheet');
+  if(sheet){ sheet.scrollTop=0; if(typeof window.applyNearFitModal==='function') window.applyNearFitModal(sheet,'trip-near-fit'); }
+  if (key === 'checklist') setTimeout(loadChecklist, 0);
 }
-function guardTripRoutingShell(){
-  if(!/\btrip\.html$/i.test(window.location.pathname))return;
-  const params=new URLSearchParams(window.location.search);
-  if(!params.get('bookingId')&&!params.get('card')){
-    window.location.replace('index.html');
-  }
-}
+
 function closeTripModal() {
   if(isBookingEditActive() && !confirmDiscardBookingEdit()) return false;
   clearBookingEditSession();
@@ -499,17 +643,16 @@ function closeTripModal() {
   const returnToGuide=window.TRIP_MODAL_RETURN_TO_GUIDE===true;
   window.TRIP_MODAL_RETURN_TO_GUIDE=false;
   const guideModal=document.getElementById('guideModal');
-  if(guideModal&&!returnToGuide) guideModal.classList.remove('show');
+  if(guideModal&&!returnToGuide){
+    guideModal.classList.remove('show');
+    window.GUIDE_MODAL_ORIGIN=null;
+    if(typeof window.restoreGuideTimelineOrigin==='function') window.restoreGuideTimelineOrigin();
+  }
   closeMiniMenus();
   document.body.classList.remove('admin-overlay-open');
   if(returnToGuide){
     const sheet=document.querySelector('#guideModal .guide-sheet');
     if(sheet) requestAnimationFrame(function(){sheet.focus?.({preventScroll:true});});
-  }
-  const deepReturn=tripDeepLinkReturnURL();
-  if(deepReturn&&/\btrip\.html$/i.test(window.location.pathname)){
-    window.location.href=deepReturn;
-    return true;
   }
   return true;
 }
@@ -532,3 +675,93 @@ function renderDashboard(){
 }
 
 
+
+
+function bookingEntityIcon(booking,category){
+  if(booking&&booking.emoji)return String(booking.emoji);
+  const type=String(booking&&booking.type||'').toLowerCase();
+  const title=String(booking&&booking.title||'').toLowerCase();
+  if(type==='restaurant')return title.includes('omakase')?'🍣':title.includes('pizza')?'🍕':'🍽️';
+  if(type==='spa'){
+    if(/head|hair/.test(title))return '🫧';
+    if(/foot/.test(title))return '🦶';
+    if(/wellness/.test(title))return '🌿';
+    return '💆';
+  }
+  if(type==='transport')return title.includes('airport')?'✈️':'🚐';
+  if(type==='activity'||type==='experience')return title.includes('cooking')?'👩‍🍳':'🎟️';
+  return bookingCategoryIcon(category);
+}
+function bookingCategoryIcon(category){
+  const key=String(category||'').toLowerCase();
+  return key==='restaurants'?'🍽️':key==='spa'?'💆':key==='activities'?'🎟️':key==='transport'?'🚐':'📋';
+}
+function buildBookingCategoryListHTML(category){
+  const bookings=getBookingsByCategory(category);
+  if(!bookings.length)return `<p class="timestamp">No ${escapeTripHTML(String(category).toLowerCase())} bookings have been added yet.</p>`;
+  return '<div class="accommodation-picker booking-category-picker" role="list">'+bookings.map(function(booking){
+    const priceParts=[];
+    if(booking.totalAmount||booking.price)priceParts.push(`Total ${booking.totalAmount||booking.price}`);
+    if(booking.cashbackAmount||booking.cashback)priceParts.push(`Cashback ${booking.cashbackAmount||booking.cashback}`);
+    if(booking.netTotalAUD||booking.netPrice)priceParts.push(`Net ${booking.netTotalAUD||booking.netPrice}`);
+    const price=priceParts.join(' · ');
+    return `<button class="accommodation-picker-row booking-category-row" type="button" role="listitem" onclick="openGenericBookingDetail('${escapeTripHTML(booking.id)}')"><span class="accommodation-picker-icon" aria-hidden="true">${bookingEntityIcon(booking,category)}</span><span class="accommodation-picker-copy"><strong>${escapeTripHTML(booking.title)}</strong><small>${bookingDayNumber(booking)?`Day ${escapeTripHTML(bookingDayNumber(booking))} · `:''}${escapeTripHTML(booking.date||'')}${booking.time?` · ${escapeTripHTML(booking.time)}`:''}</small>${price?`<span class="accommodation-picker-price">${escapeTripHTML(price)}</span>`:''}</span><span class="accommodation-picker-meta"><span class="activity-status-badge">${escapeTripHTML(bookingStatusText(booking))}</span><b aria-hidden="true">›</b></span></button>`;
+  }).join('')+'</div>';
+}
+function openBookingCategoryCard(category){
+  closeMiniMenus();
+  const content=document.getElementById('tripModalContent'),modal=document.getElementById('tripModal');
+  if(!content||!modal)return;
+  const hubId=String(category||'').toLowerCase()==='restaurants'?'restaurants':String(category||'').toLowerCase()==='spa'?'spa':'';
+  content.innerHTML=`<div class="trip-onepage trip-onepage-booking-category"><p class="kicker">Trip · Booking</p><h2>${bookingCategoryIcon(category)} ${escapeTripHTML(category)}</h2>${buildBookingCategoryListHTML(category)}${hubId?tripHubNavigationHTML(hubId):''}<p class="timestamp trip-build-summary">${tripSyncSummary()}</p></div>`;
+  modal.classList.add('show');
+  const sheet=document.querySelector('#tripModal .trip-sheet');if(sheet)sheet.scrollTop=0;
+}
+
+
+function buildTripModuleGroupHTML(group){
+ const modules=Array.isArray(group&&group.modules)?group.modules:[];
+ const sections=[];
+ if(modules.includes('activities'))sections.push(`<section class="trip-group-section"><p class="kicker">Activity</p>${buildActivityBookingListHTML()}</section>`);
+ if(modules.includes('transport'))sections.push(`<section class="trip-group-section"><p class="kicker">Transport</p>${buildTransportBookingListHTML()}</section>`);
+ return sections.join('');
+}
+function openTripModuleGroup(groupId){
+ const groups=Array.isArray(TRIP_CONFIG.tripMenuGroups)?TRIP_CONFIG.tripMenuGroups:[];
+ const group=groups.find(g=>g&&g.id===groupId); if(!group)return;
+ closeMiniMenus();
+ const content=document.getElementById('tripModalContent'),modal=document.getElementById('tripModal'); if(!content||!modal)return;
+ content.innerHTML=`<div class="trip-onepage trip-module-group"><p class="kicker">Trip</p><h2>${escapeTripHTML(group.icon||'📋')} ${escapeTripHTML(group.title||'Trip info')}</h2>${buildTripModuleGroupHTML(group)}${tripHubNavigationHTML('group:'+group.id)}</div>`;
+ modal.classList.add('show'); const sheet=document.querySelector('#tripModal .trip-sheet'); if(sheet)sheet.scrollTop=0;
+}
+
+/* Engine 25.2.9 — trip-data-driven menu. Prevents NZ-only Rental Car/route labels
+   from leaking into trips that do not have those modules. */
+function renderTripMenuFromConfig(){
+ const host=document.getElementById('tripMenu'); if(!host)return;
+ const cards=PRODUCTION_TRIP&&PRODUCTION_TRIP.cards||{};
+ const cfg=TRIP_CONFIG.tripModules||{};
+ const enabled=(key,fallback)=>Object.prototype.hasOwnProperty.call(cfg,key)?!!cfg[key]:fallback;
+ const rows=[];
+ const push=(action,icon,title,sub,href)=>rows.push(`<a href="${href||'#'}"${action?` onclick="${action};return false;"`:''}><span><span class="menu-title">${icon} ${title}</span>${sub?`<span class="menu-sub">${sub}</span>`:''}</span><span>›</span></a>`);
+ if(cards.flights)push("openTripCard('flights')",'✈️','Flights','Flight details');
+ if(enabled('stay',!!getAccommodationBookings().length))push("openTripCard('stay')",'🏨','Stay','Accommodation');
+ if(getBookingsByCategory('restaurants').length)push("openBookingCategoryCard('Restaurants')",'🍽️','Restaurants','Restaurant bookings');
+ if(getBookingsByCategory('spa').length)push("openBookingCategoryCard('Spa')",'💆','Spa','Spa bookings');
+ const groupedModules=new Set();
+ const groups=Array.isArray(TRIP_CONFIG.tripMenuGroups)?TRIP_CONFIG.tripMenuGroups:[];
+ groups.forEach(group=>{
+   const modules=Array.isArray(group&&group.modules)?group.modules:[];
+   const hasActivity=modules.includes('activities')&&enabled('activities',!!getActivityBookings().length)&&getActivityBookings().length;
+   const hasTransport=modules.includes('transport')&&enabled('transport',!!getTransportBookings().length)&&getTransportBookings().length;
+   if(hasActivity||hasTransport){push(`openTripModuleGroup('${group.id}')`,group.icon||'📋',group.title||'Trip info',group.sub||'');modules.forEach(m=>groupedModules.add(m));}
+ });
+ if(!groupedModules.has('activities')&&enabled('activities',!!getActivityBookings().length))push("openTripCard('activities')",'🎟️','Activities','Activity bookings');
+ if(!groupedModules.has('transport')&&enabled('transport',!!getTransportBookings().length))push("openTripCard('transport')",'🚐','Transport','Booked transport');
+ if(enabled('rentalCar',!!cards.vehicle)&&cards.vehicle)push("openTripCard('vehicle')",'🚙','Rental Car','Vehicle details');
+ host.innerHTML=rows.join('');
+}
+if(typeof document!=='undefined'){
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',renderTripMenuFromConfig);
+ else renderTripMenuFromConfig();
+}

@@ -1,4 +1,4 @@
-/* Travel Engine V2 — RC21 authoritative Generation Selection Adapter. */
+/* Travel Engine V2 — RC22 authoritative Generation Selection Adapter. */
 (function(root,factory){
   const engine=root.TravelEngineIntegrity||
     (typeof module==='object'&&module.exports?require('./engine-integrity.js'):null);

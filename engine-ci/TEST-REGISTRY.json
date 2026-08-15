@@ -1,0 +1,106 @@
+{
+  "test-booking-authority-stale-poisoning.js": {
+    "status": "active",
+    "note": "Travel Engine active contract"
+  },
+  "test-booking-detail-compact-contract.js": {
+    "status": "active",
+    "note": "Travel Engine active contract"
+  },
+  "test-booking-guide-modal-stacking.js": {
+    "status": "active",
+    "note": "Travel Engine active contract"
+  },
+  "test-browser-gate-definition.js": {
+    "status": "active",
+    "note": "Travel Engine active contract"
+  },
+  "test-browser-release-smoke.py": {
+    "status": "browser",
+    "note": "Canonical real browser release smoke; desktop + mobile"
+  },
+  "test-expense-contracts.js": {
+    "status": "active",
+    "note": "Travel Engine active contract"
+  },
+  "test-expense-notification-self-contained.js": {
+    "status": "active",
+    "note": "Travel Engine active contract"
+  },
+  "test-fixture-data.js": {
+    "status": "active",
+    "note": "Travel Engine active contract"
+  },
+  "test-guide-booking-return-contract.js": {
+    "status": "active",
+    "note": "Travel Engine active contract"
+  },
+  "test-modal-interaction-contract.js": {
+    "status": "active",
+    "note": "Travel Engine active contract"
+  },
+  "test-moments-plan-activity-canonical.js": {
+    "status": "active",
+    "note": "Travel Engine active contract"
+  },
+  "test-neutral-fixture-integrity.js": {
+    "status": "active",
+    "note": "Neutral starter fixture must pass the same production integrity gate as a generated Companion"
+  },
+  "test-portability.js": {
+    "status": "active",
+    "note": "Travel Engine active contract"
+  },
+  "test-presentation-portability.js": {
+    "status": "active",
+    "note": "Travel Engine active contract"
+  },
+  "test-presentation-shell-interaction.js": {
+    "status": "active",
+    "note": "Travel Engine active contract"
+  },
+  "test-presentation-shell-ownership.js": {
+    "status": "active",
+    "note": "Travel Engine active contract"
+  },
+  "test-release-hygiene.js": {
+    "status": "active",
+    "note": "Travel Engine active contract"
+  },
+  "test-release.js": {
+    "status": "active",
+    "note": "Travel Engine active contract"
+  },
+  "test-studio-header-badge.js": {
+    "status": "active",
+    "note": "Travel Engine active contract"
+  },
+  "test-studio-home-preview-fit.js": {
+    "status": "active",
+    "note": "Travel Engine active contract"
+  },
+  "test-studio-identity-contract.js": {
+    "status": "active",
+    "note": "Travel Engine active contract"
+  },
+  "test-studio-lifecycle-consolidation.js": {
+    "status": "active",
+    "note": "Travel Engine active contract"
+  },
+  "test-studio-popup-workspace-contract.js": {
+    "status": "active",
+    "note": "Travel Engine active contract"
+  },
+  "test-syntax.js": {
+    "status": "active",
+    "note": "Travel Engine active contract"
+  },
+  "test-test-registry-contract.js": {
+    "status": "active",
+    "note": "Travel Engine active contract"
+  },
+  "test-trip-guide-shell-consolidation.js": {
+    "status": "active",
+    "note": "Travel Engine active contract"
+  }
+}

@@ -101,8 +101,9 @@
     splashSlogan: 'ADVENTURE AWAITS',
     splashDestination: 'NEW ZEALAND 2026',
     storageNamespace: 'nz-family-2026',
-    version: 'RC25.3.1',
-    buildLabel: 'NZ Companion · Travel Engine 25.4.12 selective backport',
+    bookingMasterRevision: 1,
+    version: 'RC25.4.0',
+    buildLabel: 'NZ Companion · Travel Engine 25.6.0 migration candidate',
     theme: root.THEME_CONFIG.colors
   });
 
