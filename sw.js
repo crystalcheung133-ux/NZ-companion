@@ -1,5 +1,5 @@
 importScripts('./theme-config.js', './asset-config.js', './locale-config.js', './formatter.js', './navigation-config.js', './trip-config.js', './storage-config.js');
-const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-nz25-3-1-dual-currency-badge-fix`;
+const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-runtime-v22-ci-gate-candidate`;
 const CRITICAL_EXTENSIONS = /\.(?:css|js)$/i;
 const ASSETS = [
   './',
@@ -45,6 +45,8 @@ const ASSETS = [
   './engine-integrity.js',
   './data.js',
   './booking-authority.js',
+  './booking-permissions.js',
+  './booking-sync-runtime.js',
   './itinerary-authority.js',
   './place.html',
   './day.html',

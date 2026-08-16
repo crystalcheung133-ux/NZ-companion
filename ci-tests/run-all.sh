@@ -1,34 +1,30 @@
 #!/bin/sh
 set -u
 failed=0
-run(){ printf '\n== %s ==\n' "$1"; shift; "$@" || failed=1; }
-
-run "SYNTAX" sh ci-tests/test-syntax.sh
-run "HTML STRUCTURE" sh ci-tests/test-html-structure.sh
-run "ENGINE 25.6 MIGRATION" node ci-tests/test-engine-25-6-migration.js
-run "ENTITY INTEGRITY" node ci-tests/test-entity-integrity.js
-run "TIMELINE INTEGRITY" node ci-tests/test-timeline-integrity.js
-run "RUNTIME INTEGRITY" node ci-tests/test-runtime-integrity.js
-run "BOOKING PERSISTENCE" node ci-tests/test-runtime-booking-persistence.js
-run "INDEXEDDB LIFECYCLE" node ci-tests/test-runtime-indexeddb-lifecycle.js
-run "RESET GENERATION" node ci-tests/test-runtime-reset-generation.js
-run "RESET SEQUENCE" node ci-tests/test-runtime-reset-sequence.js
-run "BOOKING / EXPENSE LINKAGE" node ci-tests/test-booking-expense-linkage.js
-run "INLINE BOOKING FROM EXPENSE" node ci-tests/test-inline-booking-from-expense.js
-run "EXPENSE NOTIFICATIONS" node ci-tests/test-expense-notifications.js
-run "EXPENSE CURRENCY TOGGLE" node ci-tests/test-expense-currency-toggle.js
-run "ANALYTICS V1.2" node ci-tests/test-analytics-v1.js
-run "ANALYTICS PERMISSIONS" node ci-tests/test-analytics-permission-contract.js
-run "BROWSER GATE DEFINITION" node ci-tests/test-browser-gate-definition.js
-run "DESTRUCTIVE ACTION SECURITY" node ci-tests/test-destructive-action-security.js
-run "SOLO PARTY" node ci-tests/test-stage1-solo-party.js
-run "BACKWARD COMPAT" node ci-tests/test-stage1-backward-compat.js
-
+run(){ echo "== $1 =="; shift; "$@" || failed=1; echo ""; }
+run "FOUNDATION" sh ci-tests/suites/01-foundation.sh
+run "DATA INTEGRITY" sh ci-tests/suites/02-data-integrity.sh
+run "VN PRODUCT CONTRACTS" sh ci-tests/suites/03-product-contracts.sh
+run "ANALYTICS" sh ci-tests/suites/04-analytics.sh
+run "PORTABILITY" sh ci-tests/suites/05-portability.sh
+run "RUNTIME RELIABILITY" sh ci-tests/suites/06-runtime-reliability.sh
+run "GENERICITY" sh ci-tests/suites/07-genericity.sh
+run "BOOKING / EXPENSE" sh ci-tests/suites/08-booking-expense.sh
+run "EXPENSE SAVE SAFETY" sh ci-tests/suites/10-expense-save-safety.sh
+run "EXPENSE COMMIT BOUNDARY" sh ci-tests/suites/11-expense-commit-boundary.sh
+run "RELEASE" sh ci-tests/suites/09-release.sh
+run "STUDIO POPUP WORKSPACE" node ci-tests/test-studio-popup-workspace-contract.js styles.css admin.js
+run "PRESENTATION SHELL OWNERSHIP" node ci-tests/test-presentation-shell-ownership.js styles.css
+run "PRESENTATION SHELL INTERACTION" node ci-tests/test-presentation-shell-interaction.js styles.css admin.js
+run "RELEASE HYGIENE" node ci-tests/test-release-hygiene.js .
+run "BOOKING / GUIDE MODAL STACKING" node ci-tests/test-booking-guide-modal-stacking.js styles.css
+run "TRIP / GUIDE SHELL CONSOLIDATION" node ci-tests/test-trip-guide-shell-consolidation.js styles.css
+run "STUDIO HOME PREVIEW BOUNDS" node ci-tests/test-studio-home-preview-fit.js styles.css admin.js
+run "STUDIO LIFECYCLE CONSOLIDATION" node ci-tests/test-studio-lifecycle-consolidation.js
+run "STUDIO HEADER BADGE" node ci-tests/test-studio-header-badge.js styles.css admin.js
+run "VN HEADER THEME" node ci-tests/test-vn-header-theme.js styles.css
 run "CANONICAL STUDIO + EXPENSE DEEP-LINK" node ci-tests/test-canonical-studio-expense-deeplink.js
 run "CANONICAL STUDIO VISUAL CONTRACT 25.6.2" node ci-tests/test-studio-visual-contract-2562.js
-if [ "$failed" -eq 0 ]; then
-  printf '\nNZ 25.6 MIGRATION CI PASSED\n'
-  exit 0
-fi
-printf '\nNZ 25.6 MIGRATION CI FAILED\n' >&2
-exit 1
+[ "$failed" -eq 0 ] || { echo "MASTER CI SUITE FAILED"; exit 1; }
+echo "MASTER CI SUITE PASSED"
+

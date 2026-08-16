@@ -169,3 +169,41 @@
   global.APP_RUNTIME=APP_RUNTIME;
   APP_RUNTIME.start();
 })(typeof window!=='undefined' ? window : globalThis);
+
+
+/* Travel Engine 25.4.28 — modal open reset.
+   Generic content/form modals always open from the top.
+   Studio/traveller modal is excluded because admin.js owns its scroll target. */
+(function(root){
+  'use strict';
+  const MODALS='.guide-modal,.moments-modal,.unexpected-modal,.tools-modal,.trip-modal';
+  const SHEETS='.guide-sheet,.moments-sheet,.unexpected-sheet,.tools-sheet,.trip-sheet';
+
+  function resetModalToTop(modal){
+    if(!modal?.matches?.(MODALS)) return;
+    modal.scrollTop=0;
+    const sheet=modal.querySelector(SHEETS);
+    if(sheet) sheet.scrollTop=0;
+    requestAnimationFrame(()=>{
+      modal.scrollTop=0;
+      if(sheet) sheet.scrollTop=0;
+    });
+  }
+
+  root.TRAVEL_ENGINE_RESET_MODAL_TO_TOP=resetModalToTop;
+
+  if(typeof document!=='undefined'&&!root.__travelEngineModalTopResetBound){
+    root.__travelEngineModalTopResetBound=true;
+    const observer=new MutationObserver(records=>{
+      for(const record of records){
+        if(record.type==='attributes' &&
+           record.attributeName==='class' &&
+           record.target?.matches?.(MODALS) &&
+           record.target.classList.contains('show')){
+          resetModalToTop(record.target);
+        }
+      }
+    });
+    observer.observe(document.documentElement,{subtree:true,attributes:true,attributeFilter:['class']});
+  }
+})(globalThis);

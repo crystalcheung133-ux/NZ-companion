@@ -1,0 +1,30 @@
+const fs=require('fs'),assert=require('assert');
+const data=fs.readFileSync('data.js','utf8'),guide=fs.readFileSync('guide-runtime.js','utf8'),home=fs.readFileSync('index.html','utf8'),cfg=fs.readFileSync('trip-config.js','utf8'),day=fs.readFileSync('day.html','utf8'),directory=fs.readFileSync('shopping-directory-data.js','utf8');
+function record(key){
+ const re=new RegExp('  "'+key.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'": \\{([\\s\\S]*?)(?=\\n  "[^"\\n]+": \\{|\\n\\};\\n\\nconst CATEGORIES)');
+ const m=data.match(re);assert(m,'Missing place '+key);return m[0];
+}
+assert.match(home,/openGuideCategory\('SHOP'\)/,'Guide must expose Shopping');
+assert.doesNotMatch(home,/openGuideCategory\('PRACTICAL'\)/,'FX/cash must stay out of Guide menu');
+assert.match(guide,/Shopping Directory/,'Shopping directory must render in Guide modal');
+assert.match(guide,/BOOKED/,'Dining presentation supports Booked');
+assert.match(data,/"cash-backup"[\s\S]{0,250}"cat": "PRACTICAL"/,'Money backup must remain Practical data');
+assert.doesNotMatch(data,/"fusion"[\s\S]{0,220}"hours": "24 Hours"/,'Stay must not show 24 Hours');
+assert.match(data,/Social Club Rooftop Bar[\s\S]{0,700}24\/F/,'Social rooftop needs useful identity');
+assert.match(cfg,/version:'RC\d+(?:\.\d+)?-25\.[456]\.\d+(?:\.\d+)?'/,'Guide audit requires valid release identity');
+assert.doesNotMatch(home,/home-shopping-button/,'Shopping must not be forced onto Home hero');
+for(const key of ['libe','dauple','nosbyn','new-playground','push-push','saigon-concept','ohquao','louh','garmentory','dalla-saigon','rubies','lane-ci','takashimaya']) assert.match(record(key),/"shoppingRoute":/,'Shopping route metadata missing: '+key);
+assert.doesNotMatch(data,/"hours":\s*"(?:出發前|Unconfirmed|[^\"]*出發前再確認)/,'Guide must not expose generic/unverified hours as Trading Hours');
+assert.match(record('omakase-tiger'),/"status": "booked"/,'Booked dining status missing');
+for(const key of ['late-night-supper','man-moi','social-club']) assert.match(record(key),/"status": "optional"/,'Optional dining status missing: '+key);
+for(const key of ['pho-sol','com-tam-moc','lune','quan-thuy','little-bear','running-bean','pizza4ps','oc-dao','pho-vietnam','bep-me-in']) assert.match(record(key),/"status": "planned"/,'Planned dining status missing: '+key);
+assert.match(guide,/explicit==='booked'/,'Guide renderer must honor explicit Booked status');
+assert.doesNotMatch(record('fusion'),/"hours":/,'Stay card must not carry opening-hours metadata');
+assert.match(record('cash-backup'),/"cat": "PRACTICAL"/,'Money exchange backup must be Practical');
+assert.match(record('social-club'),/24樓|24\/F/,'Social Club must explain rooftop setting');
+assert.match(record('social-club'),/skyline/,'Social Club must explain skyline value');
+assert(!/"PRACTICAL"\s*:\s*\[\s*\{\s*"key"\s*:\s*"cash-backup"/m.test(data),'cash-backup must not be Guide inventory');
+assert(day.includes('openShoppingDirectoryView(${Number(day)||1})'),'Timeline Shopping List must open current-day directory');
+assert(guide.includes("if(semantic==='SHOP')"),'SHOP Guide category must remain');
+assert(directory.includes('Dear José')&&directory.includes('KIDO Studiowear')&&directory.includes('11 Garmentory'),'Shopping Directory editorial set must be preserved');
+console.log('GUIDE CONTENT + SHOPPING DIRECTORY CAPABILITY: PASS');

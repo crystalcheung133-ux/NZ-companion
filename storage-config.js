@@ -13,7 +13,7 @@
     latestMomentPrefix:'moment_latest_',
     momentsFreeform:'moments_freeform',
     momentsList:'moments_list',
-    friend:'nz_friend',
+    friend:String(root.TRIP_CONFIG&&root.TRIP_CONFIG.identityStorageKey||namespace+':traveller_identity:v1'),
     adminMode:'travel_engine_admin_mode_v1',
     adminDraft:'travel_engine_admin_draft_v1',
     guideNavContext:'ccmv_guide_nav_context',
@@ -30,7 +30,7 @@
     canonicalExpenseState:namespace+':canonical_expenses:stage_3_2d:v1',
     expenseReadShadowState:namespace+':canonical_expense_read_shadow:stage_3_2e:v1',
     tripGeneration:'travel_engine_trip_generation_v1',
-    bookingOverrides:'travel_engine_booking_overrides_v1',
+    bookingOverrides:namespace+':booking_overrides:v2',
     analyticsQueue:namespace+':analytics_queue:v1',
     analyticsSession:'travel_engine_analytics_session_v1'
   });

@@ -38,7 +38,7 @@
       'place.html',
       'moments.html',
       'expenses.html',
-      'memory.html'
+      'memory.html',
     ])
   });
 

@@ -1,12 +1,10 @@
 {
-  "trip_name": "New Zealand Companion",
+  "trip_name": "Saigon Companion",
   "forbidden_tokens": [
-    "Saigon",
-    "Vietnam",
-    "Ho Chi Minh",
-    "Christal",
-    "Vivian",
-    "Mero",
+    "New Zealand Companion",
+    "Christchurch",
+    "Queenstown",
+    "Lakefront Lodge",
     "KAI Hakone",
     "Gotanda",
     "Hakone"

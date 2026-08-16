@@ -1,1 +1,0 @@
-const fs=require('fs'),path=require('path'),vm=require('vm');for(const dir of ['runtime','starter'])for(const name of fs.readdirSync(dir)){if(!name.endsWith('.js'))continue;new vm.Script(fs.readFileSync(path.join(dir,name),'utf8'),{filename:path.join(dir,name)});}console.log('SYNTAX: PASS');

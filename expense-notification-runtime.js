@@ -49,27 +49,36 @@
   function close(){
     document.getElementById('expenseNoticeModal')?.remove();
   }
+  function expenseAmount(expense){
+    const code=String(expense.currency||root.MONEY?.getTripCurrency?.().code||'');
+    return `${Number(expense.total||0).toFixed(2)} ${escapeHtml(code)}`;
+  }
+  function expenseRow(expense){
+    const creator=escapeHtml(labelFor(expense.createdBy||expense.paidBy||''));
+    const item=escapeHtml(expense.item||'Shared expense');
+    const booking=expense.sourceType==='booking'?`<p class="timestamp expense-notice-booking">Linked to booking · ${escapeHtml(expense.sourceBookingTitle||'Booking')}</p>`:'';
+    return `<article class="expense-notice-item">
+      <div class="expense-notice-item-main"><strong>${item}</strong><strong>${expenseAmount(expense)}</strong></div>
+      <p class="timestamp">Added by ${creator}</p>${booking}
+    </article>`;
+  }
   function show(list,f){
     if(!list.length)return;
     close();
-    const newest=list[list.length-1];
     const count=list.length;
-    const creator=labelFor(newest.createdBy||newest.paidBy||'');
-    const amount=`${Number(newest.total||0).toFixed(2)} ${String(newest.currency||root.MONEY?.getTripCurrency?.().code||'')}`;
     const modal=document.createElement('div');
     modal.id='expenseNoticeModal';modal.className='expense-notice-modal';
     modal.innerHTML=`<div class="expense-notice-sheet" role="dialog" aria-modal="true" aria-labelledby="expenseNoticeTitle">
       <button class="expense-notice-close" type="button" aria-label="Close">×</button>
-      <p class="kicker">NEW SHARED EXPENSE</p>
+      <p class="kicker">NEW SHARED EXPENSE${count===1?'':'S'}</p>
       <h2 id="expenseNoticeTitle">${count===1?'A new expense was added':`${count} new expenses were added`}</h2>
-      <p><strong>${creator}</strong> added ${count===1?`<strong>${escapeHtml(newest.item||'Shared expense')}</strong> · ${amount}`:'new shared expenses'}.</p>
-      ${newest.sourceType==='booking'?`<p class="timestamp">Linked to booking · ${escapeHtml(newest.sourceBookingTitle||'Booking')}</p>`:''}
-      <div class="expense-notice-actions"><button type="button" class="pill expense-notice-later">Later</button><a class="pill expense-notice-view" href="expenses.html">View Expenses</a></div>
+      <div class="expense-notice-list">${list.map(expenseRow).join('')}</div>
+      <div class="expense-notice-actions"><button type="button" class="pill expense-notice-done">Got it</button></div>
     </div>`;
     document.body.appendChild(modal);
     const seen=readSet(f);list.forEach(e=>seen.add(e.id));writeSet(f,seen);
     modal.querySelector('.expense-notice-close')?.addEventListener('click',close);
-    modal.querySelector('.expense-notice-later')?.addEventListener('click',close);
+    modal.querySelector('.expense-notice-done')?.addEventListener('click',close);
   }
   function escapeHtml(v){return String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
   function checkSoon(){

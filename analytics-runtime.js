@@ -25,7 +25,7 @@
     }catch(e){return uuid();}
   }
   function travellerId(){
-    try{return typeof root.getFriend==='function'?root.getFriend():(storage?.local?.get(keys.friend,root.TRIP_CONFIG?.participants?.defaultKey||Object.keys(root.TRIP_CONFIG?.participants?.identities||{})[0]||'unknown'));}
+    try{return typeof root.getFriend==='function'?root.getFriend():(storage?.local?.get(keys.friend,root.TRIP_CONFIG?.participants?.defaultKey||'unknown'));}
     catch(e){return root.TRIP_CONFIG?.participants?.defaultKey||'unknown';}
   }
   function isAdmin(){

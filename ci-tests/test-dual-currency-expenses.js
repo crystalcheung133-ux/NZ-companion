@@ -1,0 +1,15 @@
+const fs=require('fs');
+const assert=require('assert');
+const root=process.argv[2]||'.';
+const expenses=fs.readFileSync(root+'/expenses.js','utf8');
+const html=fs.readFileSync(root+'/expenses.html','utf8');
+const money=fs.readFileSync(root+'/money.js','utf8');
+const config=fs.readFileSync(root+'/money-config.js','utf8');
+assert(html.includes('expenseCurrencyToggle'),'expense currency selector missing');
+assert(expenses.includes("currency,homeCurrency,homeTotal"),'expense record does not persist currency/home settlement fields');
+assert(expenses.includes('fxRateDate'),'FX snapshot date missing');
+assert(expenses.includes('Settlement') && expenses.includes('MONEY.getHomeCurrency()'),'settlement is not home-currency based');
+assert(expenses.includes('expenseCurrencyCode(e)'),'legacy currency compatibility missing');
+assert(money.includes('getExpenseCurrencies'),'money service has no dual-currency API');
+assert(config.includes("settlementCurrency: 'AUD'"),'settlement currency config missing');
+console.log('PASS dual-currency expenses contract');

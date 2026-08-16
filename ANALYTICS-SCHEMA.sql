@@ -1,5 +1,5 @@
--- NZ Companion — Analytics System v1
--- Run once in the existing Supabase project SQL Editor.
+-- Travel Engine — Analytics System v1.2 reusable schema
+-- Run once in the Supabase project used by a Travel Engine deployment.
 -- Analytics is isolated from operational Trip/Expenses/Moments tables.
 
 create table if not exists public.trip_analytics_events (
@@ -26,16 +26,17 @@ create index if not exists trip_analytics_events_trip_traveller_idx
 
 alter table public.trip_analytics_events enable row level security;
 
--- Existing Companion uses Supabase anonymous auth. Anonymous users receive
--- the authenticated role after signInAnonymously(); they may append analytics
--- but cannot read/update/delete analytics from the browser.
+-- Companion clients use anonymous Supabase auth (authenticated role after
+-- signInAnonymously). They may append minimal analytics but cannot read,
+-- update or delete analytics from the browser. trip_id is supplied by the
+-- deployment's TRIP_CONFIG.storageNamespace.
 drop policy if exists "analytics_insert_authenticated" on public.trip_analytics_events;
 create policy "analytics_insert_authenticated"
   on public.trip_analytics_events
   for insert
   to authenticated
   with check (
-    trip_id = 'nz-family-2026'
+    length(trim(trip_id)) between 1 and 120
     and actor_type in ('traveller','admin')
     and jsonb_typeof(metadata) = 'object'
   );
@@ -44,14 +45,12 @@ revoke all on public.trip_analytics_events from anon;
 revoke select, update, delete on public.trip_analytics_events from authenticated;
 grant insert on public.trip_analytics_events to authenticated;
 
--- Post-trip examples (run in Supabase SQL Editor):
--- Traveller-only page usage:
+-- Post-trip examples: replace <TRIP_ID> with TRIP_CONFIG.storageNamespace.
 -- select page_type, count(*) from public.trip_analytics_events
--- where trip_id='nz-family-2026' and actor_type='traveller' and event_type='page_view'
+-- where trip_id='<TRIP_ID>' and actor_type='traveller' and event_type='page_view'
 -- group by page_type order by count(*) desc;
 --
--- Most opened Guide cards:
 -- select entity_id, metadata->>'category' as category, count(*)
 -- from public.trip_analytics_events
--- where trip_id='nz-family-2026' and actor_type='traveller' and event_type='guide_open'
+-- where trip_id='<TRIP_ID>' and actor_type='traveller' and event_type='guide_open'
 -- group by entity_id, metadata->>'category' order by count(*) desc;

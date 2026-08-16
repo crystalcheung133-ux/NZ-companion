@@ -1,0 +1,21 @@
+#!/usr/bin/env node
+'use strict';
+const fs=require('fs'),path=require('path'),assert=require('assert');
+const root=path.resolve(__dirname,'..');
+const read=f=>fs.readFileSync(path.join(root,f),'utf8');
+const money=read('money.js'),moneyCfg=read('money-config.js'),day=read('day.html'),expenses=read('expenses.js'),styles=read('styles.css'),theme=read('theme-config.js');
+assert.match(moneyCfg,/fallbackApiBases/,'FX fallback provider config missing');
+assert.match(money,/live-fallback/,'FX fallback runtime missing');
+assert.doesNotMatch(day,/current<10/,'Timeline swipe still hardcodes a 10-day trip');
+assert.match(day,/current<lastDayNumber/,'Timeline swipe must use configured itinerary bounds');
+assert.match(day,/returnToBookingDetail/,'Timeline booking actions must route through generic booking detail');
+assert.doesNotMatch(day,/openTripCard\('vehicle'\).*Trip Info/s,'Timeline must not fall back to Rental Car/Trip Info for non-accommodation bookings');
+assert.match(day,/toLowerCase\(\)==='transport'/,'Timeline transition filter missing');
+assert.match(day,/!item\.bookingId/,'Booked/significant transport must remain eligible for timeline display');
+assert.match(day,/worthExcludedPlaceIds/,'Worth-badge exclusions must be trip-config driven');
+assert.match(expenses,/selected\.length===FRIEND_ORDER\.length\?'All'/,'Expense split summary still assumes a fixed party count');
+assert.match(styles,/Engine 25\.3\.0 — Portability & Runtime Audit fixes/,'Portability CSS layer missing');
+assert.match(styles,/grid-template-columns:58px minmax\(0,1fr\)/,'Compact timeline rail rule missing');
+assert.match(styles,/custom-split-row\{grid-template-columns:1fr/,'Mobile custom expense split stack rule missing');
+assert.match(theme,/moduleColors/,'Theme-level module accent tokens missing');
+console.log('PORTABILITY RUNTIME V2: PASS — no fixed trip length, generic booking routing, transition transport filtering, dynamic party count, FX fallback and responsive tokens.');

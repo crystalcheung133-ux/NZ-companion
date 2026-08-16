@@ -1,34 +1,74 @@
 {
   "engine_version": "25.6.2",
-  "artifact_version": "NZ Companion RC25.4.2 · Travel Engine 25.6.2 Production Freeze",
-  "baseline_engine": "25.6.0",
+  "artifact_version": "VN Companion RC29.40 · Travel Engine 25.6.2 Production Freeze",
+  "baseline_engine": "25.5.2",
   "release_date": "2026-08-16",
   "release_type": "production-freeze",
   "runtime_behavior_change": false,
-  "capabilities_changed": [
-    "Travel Engine 25.6.0 dedicated Studio shell and lifecycle",
-    "Revision-aware Booking Authority with bookingMasterRevision",
-    "Compact Booking legal-surface allow-list",
-    "Moments explicit activity semantics",
-    "Guide/Booking return-to-origin semantics",
-    "Generation Selection Adapter aligned to Engine 25.6.0"
-  ],
   "ci_entrypoint": "sh ci-tests/run-all.sh",
-  "rollback_baseline": "25.4.16",
-  "security_status": "private-trip-appropriate",
-  "explicitly_skipped": [
-    "device registration",
-    "Trip Access Code",
-    "mandatory trip membership architecture",
-    "enterprise-style per-device authorization"
+  "capabilities_changed": [
+    "Day 1 arrival corrected to 06:00 with Klook private transfer to Fusion before breakfast",
+    "Day 1 currency handling simplified to Timeline-only options: VPBank Hàm Nghi, Takashimaya B2, and Hà Tâm if open",
+    "Day 1 route now runs Phở SOL → Grab to Post Office / Book Street / Cathedral → optional Ivoire Pastry",
+    "Ivoire Pastry Boutique added as a Guide card with dine-in or takeaway flexibility",
+    "Day 1 targets return to Fusion around 12:30; early check-in if room is ready, with 14:00 retained as guaranteed check-in",
+    "Day 4 redefined as Thảo Điền Open Day: only Tân Định morning anchors plus one Thảo Điền Open List",
+    "Fixed Day 4 lunch, Bakes, spa, second walk and farewell dinner timeline stops removed",
+    "Mộc Hương removed from Booking and retained only as an optional Open List / Guide choice",
+    "Quán Thuý 94 retained as Guide reference but no longer scheduled as fixed lunch",
+    "Little Bear remains Guide-only and excluded from Monday farewell because it is closed",
+    "Moments Planned Activity inherits canonical Day 4 and now shows morning anchors plus one Open List rather than stale individual stops",
+    "Day 1 now explicitly returns to Fusion for check-in/reset before walking to The Cafe Apartments",
+    "Day 1 Cafe Apartments / Nhà Suga is a flexible shared block ending around 17:00",
+    "Omakase Tiger 17:30 first seating is explicitly the sunset hard anchor",
+    "Mandatory post-Omakase Cafe Apartments revisit removed",
+    "Guide-to-Timeline anchors for D4 Open List options and D1 Cafe Apartments reconciled",
+    "Booking Master Revision advanced to 7 so obsolete Mộc Hương booking state cannot resurrect",
+    "Day 4 Open List now offers four distinct spa choices instead of implying Mộc Hương is the spa plan",
+    "Added Mojo Spa & Foot Massage, Thao Dien Spa and Golden Lotus Healing World Guide cards",
+    "All D4 spa options link back to the single Thảo Điền Open List rather than becoming scheduled Timeline activities",
+    "Mộc Hương remains Guide-only / optional; no Day 4 spa Booking is created",
+    "Moments Planned Activity excludes cash/ATM, transport, buffer, hotel reset/rest and stay logistics",
+    "Studio Mode is always rendered below all traveller choices in User Selector",
+    "When Studio is already unlocked, pressing User Selector reopens Studio Workspace directly",
+    "New static CI guards all three product rules; browser smoke definition also checks active-session User Selector re-entry",
+    "CI architecture consolidated from leaf bug blacklists toward principle-level allow-list contracts",
+    "Generic Booking surface constrained by an explicit legal allow-list",
+    "Moments Planned Activity constrained by an explicit activity-type allow-list",
+    "Studio selector rules absorbed into the Studio lifecycle contract",
+    "Browser smoke updated so active Studio User Selector reopens Studio Workspace directly",
+    "Three redundant leaf tests retired; active test registry reduced from 67 to 64",
+    "Freeze cleanup removed 17 retired CI files and their registry entries",
+    "Test registry now contains 64 active static tests plus one canonical browser release test",
+    "Release metadata builder no longer hard-codes an old RC/date; it derives the build label from VERSION.txt and the date at generation time"
   ],
   "explicitly_deferred": [
-    "presence windows",
     "parallel itinerary tracks",
-    "booking appliesTo / partyIds subgroup assignment"
+    "presence windows",
+    "enterprise device registration",
+    "database Reset RPC signature migration"
   ],
-  "migration_source": "NZ Companion RC25.3.9.3 · Travel Engine 25.4.20.3 Production Freeze",
-  "release_status": "PRODUCTION FREEZE — static CI + independent Chromium desktop/mobile Studio visual validation PASS",
+  "frozen": false,
+  "freeze_date": null,
+  "obsolete_or_rejected": [
+    "separate Studio status bar",
+    "historical shared Trip/Guide overlay geometry ownership",
+    "Studio translateY viewport positioning workarounds",
+    "cold-white Saigon header treatment"
+  ],
+  "asset_cache_token": "rc2940-2562",
+  "release_status": "PRODUCTION FREEZE — static CI + independent Chromium desktop/mobile Studio visual validation PASS; CI orchestration gate corrected",
+  "changes": [
+    "Day 1 arrival corrected to 06:00 with Klook private transfer to Fusion before breakfast",
+    "Day 1 currency handling simplified to Timeline-only options: VPBank Hàm Nghi, Takashimaya B2, and Hà Tâm if open",
+    "Day 1 route now runs Phở SOL → Grab to Post Office / Book Street / Cathedral → optional Ivoire Pastry",
+    "Ivoire Pastry Boutique added as a Guide card with dine-in or takeaway flexibility",
+    "Day 1 targets return to Fusion around 12:30; early check-in if room is ready, with 14:00 retained as guaranteed check-in",
+    "Canonical desktop Trip Studio geometry: 760px",
+    "Canonical mobile Trip Studio cap: 430px",
+    "STUDIO ON standardized as a compact theme-aware pill",
+    "Studio visual contract enforced by CI"
+  ],
   "validation": {
     "chromium_desktop_1280x800": "PASS — NZ/VN Studio rendered 760px width",
     "chromium_mobile_390x844": "PASS — NZ/VN Studio rendered 374.4px width, no horizontal overflow",
@@ -38,16 +78,5 @@
     "booking_expense_regression": "25.6.2 did not modify Booking/Expenses runtime; 25.6.1 exact-card browser evidence retained and 25.6.2 static contract PASS",
     "validator": "Independent Claude Chromium/Playwright validation of unchanged 25.6.2 visual candidates"
   },
-  "final_compatibility_fix": {
-    "classification": "browser-only CSS scoping defect in legacy NZ modal visibility hotfix",
-    "file": "styles.css",
-    "change": "Scope guide/trip sheet and modal-content visibility overrides to the .show state",
-    "browser_evidence": "Desktop 1280x800 PASS + Mobile 390x844 PASS, repeated twice"
-  },
-  "changes": [
-    "Canonical desktop Trip Studio geometry: 760px",
-    "Canonical mobile Trip Studio cap: 430px",
-    "STUDIO ON standardized as a compact theme-aware pill",
-    "Studio visual contract enforced by CI"
-  ]
+  "ci_hygiene_fix": "Moved canonical Studio/Expense and 25.6.2 Studio Visual tests before Master CI pass/fail gate; negative control confirmed failure now propagates."
 }

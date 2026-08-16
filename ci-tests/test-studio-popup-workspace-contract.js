@@ -1,0 +1,22 @@
+const fs=require('fs');
+const css=fs.readFileSync(process.argv[2]||'styles.css','utf8');
+const a=fs.readFileSync(process.argv[3]||'admin.js','utf8');
+const f=[];
+if(!css.includes('--engine-studio-modal-layer:7600'))f.push('Studio shell layer token missing');
+if(css.includes('adminModeBanner')||a.includes('adminModeBanner'))f.push('legacy Studio status bar must be removed');
+if(!css.includes('body.admin-mode .site-nav'))f.push('Studio header owner missing');
+if(!css.includes('.studio-on-badge'))f.push('Studio header badge style missing');
+if(!a.includes("badge.textContent='STUDIO ON'"))f.push('Studio header badge runtime missing');
+if(!a.includes("studioModal.id='tripStudioModal'"))f.push('dedicated Trip Studio modal root missing');
+if(!a.includes("modal.classList.add('show')"))f.push('dedicated Studio open contract missing');
+if(!a.includes("modal.classList.remove('show')"))f.push('dedicated Studio close contract missing');
+if(a.includes("modal.classList.add('studio-view')"))f.push('Studio must not reuse mamaModal studio-view state');
+if(css.includes('#mamaModal.studio-view'))f.push('historical mamaModal Studio CSS ownership remains');
+if(!/#tripStudioModal\{[\s\S]*?position:fixed!important;[\s\S]*?z-index:7800!important;/.test(css))f.push('dedicated Studio foreground geometry missing');
+if(!/#tripStudioModal\.show\{[\s\S]*?pointer-events:auto!important;/.test(css))f.push('dedicated Studio interaction contract missing');
+if(!a.includes('key!==previousFriend'))f.push('traveller exit missing');
+if(!/body:has\(#tripStudioModal\.show\) \.app-nav/.test(css))f.push('Studio bottom-nav non-interactive contract missing');
+if(!css.includes('isolation:isolate!important'))f.push('Studio isolation missing');
+if(!css.includes('--engine-traveller-layer:7700'))f.push('Traveller layer token missing');
+if(f.length){console.error(f.join('\n'));process.exit(1)}
+console.log('STUDIO POPUP WORKSPACE CONTRACT: PASS');
