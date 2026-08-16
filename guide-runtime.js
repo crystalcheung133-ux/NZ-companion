@@ -100,29 +100,23 @@ function shoppingDirectoryDay(card){
  return match?Number(match[1]):null;
 }
 function openShoppingDirectoryView(requestedDay){
- const raw=Array.isArray(globalThis.VN_SHOPPING_DIRECTORY_CARDS)?globalThis.VN_SHOPPING_DIRECTORY_CARDS:[];
+ const raw=Array.isArray(globalThis.TRIP_SHOPPING_DIRECTORY_CARDS)?globalThis.TRIP_SHOPPING_DIRECTORY_CARDS:[];
  const day=Number(requestedDay)||0;
  const cards=day?raw.filter(card=>shoppingDirectoryDay(card)===day):raw;
- function section(label,rows){return rows.length?`<section class="directory-route-group"><h3>${label}</h3><div class="directory-route-grid">${rows.join('')}</div></section>`:'';}
- let grouped='';
- if(day===4){
-   const morning=cards.filter(card=>/11 Garmentory|Trần Quang Diệu|Dalla Saigon|RUBIES|Lane Cì/i.test(card));
-   const afternoon=cards.filter(card=>!morning.includes(card));
-   grouped=section('Morning · 11 Garmentory + Trần Quang Diệu',morning)+section('Afternoon · Nguyễn Trãi + nearby fashion',afternoon);
- }else if(day===2){
-   grouped=section('Tân Định Morning + Thảo Điền Lifestyle Walk',cards);
- }else if(day){grouped=section(`Day ${day}`,cards);}
- else{
-   grouped=section('Day 2 · Slow Lifestyle Day',raw.filter(card=>shoppingDirectoryDay(card)===2))+section('Day 4 · Fashion Day',raw.filter(card=>shoppingDirectoryDay(card)===4));
- }
- const optional=day?'':section('Optional Detours',raw.filter(card=>!shoppingDirectoryDay(card)));
- const title=day?`🛍 Day ${day} Shopping Directory`:'🛍 Optional Shopping Directory';
- const lead=day===4?'上午走 11 Garmentory + Trần Quang Diệu，下午轉 Nguyễn Trãi；兩段 shopping，各有自己的節奏。':day===2?'Tân Định 之後進 Thảo Điền，從街區一路慢慢走到黃昏。':'按當日街區收好，打開就知道下一段往哪裡走。';
+ const config=(globalThis.TRIP_CONFIG&&TRIP_CONFIG.shoppingDirectory)||{};
+ const dayLabels=config.dayLabels||{};
+ const dayNumbers=[...new Set(raw.map(card=>shoppingDirectoryDay(card)).filter(Boolean))].sort((a,b)=>a-b);
+ const section=(label,rows)=>rows.length?`<section class="directory-route-group"><h3>${label}</h3><div class="directory-route-grid">${rows.join('')}</div></section>`:'';
+ const grouped=day
+   ? section(dayLabels[day]||`Day ${day}`,cards)
+   : dayNumbers.map(n=>section(dayLabels[n]||`Day ${n}`,raw.filter(card=>shoppingDirectoryDay(card)===n))).join('');
+ const optional=day?'':section(config.optionalLabel||'Optional Detours',raw.filter(card=>!shoppingDirectoryDay(card)));
+ const title=day?`🛍 Day ${day} Shopping Directory`:(config.title||'🛍 Shopping Directory');
+ const lead=day?(config.dayLead||'Nearby options for this day. Choose what suits the time and energy available.'):(config.lead||'Browse by day or neighbourhood and choose what fits.');
  $('guideModalContent').innerHTML=`<p class="kicker">Shopping Directory</p><h2>${title}</h2><p class="lead">${lead}</p><div class="directory-grid">${grouped}${optional}</div>`;
  closeMiniMenus();$('guideModal').classList.add('show');
  const sheet=document.querySelector('#guideModal .guide-sheet');if(sheet)sheet.scrollTop=0;
 }
-
 window.addEventListener('hashchange',applyGuideHashView);
 document.addEventListener('DOMContentLoaded',applyGuideHashView);
 function openRequestedGuideCard(){

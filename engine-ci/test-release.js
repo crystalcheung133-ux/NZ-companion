@@ -1,0 +1,1 @@
+const fs=require('fs'),assert=require('assert');const r=JSON.parse(fs.readFileSync('RELEASE.json','utf8')),v=fs.readFileSync('VERSION.txt','utf8').trim();assert.equal(r.engine_version,'25.6.0');assert.equal(r.artifact_version,v);assert(fs.existsSync('contracts/INPUT-CONTRACT.md'));assert(fs.existsSync('contracts/ENGINE-CONTRACTS.md'));console.log('RELEASE: PASS');

@@ -1,2978 +1,4262 @@
-// data.js — Saigon Companion RC23 · Guide taxonomy on Travel Engine 25.4.9
-// Timeline is authoritative for itinerary content; booking linkage is reconciled to Booking Foundation IDs.
+// data.js — New Zealand Companion RC25.2.5 · Day 3 breakfast options
+// Generated from the frozen Travel Engine without UI redesign.
+
+/* Trip identity is owned exclusively by TRIP_CONFIG. */
 
 const PLACES={
-  "fusion": {
-    "title": "Fusion Original Saigon Centre",
+  "peppers": {
+    "title": "Peppers Bluewater Resort",
     "emoji": "🏨",
     "cat": "STAY",
-    "sub": "酒店據點",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Fusion%20Original%20Saigon%20Centre%20Fusion%20Original%20Saigon%20Centre%2C%2065%20L%C3%AA%20L%E1%BB%A3i%2C%20B%E1%BA%BFn%20Ngh%C3%A9%2C%20District%201%2C%20Ho%20Chi%20Minh%20City",
-    "address": "Fusion Original Saigon Centre, 65 Lê Lợi, Bến Nghé, District 1, Ho Chi Minh City",
-    "desc": "Fusion Original Saigon Centre 係今次旅程嘅城市據點：第一郡核心、樓下直通 Saigon Centre / Takashimaya，四個人每日出入、寄放戰利品、返酒店補妝都非常方便。兩房兩衛令行程唔需要因為梳洗同收拾而互相等待，呢點對短途朋友旅行特別重要。",
+    "sub": "Confirmed · 23–24 Sep",
+    "hours": "2:00 PM → 10:00 AM",
+    "maps": "https://maps.google.com/?q=Peppers+Bluewater+Resort+Lake+Tekapo",
+    "address": "State Highway 8, Lake Tekapo 7945, New Zealand",
+    "desc": "A practical Lake Tekapo base that keeps the lakefront, dinner and evening activities close after the Christchurch drive.",
     "signature": [
-      "2 Bedroom Suite：四人共享客廳，私隱同方便度平衡得好",
-      "直通 Takashimaya，雨天、酷熱或夜晚返酒店都安心",
-      "Maison Marou、超市、餐廳都在同一棟／附近，適合臨時補給"
+      "Two-bedroom suite for the Lee family",
+      "Easy access to the lakefront and Tekapo village",
+      "On-site parking for the road-trip vehicle"
     ],
     "worth": [
-      "Hotel 係 base，不代表每日都由酒店出發；網站路線會以當時上一站作交通提示。",
-      "最適合用作「回巢點」：午后小休、放低戰利品、晚餐前換裝。"
+      "Keep the evening flexible for the lakefront or stargazing, depending on weather and energy."
     ],
     "categoryLabel": "🏨 Stay",
-    "transport": "Grab / walk depending on current route",
-    "highlights": [
-      "2 Bedroom Suite：四人共享客廳，私隱同方便度平衡得好",
-      "直通 Takashimaya，雨天、酷熱或夜晚返酒店都安心",
-      "Maison Marou、超市、餐廳都在同一棟／附近，適合臨時補給"
-    ],
-    "tips": [
-      "Hotel 係 base，不代表每日都由酒店出發；網站路線會以當時上一站作交通提示。",
-      "最適合用作「回巢點」：午后小休、放低戰利品、晚餐前換裝。"
-    ]
-  },
-  "bakes": {
-    "title": "Bakes Thảo Điền",
-    "emoji": "🥐",
-    "cat": "CAFÉS",
-    "sub": "Day 4 · Thảo Điền pastry break",
+    "price": "AUD 397.65 prepaid · net AUD 329.44 after AUD 68.21 cashback",
+    "transport": "Self-drive / walk",
+    "audit": "OFFICIAL / VERIFIED",
     "status": "planned",
-    "hours": "07:30–22:30 daily",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Bakes%20Th%E1%BA%A3o%20%C4%90i%E1%BB%81n%2016%20Th%E1%BA%A3o%20%C4%90i%E1%BB%81n%2C%20An%20Kh%C3%A1nh%2C%20H%E1%BB%93%20Ch%C3%AD%20Minh%20700000%2C%20Vietnam",
-    "address": "16 Thảo Điền, An Khánh, Hồ Chí Minh 700000, Vietnam",
-    "desc": "Quán Thuý 94 已經食過 early lunch，Bakes 今次不負責填飽肚。13:30 入來吹冷氣、分一兩件 pastry、喝杯咖啡，讓 Thảo Điền 的慢步調有一個真正停頓。",
-    "signature": [
-      "多款法式甜點與千層 croissant",
-      "冷氣座位，適合午后避暑",
-      "同 The Dreamers Bakery 很近，可二選一"
-    ],
-    "worth": [
-      "當作 cool-down break，不是第二餐。",
-      "約 30 分鐘即可，14:00 要到 Mộc Hương。"
-    ],
-    "categoryLabel": "☕ Cafe",
-    "price": "$–$$",
-    "transport": "Grab / walk depending on current route",
-    "audit": "Needs branch/address check",
-    "highlights": [
-      "多款法式甜點與千層 croissant",
-      "冷氣座位，適合午后避暑",
-      "同 The Dreamers Bakery 很近，可二選一"
-    ],
-    "tips": [
-      "當作 cool-down break，不是第二餐。",
-      "約 30 分鐘即可，14:00 要到 Mộc Hương。"
-    ]
+    "phone": "+64 3 360 1063",
+    "website": "https://www.peppers.com.au/Bluewater"
   },
-  "cafe-apartments": {
-    "title": "The Cafe Apartments",
-    "emoji": "🌃",
-    "cat": "CAFÉS",
-    "sub": "老公寓咖啡樓",
-    "status": "planned",
-    "hours": "Individual venues vary; most operate about 08:00–22:00",
-    "maps": "https://www.google.com/maps/search/?api=1&query=The%20Cafe%20Apartments%2042%20Nguy%E1%BB%85n%20Hu%E1%BB%87%2C%20District%201%2C%20Ho%20Chi%20Minh%20City%2C%20Vietnam",
-    "address": "42 Nguyễn Huệ, District 1, Ho Chi Minh City, Vietnam",
-    "desc": "The Cafe Apartments 係阮惠步行街最有代表性的老公寓改造景點。白天入內是迷宮式小店與 cafe，夜晚外牆一格格招牌亮起，反而成為最經典的西貢夜景背景。今次 Day 1 將 Spa 同夜景安排在同一棟樓，動線很聰明：下午上樓放鬆，晚上食完飯回來影霓虹燈。",
-    "signature": [
-      "夜晚外牆最上鏡",
-      "每層都有不同 cafe、選物店、香氛小店",
-      "電梯可能收小額費用，亦可逐層行樓梯探索"
-    ],
-    "worth": [
-      "建議先搭到高層，再慢慢向下行，體力消耗較少。",
-      "不建議一入門就坐第一間；先逛一圈再決定。"
-    ],
-    "categoryLabel": "☕ Cafe",
-    "price": "$–$$",
-    "transport": "Grab / walk depending on current route",
-    "audit": "Building address verified; hours correctly remain venue-dependent",
-    "highlights": [
-      "夜晚外牆最上鏡",
-      "每層都有不同 cafe、選物店、香氛小店",
-      "電梯可能收小額費用，亦可逐層行樓梯探索"
-    ],
-    "tips": [
-      "建議先搭到高層，再慢慢向下行，體力消耗較少。",
-      "不建議一入門就坐第一間；先逛一圈再決定。"
-    ]
-  },
-  "cong": {
-    "title": "Cộng Cà Phê Tân Định",
-    "emoji": "🥥",
-    "cat": "CAFÉS",
-    "sub": "粉紅教堂景觀咖啡",
-    "status": "planned",
-    "hours": "",
-    "maps": "https://www.google.com/maps/search/?api=1&query=C%E1%BB%99ng%20C%C3%A0%20Ph%C3%AA%20T%C3%A2n%20%C4%90%E1%BB%8Bnh%20C%E1%BB%99ng%20C%C3%A0%20Ph%C3%AA%20T%C3%A2n%20%C4%90%E1%BB%8Bnh%2C%20Hai%20B%C3%A0%20Tr%C6%B0ng%2C%20District%203%2C%20Ho%20Chi%20Minh%20City",
-    "address": "Cộng Cà Phê Tân Định, Hai Bà Trưng, District 3, Ho Chi Minh City",
-    "desc": "Cộng Cà Phê Tân Định 最大賣點唔係咖啡本身，而係位置：粉紅教堂正對面／附近，適合打完卡後上樓坐低，用椰子咖啡或冰沙咖啡換一個俯瞰教堂角度。復古軍綠風裝潢亦好有越南味。",
-    "signature": [
-      "椰子咖啡／椰子冰沙咖啡",
-      "粉紅教堂視角",
-      "復古越南風格"
-    ],
-    "worth": [
-      "如果只想影教堂，停留 20–30 分鐘已足夠。",
-      "座位景觀視乎當日樓層與窗邊位置。"
-    ],
-    "categoryLabel": "☕ Cafe",
-    "price": "$–$$",
-    "transport": "Grab / walk depending on current route",
-    "audit": "Route-ready; check live hours before visit",
-    "highlights": [
-      "椰子咖啡／椰子冰沙咖啡",
-      "粉紅教堂視角",
-      "復古越南風格"
-    ],
-    "tips": [
-      "如果只想影教堂，停留 20–30 分鐘已足夠。",
-      "座位景觀視乎當日樓層與窗邊位置。"
-    ]
-  },
-  "marou": {
-    "title": "Maison Marou",
-    "emoji": "🍫",
-    "cat": "CAFÉS",
-    "sub": "朱古力甜點",
-    "status": "planned",
-    "hours": "",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Maison%20Marou%20Level%20B2%2C%20Saigon%20Centre%20%E2%80%93%20Takashimaya%2C%2065%20L%C3%AA%20L%E1%BB%A3i%2C%20Ho%20Chi%20Minh%20City%2C%20Vietnam",
-    "address": "Level B2, Saigon Centre – Takashimaya, 65 Lê Lợi, Ho Chi Minh City, Vietnam",
-    "desc": "Maison Marou 是越南精品朱古力品牌，今次最方便的分店就在 Saigon Centre / Fusion 附近。它適合兩種用途：一是旅行中段回酒店後飲杯熱朱古力，二是最後買手信。比起普通 souvenir，Marou 朱古力包裝靚、有越南產地特色，而且容易帶回澳洲。",
-    "signature": [
-      "熱朱古力、朱古力撻、bonbon",
-      "越南產地朱古力手信",
-      "包裝靚，送禮安全牌"
-    ],
-    "worth": [
-      "如果怕行李熱溶，最後一日或晚間買最好。",
-      "店內甜品偏濃郁，4 人 share 會比每人一份舒服。"
-    ],
-    "categoryLabel": "☕ Cafe",
-    "price": "$–$$",
-    "transport": "Grab / walk depending on current route",
-    "audit": "Saigon Centre – Takashimaya Level B2 branch verified; current official hours unconfirmed",
-    "highlights": [
-      "熱朱古力、朱古力撻、bonbon",
-      "越南產地朱古力手信",
-      "包裝靚，送禮安全牌"
-    ],
-    "tips": [
-      "如果怕行李熱溶，最後一日或晚間買最好。",
-      "店內甜品偏濃郁，4 人 share 會比每人一份舒服。"
-    ]
-  },
-  "running-bean": {
-    "title": "The Running Bean",
-    "emoji": "☕",
-    "cat": "CAFÉS",
-    "sub": "Day 4 · Slow Morning Coffee",
-    "status": "planned",
-    "hours": "07:30–22:00 daily",
-    "maps": "https://www.google.com/maps/search/?api=1&query=The%20Running%20Bean%20115%20H%E1%BB%93%20T%C3%B9ng%20M%E1%BA%ADu%2C%20Ho%20Chi%20Minh%20City%2C%20Vietnam",
-    "address": "115 Hồ Tùng Mậu, Ho Chi Minh City, Vietnam",
-    "desc": "Day 4 故意慢一點。The Running Bean 是早晨第一杯，不趕 brunch、不趕景點；坐低醒神，再去看粉紅教堂，讓城市先從咖啡香開始。",
-    "signature": [
-      "越式蛋咖啡",
-      "椰子咖啡／冰沙咖啡",
-      "明亮現代空間"
-    ],
-    "worth": [
-      "早餐／咖啡控制在約 45 分鐘，09:30 去 Pink Church。",
-      "今天午餐早，早餐不用食得太重。"
-    ],
-    "categoryLabel": "☕ Cafe",
-    "price": "$–$$",
-    "transport": "Grab / walk depending on current route",
-    "audit": "115 Hồ Tùng Mậu branch verified and synchronized",
-    "highlights": [
-      "越式蛋咖啡",
-      "椰子咖啡／冰沙咖啡",
-      "明亮現代空間"
-    ],
-    "tips": [
-      "早餐／咖啡控制在約 45 分鐘，09:30 去 Pink Church。"
-    ]
-  },
-  "bep-me-in": {
-    "title": "Bếp Mẹ Ỉn",
+  "queenstown-house": {
+    "title": "Windsor Lodge · Alpine Luxury for large groups",
     "emoji": "🏡",
-    "cat": "RESTAURANTS",
-    "sub": "越式家常菜",
+    "cat": "STAY",
+    "sub": "Confirmed · 26–29 Sep",
+    "hours": "3:00 PM → 10:00 AM",
+    "maps": "https://maps.google.com/?q=7+Windsor+Place+Queenstown",
+    "address": "7 Windsor Place, Queenstown, New Zealand",
+    "desc": "A spacious Queenstown base where all three families can stay together, with shared living space, a full kitchen and room to relax.",
+    "signature": [
+      "GROUP FIT · 6 bedrooms · 14 beds · 3 bathrooms",
+      "RELAX · Outdoor hot tub with lake and mountain views",
+      "PRACTICAL · Large kitchen, garage and off-street parking",
+      "ACCESS · Smart-lock self check-in · about 15 min walk downhill to town"
+    ],
+    "worth": [
+      "Maximum 10 adults over 16 plus 4 children; functions are not permitted.",
+      "The walk into town is downhill, so allow more time or use a car/taxi for the return uphill."
+    ],
+    "categoryLabel": "🏡 Stay",
+    "price": "AUD 4,683.99 · charge scheduled 17 Sep 2026",
+    "transport": "Self-drive / walk",
+    "audit": "SUPPLIED AIRBNB CONFIRMATION + AIRBNB LISTING VERIFIED",
+    "status": "confirmed",
+    "addressAudit": "PRIVATE BOOKING ADDRESS · supplied by traveller"
+  },
+  "ultimate-alpine": {
+    "title": "Ultimate Alpine Experience · Helicopter + Ski Plane",
+    "emoji": "🚁",
+    "cat": "ACTIVITIES",
+    "sub": "45-minute Mt Cook scenic flight with alpine snow landing",
+    "experienceTime": "11:55 AM check-in · 12:30 PM departure",
+    "duration": "45 minutes",
+    "meetingPoint": "Mt Cook Glacier Guiding, Aoraki Mt Cook Airport, Unit 2, State Highway 80, 7999, New Zealand",
+    "arrival": "Arrive 35 minutes before departure.",
+    "maps": "https://maps.google.com/?q=Mt+Cook+Glacier+Guiding+Aoraki+Mt+Cook+Airport+Unit+2+State+Highway+80+7999",
+    "address": "Mt Cook Glacier Guiding, Aoraki Mt Cook Airport, Unit 2, State Highway 80, 7999, New Zealand",
+    "desc": "See Aoraki / Mt Cook, the Tasman Glacier and the Southern Alps from both a helicopter and a ski plane, with one alpine snow landing when conditions permit.",
+    "signature": [
+      "HELICOPTER · Close-up mountain and glacier views",
+      "SKI PLANE · A rare fixed-wing snow-landing experience",
+      "LANDING · Step onto an alpine snowfield when conditions permit"
+    ],
+    "worth": [
+      "Flights are weather-dependent and may be changed or cancelled for safety.",
+      "Wear warm layers, sunglasses and secure footwear; carry only small essentials."
+    ],
+    "categoryLabel": "🚁 Activities",
+    "price": "",
+    "transport": "Self-drive",
+    "audit": "EXPERIENCE GUIDE · BOOKING DETAILS IN TRIP",
     "status": "planned",
-    "hours": "10:30–22:30",
-    "maps": "https://www.google.com/maps/search/?api=1&query=B%E1%BA%BFp%20M%E1%BA%B9%20%E1%BB%88n%20136%2F9%20L%C3%AA%20Th%C3%A1nh%20T%C3%B4n%2C%20B%E1%BA%BFn%20Th%C3%A0nh%2C%20H%E1%BB%93%20Ch%C3%AD%20Minh%2C%20Vietnam",
-    "address": "136/9 Lê Thánh Tôn, Bến Thành, Hồ Chí Minh, Vietnam",
-    "desc": "Bếp Mẹ Ỉn 是 Michelin Bib Gourmand 越式家常菜，藏在市中心小巷內，氣氛比街邊小店舒服，但菜式仍然保留越南家庭菜與街頭味道。放在最後一日午餐很適合：不用太 formal，但又可以把 bánh xèo、椰子炒飯、越式小食一次過收尾。",
+    "phone": "+64 3 281 4502",
+    "addressAudit": "SUPPLIED BOOKING CONFIRMATION"
+  },
+  "sudima-five-mile": {
+    "title": "Sudima Queenstown Five Mile",
+    "emoji": "🏨",
+    "cat": "STAY",
+    "sub": "Confirmed · 25–26 Sep",
+    "hours": "2:00 PM → 11:00 AM",
+    "maps": "https://maps.google.com/?q=Sudima+Queenstown+Five+Mile",
+    "address": "22 Grant Road, Frankton, Queenstown 9300, New Zealand",
+    "desc": "A convenient Five Mile base for a slow morning, brunch and an easy move into Queenstown before the group stay.",
     "signature": [
-      "Bánh Xèo 黃金煎餅",
-      "椰子炒飯",
-      "越式拼盤與家常菜"
+      "Two-bedroom accommodation for the Lee family",
+      "Walkable to Five Mile brunch and shopping",
+      "Easy parking and quick access to Queenstown"
     ],
     "worth": [
-      "入口在巷內，第一次去要跟 Google Maps 慢慢找。",
-      "多人 share 最好食，4 人比 2 人更適合。",
-      "🥖 Local Tip：隔籬同一條巷係 Bánh Mì Mẹ Ỉn（136/13 Lê Thánh Tôn）。可問店員能否叫法包送到 Bếp Mẹ Ỉn 一齊 share；以當日安排為準。"
+      "Sleep in, check out at 11:00 AM and brunch nearby before heading to Queenstown Market."
     ],
-    "categoryLabel": "🍽 Restaurant",
-    "price": "$$",
-    "transport": "Grab / walk depending on current route",
-    "audit": "Needs branch/address check",
-    "highlights": [
-      "Bánh Xèo 黃金煎餅",
-      "椰子炒飯",
-      "越式拼盤與家常菜"
-    ],
-    "tips": [
-      "入口在巷內，第一次去要跟 Google Maps 慢慢找。",
-      "多人 share 最好食，4 人比 2 人更適合。",
-      "🥖 Local Tip：隔籬同一條巷係 Bánh Mì Mẹ Ỉn（136/13 Lê Thánh Tôn）。可問店員能否叫法包送到 Bếp Mẹ Ỉn 一齊 share；以當日安排為準。"
-    ]
+    "categoryLabel": "🏨 Stay",
+    "price": "NZD 407.20 · pay at hotel · approx. net AUD 324.26",
+    "transport": "Self-drive / walk",
+    "audit": "SUPPLIED BOOKING · DETAILS PARTIALLY AVAILABLE",
+    "status": "confirmed"
   },
-  "com-tam-moc": {
-    "title": "Cơm Tấm Mộc",
-    "emoji": "🍚",
-    "cat": "RESTAURANTS",
-    "sub": "Day 2 · Fashion Day Breakfast",
-    "status": "planned",
-    "hours": "09:00–21:30 daily",
-    "maps": "https://www.google.com/maps/search/?api=1&query=C%C6%A1m%20T%E1%BA%A5m%20M%E1%BB%99c%2085%20L%C3%BD%20T%E1%BB%B1%20Tr%E1%BB%8Dng%2C%20B%E1%BA%BFn%20Th%C3%A0nh%2C%20H%E1%BB%93%20Ch%C3%AD%20Minh%20700000%2C%20Vietnam",
-    "address": "85 Lý Tự Trọng, Bến Thành, Hồ Chí Minh 700000, Vietnam",
-    "desc": "Fashion Day 先由一碟炭香碎米飯開始。Cơm Tấm Mộc 有冷氣、節奏穩，食得夠實在又不會拖慢早上的 shopping；09:00 開餐，10:15 直接進 11 Garmentory。",
+  "riverside": {
+    "title": "Riverside Market",
+    "emoji": "🍽️",
+    "cat": "DINING",
+    "sub": "Flexible first-night dinner",
+    "hours": "Mon–Wed 7:30 AM–8:00 PM · Thu–Sat 7:30 AM–9:00 PM · Sun 7:30 AM–8:00 PM · all traders open by 10:00 AM",
+    "maps": "https://www.google.com/maps/search/?api=1&query=Riverside+Market%2C+96+Oxford+Terrace%2C+Christchurch+8011",
+    "address": "96 Oxford Terrace, Christchurch Central City, Christchurch 8011, New Zealand",
+    "desc": "Indoor food stalls; choose dinner on arrival.",
     "signature": [
-      "炭烤豬排碎米飯",
-      "魚露、蛋、酸菜配搭",
-      "冷氣環境比街邊舒服"
+      "WALK · 14 min from Southwark",
+      "ORDER · Choose from the open stalls",
+      "TIME · Aim for before 7:00 PM"
     ],
     "worth": [
-      "4 人點 2–3 份 share 已足夠，預算約 60,000–100,000 VND / 人，因為 10:00 還有 cooking class。",
-      "如果早上不餓，可以改成外帶咖啡。"
+      "Walk from Southwark; leave the car parked."
     ],
-    "categoryLabel": "🍽 Restaurant",
-    "price": "$",
-    "transport": "Grab / walk depending on current route",
-    "audit": "Needs branch/address check",
-    "highlights": [
-      "炭烤豬排碎米飯",
-      "魚露、蛋、酸菜配搭",
-      "冷氣環境比街邊舒服"
-    ],
-    "tips": [
-      "4 人點 2–3 份 share 已足夠，預算約 60,000–100,000 VND / 人，因為 10:00 還有 cooking class。",
-      "如果早上不餓，可以改成外帶咖啡。"
-    ]
+    "categoryLabel": "🍽 Dining",
+    "price": "$–$",
+    "transport": "Walk",
+    "audit": "Recommended · not booked",
+    "status": "optional",
+    "addressAudit": "OFFICIAL / VERIFIED"
   },
-  "little-bear": {
-    "title": "Little Bear",
-    "emoji": "🧸",
-    "cat": "RESTAURANTS",
-    "sub": "Thảo Điền dinner shortlist · Closed Monday",
-    "status": "planned",
-    "hours": "Tue–Sun 18:00–22:00; Monday off",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Little%20Bear%2036%20Nguy%E1%BB%85n%20B%C3%A1%20Hu%C3%A2n%2C%20Th%E1%BA%A3o%20%C4%90i%E1%BB%81n%2C%20Ho%20Chi%20Minh%20City%2C%20Vietnam",
-    "address": "36 Nguyễn Bá Huân, Thảo Điền, Ho Chi Minh City, Vietnam",
-    "desc": "小型 wine bar / modern Vietnamese bistro，以分享盤、酒與年輕主廚的越南味見長。可留作 Thảo Điền 其他日子的 dinner shortlist；Monday closed，所以今次 Day 4 farewell 不排它。",
-    "signature": [
-      "House-made noodles｜Michelin Guide 特別提到",
-      "Tagliolini with clams｜白酒蜆汁＋菊花，評論點名",
-      "Natural / biodynamic wine｜by-the-glass 選擇是 Little Bear 一半靈魂"
-    ],
-    "worth": [
-      "星期一休息；今次 Day 4 是 Monday，所以不列入 farewell dinner 候選。",
-      "份量偏精緻，建議不要期待傳統大份量越菜。",
-      "不飲酒也可以去，重點是食物和氣氛。"
-    ],
-    "categoryLabel": "🍽 Restaurant",
-    "price": "$$$",
-    "transport": "Grab / walk depending on current route",
-    "audit": "Official address verified; published Sunday schedule is 18:00–22:00",
-    "highlights": [
-      "Michelin Selected / Young Chef 話題",
-      "小型空間，counter/table seating 氣氛親近",
-      "越南味道 + bistro 手法，適合 share plates"
-    ],
-    "tips": [
-      "星期一休息；今次 Day 4 是 Monday，所以不列入 farewell dinner 候選。",
-      "份量偏精緻，建議不要期待傳統大份量越菜。",
-      "不飲酒也可以去，重點是食物和氣氛。"
-    ]
-  },
-  "lune": {
-    "title": "LÚNE Restaurant & Bar",
-    "emoji": "🇫🇷",
-    "cat": "RESTAURANTS",
-    "sub": "Day 2 · Fashion Day Dinner",
-    "status": "planned",
-    "hours": "Mon–Sat 11:30–14:00 & 17:00–22:30；Sunday closed",
-    "maps": "https://www.google.com/maps/search/?api=1&query=L%C3%9ANE%20Restaurant%20%26%20Bar%2017%2F14%20L%C3%AA%20Th%C3%A1nh%20T%C3%B4n%2C%20S%C3%A0i%20G%C3%B2n%2C%20H%E1%BB%93%20Ch%C3%AD%20Minh%2070000%2C%20Vietnam",
-    "address": "17/14 Lê Thánh Tôn, Sài Gòn, Hồ Chí Minh 70000, Vietnam",
-    "desc": "一整日試衫、走街、按摩完雙腳，LÚNE 是 Fashion Day 最後一個換景。現代法式／fusion 的細緻感剛好把白天的街頭節奏收住；18:30 開餐，最遲不要過 19:00。",
-    "signature": [
-      "Canadian lobster raviolo｜Michelin Guide 點名 standout",
-      "Phở foie gras terrine｜法式技巧 × 越南味",
-      "Sea urchin + A5 wagyu｜近期食客特別提到"
-    ],
-    "worth": [
-      "建議提前 2–4 週預約，週日休息要留意。",
-      "Smart casual 已足夠，不需要太正式。",
-      "如果行街時間 delay，要預留回酒店換裝與 Grab 時間。"
-    ],
-    "categoryLabel": "🍽 Restaurant",
-    "price": "$$$",
-    "transport": "Grab / walk depending on current route",
-    "audit": "Needs branch/address check",
-    "highlights": [
-      "Michelin Selected 話題餐廳",
-      "法式技巧結合越南／亞洲食材",
-      "Bar + restaurant 氣氛，適合四人換裝後晚餐"
-    ],
-    "tips": [
-      "建議提前 2–4 週預約，週日休息要留意。",
-      "Smart casual 已足夠，不需要太正式。",
-      "Vincom → LÚNE 約 5 分鐘 Grab。"
-    ]
-  },
-  "omakase-tiger": {
-    "title": "Omakase Tiger",
-    "emoji": "🍣",
-    "cat": "RESTAURANTS",
-    "sub": "Day 1 · 已確認 17:30",
-    "status": "booked",
-    "hours": "Reservation confirmed · 17:30",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Omakase%20Tiger%2085%2F9%20Ph%E1%BA%A1m%20Vi%E1%BA%BFt%20Ch%C3%A1nh%2C%20Th%E1%BA%A1nh%20M%E1%BB%B9%20T%C3%A2y%2C%20H%E1%BB%93%20Ch%C3%AD%20Minh%20700000%2C%20Vietnam",
-    "address": "85/9 Phạm Viết Chánh, Thạnh Mỹ Tây, Hồ Chí Minh 700000, Vietnam",
-    "desc": "Day 1 晚餐已確認 17:30。Omakase Tiger 係 Penthouse setting，黃昏入席啱啱由 sunset 食到入夜；少量 counter seats 可以近距離睇師傅出餐。",
-    "signature": [
-      "季節 Omakase course｜當日魚料與出品跟季節走",
-      "Sake pairing｜近期食客特別推薦",
-      "Penthouse counter｜由黃昏一路看到 Saigon 入夜"
-    ],
-    "worth": [
-      "已確認 30 Oct 17:30 場次，訂金已付。",
-      "17:30 入席最適合睇 Penthouse 黃昏景色。"
-    ],
-    "categoryLabel": "🍽 Restaurant",
-    "price": "$$$",
-    "transport": "Grab / walk depending on current route",
-    "audit": "按旅客直接確認保留；已移除過時的暫停營業提示",
-    "highlights": [
-      "Penthouse setting，黃昏由 sunset 食到入夜",
-      "8-seat countertop，座位極少",
-      "約 10–14 道 omakase，價格比澳港日同類體驗低"
-    ],
-    "tips": [
-      "已確認 30 Oct 17:30 場次，訂金已付。",
-      "17:30 入席最適合睇 Penthouse 黃昏景色。"
-    ]
-  },
-  "ivoire": {
-    "title": "Ivoire Pastry Boutique",
-    "emoji": "🍰",
-    "cat": "CAFÉS",
-    "sub": "Day 1 · Post Office 後甜點 stop",
-    "status": "planned",
-    "hours": "Fri 10:30–19:00",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Ivoire%20Pastry%20Boutique%2028%20Cao%20Ba%20Quat%20Ho%20Chi%20Minh%20City",
-    "address": "28 Cao Bá Quát, Bến Nghé, District 1, Ho Chi Minh City",
-    "desc": "Ivoire 是 Day 1 行完郵局、書街與紅教堂後的 optional pastry stop。時間鬆動就坐低慢慢食；如果已經攰、房間 ready，或者想早點返酒店，就直接 takeaway 幾件 cake 回 Fusion。重點係留彈性，不為甜點拖慢第一日節奏。",
-    "signature": [
-      "精緻法式 pastry，造型感強",
-      "適合四個人 share 幾款，不需要當成另一餐",
-      "Dine-in / takeaway 都成立"
-    ],
-    "worth": [
-      "星期五 10:30 開門，放在 Post Office / Book Street 後剛好。",
-      "有時間就坐低；冇時間就外賣返 Fusion，唔需要為 guide card 變成硬行程。"
-    ],
-    "categoryLabel": "☕ Cafe · Optional",
-    "price": "$$",
-    "transport": "Walk from Post Office / Book Street; then Grab back to Fusion",
-    "audit": "Address and Friday hours cross-checked July/Aug 2026; takeaway supported",
-    "highlights": [
-      "精緻法式 pastry，造型感強",
-      "適合四個人 share 幾款，不需要當成另一餐",
-      "Dine-in / takeaway 都成立"
-    ],
-    "tips": [
-      "星期五 10:30 開門。",
-      "如果酒店通知房間 ready，買 cake 外賣返房食會更舒服。"
-    ]
-  },
-  "pho-sol": {
-    "title": "Phở SOL",
-    "emoji": "🍜",
-    "cat": "RESTAURANTS",
-    "sub": "石鍋牛肉河粉",
-    "status": "planned",
-    "hours": "06:00–24:00 daily",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Ph%E1%BB%9F%20SOL%2032%20Ph%E1%BA%A1m%20H%E1%BB%93ng%20Th%C3%A1i%2C%20B%E1%BA%BFn%20Th%C3%A0nh%2C%20H%E1%BB%93%20Ch%C3%AD%20Minh%2C%20Vietnam",
-    "address": "32 Phạm Hồng Thái, Bến Thành, Hồ Chí Minh, Vietnam",
-    "desc": "Phở SOL 是抵達後第一餐的好選擇：位置近第一郡，石鍋河粉上枱有儀式感，熱湯、牛肉、油條很適合剛落機後慢慢進入越南節奏。它比街邊河粉更乾淨舒服，適合四位朋友第一餐先穩陣開局。",
-    "signature": [
-      "石鍋河粉",
-      "牛骨湯與牛肉配料",
-      "油條 quẩy 沾湯"
-    ],
-    "worth": [
-      "4 人可以點不同款式 share，不一定每人一碗。",
-      "第一日下機後不要排太多，食完留體力去景點和 spa。"
-    ],
-    "categoryLabel": "🍽 Restaurant",
-    "price": "$",
-    "transport": "Grab / walk depending on current route",
-    "audit": "Route-ready; check live hours before visit",
-    "highlights": [
-      "石鍋河粉",
-      "牛骨湯與牛肉配料",
-      "油條 quẩy 沾湯"
-    ],
-    "tips": [
-      "4 人可以點不同款式 share，不一定每人一碗。",
-      "第一日下機後不要排太多，食完留體力去景點和 spa。"
-    ]
-  },
-  "pho-vietnam": {
-    "title": "Phở Việt Nam Bến Thành",
-    "emoji": "🥣",
-    "cat": "RESTAURANTS",
-    "sub": "石鍋河粉",
-    "status": "planned",
-    "hours": "06:00–03:00 daily",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Ph%E1%BB%9F%20Vi%E1%BB%87t%20Nam%20B%E1%BA%BFn%20Th%C3%A0nh%2014%20Ph%E1%BA%A1m%20H%E1%BB%93ng%20Th%C3%A1i%2C%20B%E1%BA%BFn%20Th%C3%A0nh%2C%20H%E1%BB%93%20Ch%C3%AD%20Minh%2070000%2C%20Vietnam",
-    "address": "14 Phạm Hồng Thái, Bến Thành, Hồ Chí Minh 70000, Vietnam",
-    "desc": "Phở Việt Nam Bến Thành 是 Michelin Selected 河粉店，以 phở thố đá 石鍋河粉聞名。湯、牛肉和配料分開上，熱石鍋令湯從第一口到最後仍然滾熱。放在最後一日早餐，有一種「用一碗越南河粉收尾」的完整感。",
-    "signature": [
-      "Michelin Selected",
-      "Phở thố đá 石鍋河粉",
-      "湯保持高溫，牛肉即場燙熟"
-    ],
-    "worth": [
-      "熱門時段可能要等位，但流轉快。",
-      "湯很熱，慢慢食比較安全。"
-    ],
-    "categoryLabel": "🍽 Restaurant",
-    "price": "$",
-    "transport": "Grab / walk depending on current route",
-    "audit": "Needs branch/address check",
-    "highlights": [
-      "Michelin Selected",
-      "Phở thố đá 石鍋河粉",
-      "湯保持高溫，牛肉即場燙熟"
-    ],
-    "tips": [
-      "熱門時段可能要等位，但流轉快。",
-      "湯很熱，慢慢食比較安全。"
-    ]
-  },
-  "pizza4ps": {
-    "title": "Pizza 4P’s Bến Thành",
-    "emoji": "🍕",
-    "cat": "RESTAURANTS",
-    "sub": "Day 2 · Indoor Lunch Break",
-    "status": "planned",
-    "hours": "11:00–00:00 Mon–Sat · 11:00–23:00 Sun",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Pizza%204P%27s%20Ben%20Thanh%208%20Thu%20Khoa%20Huan%20Ho%20Chi%20Minh%20City",
-    "address": "8 Thủ Khoa Huân, Bến Thành, District 1, Ho Chi Minh City",
-    "desc": "上午在 Trần Quang Diệu 收好第一輪戰利品，13:00 轉入 Bến Thành。這餐是 Fashion Day 的冷氣停頓；食完不用再叫車，同一條 Thủ Khoa Huân 走去 Mộc Healing。",
-    "signature": [
-      "Crab tomato cream spaghetti｜近期評論反覆點名",
-      "House-made 4-cheese pizza + honey｜4P’s 經典",
-      "Burrata / Parma ham pizza｜第一次去最值得 share"
-    ],
-    "worth": [
-      "Day 2 使用 Bến Thành branch。",
-      "13:00–14:15 留在室內，避開最熱的一段。"
-    ],
-    "categoryLabel": "🍽 Restaurant",
-    "price": "$$",
-    "transport": "Grab from Trần Quang Diệu · then walk",
-    "audit": "Bến Thành branch: 8 Thủ Khoa Huân.",
-    "highlights": [
-      "House-made cheese",
-      "Burrata / 4-cheese pizza",
-      "食完步行接 Mộc Healing"
-    ],
-    "tips": [
-      "Day 2 使用 Bến Thành branch。",
-      "午餐後沿同一條街步行去 Spa。"
-    ]
-  },
-  "quan-thuy": {
-    "title": "Quán Thuý 94",
-    "emoji": "🦀",
-    "cat": "RESTAURANTS",
-    "sub": "Optional · Crab stop before Thảo Điền",
-    "status": "planned",
-    "hours": "09:00–21:00 daily",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Qu%C3%A1n%20Thu%C3%BD%2094%2084%20%C4%90inh%20Ti%C3%AAn%20Ho%C3%A0ng%2C%20T%C3%A2n%20%C4%90%E1%BB%8Bnh%2C%20H%E1%BB%93%20Ch%C3%AD%20Minh%2C%20Vietnam",
-    "address": "84 Đinh Tiên Hoàng, Tân Định, Hồ Chí Minh, Vietnam",
-    "desc": "粉紅教堂一帶走完，11:00 就坐低食蟹肉粉絲。Quán Thuý 94 今次不是早餐，而是 Day 4 的 early lunch；一碗鮮甜蟹湯把 Tân Định 收尾，食完才一次 Grab 入 Thảo Điền。",
-    "signature": [
-      "Miến cua 蟹肉粉絲",
-      "炸蟹肉春捲",
-      "Tân Định / Pink Church 動線順路"
-    ],
-    "worth": [
-      "環境偏地道，接受度要有心理準備。",
-      "建議早去，太晚可能部分款式售完。"
-    ],
-    "categoryLabel": "🍽 Restaurant",
-    "price": "$",
-    "transport": "Grab / walk depending on current route",
-    "audit": "Route-ready; check live hours before visit",
-    "highlights": [
-      "Miến cua 蟹肉粉絲",
-      "炸蟹肉春捲",
-      "Tân Định / Pink Church 動線順路"
-    ],
-    "tips": [
-      "環境偏地道，接受度要有心理準備。",
-      "建議早去，太晚可能部分款式售完。"
-    ]
-  },
-  "libe": {
-    "title": "LIBÉ",
-    "emoji": "👗",
-    "cat": "SHOP",
-    "sub": "Day 2 · Nguyễn Trãi Fashion Cluster",
-    "shoppingRoute": "Day 2 · Nguyễn Trãi",
-    "hours": "09:30–21:30",
-    "maps": "https://www.google.com/maps/search/?api=1&query=LIB%C3%89%20LIB%C3%89%20Nguy%E1%BB%85n%20Tr%C3%A3i%2C%2052%20Nguy%E1%BB%85n%20Tr%C3%A3i%2C%20B%E1%BA%BFn%20Th%C3%A0nh%2C%20H%E1%BB%93%20Ch%C3%AD%20Minh%2C%20Vietnam",
-    "address": "LIBÉ Nguyễn Trãi, 52 Nguyễn Trãi, Bến Thành, Hồ Chí Minh, Vietnam",
-    "desc": "LIBÉ 的衣服不急著搶鏡，勝在比例乾淨、顏色容易相處。它像旅行途中偶然遇到的一個實用衣櫃：上班、週末、吃飯都穿得到，回到澳洲後也不容易被遺忘。",
-    "signature": [
-      "Casual chic 女裝",
-      "上班、旅行、日常都易穿",
-      "多層店面，款式更新快"
-    ],
-    "worth": [
-      "記得上不同樓層，唔好只睇地下。",
-      "尺寸可能偏亞洲版型，最好試身。"
-    ],
-    "categoryLabel": "🛍 Shopping",
-    "price": "Varies",
-    "transport": "Grab / walk depending on current route",
-    "audit": "Selected Nguyễn Trãi branch and published hours retained.",
-    "highlights": [
-      "Casual chic 女裝",
-      "上班、旅行、日常都易穿",
-      "多層店面，款式更新快"
-    ],
-    "tips": [
-      "記得上不同樓層，唔好只睇地下。",
-      "尺寸可能偏亞洲版型，最好試身。"
-    ]
-  },
-  "dauple": {
-    "title": "Dauple by Ka's",
-    "emoji": "🧵",
-    "cat": "SHOP",
-    "sub": "Day 2 · Nguyễn Trãi Fashion Cluster",
-    "shoppingRoute": "Day 2 · Nguyễn Trãi",
-    "hours": "09:30–21:30 daily",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Dauple%20by%20Ka's%20Dauple%20by%20Ka's%2C%2070%20Ph%E1%BA%A1m%20H%E1%BB%93ng%20Th%C3%A1i%2C%20B%E1%BA%BFn%20Th%C3%A0nh%2C%20H%E1%BB%93%20Ch%C3%AD%20Minh%2C%20Vietnam",
-    "address": "Dauple by Ka's, 70 Phạm Hồng Thái, Bến Thành, Hồ Chí Minh, Vietnam",
-    "desc": "Dauple by Ka’s 偏成熟、優雅、度假感，適合想買一兩件「比普通 fast fashion 更有質感」的朋友。亞麻、真絲、柔和色調和寬鬆剪裁會比街頭品牌更耐看。",
-    "signature": [
-      "亞麻／真絲質感",
-      "成熟優雅剪裁",
-      "適合旅行 resort / dinner look"
-    ],
-    "worth": [
-      "價位通常比普通本地品牌高少少，但勝在質感。",
-      "如果只想買年輕街頭款，可留時間給 The New Playground。"
-    ],
-    "categoryLabel": "🛍 Shopping",
-    "price": "Varies",
-    "transport": "Grab / walk depending on current route",
-    "audit": "Address and daily hours confirmed for the selected 70 Phạm Hồng Thái branch.",
-    "highlights": [
-      "亞麻／真絲質感",
-      "成熟優雅剪裁",
-      "適合旅行 resort / dinner look"
-    ],
-    "tips": [
-      "價位通常比普通本地品牌高少少，但勝在質感。",
-      "如果只想買年輕街頭款，可留時間給 The New Playground。"
-    ]
-  },
-  "nosbyn": {
-    "title": "NOSBYN",
-    "emoji": "🤎",
-    "cat": "SHOP",
-    "sub": "Day 2 · Nguyễn Trãi Fashion Cluster",
-    "shoppingRoute": "Day 2 · Nguyễn Trãi",
-    "hours": "10:00–21:00",
-    "maps": "https://www.google.com/maps/search/?api=1&query=NOSBYN%20Nosbyn%2C%209%20Phan%20Chu%20Trinh%2C%20B%E1%BA%BFn%20Th%C3%A0nh%2C%20Ho%20Chi%20Minh%20City",
-    "address": "Nosbyn, 9 Phan Chu Trinh, Bến Thành, Ho Chi Minh City",
-    "desc": "NOSBYN 把簡約做得很安靜：線條俐落、顏色克制，單件未必喧鬧，放進原有衣櫃卻很容易。適合平日偏 MUJI、Lululemon 或簡潔 casual 的人慢慢試。",
-    "signature": [
-      "Minimal / timeless 女裝",
-      "布料質感與剪裁較穩",
-      "Office、旅行、日常都可重複穿"
-    ],
-    "worth": [
-      "顏色偏 neutral，啱鍾意低調質感的人。",
-      "熱門尺碼可能不齊，看到喜歡要即試。"
-    ],
-    "categoryLabel": "🛍 Shopping",
-    "price": "Varies",
-    "transport": "Grab / walk depending on current route",
-    "audit": "Selected Phan Chu Trinh branch and published hours retained.",
-    "highlights": [
-      "Minimal / timeless 女裝",
-      "布料質感與剪裁較穩",
-      "Office、旅行、日常都可重複穿"
-    ],
-    "tips": [
-      "顏色偏 neutral，啱鍾意低調質感的人。",
-      "熱門尺碼可能不齊，看到喜歡要即試。"
-    ]
-  },
-  "new-playground": {
-    "title": "The New Playground",
-    "emoji": "🛍",
-    "cat": "SHOP",
-    "sub": "Day 2 · Nguyễn Trãi Fashion Cluster",
-    "shoppingRoute": "Day 2 · Nguyễn Trãi",
-    "hours": "10:00–21:00",
-    "maps": "https://www.google.com/maps/search/?api=1&query=The%20New%20Playground%2026%20L%C3%BD%20T%E1%BB%B1%20Tr%E1%BB%8Dng%2C%20S%C3%A0i%20G%C3%B2n%2C%20H%E1%BB%93%20Ch%C3%AD%20Minh%20700000%2C%20Vietnam",
-    "address": "26 Lý Tự Trọng, Sài Gòn, Hồ Chí Minh 700000, Vietnam",
-    "desc": "The New Playground 適合把選擇交給同行的年輕人。多個本地品牌集中在同一處，不必逐間追地址；有人看衣服、有人看帽袋，也可以約好時間再集合。",
-    "signature": [
-      "多個越南本地品牌集中",
-      "冷氣環境，適合下午避暑",
-      "Streetwear 到 accessories 都有"
-    ],
-    "worth": [
-      "店多但不是每間都精緻，當作快速掃街最有效率。",
-      "如果時間 delay，可以只逛這裡，不逐間 boutique 追。"
-    ],
-    "categoryLabel": "🛍 Shopping",
-    "price": "Varies",
-    "transport": "Grab / walk depending on current route",
-    "audit": "Selected Lý Tự Trọng location and published hours retained.",
-    "highlights": [
-      "多個越南本地品牌集中",
-      "冷氣環境，適合下午避暑",
-      "Streetwear 到 accessories 都有"
-    ],
-    "tips": [
-      "店多但不是每間都精緻，當作快速掃街最有效率。",
-      "如果時間 delay，可以只逛這裡，不逐間 boutique 追。"
-    ]
-  },
-  "saigon-concept": {
-    "title": "Saigon Concept",
-    "emoji": "🌿",
-    "cat": "SHOP",
-    "sub": "Day 4 · Thảo Điền Lifestyle Walk",
-    "shoppingRoute": "Day 4 · Thảo Điền walk",
-    "hours": "09:00–18:00 daily",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Saigon%20Concept%2014%20Tr%E1%BA%A7n%20Ng%E1%BB%8Dc%20Di%E1%BB%87n%2C%20Th%E1%BA%A3o%20%C4%90i%E1%BB%81n%2C%20Ho%20Chi%20Minh%20City%2C%20Vietnam",
-    "address": "14 Trần Ngọc Diện, Thảo Điền, Ho Chi Minh City, Vietnam",
-    "desc": "Saigon Concept 是 Thảo Điền 很適合慢逛的 lifestyle compound：紅磚庭園、棉麻服飾、家居選物與小型品牌集中在同一區。Day 3 到草田區後先放慢節奏，由這裡開始很舒服。",
-    "signature": [
-      "庭園式複合空間",
-      "DESIGNED BY SISI / lifestyle 選物",
-      "適合拍照與慢逛"
-    ],
-    "worth": [
-      "下午早段去比較好，部分小店可能較早關。",
-      "重點是氛圍，不一定每間都要買。"
-    ],
-    "categoryLabel": "🛍 Shopping",
-    "price": "Varies",
-    "transport": "Grab / walk depending on current route",
-    "audit": "Selected Thảo Điền location and daily hours confirmed.",
-    "highlights": [
-      "庭園式複合空間",
-      "DESIGNED BY SISI / lifestyle 選物",
-      "適合拍照與慢逛"
-    ],
-    "tips": [
-      "下午早段去比較好，部分小店可能較早關。",
-      "重點是氛圍，不一定每間都要買。"
-    ]
-  },
-  "ohquao": {
-    "title": "OHQUAO",
-    "emoji": "🎁",
-    "cat": "SHOP",
-    "sub": "Day 4 · Thảo Điền Lifestyle Walk",
-    "shoppingRoute": "Day 4 · Thảo Điền walk",
-    "hours": "10:00–20:00",
-    "maps": "https://www.google.com/maps/search/?api=1&query=OHQUAO%2019%20%C4%90%C6%B0%E1%BB%9Dng%20S%E1%BB%91%2038%2C%20P.%20Th%E1%BA%A3o%20%C4%90i%E1%BB%81n%2C%20Qu%E1%BA%ADn%202%2C%20TP.%20H%E1%BB%93%20Ch%C3%AD%20Minh",
-    "address": "19 Đường Số 38, P. Thảo Điền, Quận 2, TP. Hồ Chí Minh",
-    "desc": "OHQUAO 把插畫、家品、文具與小禮物放進一個很 Thảo Điền 的生活感空間。Day 4 從插畫、家品到小手信都有地方感；這種隨意很像 Thảo Điền 的節奏。",
-    "signature": [
-      "在地藝術家小物",
-      "明信片、香氛、家居手信",
-      "適合買輕便 souvenir"
-    ],
-    "worth": [
-      "小店尺度不大，適合慢慢看設計、文具與家品。",
-      "適合安排在 Mộc Hương Spa 前後順路逛。"
-    ],
-    "categoryLabel": "🛍 Shopping",
-    "price": "Varies",
-    "transport": "Grab / walk depending on current route",
-    "audit": "Selected Thảo Điền store and 10:00–20:00 daily hours confirmed.",
-    "highlights": [
-      "在地藝術家小物",
-      "明信片、香氛、家居手信",
-      "適合買輕便 souvenir"
-    ],
-    "tips": [
-      "小店尺度不大，適合慢慢看設計、文具與家品。",
-      "適合安排在 Mộc Hương Spa 前後順路逛。"
-    ]
-  },
-  "louh": {
-    "title": "LOUH Saigon",
-    "emoji": "🧺",
-    "cat": "SHOP",
-    "sub": "Day 4 · Thảo Điền Lifestyle Walk",
-    "shoppingRoute": "Day 4 · Thảo Điền walk",
-    "hours": "10:00–18:00 daily",
-    "maps": "https://www.google.com/maps/search/?api=1&query=LOUH%20Saigon%2061%20Nguy%E1%BB%85n%20B%C3%A1%20Hu%C3%A2n%20Th%E1%BA%A3o%20%C4%90i%E1%BB%81n%20Ho%20Chi%20Minh%20City",
-    "address": "61 Nguyễn Bá Huân, Thảo Điền, Ho Chi Minh City, Vietnam",
-    "desc": "LOUH 的亞麻、棉質女裝與家居服很適合放在 Thảo Điền 慢行裡。不是必到 checkpoint；16:00 Spa 後再走第二段，順路就試，累就跳過。",
-    "signature": [
-      "法式優雅剪裁",
-      "亞麻／棉質天然布料",
-      "女裝與家居服為主"
-    ],
-    "worth": [
-      "適合放在 Thảo Điền lifestyle walk 後段，按當日體力決定是否入店。"
-    ],
-    "categoryLabel": "🛍 Shopping",
-    "price": "Varies",
-    "transport": "Grab / walk depending on current route",
-    "audit": "Selected Thảo Điền showroom address and daily hours confirmed.",
-    "highlights": [
-      "法式優雅剪裁",
-      "亞麻／棉質天然布料",
-      "女裝與家居服為主"
-    ],
-    "tips": [
-      "適合放在 Thảo Điền lifestyle walk 後段，按當日體力決定是否入店。"
-    ]
-  },
-  "garmentory": {
-    "title": "11 Garmentory",
-    "emoji": "🧥",
-    "cat": "SHOP",
-    "sub": "Day 2 · Fashion Day First Stop",
-    "shoppingRoute": "Day 2 · 11 Garmentory → Trần Quang Diệu",
-    "hours": "10:00–21:30 daily",
-    "maps": "https://www.google.com/maps/search/?api=1&query=11%20Garmentory%20117B%20Nguy%E1%BB%85n%20%C4%90%C3%ACnh%20Ch%C3%ADnh%2C%20Ph%C6%B0%E1%BB%9Dng%20C%E1%BA%A7u%20Ki%E1%BB%87u%2C%20Ho%20Chi%20Minh%20City%2C%20Vietnam",
-    "address": "117B Nguyễn Đình Chính, Phường Cầu Kiệu, Ho Chi Minh City, Vietnam",
-    "desc": "11 Garmentory 是 Fashion Day 的第一個衣架。先用這間本地設計選物店定調：剪裁、小眾品牌、慢慢試；真正值得花時間的留低，之後才轉入 Trần Quang Diệu 一整段。",
-    "signature": [
-      "本地設計師選物",
-      "女裝／生活風格小店感",
-      "District 3 氣氛比 D1 更 local"
-    ],
-    "worth": [
-      "10:15 開始，約一小時。",
-      "這站是主站；後面 cluster 可以按興趣自由取捨。"
-    ],
-    "categoryLabel": "🛍 Shopping",
-    "price": "Varies",
-    "transport": "Grab / walk depending on current route",
-    "audit": "Branch corrected to 117B Nguyễn Đình Chính; daily hours supplied and synchronized",
-    "highlights": [
-      "本地設計師選物",
-      "女裝／生活風格小店感",
-      "District 3 氣氛比 D1 更 local"
-    ],
-    "tips": [
-      "10:15 開始，約一小時。",
-      "這站是主站；後面 cluster 可以按興趣自由取捨。"
-    ]
-  },
-  "dalla-saigon": {
-    "title": "Dalla Saigon",
-    "emoji": "👗",
-    "cat": "SHOP",
-    "sub": "Day 2 · Trần Quang Diệu Fashion Cluster",
-    "shoppingRoute": "Day 2 · Trần Quang Diệu",
-    "hours": "",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Dalla%20Saigon%2064%20Tr%E1%BA%A7n%20Quang%20Di%E1%BB%87u%20Ph%C6%B0%E1%BB%9Dng%2014%20Qu%E1%BA%ADn%203%20H%E1%BB%93%20Ch%C3%AD%20Minh",
-    "address": "64 Trần Quang Diệu, Phường 14, Quận 3, Hồ Chí Minh, Vietnam",
-    "desc": "Dalla 是 Trần Quang Diệu shopping cluster 的其中一站：年輕女裝、連身裙與日常單品。和 RUBIES、Lane Cì 落在同一段街區，慢慢走最順。",
-    "signature": [
-      "日常女裝、連身裙、上班單品",
-      "Trần Quang Diệu 街區代表店之一"
-    ],
-    "worth": [
-      "11:30 左右進入 cluster；三間店共用 browsing time。",
-      "11:30 左右進入 cluster；13:00 前往 Pizza 4P’s 午餐。"
-    ],
-    "categoryLabel": "🛍 Shopping",
-    "price": "Varies",
-    "transport": "Walk within Trần Quang Diệu cluster",
-    "audit": "Address verified via official Facebook/Instagram store-locator info (64 Trần Quang Diệu branch)",
-    "highlights": [
-      "日常女裝、連身裙、上班單品",
-      "Trần Quang Diệu 街區代表店之一"
-    ],
-    "tips": [
-      "11:30 左右進入 cluster；三間店共用 browsing time。",
-      "11:30 左右進入 cluster；13:00 前往 Pizza 4P’s 午餐。"
-    ]
-  },
-  "rubies": {
-    "title": "Rubies Rubies",
-    "emoji": "👚",
-    "cat": "SHOP",
-    "sub": "Day 2 · Trần Quang Diệu Fashion Cluster",
-    "shoppingRoute": "Day 2 · Trần Quang Diệu",
-    "hours": "",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Rubies%20Rubies%2047-49%20Tr%E1%BA%A7n%20Quang%20Di%E1%BB%87u%20Ph%C6%B0%E1%BB%9Dng%2014%20Qu%E1%BA%ADn%203%20H%E1%BB%93%20Ch%C3%AD%20Minh",
-    "address": "47–49 Trần Quang Diệu, Phường 14, Quận 3, Hồ Chí Minh, Vietnam",
-    "desc": "RUBIES 在同一段 Trần Quang Diệu 路線裡，風格年輕俐落。它不是獨立任務；和 Dalla、Lane Cì 邊走邊看，哪間有感覺就多留十分鐘。",
-    "signature": [
-      "年輕俐落女裝",
-      "本地連鎖品牌，多分店",
-      "與 Dalla Saigon 同街，步行可達"
-    ],
-    "worth": [
-      "店內偏小，建議分批試身。",
-      "出發前查 Instagram / Facebook 確認分店營業時間。"
-    ],
-    "categoryLabel": "🛍 Shopping",
-    "price": "Varies",
-    "transport": "Walk within Trần Quang Diệu cluster",
-    "audit": "Address verified via multiple independent local business listings (47–49 Trần Quang Diệu branch)",
-    "highlights": [
-      "年輕俐落女裝",
-      "本地連鎖品牌，多分店",
-      "與 Dalla Saigon 同街，步行可達"
-    ],
-    "tips": [
-      "店內偏小，建議分批試身。",
-      "出發前查 Instagram / Facebook 確認分店營業時間。"
-    ]
-  },
-  "lane-ci": {
-    "title": "LANE Cì",
-    "emoji": "🎀",
-    "cat": "SHOP",
-    "sub": "Day 2 · Trần Quang Diệu Fashion Cluster",
-    "shoppingRoute": "Day 2 · Trần Quang Diệu",
-    "hours": "",
-    "maps": "https://www.google.com/maps/search/?api=1&query=LANE%20C%C3%AC%2027%20Tr%E1%BA%A7n%20Quang%20Di%E1%BB%87u%20Ph%C6%B0%E1%BB%9Dng%2014%20Qu%E1%BA%ADn%203%20H%E1%BB%93%20Ch%C3%AD%20Minh",
-    "address": "27 Trần Quang Diệu, Phường 14, Quận 3, Hồ Chí Minh, Vietnam",
-    "desc": "Lane Cì 是 Trần Quang Diệu cluster 裡較甜、較少女的一筆。放在同一段 browsing 裡就好；12:45 左右要開始收尾，留時間去 Pizza 4P’s。",
-    "signature": [
-      "少女甜美風格單品",
-      "小型精品店感",
-      "同街最後一站，順路收尾"
-    ],
-    "worth": [
-      "店較細，適合快閃選購。",
-      "出發前查 Facebook 專頁確認營業狀態。"
-    ],
-    "categoryLabel": "🛍 Shopping",
-    "price": "Varies",
-    "transport": "Walk within Trần Quang Diệu cluster",
-    "audit": "Address verified via official Facebook page (27 Trần Quang Diệu)",
-    "highlights": [
-      "少女甜美風格單品",
-      "小型精品店感",
-      "同街最後一站，順路收尾"
-    ],
-    "tips": [
-      "店較細，適合快閃選購。",
-      "出發前查 Facebook 專頁確認營業狀態。"
-    ]
-  },
-  "push-push": {
-    "title": "Push Push Official",
-    "emoji": "👖",
-    "cat": "SHOP",
-    "sub": "Day 4 · Tân Định Shopping",
-    "shoppingRoute": "Day 4 · Tân Định",
-    "hours": "09:30–21:30",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Push%20Push%20Official%2020%20Nguy%E1%BB%85n%20V%C4%83n%20Nguy%E1%BB%85n%2C%20T%C3%A2n%20%C4%90%E1%BB%8Bnh%2C%20H%E1%BB%93%20Ch%C3%AD%20Minh%20700000%2C%20Vietnam",
-    "address": "20 Nguyễn Văn Nguyễn, Tân Định, Hồ Chí Minh 700000, Vietnam",
-    "desc": "粉紅教堂之後先不急著過河。Push Push 留在 Tân Định morning route 裡，年輕剪裁、寬鬆恤衫與街頭感單品快看一輪；10:45 左右收手，11:00 去食蟹肉粉絲。",
-    "signature": [
-      "Streetwear / casual pants",
-      "年輕感、寬鬆剪裁",
-      "粉紅教堂附近可順路"
-    ],
-    "worth": [
-      "不是每位朋友都會啱，可作分組自由逛。"
-    ],
-    "categoryLabel": "🛍 Shopping",
-    "price": "Varies",
-    "transport": "Grab / walk depending on current route",
-    "audit": "Selected 20 Nguyễn Văn Nguyễn store and 09:30–21:30 daily hours confirmed.",
-    "highlights": [
-      "Streetwear / casual pants",
-      "年輕感、寬鬆剪裁",
-      "粉紅教堂附近可順路"
-    ],
-    "tips": [
-      "不是每位朋友都會啱，可作分組自由逛。"
-    ]
-  },
-  "nha-suga": {
-    "title": "Spa Nhà Suga Premium Korea Headspa – Nguyễn Huệ",
-    "emoji": "🫧",
-    "cat": "SPA",
-    "sub": "Day 1 · Head Spa",
-    "hours": "09:00–20:00 daily",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Spa%20Nh%C3%A0%20Suga%20Premium%20Korea%20Headspa%20%E2%80%93%20Nguy%E1%BB%85n%20Hu%E1%BB%87%208th%20Floor%2C%20The%20Caf%C3%A9%20Apartment%2C%2042%20Nguy%E1%BB%85n%20Hu%E1%BB%87%2C%20District%201%2C%20Ho%20Chi%20Minh%20City%2C%20Vietnam",
-    "address": "8th Floor, The Café Apartment, 42 Nguyễn Huệ, District 1, Ho Chi Minh City, Vietnam",
-    "desc": "Nguyễn Huệ 分店位於 The Cafe Apartments 8樓。Day 1 安排韓式 Head Spa，做完可直接接晚餐；重點係頭皮清潔、洗護同放鬆，不需要另外把它當一般 body spa。",
-    "signature": [
-      "Korean-style head spa / scalp care",
-      "肩頸放鬆",
-      "位於 The Cafe Apartments，同日夜景動線順"
-    ],
-    "worth": [
-      "評論提過可能 overbook，出發前務必 WhatsApp 確認。",
-      "做完頭髮要確認有足夠時間吹乾再去晚餐。"
-    ],
-    "categoryLabel": "💆 Spa",
-    "price": "$$",
-    "transport": "Grab / walk depending on current route",
-    "audit": "Nguyễn Huệ 8/F branch and 09:00–20:00 daily hours confirmed.",
-    "highlights": [
-      "Korean-style head spa / scalp care",
-      "肩頸放鬆",
-      "位於 The Cafe Apartments，同日夜景動線順"
-    ],
-    "tips": [
-      "評論提過可能 overbook，出發前務必 WhatsApp 確認。",
-      "做完頭髮要確認有足夠時間吹乾再去晚餐。"
-    ]
-  },
-  "moc-huong": {
-    "title": "Mộc Hương Wellness",
-    "emoji": "🌿",
-    "cat": "SPA",
-    "sub": "Day 4 Open List · Villa wellness",
-    "hours": "09:00–22:00 daily",
-    "maps": "https://www.google.com/maps/search/?api=1&query=M%E1%BB%99c%20H%C6%B0%C6%A1ng%20Wellness%2061%20Xu%C3%A2n%20Th%E1%BB%A7y%2C%20Ph%C6%B0%E1%BB%9Dng%20An%20Kh%C3%A1nh%2C%20Ho%20Chi%20Minh%20City%2C%20Vietnam",
-    "address": "61 Xuân Thủy, Phường An Khánh, Ho Chi Minh City, Vietnam",
-    "desc": "61 Xuân Thủy 的 villa-style wellness。四人同行想做完整 treatment，可臨近先 WhatsApp 問位；不需要把它鎖成 Day 4 行程。",
-    "signature": [
-      "Villa-style spa setting",
-      "熱石／精油按摩",
-      "Thảo Điền 動線極順"
-    ],
-    "worth": [
-      "四人想同時做完整 treatment，臨近先 WhatsApp 問 availability。",
-      "有位就做；無位就繼續 Open List，附近另有 walk-in fallback。"
-    ],
-    "categoryLabel": "💆 Spa",
-    "price": "$$",
-    "transport": "Walk-in option · 61 Xuân Thủy",
-    "audit": "Thảo Điền branch confirmed; official booking accepts 36h+ advance, direct WhatsApp available for sooner sessions.",
-    "highlights": [
-      "Villa-style spa setting",
-      "熱石／精油按摩",
-      "Thảo Điền 動線極順"
-    ],
-    "tips": [
-      "四人想同時做完整 treatment，臨近先 WhatsApp 問 availability。",
-      "有位就做；無位就繼續 Open List，附近另有 walk-in fallback。"
-    ]
-  },
-  "ha-spa": {
-    "title": "Hạ Spa",
-    "emoji": "💆‍♀️",
-    "cat": "SPA",
-    "sub": "Day 5 · Pre-flight Spa",
-    "hours": "08:30–22:00 daily",
-    "maps": "https://www.google.com/maps/search/?api=1&query=H%E1%BA%A1%20Spa%20334%20Nguy%E1%BB%85n%20Tr%E1%BB%8Dng%20Tuy%E1%BB%83n%2C%20Ward%202%2C%20T%C3%A2n%20B%C3%ACnh%20District%2C%20H%E1%BB%93%20Ch%C3%AD%20Minh%20700000%2C%20Vietnam",
-    "address": "334 Nguyễn Trọng Tuyển, Ward 2, Tân Bình District, Hồ Chí Minh 700000, Vietnam",
-    "desc": "Hạ Spa 是最後一日飛機前的 airport-side spa。最大優勢是距離新山一機場近、可寄存行李，適合在搭夜機前洗頭、按摩、整理狀態，不用一身汗上機。",
-    "signature": [
-      "近機場",
-      "行李寄存",
-      "洗頭 + 全身放鬆 package"
-    ],
-    "worth": [
-      "最後一日時間要保守，不要排太晚。",
-      "預約時確認行李寄存、吹髮、叫車到機場時間。"
-    ],
-    "categoryLabel": "💆 Spa",
-    "price": "$$",
-    "transport": "Grab / walk depending on current route",
-    "audit": "Selected Nguyễn Trọng Tuyển branch and 08:30–22:00 daily listing confirmed for trip use.",
-    "highlights": [
-      "近機場",
-      "行李寄存",
-      "洗頭 + 全身放鬆 package"
-    ],
-    "tips": [
-      "最後一日時間要保守，不要排太晚。",
-      "預約時確認行李寄存、吹髮、叫車到機場時間。"
-    ]
-  },
-  "post-office": {
-    "title": "Saigon Central Post Office",
-    "emoji": "📮",
-    "cat": "ATTRACTIONS",
-    "sub": "法式郵局",
-    "hours": "Mon–Fri 07:00–19:00；Sat 07:00–18:00；Sun 08:00–18:00",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Saigon%20Central%20Post%20Office%20Saigon%20Central%20Post%20Office%2C%202%20C%C3%B4ng%20x%C3%A3%20Paris%2C%20B%E1%BA%BFn%20Ngh%C3%A9%2C%20District%201%2C%20Ho%20Chi%20Minh%20City",
-    "address": "Saigon Central Post Office, 2 Công xã Paris, Bến Nghé, District 1, Ho Chi Minh City",
-    "desc": "西貢中央郵政局是最容易安排、最有法式殖民建築感的經典景點。金黃色拱頂、古老地圖、木製電話亭都很上鏡，而且仍然是運作中的郵局。Day 1 放在抵達後不會太累，因為它和紅教堂、書街三點幾乎連在一起。",
-    "signature": [
-      "金黃色拱頂大廳",
-      "法式殖民建築",
-      "可買明信片／郵票"
-    ],
-    "worth": [
-      "免費入場，停留 20–30 分鐘已夠。",
-      "人多時先拍建築細節，不一定要等無人全景。"
-    ],
-    "categoryLabel": "📍 Attraction",
-    "price": "Free",
-    "transport": "Grab / walk depending on current route",
-    "audit": "Route-ready; check live hours before visit",
-    "highlights": [
-      "金黃色拱頂大廳",
-      "法式殖民建築",
-      "可買明信片／郵票"
-    ],
-    "tips": [
-      "免費入場，停留 20–30 分鐘已夠。",
-      "人多時先拍建築細節，不一定要等無人全景。"
-    ]
-  },
-  "notre-dame": {
-    "title": "Notre-Dame Cathedral",
-    "emoji": "⛪",
-    "cat": "ATTRACTIONS",
-    "sub": "紅磚教堂",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Notre-Dame%20Cathedral%20Notre-Dame%20Cathedral%20Basilica%20of%20Saigon%2C%20C%C3%B4ng%20x%C3%A3%20Paris%2C%20B%E1%BA%BFn%20Ngh%C3%A9%2C%20District%201%2C%20Ho%20Chi%20Minh%20City",
-    "address": "Notre-Dame Cathedral Basilica of Saigon, Công xã Paris, Bến Nghé, District 1, Ho Chi Minh City",
-    "desc": "西貢聖母聖殿主教座堂是中央郵政局對面的紅磚地標。近年常有修復工程，重點應放在外觀打卡與和郵政局／書街形成一個短小經典路線，不建議專程安排太長時間。",
-    "signature": [
-      "紅磚外觀",
-      "郵政局對面",
-      "經典 D1 地標合照"
-    ],
-    "worth": [
-      "內部是否開放常受工程／宗教活動影響，當作外觀景點最穩。",
-      "中午光線硬，早上或傍晚拍照較舒服。"
-    ],
-    "categoryLabel": "📍 Attraction",
-    "price": "Free",
-    "transport": "Grab / walk depending on current route",
-    "audit": "Route-ready; check live hours before visit",
-    "highlights": [
-      "紅磚外觀",
-      "郵政局對面",
-      "經典 D1 地標合照"
-    ],
-    "tips": [
-      "內部是否開放常受工程／宗教活動影響，當作外觀景點最穩。",
-      "中午光線硬，早上或傍晚拍照較舒服。"
-    ]
-  },
-  "book-street": {
-    "title": "Nguyễn Văn Bình Book Street",
-    "copyAddressEligible": false,
-    "emoji": "📚",
-    "cat": "ATTRACTIONS",
-    "sub": "書街散步",
-    "hours": "Mon–Fri 08:00–21:00；Sat–Sun 08:00–21:30",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Nguy%E1%BB%85n%20V%C4%83n%20B%C3%ACnh%20Book%20Street%20Nguy%E1%BB%85n%20V%C4%83n%20B%C3%ACnh%20Book%20Street%2C%20B%E1%BA%BFn%20Ngh%C3%A9%2C%20District%201%2C%20Ho%20Chi%20Minh%20City",
-    "address": "Nguyễn Văn Bình Book Street, Bến Nghé, District 1, Ho Chi Minh City",
-    "desc": "Nguyễn Văn Bình Book Street 夾在郵政局與紅教堂旁邊，是短短一條步行文化街。書店、咖啡、文創攤位集中，適合在 Day 1 三大景點中作一個較輕鬆的過渡位。",
-    "signature": [
-      "步行書街",
-      "書店、文創、咖啡小攤",
-      "與郵政局／紅教堂相連"
-    ],
-    "worth": [
-      "不是大型景點，停留 20–40 分鐘即可。",
-      "若太熱，可以只穿過拍照，不必硬逛每間店。"
-    ],
-    "categoryLabel": "📍 Attraction",
-    "price": "Free",
-    "transport": "Grab / walk depending on current route",
-    "audit": "Route-ready; check live hours before visit",
-    "highlights": [
-      "步行書街",
-      "書店、文創、咖啡小攤",
-      "與郵政局／紅教堂相連"
-    ],
-    "tips": [
-      "不是大型景點，停留 20–40 分鐘即可。",
-      "若太熱，可以只穿過拍照，不必硬逛每間店。"
-    ]
-  },
-  "pink-church": {
-    "title": "Tân Định Church",
-    "emoji": "🌸",
-    "cat": "ATTRACTIONS",
-    "sub": "粉紅教堂",
-    "maps": "https://www.google.com/maps/search/?api=1&query=T%C3%A2n%20%C4%90%E1%BB%8Bnh%20Church%20Tan%20Dinh%20Church%2C%20289%20Hai%20B%C3%A0%20Tr%C6%B0ng%2C%20Ward%208%2C%20District%203%2C%20Ho%20Chi%20Minh%20City",
-    "address": "Tan Dinh Church, 289 Hai Bà Trưng, Ward 8, District 3, Ho Chi Minh City",
-    "desc": "新定教堂／粉紅教堂是 Saigon 最容易出片的地標之一。粉紅色外牆本身已經很有記憶點，配對面 Cộng Cà Phê 的樓上視角，可以一次拍到近景和俯瞰全景。",
-    "signature": [
-      "粉紅外牆",
-      "對面 cafe 視角",
-      "Tân Định 街區順路早餐"
-    ],
-    "worth": [
-      "內部開放不穩，當作外觀打卡最實際。",
-      "早上光線和人流通常較友善。"
-    ],
-    "categoryLabel": "📍 Attraction",
-    "price": "Free",
-    "transport": "Grab / walk depending on current route",
-    "audit": "Route-ready; check live hours before visit",
-    "highlights": [
-      "粉紅外牆",
-      "對面 cafe 視角",
-      "Tân Định 街區順路早餐"
-    ],
-    "tips": [
-      "內部開放不穩，當作外觀打卡最實際。",
-      "早上光線和人流通常較友善。"
-    ]
-  },
-  "war-museum": {
-    "title": "War Remnants Museum",
-    "emoji": "🏛",
-    "cat": "ATTRACTIONS",
-    "sub": "Day 3 · War Day",
-    "hours": "07:30–17:30",
-    "maps": "https://www.google.com/maps/search/?api=1&query=War%20Remnants%20Museum%20War%20Remnants%20Museum%2C%2028%20V%C3%B5%20V%C4%83n%20T%E1%BA%A7n%2C%20District%203%2C%20Ho%20Chi%20Minh%20City",
-    "address": "War Remnants Museum, 28 Võ Văn Tần, District 3, Ho Chi Minh City",
-    "desc": "上午在 Cu Chi 看戰爭如何藏進地下，下午回城看它留下來的影像與物件。War Remnants Museum 放在同一天，目的不是多打一個景點，而是讓 War Day 有完整的前後文。",
-    "signature": [
-      "越戰相關照片與史料",
-      "館內展覽以照片、文件與戰爭遺物為主",
-      "Cu Chi 後接著看，War Day 前後文完整"
-    ],
-    "worth": [
-      "15:40–17:00 是主參觀時段；Mặn Mòi 早完就把時間留給 museum。",
-      "看完直接去 Nara 做 90 分鐘 reset，不再塞其他 sightseeing。"
-    ],
-    "categoryLabel": "📍 Attraction",
-    "price": "40,000 VND / adult",
-    "transport": "Grab / walk depending on current route",
-    "audit": "Route-ready; check live hours before visit",
-    "highlights": [
-      "越戰相關照片與史料",
-      "館內展覽以照片、文件與戰爭遺物為主",
-      "Cu Chi 後接著看，War Day 前後文完整"
-    ],
-    "tips": [
-      "15:40–17:00 是主參觀時段；Mặn Mòi 早完就把時間留給 museum。"
-    ]
-  },
-  "fine-arts": {
-    "title": "Fine Arts Museum",
-    "emoji": "🖼",
-    "cat": "ATTRACTIONS",
-    "sub": "黃色法式美術館",
-    "hours": "08:00–17:00 daily",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Fine%20Arts%20Museum%20Ho%20Chi%20Minh%20City%20Museum%20of%20Fine%20Arts%2C%2097A%20Ph%C3%B3%20%C4%90%E1%BB%A9c%20Ch%C3%ADnh%2C%20District%201%2C%20Ho%20Chi%20Minh%20City",
-    "address": "Ho Chi Minh City Museum of Fine Arts, 97A Phó Đức Chính, District 1, Ho Chi Minh City",
-    "desc": "胡志明市美術館是一座黃色法式大宅，比起展品本身，建築、樓梯、彩色玻璃、舊式地磚和復古感更容易令人留下印象。Day 5 上午安排它很適合：節奏慢、拍照靚、又不會太消耗體力。",
-    "signature": [
-      "黃色法式建築",
-      "彩色玻璃、樓梯、復古地磚",
-      "適合王家衛感照片"
-    ],
-    "worth": [
-      "館內部分位置沒有強冷氣，早上去較舒服。",
-      "建議停留 60–90 分鐘。"
-    ],
-    "categoryLabel": "📍 Attraction",
-    "price": "40,000 VND / adult",
-    "transport": "Grab / walk depending on current route",
-    "audit": "Route-ready; check live hours before visit",
-    "highlights": [
-      "黃色法式建築",
-      "彩色玻璃、樓梯、復古地磚",
-      "適合王家衛感照片"
-    ],
-    "tips": [
-      "館內部分位置沒有強冷氣，早上去較舒服。",
-      "建議停留 60–90 分鐘。"
-    ]
-  },
-  "general": {
-    "title": "Moments",
-    "emoji": "✨",
-    "cat": "MOMENTS",
-    "sub": "Every place has a story",
-    "desc": "每一個地方都可以留底 rating、something to say 同相片。",
-    "categoryLabel": "✨ Moments",
-    "price": "Memory",
-    "hours": "Anytime",
-    "maps": "#",
-    "address": "Saigon Companion"
-  },
-  "workshop-coffee": {
-    "title": "The Workshop Coffee",
+  "greedy-cow": {
+    "title": "The Greedy Cow Cafe",
     "emoji": "☕",
-    "cat": "CAFÉS",
-    "sub": "Day 1 · Nguyễn Huệ 附近咖啡選項",
-    "hours": "08:00–21:00 daily",
-    "maps": "https://www.google.com/maps/search/?api=1&query=The%20Workshop%20Coffee%202nd%20Floor%2C%2027%20Ng%C3%B4%20%C4%90%E1%BB%A9c%20K%E1%BA%BF%2C%20District%201%2C%20Ho%20Chi%20Minh%20City%2C%20Vietnam",
-    "address": "2nd Floor, 27 Ngô Đức Kế, District 1, Ho Chi Minh City, Vietnam",
-    "desc": "藏在 Ngô Đức Kế 老樓上層的 specialty coffee 空間，離 Nguyễn Huệ Walking Street 與 The Cafe Apartments 只是一小段步程。高樓底、長木枱與工業感不刻意討好鏡頭，反而適合在第一日的城市喧鬧之間，留一段安靜喝咖啡的空白。",
+    "cat": "DINING",
+    "sub": "Optional Lake Tekapo breakfast / brunch",
+    "hours": "Daily 7:30 AM–4:00 PM · kitchen closes 2:00 PM",
+    "maps": "https://www.google.com/maps/search/?api=1&query=The+Greedy+Cow%2C+16+Rapuwai+Lane%2C+Lake+Tekapo+7945",
+    "address": "16 Rapuwai Lane, Lake Tekapo 7945, New Zealand",
+    "desc": "A casual Lake Tekapo cafe serving breakfast, brunch, burgers, sandwiches and cabinet food — useful for an easy meal before afternoon sightseeing.",
     "signature": [
-      "以手沖、espresso 與 specialty coffee 為主",
-      "樓上空間寬敞，適合短坐或慢慢聊天",
-      "由 Café Apartments 一帶步行前往，毋須另開一段行程"
+      "FOOD · Breakfast, brunch, burgers and cabinet food",
+      "GOOD FOR · Casual family meal",
+      "ROUTE FIT · Central Lake Tekapo"
     ],
     "worth": [
-      "這是 read-only nearby option，不會取代原定 Day 1 行程。",
-      "入口較低調，跟 Google Maps 到 27 Ngô Đức Kế 後再留意上樓指示。"
+      "Recommended; confirm live opening hours before travel."
     ],
-    "categoryLabel": "☕ Cafe · Optional",
-    "price": "$–$$",
-    "transport": "Walk from Nguyễn Huệ / Cafe Apartments",
-    "audit": "Address and current daily schedule cross-checked; optional recommendation",
-    "highlights": [
-      "以手沖、espresso 與 specialty coffee 為主",
-      "樓上空間寬敞，適合短坐或慢慢聊天",
-      "由 Café Apartments 一帶步行前往，毋須另開一段行程"
-    ],
-    "tips": [
-      "這是 read-only nearby option，不會取代原定 Day 1 行程。",
-      "入口較低調，跟 Google Maps 到 27 Ngô Đức Kế 後再留意上樓指示。"
-    ]
-  },
-  "cash-backup": {
-    "title": "Cash / Currency Backup",
-    "emoji": "💵",
-    "cat": "PRACTICAL",
-    "sub": "Reference only · not Guide inventory",
-    "maps": "",
-    "address": "",
-    "desc": "Day 1 currency choices are shown directly on the Timeline; this record is retained only for engine compatibility and is not exposed as Guide inventory.",
-    "signature": [],
-    "worth": [],
-    "categoryLabel": "Practical",
-    "transport": "",
-    "highlights": [],
-    "tips": []
-  },
-  "late-night-supper": {
-    "title": "Late-night Hotel Supper",
-    "emoji": "🌙",
-    "cat": "RESTAURANTS",
-    "sub": "Any night · Savoury or sweet delivery",
+    "categoryLabel": "☕ Dining",
+    "price": "$–$",
+    "transport": "Self-drive / walk",
+    "audit": "OFFICIAL / VERIFIED",
     "status": "optional",
-    "hours": "Oanh Cua about 06:00–22:00; late dessert availability varies — check GrabFood Open Now",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Oanh%20Cua%20214%2F1B%20Nguy%E1%BB%85n%20Tr%C3%A3i%20Ho%20Chi%20Minh%20City",
-    "address": "Delivery to Fusion Original; Oanh Cua: 214/1B Nguyễn Trãi, District 1",
-    "desc": "返到酒店仲想食多少少，可以按心情揀鹹或甜。鹹食可叫 Oanh Cua 蟹料理送到 Fusion Original lobby；甜食可在 GrabFood 搜尋 BINGO Artisanal Ice Dessert & Tofu Café，或用 Dessert／Chè／Tofu／Bingsu 關鍵字並篩選 Open Now。",
+    "addressAudit": "OFFICIAL / VERIFIED"
+  },
+  "c1-espresso": {
+    "title": "C1 Espresso",
+    "emoji": "☕",
+    "cat": "DINING",
+    "sub": "Fun Christchurch breakfast stop",
+    "hours": "Mon–Fri 7:00 AM–9:00 PM · Sat–Sun 7:00 AM–5:00 PM",
+    "maps": "https://maps.google.com/?q=C1+Espresso+Christchurch",
+    "address": "185 High Street, Christchurch Central City, Christchurch 8011, New Zealand",
+    "desc": "Breakfast before the central-Christchurch activity sequence.",
     "signature": [
-      "🦀 Oanh Cua：蟹料理、蟹肉小食，適合四人 share",
-      "🍧 BINGO／夜間甜品：刨冰、豆腐花、水果甜品",
-      "送到 Fusion Original lobby，落單後留意電話／App 訊息"
+      "WALK · 6 min from Southwark",
+      "ORDER · Coffee, breakfast or tube-delivered fries",
+      "NEXT · Quake City or CBD Discovery Walk"
     ],
     "worth": [
-      "Oanh Cua 官方 delivery / hotline：0876 255 559；亦可當晚檢查 GrabFood。",
-      "BINGO 是否可送及營業狀態以當晚 GrabFood 顯示為準，不寫死一定可落單。",
-      "Day 1–4 都可用；完全 optional，不需要 Booking。"
+      "Walk from Southwark; collect the vehicle after returning to the hotel."
     ],
-    "categoryLabel": "🌙 Optional Supper",
-    "price": "$–$$",
-    "transport": "Delivery to hotel / Grab if dining in",
-    "audit": "Trip-wide optional supper; live delivery availability must be checked",
-    "highlights": [
-      "🦀 Oanh Cua：蟹料理、蟹肉小食，適合四人 share",
-      "🍧 BINGO／夜間甜品：刨冰、豆腐花、水果甜品",
-      "送到 Fusion Original lobby，落單後留意電話／App 訊息"
-    ],
-    "tips": [
-      "Oanh Cua 官方 delivery / hotline：0876 255 559；亦可當晚檢查 GrabFood。",
-      "BINGO 是否可送及營業狀態以當晚 GrabFood 顯示為準，不寫死一定可落單。",
-      "Day 1–4 都可用；完全 optional，不需要 Booking。"
-    ]
-  },
-  "man-moi": {
-    "title": "Mặn Mòi – Bến Nghé",
-    "emoji": "🍲",
-    "cat": "RESTAURANTS",
-    "sub": "Day 3 · Post–Cu Chi Late Lunch",
-    "status": "optional",
-    "hours": "10:00–22:00 daily",
-    "maps": "https://www.google.com/maps/search/?api=1&query=M%E1%BA%B7n%20M%C3%B2i%20B%E1%BA%BFn%20Ngh%C3%A9%20VNPT%20Building%20Gate%206%20Nguy%E1%BB%85n%20V%C4%83n%20B%C3%ACnh%20Ho%20Chi%20Minh%20City",
-    "address": "Level 3, VNPT Building, Gate 6, Nguyễn Văn Bình Street, Ho Chi Minh City, Vietnam",
-    "desc": "Cu Chi 回城後，不先返酒店。14:30 直接在 Mặn Mòi 坐低，一桌越南家常菜把早上的塵與熱慢慢放下；60–65 分鐘食好，再步行／短車去 War Remnants Museum。",
-    "signature": [
-      "Pork jowl｜近期食客點名好食",
-      "Sticky rice chicken｜適合四人分食",
-      "家常 claypot / soup｜Mặn Mòi 最有代表性的越南家常路線"
-    ],
-    "worth": [
-      "Day 5 備選；Bếp Mẹ Ỉn 仍是原定午餐。",
-      "由 Gate 6 入內，再上 Level 3。",
-      "出發前再確認訂位與即日營業時間。"
-    ],
-    "categoryLabel": "🍽 Restaurant",
-    "price": "$$",
-    "transport": "Walk / short Grab from the heritage district",
-    "audit": "Official Mặn Mòi website verifies the Bến Nghé branch, Level 3 Gate 6 address and 10:00–22:00 published hours",
-    "highlights": [
-      "南部家常菜，味道細緻而不過重",
-      "木質與綠意交疊的老西貢氛圍",
-      "多人分享最有感覺"
-    ],
-    "tips": [
-      "Day 5 備選；Bếp Mẹ Ỉn 仍是原定午餐。",
-      "由 Gate 6 入內，再上 Level 3。",
-      "出發前再確認訂位與即日營業時間。"
-    ]
-  },
-  "tan-son-nhat-airport": {
-    "title": "Tan Son Nhat International Airport",
-    "emoji": "✈️",
-    "cat": "SIGHTS",
-    "sub": "Airport",
-    "maps": "https://maps.google.com/?q=Tan+Son+Nhat+International+Airport",
-    "address": "",
-    "desc": "VN 行程抵達及離境使用的新山一機場。"
-  },
-  "social-club": {
-    "title": "Social Club Rooftop Bar",
-    "emoji": "🥂",
-    "cat": "CAFÉS",
-    "sub": "24/F rooftop cocktails · skyline views",
-    "hours": "Sun–Thu 15:00–00:00; Fri–Sat 15:00–01:00",
-    "maps": "https://maps.google.com/?q=Social+Club+Rooftop+Bar+Hotel+des+Arts+Saigon",
-    "address": "24/F, Hôtel des Arts Saigon, 76–78 Nguyễn Thị Minh Khai, Ho Chi Minh City",
-    "phone": "0901 379 129",
-    "desc": "Hôtel des Arts Saigon 24樓 rooftop bar，以 Saigon skyline、sunset cocktails 同夜景氣氛做主角。Day 2 只作 optional after-dinner drink：有精神先去，唔影響主行程。",
-    "signature": [
-      "24樓開揚 Saigon skyline，黃昏至入夜最有氣氛",
-      "Signature cocktails；15:00–19:00 daily Happy Hour（公眾假期／special events除外）",
-      "Smart casual；夜晚較適合成人 drinks / city-view stop"
-    ],
-    "worth": [
-      "Optional after-dinner stop；攰就直接返 Fusion，完全唔需要硬去。"
-    ],
-    "categoryLabel": "🥂 Rooftop Bar",
+    "categoryLabel": "☕ Dining",
+    "price": "$–$",
+    "transport": "Walk",
+    "audit": "Optional breakfast",
     "status": "optional"
   },
-  "takashimaya": {
-    "title": "Takashimaya Saigon",
-    "emoji": "🛍",
-    "cat": "SHOP",
-    "sub": "Day 5 shopping",
-    "shoppingRoute": "Day 5 · Saigon Centre",
-    "maps": "https://maps.google.com/?q=Takashimaya+Saigon",
-    "address": "Saigon Centre, 65 Lê Lợi, District 1, Ho Chi Minh City",
-    "desc": "Day 5 最後補貨位，就在 Fusion Original 同一棟 Saigon Centre 內。適合買手信、beauty、零食或漏買用品；逛完直接返酒店提行李，唔需要再加一程交通。",
+  "fairlie-bakehouse": {
+    "title": "Fairlie Bakehouse",
+    "emoji": "🥧",
+    "cat": "DINING",
+    "sub": "Day 2 optional pit stop · Famous Fairlie pies",
+    "hours": "Daily 6:00 AM–4:30 PM · closed 25–26 Dec",
+    "maps": "https://maps.google.com/?q=Fairlie+Bakehouse",
+    "address": "74 Main Street, Fairlie 7925, New Zealand",
+    "desc": "An optional road-trip break between Christchurch and Lake Tekapo for a quick pie, coffee and stretch. Stop only if timing and appetite suit; skip it when you prefer to continue straight to Tekapo.",
     "signature": [
-      "同 Fusion Original 同一棟，最後一日最省腳力",
-      "百貨、beauty、食品與手信集中",
-      "適合把未買齊的東西一次收尾"
+      "WHY WE PICKED THIS · The strongest food stop on the Christchurch–Tekapo route",
+      "TRY · Steak and cheese pie, salmon pie, sweet pastry",
+      "SUGGESTED TIME · 30–45 minutes"
     ],
     "worth": [
-      "最後一日以補貨為主，不需要為購物特別繞路。"
-    ]
-  },
-  "moc-healing": {
-    "title": "Mộc Healing Spa",
-    "emoji": "🦶",
-    "cat": "SPA",
-    "sub": "Day 2 · Bến Thành Foot Reset",
-    "status": "planned",
-    "hours": "11:00–23:00 daily",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Moc%20Healing%20Spa%2039%2041%20Thu%20Khoa%20Huan%20Ben%20Thanh%20Ho%20Chi%20Minh",
-    "address": "39–41 Thủ Khoa Huân, Bến Thành, Ho Chi Minh City, Vietnam",
-    "desc": "Pizza 4P’s 食完沿 Thủ Khoa Huân 行過來，不為按摩多叫一程車。這站放在下午 shopping 前，先把腳鬆開，再一路步行接 Bến Thành / Nguyễn Trãi 一帶的 local fashion。",
-    "signature": [
-      "Foot massage / body massage",
-      "與 Pizza 4P’s Bến Thành 同一條街",
-      "Spa 後直接開始步行 shopping corridor"
+      "WORTH IT · ★★★★★ · Make this the main lunch stop",
+      "Popular flavours can sell out, so earlier is better.",
+      "Buy an extra pie or pastry for the car."
     ],
-    "worth": [
-      "約 14:20 入場，目標 60 分鐘。",
-      "Hotline / Zalo：+84 28 3535 4436。"
-    ],
-    "categoryLabel": "💆 Spa",
-    "transport": "Walk from Pizza 4P’s Bến Thành",
-    "highlights": [
-      "Foot massage / body massage",
-      "與 Pizza 4P’s Bến Thành 同一條街",
-      "Spa 後直接開始步行 shopping corridor"
-    ],
-    "tips": [
-      "預約時確認 60 分鐘 foot-focused treatment。",
-      "做完不用叫 Grab，直接開始下午 shopping。"
-    ]
-  },
-  "cu-chi": {
-    "title": "Cu Chi Tunnels",
-    "emoji": "🪖",
-    "cat": "ATTRACTIONS",
-    "sub": "Day 3 · War Day",
-    "status": "planned",
-    "hours": "07:00–17:00 daily",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Cu%20Chi%20Tunnels%20Ho%20Chi%20Minh%20City",
-    "address": "Củ Chi District, Ho Chi Minh City, Vietnam",
-    "desc": "Day 3 由地下開始。早上走進 Cu Chi 的戰時隧道與森林，下午回城再看 War Remnants Museum；一前一後，把同一段歷史從現場與記憶兩邊拼起來。",
-    "signature": [
-      "Private tour · 4 travellers",
-      "Skip included lunch · no factory stop",
-      "Return anchor: Mặn Mòi about 14:30"
-    ],
-    "worth": [
-      "14:30 左右直接到 Mặn Mòi，再接 War Remnants Museum。",
-      "要求 tour operator 直接 drop Mặn Mòi。"
-    ],
-    "categoryLabel": "🏛 Attraction",
-    "transport": "Private tour transfer",
-    "highlights": [
-      "Private tour · 4 travellers",
-      "Skip included lunch · no factory stop"
-    ],
-    "tips": [
-      "14:30 左右抵達 Mặn Mòi。"
-    ]
-  },
-  "nara-spa": {
-    "title": "Nara Spa",
-    "emoji": "🫧",
-    "cat": "SPA",
-    "sub": "Day 3 · Hair Reset",
-    "status": "planned",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Nara%20Spa%20595%2F74%20Nguyen%20Dinh%20Chieu%20Ho%20Chi%20Minh%20City",
-    "address": "595/74 Nguyễn Đình Chiểu, Bàn Cờ, District 3, Ho Chi Minh City",
-    "desc": "Cu Chi 的熱、塵與一整個 War Day，到這裡才真正停低。90 分鐘要揀 Massage + Hair Wash / Hair Spa，一次過洗走汗氣，也讓晚上的 ốc + beer 重新有精神。",
-    "signature": [
-      "Massage + Hair Wash / Hair Spa",
-      "約 90 分鐘 full reset"
-    ],
-    "worth": [
-      "目標 17:15–18:45；預約時直接確認 combo 與總時長。",
-      "這站不是加行程，是把白天的疲累留在門外。"
-    ],
-    "categoryLabel": "💆 Spa",
-    "transport": "Short Grab from War Remnants Museum",
-    "highlights": [
-      "Massage + Hair Wash / Hair Spa",
-      "約 90 分鐘 full reset"
-    ],
-    "tips": [
-      "預約時確認 combo 與總時長。"
-    ]
-  },
-  "oc-dao": {
-    "title": "Ốc Đào · Nguyễn Trãi",
-    "emoji": "🦀",
-    "cat": "RESTAURANTS",
-    "sub": "Day 3 · Ốc + Beer Night",
-    "status": "planned",
-    "hours": "11:00–22:15 daily",
-    "maps": "https://www.google.com/maps/search/?api=1&query=%E1%BB%90c%20%C4%90%C3%A0o%20212B%2FD48%20Nguy%E1%BB%85n%20Tr%C3%A3i%20Ho%20Chi%20Minh%20City",
-    "address": "212B/D48 Nguyễn Trãi, District 1, Ho Chi Minh City, Vietnam",
-    "desc": "War Day 的尾聲不需要精緻餐桌。來 Ốc Đào 就是戴手套、點一桌螺貝海鮮，再開啤酒；熱鬧、帶點亂，反而最像 Saigon 夜晚。",
-    "signature": [
-      "各式 ốc／貝類／海鮮",
-      "越式醬汁 + beer，四人 share 最有氣氛"
-    ],
-    "worth": [
-      "19:15–19:30 到即可；今晚不再塞任何 after-dinner activity。",
-      "店內節奏 casual，重點是 ốc + beer，不要換成 polished seafood dinner。"
-    ],
-    "categoryLabel": "🍽 Restaurant",
+    "categoryLabel": "🥧 Dining",
     "price": "$",
-    "transport": "Grab from Nara Spa",
-    "highlights": [
-      "各式 ốc／貝類／海鮮",
-      "越式醬汁 + beer"
+    "transport": "Self-drive",
+    "audit": "Day 2 optional pit stop",
+    "status": "optional",
+    "itineraryRole": "Day 2 Optional Pit Stop"
+  },
+  "kohan": {
+    "title": "Kohan Japanese Restaurant",
+    "emoji": "🍣",
+    "cat": "DINING",
+    "sub": "Day 2 primary dinner · Japanese and local salmon",
+    "hours": "Daily 11:30 AM–2:00 PM · 6:00 PM–8:30 PM",
+    "maps": "https://maps.google.com/?q=Kohan+Japanese+Restaurant+Lake+Tekapo",
+    "address": "6 Rapuwai Lane, Lake Tekapo 7999, New Zealand",
+    "desc": "A relaxed dinner built around fresh salmon and Japanese comfort food after a long drive and an optional soak at Tekapo Springs.",
+    "signature": [
+      "WHY WE PICKED THIS · Fresh salmon in the place where it feels most fitting",
+      "TRY · Salmon don, Tekapo roll, sashimi or shared bentos",
+      "SUGGESTED TIME · 75–90 minutes"
     ],
-    "tips": [
-      "Dinner 後直接返 Fusion。"
-    ]
+    "worth": [
+      "WORTH IT · ★★★★★ · Best planned dinner in Tekapo",
+      "Booking is strongly recommended.",
+      "If Springs runs late, protect the reservation rather than squeezing in too many activities."
+    ],
+    "categoryLabel": "🍣 Dining",
+    "price": "$",
+    "transport": "Self-drive / walk",
+    "audit": "Day 2 primary dinner · booking advised",
+    "itineraryRole": "⭐ Day 2 Primary Dinner",
+    "status": "planned"
   },
-  "mojo-spa": {
-    "title": "Mojo Spa & Foot Massage",
-    "emoji": "🦶",
-    "cat": "SPA",
-    "sub": "Day 4 Open List · Easy walk-in reset",
-    "hours": "11:00–22:00 daily",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Mojo%20Spa%20%26%20Foot%20Massage%202%20Le%20Van%20Mien%20Thao%20Dien%20Ho%20Chi%20Minh",
-    "address": "2 Lê Văn Miến, Thảo Điền, Ho Chi Minh City, Vietnam",
-    "desc": "最適合行街途中突然想停一停的一間。主打 foot massage，位置在 Thảo Điền 核心區，不需要為 Spa 特登離開 Open List 動線。",
-    "signature": ["Foot massage", "短休息容易插入", "核心區 walk-in fallback"],
-    "worth": ["行攰先去，不用預先把下午切成一節。", "四人未必即時同時有位；到附近才問最符合 Open Day 玩法。"],
-    "categoryLabel": "🦶 Spa",
+  "mt-cook-salmon": {
+    "title": "Mt Cook Alpine Salmon",
+    "emoji": "🐟",
+    "cat": "DINING",
+    "sub": "Lake Pukaki salmon stop",
+    "hours": "Daily 9:30 AM–4:00 PM · weather permitting",
+    "maps": "https://maps.google.com/?q=Mt+Cook+Alpine+Salmon+Lake+Pukaki",
+    "address": "Lake Pukaki Visitor Centre, State Highway 80, Canterbury 7999, New Zealand",
+    "desc": "A food stop where the setting is part of the meal: salmon beside turquoise water with Aoraki / Mt Cook on the horizon.",
+    "signature": [
+      "WHY WE PICKED THIS · The journey becomes part of lunch",
+      "TRY · Sashimi, salmon salad or smoked salmon",
+      "SUGGESTED TIME · 30–45 minutes"
+    ],
+    "worth": [
+      "WORTH IT · ★★★★★ · Do not skip on a clear day",
+      "Go early for the best selection.",
+      "Treat this as a light meal so the Mt Cook walk remains comfortable."
+    ],
+    "categoryLabel": "🐟 Dining",
+    "price": "$–$",
+    "transport": "Self-drive",
+    "audit": "Planned scenic food stop",
+    "status": "planned"
+  },
+  "stoaker-room": {
+    "title": "The Stoaker Room Bistro & Bar — Wānaka",
+    "emoji": "🍽️",
+    "cat": "DINING",
+    "sub": "Day 3 primary dinner · relaxed bistro and bar",
+    "hours": "Daily 10:00 AM–9:00 PM · all-day menu 12:00 PM–7:30 PM",
+    "maps": "https://maps.google.com/?q=The+Stoaker+Room+3+Mountain+View+Drive+Wanaka+9381+New+Zealand",
+    "address": "3 Mountain View Drive, Wānaka 9381, New Zealand",
+    "desc": "A distinctive Wānaka bistro built around barrel cooking: meats, seafood and vegetables are cooked inside repurposed wine barrels over manuka and oak, giving the food a smoky, wood-fired character.",
+    "signature": [
+      "WHY GO · Signature barrel-cooked food over manuka and oak inside repurposed wine barrels",
+      "TRY · Barrel-cooked meat, seafood or vegetables with local wine",
+      "GOOD FOR · A distinctive but relaxed family dinner after the Mt Cook drive"
+    ],
+    "worth": [
+      "WORTH IT · ★★★★☆ · Best planned sit-down dinner for Day 3",
+      "Arrive before the all-day menu finishes at 7:30 pm.",
+      "Reservation contact · wanaka@thestoakerroom.co.nz · 03 445 4841"
+    ],
+    "categoryLabel": "🍽 Dining",
     "price": "$–$$",
-    "transport": "Walk-in option · 2 Lê Văn Miến",
-    "audit": "Address and daily 11:00–22:00 hours confirmed."
+    "transport": "Self-drive",
+    "audit": "Day 3 primary dinner · confirm live hours before travel",
+    "status": "planned",
+    "phone": "03 445 4841",
+    "website": "https://thestoakerroom.co.nz"
   },
-  "thao-dien-spa": {
-    "title": "Thao Dien Spa",
-    "emoji": "💆",
-    "cat": "SPA",
-    "sub": "Day 4 Open List · Massage fallback",
-    "hours": "09:00–21:00 daily",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Thao%20Dien%20Spa%2047%2F1%2F13%20Quoc%20Huong%20Ho%20Chi%20Minh",
-    "address": "47/1/13 Quốc Hương, Thảo Điền, Ho Chi Minh City, Vietnam",
-    "desc": "傳統 massage fallback。比 Mộc Hương 更像『附近有位就入』的選擇；適合 Open List 行到 Quốc Hương 一帶時再決定。",
-    "signature": ["Body massage", "Established local spa", "Quốc Hương fallback"],
-    "worth": ["不需要為它改整日路線。", "如果四人想同時做，去到附近先問當刻 capacity。"],
-    "categoryLabel": "💆 Spa",
+  "big-fig": {
+    "title": "Big Fig Wānaka",
+    "emoji": "🥗",
+    "cat": "DINING",
+    "sub": "Fast, generous family meal",
+    "hours": "Daily 8:00 AM–8:30 PM · breakfast 8:00–10:00 AM · lunch 11:00 AM–4:00 PM · dinner 5:00–8:30 PM",
+    "maps": "https://maps.google.com/?q=Big+Fig+Wanaka",
+    "address": "105 Ardmore Street, Wānaka 9305, New Zealand",
+    "desc": "A fast-casual Wānaka restaurant serving slow-cooked Middle Eastern and Mediterranean-style dishes by the plate, with generous portions and plenty of vegetables, meats and salads to mix.",
+    "signature": [
+      "FOOD · Slow-cooked Middle Eastern / Mediterranean-style plates",
+      "GOOD FOR · Mixed appetites and quick service",
+      "STYLE · Choose dishes from the counter"
+    ],
+    "worth": [
+      "WORTH IT · ★★★★☆ · Best practical Wānaka fallback",
+      "Usually easier than committing to a long restaurant meal.",
+      "Also works well for breakfast the next morning if open."
+    ],
+    "categoryLabel": "🥗 Dining",
+    "price": "$–$",
+    "transport": "Self-drive / walk",
+    "audit": "Flexible dinner option",
+    "status": "optional"
+  },
+  "federal-diner": {
+    "title": "Federal Diner",
+    "emoji": "☕",
+    "cat": "DINING",
+    "sub": "Relaxed Wānaka breakfast",
+    "hours": "Daily 7:00 AM–3:00 PM · walk-ins only",
+    "maps": "https://maps.google.com/?q=Federal+Diner+Wanaka",
+    "address": "47 Helwick Street, Wānaka 9305, New Zealand",
+    "desc": "A Wānaka breakfast and brunch cafe serving eggs, toast, baked dishes, coffee and other modern cafe food before the Crown Range drive.",
+    "signature": [
+      "FOOD · Breakfast, brunch and coffee",
+      "GOOD FOR · Proper sit-down breakfast",
+      "ROUTE FIT · Before leaving Wānaka"
+    ],
+    "worth": [
+      "WORTH IT · ★★★★☆ · Choose if nobody is rushing",
+      "Leave by around 09:30 to protect the Cardrona stop."
+    ],
+    "categoryLabel": "☕ Dining",
+    "price": "$–$",
+    "transport": "Self-drive / walk",
+    "audit": "Breakfast option",
+    "status": "optional"
+  },
+  "lake-pukaki": {
+    "guideType": "SCENIC",
+    "title": "Lake Pukaki Lookout",
+    "emoji": "📸",
+    "cat": "ATTRACTIONS",
+    "sub": "Signature turquoise-lake view",
+    "maps": "https://www.google.com/maps/search/?api=1&query=Tapataia+Mahaka+Peters+Lookout%2C+Mount+Cook+Road%2C+Ben+Ohau+7999",
+    "address": "Tapataia Mahaka / Peter's Lookout, Mount Cook Road (SH80), Ben Ohau 7999, New Zealand",
+    "desc": "The essential photo stop on the Mt Cook day, with turquoise water and Aoraki / Mt Cook framed at the far end of the lake.",
+    "signature": [
+      "WHY STOP · One of the defining South Island views",
+      "SUGGESTED TIME · 15–25 minutes",
+      "BEST FOR · Clear morning visibility"
+    ],
+    "worth": [
+      "WORTH IT · ★★★★★ · Never skip in clear weather",
+      "It can be very windy; keep jackets accessible.",
+      "If cloud hides Mt Cook, the lake colour is still worth the stop."
+    ],
+    "categoryLabel": "📍 Scenic Stop",
+    "price": "Free",
+    "transport": "Self-drive",
+    "audit": "Must stop",
+    "status": "planned",
+    "addressAudit": "OFFICIAL / VERIFIED"
+  },
+  "hooker-valley": {
+    "title": "Hooker Valley Track — Short Section",
+    "emoji": "🥾",
+    "cat": "ACTIVITIES",
+    "sub": "Flexible alpine family walk",
+    "duration": "40–90 minutes · turn around at the first or second bridge",
+    "meetingPoint": "White Horse Hill Car Park, end of Hooker Valley Road",
+    "maps": "https://www.google.com/maps/search/?api=1&query=White+Horse+Hill+Car+Park%2C+Hooker+Valley+Road%2C+Aoraki+Mount+Cook",
+    "address": "White Horse Hill Car Park, end of Hooker Valley Road, Aoraki / Mount Cook National Park 7999, New Zealand",
+    "desc": "A flexible out-and-back walk: the first suspension bridge already delivers alpine scenery, so there is no pressure to complete the full track.",
+    "signature": [
+      "WHY WE PICKED THIS · Big mountain views without committing to a long hike",
+      "FAMILY FIT · Choose 40–90 minutes based on energy",
+      "TURNAROUND · First bridge or second bridge"
+    ],
+    "worth": [
+      "WORTH IT · ★★★★★ · The main experience of Day 3",
+      "Wear layers and proper shoes; alpine wind changes quickly.",
+      "Turn back early if weather, visibility or timing deteriorates."
+    ],
+    "categoryLabel": "🥾 Experience",
+    "price": "Free",
+    "transport": "Self-drive + walk",
+    "audit": "Weather-sensitive",
+    "status": "optional",
+    "addressAudit": "OFFICIAL / VERIFIED"
+  },
+  "lindis-pass": {
+    "guideType": "SCENIC",
+    "title": "Lindis Pass Lookout",
+    "emoji": "🏔️",
+    "cat": "ATTRACTIONS",
+    "sub": "High-country tussock landscape",
+    "maps": "https://www.google.com/maps/search/?api=1&query=Lindis+Pass+Lookout%2C+State+Highway+8%2C+Otago",
+    "address": "Lindis Pass Lookout, State Highway 8, Lindis Pass, Otago, New Zealand",
+    "desc": "A short roadside viewpoint over sweeping golden tussock hills on the long run toward Wānaka.",
+    "signature": [
+      "WHY STOP · A landscape completely different from Pukaki and Mt Cook",
+      "SUGGESTED TIME · 10–15 minutes",
+      "BEST FOR · A leg stretch late in the drive"
+    ],
+    "worth": [
+      "WORTH IT · ★★★★☆ · Keep if daylight remains",
+      "Use only the signed lookout parking area.",
+      "Wind and cold can make this a very quick stop."
+    ],
+    "categoryLabel": "📍 Scenic Stop",
+    "price": "Free",
+    "transport": "Self-drive",
+    "audit": "Planned stop",
+    "status": "planned",
+    "addressAudit": "OFFICIAL / VERIFIED"
+  },
+  "wanaka-tree": {
+    "guideType": "SCENIC",
+    "title": "That Wānaka Tree",
+    "emoji": "🌳",
+    "cat": "ATTRACTIONS",
+    "sub": "Flexible lakefront photo stop",
+    "maps": "https://maps.google.com/?q=That+Wanaka+Tree",
+    "address": "121 Ardmore Street, Wānaka 9305, New Zealand",
+    "desc": "A quick iconic photo stop, but not worth forcing into a tired evening if light or weather is poor.",
+    "signature": [
+      "WHY STOP · Easy signature Wānaka image",
+      "SUGGESTED TIME · 15–25 minutes",
+      "BEST TIME · Evening or next morning depending on light"
+    ],
+    "worth": [
+      "WORTH IT · ★★★☆☆ · Flexible, not essential",
+      "Move it to Day 4 morning if arrival is late.",
+      "Stay on the shore and respect the protected tree."
+    ],
+    "categoryLabel": "📍 Scenic Stop",
+    "price": "Free",
+    "transport": "Self-drive + walk",
+    "audit": "Flexible stop",
+    "status": "optional"
+  },
+  "cardrona": {
+    "title": "Cardrona Hotel",
+    "emoji": "🏨",
+    "cat": "ATTRACTIONS",
+    "sub": "Historic alpine-road stop",
+    "maps": "https://www.google.com/maps/search/?api=1&query=Cardrona+Hotel%2C+2312+Cardrona+Valley+Road%2C+Wanaka",
+    "address": "2312 Cardrona Valley Road, RD2 Wānaka, New Zealand",
+    "desc": "A photogenic historic pub and easy coffee stop that breaks the Crown Range drive naturally.",
+    "signature": [
+      "WHY STOP · Character, coffee and a classic roadside photo",
+      "SUGGESTED TIME · 20–30 minutes",
+      "DON’T MISS · Historic frontage and garden"
+    ],
+    "worth": [
+      "WORTH IT · ★★★★☆ · Best stop on the Wānaka–Queenstown leg",
+      "Roadside parking can be busy; use marked areas."
+    ],
+    "categoryLabel": "📍 Scenic Stop",
+    "price": "$–$",
+    "transport": "Self-drive",
+    "audit": "Planned stop",
+    "status": "planned",
+    "addressAudit": "OFFICIAL / VERIFIED"
+  },
+  "puzzling-world": {
+    "guideType": "ADMISSION",
+    "title": "Puzzling World",
+    "emoji": "🧩",
+    "cat": "ATTRACTIONS",
+    "sub": "Wānaka puzzles and maze",
+    "maps": "https://maps.google.com/?q=Puzzling+World+188+W%C4%81naka%E2%80%93Luggate+Highway%2C+W%C4%81naka+9382%2C+New+Zealand",
+    "address": "188 Wānaka–Luggate Highway, Wānaka 9382, New Zealand",
+    "desc": "A playful final Wānaka stop before the Crown Range drive, with illusion rooms and the outdoor maze.",
+    "signature": [
+      "WHY GO · Easy family activity before the transfer",
+      "SUGGESTED TIME · 90–120 minutes",
+      "ROUTE FIT · Before Cardrona and Queenstown"
+    ],
+    "worth": [
+      "Allow enough time to leave for Cardrona and the Frankton grocery stop."
+    ],
+    "categoryLabel": "🧩 Attractions",
+    "price": "Combo: Adult NZ$32.50 · Child 5–15 NZ$23.50 · Family (2A+2C) NZ$99",
+    "transport": "Self-drive / walk",
+    "audit": "M4.7 master integration",
+    "status": "planned",
+    "hours": "Daily from 9:00 am · Last admission 4:30 pm · Closed Christmas Day",
+    "website": "https://www.puzzlingworld.co.nz/prices-and-deals/",
+    "visitorReminder": "Please check the official website or Google Maps for the latest opening hours and admission prices."
+  },
+  "pedros": {
+    "title": "Pedro's House of Lamb",
+    "emoji": "🍖",
+    "cat": "DINING",
+    "sub": "First-night Queenstown takeaway",
+    "hours": "Daily 12:00 PM–7:45 PM · pickup and delivery",
+    "maps": "https://maps.google.com/?q=Pedro%27s+House+of+Lamb+47+Gorge+Road%2C+Queenstown+9300%2C+New+Zealand",
+    "address": "47 Gorge Road, Queenstown 9300, New Zealand",
+    "desc": "A Queenstown takeaway specialising in slow-cooked lamb served with potatoes — simple to collect and share at the Airbnb on the first group evening.",
+    "signature": [
+      "FOOD · Slow-cooked lamb and potatoes",
+      "GOOD FOR · Shared takeaway dinner",
+      "ROUTE FIT · Easy pickup before returning to the Airbnb"
+    ],
+    "worth": [
+      "Order timing should suit a group of 11."
+    ],
+    "categoryLabel": "🍖 Dining",
+    "price": "$",
+    "transport": "Self-drive / takeaway",
+    "audit": "M4.7 master integration",
+    "status": "planned"
+  },
+  "skyline": {
+    "title": "Skyline Queenstown",
+    "emoji": "🚡",
+    "cat": "ACTIVITIES",
+    "sub": "Gondola and Luge",
+    "experienceTime": "Day 6 morning · booking time not set",
+    "duration": "Allow half a day",
+    "meetingPoint": "Skyline Queenstown, 53 Brecon Street, Queenstown",
+    "bookingNote": "Book ahead for 11 travellers.",
+    "maps": "https://maps.google.com/?q=Skyline+Queenstown+53+Brecon+Street%2C+Queenstown+9300%2C+New+Zealand",
+    "address": "53 Brecon Street, Queenstown 9300, New Zealand",
+    "desc": "The main active Queenstown day with the Gondola, Luge and views over Lake Wakatipu.",
+    "signature": [
+      "WHY GO · Classic Queenstown family experience",
+      "GROUP FIT · Good for mixed ages",
+      "SUGGESTED TIME · Half day"
+    ],
+    "worth": [
+      "Book ahead for 11 travellers and allow a group departure buffer."
+    ],
+    "categoryLabel": "🚡 Activities",
+    "price": "Gondola: Adult NZ$69 · Child NZ$48 · Gondola + 3 Luge: Adult NZ$99 · Child NZ$68",
+    "transport": "Self-drive / walk",
+    "audit": "M4.7 master integration",
+    "status": "planned",
+    "phone": "+64 3 441 0101",
+    "website": "https://queenstown.skyline.co.nz/pricing-and-packages/"
+  },
+  "kiwi-park": {
+    "title": "Kiwi Park Queenstown",
+    "emoji": "🐦",
+    "cat": "ACTIVITIES",
+    "sub": "Native wildlife park",
+    "duration": "Allow 1.5–2 hours",
+    "meetingPoint": "Kiwi Park Queenstown, 51 Brecon Street, Queenstown",
+    "bookingNote": "Flexible add-on after Skyline · no booking currently recorded.",
+    "maps": "https://maps.google.com/?q=Kiwi+Park+Queenstown+51+Brecon+Street%2C+Queenstown+9300%2C+New+Zealand",
+    "address": "51 Brecon Street, Queenstown 9300, New Zealand",
+    "desc": "A flexible native wildlife visit beside Skyline, planned for the afternoon.",
+    "signature": [
+      "WHY GO · See kiwi and native species",
+      "ROUTE FIT · Directly beside Skyline",
+      "SUGGESTED TIME · 1.5–2 hours"
+    ],
+    "worth": [
+      "Treat as optional if the group is tired after Skyline and Luge."
+    ],
+    "categoryLabel": "🐦 Activities",
+    "price": "$",
+    "transport": "Self-drive / walk",
+    "audit": "M4.7 master integration",
+    "status": "planned"
+  },
+  "winnies": {
+    "title": "Winnie's Gourmet Pizza Bar",
+    "emoji": "🍕",
+    "cat": "DINING",
+    "sub": "Queenstown group dinner",
+    "hours": "Mon–Wed 4:00 PM–late · Thu–Sun 12:00 PM–late",
+    "maps": "https://maps.google.com/?q=Winnie%27s+Gourmet+Pizza+Bar+7%E2%80%939+The+Mall%2C+Queenstown+9300%2C+New+Zealand",
+    "address": "7–9 The Mall, Queenstown 9300, New Zealand",
+    "desc": "A central Queenstown pizza restaurant serving gourmet pizzas, pasta and casual bar food, suitable for a large mixed-age group.",
+    "signature": [
+      "FOOD · Gourmet pizza, pasta and casual bar food",
+      "GOOD FOR · Large family group",
+      "STYLE · Casual sit-down dinner"
+    ],
+    "worth": [
+      "A booking is sensible for 11 people."
+    ],
+    "categoryLabel": "🍕 Dining",
+    "price": "$",
+    "transport": "Walk",
+    "audit": "M4.7 master integration",
+    "status": "planned"
+  },
+  "arrowtown": {
+    "guideType": "SCENIC",
+    "title": "Historic Arrowtown",
+    "emoji": "🏘️",
+    "cat": "ATTRACTIONS",
+    "sub": "Historic gold-rush town",
+    "maps": "https://maps.google.com/?q=Historic+Arrowtown+Buckingham+Street%2C+Arrowtown+9302%2C+New+Zealand",
+    "address": "Buckingham Street, Arrowtown 9302, New Zealand",
+    "desc": "A relaxed morning exploring Arrowtown, its main street and gold-rush history.",
+    "signature": [
+      "WHY GO · History, shops and easy walking",
+      "SUGGESTED TIME · Half morning",
+      "ROUTE FIT · Before Deer Park Heights"
+    ],
+    "worth": [
+      "Park once and explore the centre on foot."
+    ],
+    "categoryLabel": "🏘️ Attractions",
+    "price": "Free",
+    "transport": "Self-drive / walk",
+    "audit": "M4.7 master integration",
+    "status": "planned"
+  },
+  "chinese-settlement": {
+    "guideType": "SCENIC",
+    "title": "Arrowtown Chinese Settlement",
+    "emoji": "🏚️",
+    "cat": "ATTRACTIONS",
+    "sub": "Historic settlement walk",
+    "maps": "https://maps.google.com/?q=Arrowtown+Chinese+Settlement+Chinese+Village%2C+Arrowtown+9302%2C+New+Zealand",
+    "address": "Chinese Village, Arrowtown 9302, New Zealand",
+    "desc": "A short heritage walk through the preserved huts and stories of Chinese gold miners.",
+    "signature": [
+      "WHY GO · Adds context to Arrowtown history",
+      "SUGGESTED TIME · 30–45 minutes",
+      "ROUTE FIT · Walk from town centre"
+    ],
+    "worth": [
+      "Paths can be uneven or damp."
+    ],
+    "categoryLabel": "🏚️ Attractions",
+    "price": "Free",
+    "transport": "Walk",
+    "audit": "M4.7 master integration",
+    "status": "planned"
+  },
+  "deer-park": {
+    "title": "Deer Park Heights",
+    "emoji": "🦌",
+    "cat": "ACTIVITIES",
+    "sub": "Scenic drive and animals",
+    "experienceTime": "Target 1:30 PM",
+    "meetingPoint": "Deer Park Heights entrance, 432 Peninsula Road, Kelvin Heights",
+    "bookingNote": "Vehicle entry must be booked and linked to the correct registration.",
+    "maps": "https://maps.google.com/?q=Deer+Park+Heights+432+Peninsula+Road%2C+Kelvin+Heights%2C+Queenstown+9300%2C+New+Zealand",
+    "address": "432 Peninsula Road, Kelvin Heights, Queenstown 9300, New Zealand",
+    "desc": "A self-drive scenic experience with animals and wide Queenstown views.",
+    "signature": [
+      "WHY GO · Views and animal encounters from the car",
+      "TIME · Target 1:30 pm",
+      "BOOKING · Vehicle access required"
+    ],
+    "worth": [
+      "Vehicle registration and booking must be confirmed before departure."
+    ],
+    "categoryLabel": "🦌 Activities",
+    "price": "$",
+    "transport": "Self-drive",
+    "audit": "M4.7 master integration",
+    "status": "planned"
+  },
+  "lone-star": {
+    "title": "Lone Star Queenstown",
+    "emoji": "🍽️",
+    "cat": "DINING",
+    "sub": "Casual group dinner",
+    "hours": "2:00 PM → 10:00 AM",
+    "maps": "https://maps.google.com/?q=Lone+Star+Queenstown+14+Brecon+Street%2C+Queenstown+9300%2C+New+Zealand",
+    "address": "14 Brecon Street, Queenstown 9300, New Zealand",
+    "desc": "A casual Queenstown restaurant serving large portions of ribs, steaks, burgers and other hearty New Zealand-style meals.",
+    "signature": [
+      "FOOD · Ribs, steaks, burgers and hearty mains",
+      "GOOD FOR · Large appetites and family groups",
+      "STYLE · Casual sit-down dinner"
+    ],
+    "worth": [
+      "Book ahead for a group of 11."
+    ],
+    "categoryLabel": "🍽️ Dining",
+    "price": "$",
+    "transport": "Walk",
+    "audit": "M4.7 master integration",
+    "status": "planned"
+  },
+  "lakefront-lodge": {
+    "title": "Lakefront Lodge",
+    "emoji": "🏨",
+    "cat": "STAY",
+    "sub": "Confirmed · 3 rooms · 29 Sep–1 Oct",
+    "hours": "Daily 4:30 PM\u2013late",
+    "maps": "https://maps.google.com/?q=Lakefront+Lodge+58+Lakefront+Drive%2C+Te+Anau+9600%2C+New+Zealand",
+    "address": "58 Lakefront Drive, corner of Lakefront and Mokoroa, Te Anau 9600, New Zealand",
+    "desc": "A practical Te Anau base for all three families, with three apartments and an easy pickup point for the Milford Sound tour.",
+    "signature": [
+      "Three apartments for the group",
+      "Lakefront location close to Te Anau town",
+      "Convenient hotel pickup for the Milford Sound tour"
+    ],
+    "worth": [
+      "Prepare breakfast, waterproof layers and charged devices for Milford the night before."
+    ],
+    "categoryLabel": "🏨 Stay",
+    "price": "AUD 1,541.13 paid · actual net cash cost AUD 1,391.13",
+    "transport": "Self-drive / walk",
+    "audit": "CONFIRMED BOOKING / GUIDE STANDARDISED",
+    "status": "confirmed"
+  },
+  "te-anau-bird": {
+    "title": "Te Anau Bird Sanctuary",
+    "emoji": "🐦",
+    "cat": "ATTRACTIONS",
+    "sub": "Native bird sanctuary",
+    "maps": "https://maps.google.com/?q=Te+Anau+Bird+Sanctuary+Punanga+Manu+o+Te+Ana-au%2C+Lakefront+Drive%2C+Te+Anau+9600%2C+New+Zealand",
+    "address": "Punanga Manu o Te Ana-au, Lakefront Drive, Te Anau 9600, New Zealand",
+    "desc": "A gentle afternoon visit after checking in at Te Anau.",
+    "signature": [
+      "WHY GO · Low-effort native wildlife stop",
+      "TIME · Target 3:00 pm",
+      "ROUTE FIT · Close to Lakefront Lodge"
+    ],
+    "worth": [
+      "Keep the visit short if the group needs rest before Milford."
+    ],
+    "categoryLabel": "🐦 Attractions",
+    "price": "Free",
+    "transport": "Self-drive / walk",
+    "audit": "M4.7 master integration",
+    "status": "planned"
+  },
+  "milford": {
+    "title": "Luxe Tours — Premium Milford Sound Day Tour",
+    "emoji": "🚌",
+    "cat": "ACTIVITIES",
+    "sub": "Confirmed Day 9 premium small-group coach and cruise tour",
+    "experienceTime": "Be ready 8:55 AM · pickup approximately 9:05–9:15 AM",
+    "duration": "Approximately 8.5 hours · return around 5:30 PM",
+    "meetingPoint": "Lakefront Lodge main entrance near the street",
+    "maps": "https://www.google.com/maps/search/?api=1&query=Lakefront+Lodge%2C+58+Lakefront+Drive%2C+Te+Anau+9600%2C+New+Zealand",
+    "address": "Hotel pickup: Lakefront Lodge, 58 Lakefront Drive, Te Anau 9600, New Zealand",
+    "desc": "A confirmed premium small-group journey from Te Anau to Milford Sound with Luxe Tours, combining a spacious Mercedes coach, local driver-guide, scenic Milford Road stops and a two-hour RealNZ cruise.",
+    "signature": [
+      "WHY GO · Premium small-group touring with a maximum of 13 guests, spacious leather seating and up to 60% more legroom",
+      "INCLUDED · Te Anau accommodation pickup and drop-off, morning café snack, tea, coffee, chilled water and a two-hour RealNZ Milford Sound cruise",
+      "FORMAT · Approximately 8.5 hours with scenic photo stops, short nature experiences and reserved Luxe seating on the cruise"
+    ],
+    "worth": [
+      "EXPECTED STOPS · Te Anau Downs, Eglinton Valley, Mirror Lakes, Knobs Flat, Hollyford Valley Lookout, Monkey Creek, a short beech-rainforest nature walk and local waterfall or river stops selected by the guide.",
+      "Stops are indicative only and may change with weather, road conditions, timing, wildlife and guide discretion.",
+      "Be ready outside Lakefront Lodge near the street by 8:55 AM and keep the booking mobile switched on.",
+      "Bring a warm waterproof jacket, warm layers, comfortable walking shoes, sandfly repellent, medication and sufficient camera or phone storage.",
+      "Lunch is not currently arranged. Prepare food beforehand or purchase food on the cruise; confirm the final lunch plan later."
+    ],
+    "categoryLabel": "🚌 Activities",
+    "price": "NZD 2,749 total · pay later",
+    "transport": "Luxe Tours premium small-group coach + RealNZ cruise",
+    "audit": "CONFIRMED · Order MSDTV10NT4",
+    "status": "booked",
+    "phone": "+64 21 090 75802",
+    "website": "https://www.luxetours.co.nz/luxe-milford-sound-day-tour",
+    "bookingUrl": "https://www.luxetours.co.nz/luxe-milford-sound-day-tour",
+    "bookingId": "luxe-milford-booking",
+    "addressAudit": "OFFICIAL TOUR DETAILS + SUPPLIED BOOKING CONFIRMATION"
+  },
+  "hydro-glowworm": {
+    "title": "Te Anau Glowworm Caves",
+    "emoji": "✨",
+    "cat": "ACTIVITIES",
+    "sub": "Milford backup option",
+    "meetingPoint": "RealNZ Visitor Centre, 85 Lakefront Drive, Te Anau",
+    "bookingNote": "Book only if Milford is cancelled and suitable availability remains.",
+    "maps": "https://maps.google.com/?q=Te+Anau+Glowworm+Caves+85+Lakefront+Drive%2C+Te+Anau+9600%2C+New+Zealand",
+    "address": "85 Lakefront Drive, Te Anau 9600, New Zealand",
+    "desc": "A practical backup only if Milford is cancelled and suitable availability remains.",
+    "signature": [
+      "ROLE · Weather-disruption backup",
+      "BOOKING · Subject to availability",
+      "ROUTE FIT · Te Anau lakefront"
+    ],
+    "worth": [
+      "Do not book as a conflicting main activity unless Milford is cancelled."
+    ],
+    "categoryLabel": "✨ Activities",
+    "price": "$",
+    "transport": "Self-drive / walk",
+    "audit": "M4.7 master integration",
+    "status": "optional"
+  },
+  "airport-queenstown": {
+    "title": "Queenstown Airport",
+    "emoji": "✈️",
+    "cat": "ATTRACTIONS",
+    "sub": "Departure point",
+    "hours": "Airport hours",
+    "maps": "https://maps.google.com/?q=Queenstown+Airport+Sir+Henry+Wigley+Drive%2C+Frankton%2C+Queenstown+9300%2C+New+Zealand",
+    "address": "Sir Henry Wigley Drive, Frankton, Queenstown 9300, New Zealand",
+    "desc": "Final departure point for the Lee family on 1 October.",
+    "signature": [
+      "FLIGHT · ZQN to MEL at 6:30 pm",
+      "CAR RETURN · Target 3:00 pm",
+      "TERMINAL · Enter by 3:15 pm"
+    ],
+    "worth": [],
+    "categoryLabel": "✈️ Attractions",
+    "price": "Free",
+    "transport": "Self-drive",
+    "audit": "M4.7 master integration",
+    "status": "planned"
+  },
+  "edgewater": {
+    "title": "Edgewater",
+    "emoji": "🏨",
+    "cat": "STAY",
+    "sub": "Confirmed · 24–25 Sep",
+    "hours": "3:00 PM → 10:30 AM",
+    "maps": "https://maps.google.com/?q=Edgewater",
+    "address": "54 Sargood Drive, Wānaka 9305, New Zealand",
+    "desc": "Chosen as the preferred Wānaka stop after the long Aoraki / Mt Cook driving day, with a Premium Suite and an easy lakeside setting for a quiet evening.",
+    "signature": [
+      "Premium Suite for the Lee family",
+      "Lakefront setting for a quiet arrival evening",
+      "On-site restaurant avoids extra driving after Mt Cook"
+    ],
+    "worth": [
+      "That Wānaka Tree and the lakefront are nearby for the following morning.",
+      "Big Fig remains the town-centre dinner alternative."
+    ],
+    "categoryLabel": "🏨 Stay",
+    "price": "AUD 402.47 paid; net AUD 343.82 after cashback",
+    "transport": "Self-drive / walk",
+    "audit": "NZ Master Itinerary v3.0",
+    "status": "confirmed"
+  },
+  "quake-city": {
+    "guideType": "ADMISSION",
+    "title": "Quake City",
+    "emoji": "📍",
+    "cat": "ATTRACTIONS",
+    "sub": "Short local-history visit",
+    "maps": "https://maps.google.com/?q=Quake%20City",
+    "address": "299 Durham Street North, Christchurch Central City, Christchurch 8013, New Zealand",
+    "desc": "A hands-on museum explaining the earthquakes that struck Christchurch and Canterbury, the science behind them and how the city recovered. Interactive exhibits include a liquefaction demonstration, making it suitable for both adults and children.",
+    "signature": [
+      "WHAT IT IS · Christchurch earthquake museum",
+      "SEE · Interactive liquefaction demonstration and recovery stories",
+      "SUGGESTED TIME · 45–60 minutes"
+    ],
+    "worth": [
+      "Tickets are available on arrival; individual visitors generally do not need to pre-book."
+    ],
+    "categoryLabel": "📍 Experience",
+    "transport": "Self-drive / walk",
+    "audit": "OFFICIAL TRAVELLER-SUPPLIED SCREENSHOTS · SEP–MAY HOURS AND ADMISSION",
+    "status": "planned",
+    "hours": "Daily 10:00 am–5:00 pm · Closed Christmas Day",
+    "price": "Adult NZ$25 · Student/Senior NZ$20 · Under 15 free with an adult",
+    "website": "https://quakecity.co.nz/visit/ticketing",
+    "visitorReminder": "Please check the official website or Google Maps for the latest opening hours and admission prices."
+  },
+  "mackenzies": {
+    "title": "Mackenzies Cafe Bar & Grill",
+    "emoji": "🍽️",
+    "cat": "DINING",
+    "sub": "Day 2 dinner alternative · Cafe bar and grill",
+    "hours": "Daily 11:30 AM–8:00 PM",
+    "maps": "https://www.google.com/maps/search/?api=1&query=Mackenzies+Bar+and+Grill%2C+Lake+Tekapo+Shopping+Centre",
+    "address": "Unit 1, Lake Tekapo Shopping Centre, State Highway 8, Lake Tekapo 7945, New Zealand",
+    "desc": "A Lake Tekapo cafe, bar and grill serving New Zealand-style breakfast, cafe meals and hearty grill dishes; useful for either an easy breakfast or a relaxed dinner near the lakefront.",
+    "signature": [
+      "FOOD · Breakfast, cafe classics and grill dishes",
+      "GOOD FOR · Easy sit-down meal in Tekapo",
+      "ROLE · Breakfast or dinner alternative"
+    ],
+    "worth": [],
+    "categoryLabel": "🍽 Dining",
+    "transport": "Self-drive / walk",
+    "audit": "Day 2 dinner alternative",
+    "status": "optional",
+    "itineraryRole": "Day 2 Dinner Alternative",
+    "addressAudit": "OFFICIAL / VERIFIED"
+  },
+  "wanaka-lavender": {
+    "guideType": "ADMISSION",
+    "title": "Wānaka Lavender Farm",
+    "emoji": "📍",
+    "cat": "ATTRACTIONS",
+    "sub": "Weather and timing dependent stop",
+    "hours": "September–May · daily 9:00 AM–5:00 PM",
+    "price": "Adult NZD 8 · Child NZD 4 · Infants free",
+    "maps": "https://maps.google.com/?q=W%C4%81naka%20Lavender%20Farm",
+    "address": "36 Morris Road, Wānaka 9382, New Zealand",
+    "desc": "Visit the seasonal lavender gardens, meet the farm animals and browse the artisan shop during the Wānaka stop.",
+    "signature": [
+      "WHAT IT IS · Seasonal lavender gardens and farm animals",
+      "GOOD FOR · Photos and a gentle family stop",
+      "SUGGESTED TIME · 45–75 minutes"
+    ],
+    "worth": [
+      "Tickets are available on arrival; individual visitors generally do not need to pre-book."
+    ],
+    "categoryLabel": "📍 Experience",
+    "transport": "Self-drive / walk",
+    "audit": "OFFICIAL TRAVELLER-SUPPLIED SCREENSHOTS · SEP–MAY HOURS AND ADMISSION",
+    "status": "planned"
+  },
+  "tasman-blue-lakes": {
+    "title": "Tasman Glacier Viewpoint / Blue Lakes",
+    "emoji": "📍",
+    "cat": "ACTIVITIES",
+    "sub": "Poor-weather Hooker Valley alternative",
+    "duration": "About 60–90 minutes return",
+    "meetingPoint": "Tasman Glacier Car Park, end of Tasman Valley Road",
+    "maps": "https://www.google.com/maps/search/?api=1&query=Tasman+Glacier+Car+Park%2C+Tasman+Valley+Road%2C+Mount+Cook",
+    "address": "Tasman Glacier Car Park, end of Tasman Valley Road, Aoraki / Mount Cook National Park 7999, New Zealand",
+    "desc": "A short Aoraki / Mt Cook walk to viewpoints over the Tasman Glacier terminal lake and the former Blue Lakes. Use it as the shorter poor-weather alternative to the Hooker Valley section.",
+    "signature": [
+      "WHAT YOU SEE · Tasman Glacier lake and moraine landscape",
+      "ROLE · Shorter alternative to Hooker Valley",
+      "SUGGESTED TIME · About 60–90 minutes return"
+    ],
+    "worth": [],
+    "categoryLabel": "📍 Experience",
+    "transport": "Self-drive / walk",
+    "audit": "NZ Master Itinerary v3.0",
+    "status": "optional",
+    "addressAudit": "OFFICIAL / VERIFIED"
+  },
+  "fergbaker": {
+    "title": "Fergbaker",
+    "emoji": "🍽️",
+    "cat": "DINING",
+    "sub": "Queenstown bakery option",
+    "hours": "Daily 6:00 AM–2:00 AM",
+    "maps": "https://maps.google.com/?q=Fergbaker",
+    "address": "40 Shotover Street, Queenstown 9300, New Zealand",
+    "desc": "A busy Queenstown bakery beside Fergburger, known for pies, pastries, sandwiches and sweet baked goods. It is useful for a quick breakfast or takeaway lunch rather than a long sit-down meal.",
+    "signature": [
+      "FOOD · Savoury pies, pastries, sandwiches and sweets",
+      "GOOD FOR · Fast breakfast or takeaway lunch",
+      "EXPECT · Queues at popular times"
+    ],
+    "worth": [],
+    "categoryLabel": "🍽 Dining",
+    "transport": "Self-drive / walk",
+    "audit": "NZ Master Itinerary v3.0",
+    "status": "planned"
+  },
+  "flame": {
+    "title": "Flame Bar & Grill",
+    "emoji": "🍽️",
+    "cat": "DINING",
+    "sub": "Queenstown group dinner",
+    "hours": "Daily 12:00 PM–10:00 PM · last bookings 9:45 PM",
+    "maps": "https://maps.google.com/?q=Flame%20Bar%20%26%20Grill",
+    "address": "61 Beach Street, Queenstown 9300, New Zealand",
+    "desc": "A central Queenstown grill restaurant best suited to a hearty group dinner, with ribs, steaks, burgers and other flame-grilled dishes.",
+    "signature": [
+      "FOOD · Ribs, steaks, burgers and grills",
+      "GOOD FOR · Hearty family dinner",
+      "STYLE · Casual sit-down restaurant"
+    ],
+    "worth": [],
+    "categoryLabel": "🍽 Dining",
+    "transport": "Self-drive / walk",
+    "audit": "NZ Master Itinerary v3.0",
+    "status": "planned"
+  },
+  "saigon-kingdom": {
+    "title": "Saigon Kingdom Viet",
+    "emoji": "🍽️",
+    "cat": "DINING",
+    "sub": "Queenstown Vietnamese option",
+    "hours": "Daily 12:00 PM–9:30 PM",
+    "maps": "https://www.google.com/maps/search/?api=1&query=Saigon+Kingdom%2C+88+Beach+Street%2C+Queenstown+9300",
+    "address": "88 Beach Street, Queenstown 9300, New Zealand",
+    "desc": "A Vietnamese restaurant in the Frankton area serving familiar noodle soups, rice dishes and other Vietnamese comfort food — practical before the airport or while shopping nearby.",
+    "signature": [
+      "FOOD · Vietnamese noodle soups, rice dishes and classics",
+      "GOOD FOR · Quick casual lunch",
+      "ROUTE FIT · Frankton / airport side of Queenstown"
+    ],
+    "worth": [],
+    "categoryLabel": "🍽 Dining",
+    "transport": "Self-drive / walk",
+    "audit": "NZ Master Itinerary v3.0",
+    "status": "planned",
+    "addressAudit": "OFFICIAL / VERIFIED"
+  },
+  "glenorchy-paradise": {
+    "guideType": "SCENIC",
+    "title": "Glenorchy / Paradise Scenic Drive",
+    "emoji": "📍",
+    "cat": "ATTRACTIONS",
+    "sub": "Flexible half-day scenic option",
+    "maps": "https://maps.google.com/?q=Glenorchy%20%2F%20Paradise%20Scenic%20Drive",
+    "address": "Glenorchy, Otago, New Zealand",
+    "desc": "A scenic drive from Queenstown along Lake Wakatipu to Glenorchy, with optional continuation toward Paradise for mountain, river and valley views. Allow a half day rather than treating it as a quick stop.",
+    "signature": [
+      "WHAT IT IS · Lake-and-mountain scenic drive",
+      "SUGGESTED TIME · Half day",
+      "NOTE · Road and weather conditions determine how far to continue"
+    ],
+    "worth": [],
+    "categoryLabel": "📍 Experience",
+    "transport": "Self-drive / walk",
+    "audit": "NZ Master Itinerary v3.0",
+    "status": "optional",
+    "addressAudit": "AREA / ROUTE CARD · navigation target intentionally uses a route or area, not a storefront address"
+  },
+  "mrs-woollys": {
+    "title": "Mrs Woolly's General Store",
+    "emoji": "🍽️",
+    "cat": "DINING",
+    "sub": "Glenorchy lunch option",
+    "hours": "Sun–Thu 8:30 AM–5:30 PM · Fri–Sat 8:30 AM–6:00 PM",
+    "maps": "https://maps.google.com/?q=Mrs%20Woolly's%20General%20Store",
+    "address": "64 Oban Street, Glenorchy 9372, New Zealand",
+    "desc": "A Glenorchy general store and cafe offering cabinet food, pies, sandwiches, coffee and groceries — a convenient lunch stop during the scenic drive.",
+    "signature": [
+      "FOOD · Pies, sandwiches, cabinet food and coffee",
+      "GOOD FOR · Quick Glenorchy lunch",
+      "EXTRA · General-store supplies"
+    ],
+    "worth": [],
+    "categoryLabel": "🍽 Dining",
+    "transport": "Self-drive / walk",
+    "audit": "NZ Master Itinerary v3.0",
+    "status": "planned"
+  },
+  "skippers-4wd": {
+    "title": "Skippers Canyon 4WD Tour",
+    "emoji": "📍",
+    "cat": "ACTIVITIES",
+    "sub": "Pre-booked activity option",
+    "meetingPoint": "Info & Track, 37 Shotover Street, Queenstown",
+    "bookingNote": "Operator activity · confirm the final tour time and pickup instructions.",
+    "maps": "https://www.google.com/maps/search/?api=1&query=Info+and+Track%2C+37+Shotover+Street%2C+Queenstown+9300",
+    "address": "Info & Track, 37 Shotover Street, Queenstown 9300, New Zealand",
+    "desc": "A guided four-wheel-drive excursion into historic Skippers Canyon, combining narrow mountain roads, gold-mining history and dramatic river views. This is an operator-led activity rather than a self-drive route.",
+    "signature": [
+      "WHAT IT IS · Guided 4WD canyon tour",
+      "WHY GO · Scenery and gold-mining history",
+      "BOOKING · Pre-booked operator activity"
+    ],
+    "worth": [],
+    "categoryLabel": "📍 Experience",
+    "transport": "Self-drive / walk",
+    "audit": "NZ Master Itinerary v3.0",
+    "status": "optional",
+    "addressAudit": "OFFICIAL / VERIFIED"
+  },
+  "arrowtown-bakery": {
+    "title": "Arrowtown Bakery",
+    "emoji": "🍽️",
+    "cat": "DINING",
+    "sub": "Arrowtown lunch choice",
+    "hours": "Daily 7:00 AM–3:00 PM",
+    "maps": "https://maps.google.com/?q=Arrowtown%20Bakery",
+    "address": "14 Buckingham Street, Arrowtown 9302, New Zealand",
+    "desc": "A traditional Arrowtown bakery known for savoury pies, pastries and quick takeaway food — useful when the group wants an easy lunch without a full restaurant booking.",
+    "signature": [
+      "FOOD · Savoury pies, pastries and bakery items",
+      "GOOD FOR · Fast takeaway lunch",
+      "ROUTE FIT · Central Arrowtown"
+    ],
+    "worth": [],
+    "categoryLabel": "🍽 Dining",
+    "transport": "Self-drive / walk",
+    "audit": "NZ Master Itinerary v3.0",
+    "status": "planned"
+  },
+  "aosta": {
+    "title": "Aosta",
+    "emoji": "🍽️",
+    "cat": "DINING",
+    "sub": "Arrowtown lunch alternative",
+    "hours": "Daily brunch 11:00 AM–3:00 PM · dinner 5:00 PM–9:00 PM",
+    "maps": "https://maps.google.com/?q=Aosta",
+    "address": "18 Buckingham Street, Arrowtown 9302, New Zealand",
+    "desc": "An Arrowtown restaurant serving northern Italian-inspired dishes with a New Zealand focus. Choose it when the group wants a more substantial sit-down meal rather than bakery food.",
+    "signature": [
+      "FOOD · Northern Italian-inspired dishes",
+      "STYLE · Sit-down restaurant",
+      "ROLE · More substantial Arrowtown meal option"
+    ],
+    "worth": [],
+    "categoryLabel": "🍽 Dining",
+    "transport": "Self-drive / walk",
+    "audit": "NZ Master Itinerary v3.0",
+    "status": "optional"
+  },
+  "gold-panning": {
+    "title": "Arrowtown Gold Panning",
+    "emoji": "📍",
+    "cat": "ACTIVITIES",
+    "sub": "Optional river activity",
+    "meetingPoint": "Lakes District Museum, 49 Buckingham Street, Arrowtown",
+    "bookingNote": "Optional add-on · confirm availability and equipment on the day.",
+    "maps": "https://www.google.com/maps/search/?api=1&query=Lakes+District+Museum%2C+49+Buckingham+Street%2C+Arrowtown+9302",
+    "address": "Lakes District Museum, 49 Buckingham Street, Arrowtown 9302, New Zealand",
+    "desc": "A hands-on Arrow River activity where visitors try traditional gold-panning techniques associated with Arrowtown’s gold-rush history.",
+    "signature": [
+      "WHAT IT IS · Hands-on gold panning",
+      "WHY GO · Connects with Arrowtown history",
+      "NOTE · Best treated as an optional add-on"
+    ],
+    "worth": [],
+    "categoryLabel": "📍 Experience",
+    "transport": "Self-drive / walk",
+    "audit": "NZ Master Itinerary v3.0",
+    "status": "optional",
+    "addressAudit": "OFFICIAL / VERIFIED"
+  },
+  "sandfly-cafe": {
+    "title": "Sandfly Cafe",
+    "emoji": "🍽️",
+    "cat": "DINING",
+    "sub": "Te Anau lunch choice",
+    "hours": "Daily 7:00 AM–4:30 PM",
+    "maps": "https://www.google.com/maps/search/?api=1&query=Sandfly+Cafe%2C+9+The+Lane%2C+Te+Anau+9600",
+    "address": "9 The Lane, Te Anau 9600, New Zealand",
+    "desc": "A casual Te Anau cafe serving breakfast, brunch, coffee and light lunch dishes — a practical first meal after the drive from Queenstown.",
+    "signature": [
+      "FOOD · Breakfast, brunch, coffee and light lunch",
+      "GOOD FOR · Casual arrival-day meal",
+      "ROUTE FIT · Central Te Anau"
+    ],
+    "worth": [],
+    "categoryLabel": "🍽 Dining",
+    "transport": "Self-drive / walk",
+    "audit": "NZ Master Itinerary v3.0",
+    "status": "planned",
+    "addressAudit": "OFFICIAL / VERIFIED"
+  },
+  "miles-better-pies": {
+    "title": "Miles Better Pies",
+    "emoji": "🍽️",
+    "cat": "DINING",
+    "sub": "Te Anau dinner choice",
+    "hours": "Sep–Jun · approx. 6:00 AM–5:00 PM · until sold out",
+    "maps": "https://www.google.com/maps/search/?api=1&query=Miles+Better+Pies%2C+17+Town+Centre%2C+Te+Anau+9600",
+    "address": "17 Town Centre, Te Anau 9600, New Zealand",
+    "desc": "A compact Te Anau pie shop specialising in savoury takeaway pies. It is best for a fast, inexpensive meal rather than a sit-down dinner.",
+    "signature": [
+      "FOOD · Savoury takeaway pies",
+      "GOOD FOR · Fast casual meal",
+      "STYLE · Takeaway rather than full restaurant"
+    ],
+    "worth": [],
+    "categoryLabel": "🍽 Dining",
+    "transport": "Self-drive / walk",
+    "audit": "NZ Master Itinerary v3.0",
+    "status": "planned",
+    "addressAudit": "OFFICIAL / VERIFIED"
+  },
+  "fat-duck": {
+    "title": "The Fat Duck Cafe",
+    "emoji": "🍽️",
+    "cat": "DINING",
+    "sub": "Te Anau dinner alternative",
+    "hours": "From 4:30 PM until late · check live opening days",
+    "maps": "https://www.google.com/maps/search/?api=1&query=The+Fat+Duck%2C+124+Town+Centre%2C+Te+Anau+9600",
+    "address": "124 Town Centre, Te Anau 9600, New Zealand",
+    "desc": "A Te Anau cafe and restaurant serving breakfast, cafe meals and New Zealand-style dinner dishes; a sit-down alternative when the group wants more than takeaway pies.",
+    "signature": [
+      "FOOD · Breakfast, cafe meals and New Zealand-style dishes",
+      "GOOD FOR · Sit-down meal",
+      "ROLE · Alternative to takeaway pies"
+    ],
+    "worth": [],
+    "categoryLabel": "🍽 Dining",
+    "transport": "Self-drive / walk",
+    "audit": "NZ Master Itinerary v3.0",
+    "status": "optional",
+    "addressAudit": "OFFICIAL / VERIFIED"
+  },
+  "edgewater-restaurant": {
+    "title": "Edgewater Resort Restaurant",
+    "emoji": "🍽️",
+    "cat": "DINING",
+    "sub": "Wānaka dinner alternative",
+    "hours": "Daily from 7:00 AM until late",
+    "maps": "https://maps.google.com/?q=Edgewater%20Resort%20Restaurant",
+    "address": "54 Sargood Drive, Wānaka 9305, New Zealand",
+    "desc": "The on-site restaurant at Edgewater, useful for a low-effort meal after the long Mt Cook–Wānaka drive. Choose it for convenience rather than adding another drive into town.",
+    "signature": [
+      "FOOD · Hotel restaurant breakfast and dinner",
+      "GOOD FOR · Easiest meal after check-in",
+      "ROUTE FIT · No extra driving"
+    ],
+    "worth": [],
+    "categoryLabel": "🍽 Dining",
+    "transport": "Self-drive / walk",
+    "audit": "NZ Master Itinerary v3.0",
+    "status": "optional"
+  },
+  "christchurch-airport": {
+    "title": "Christchurch Airport",
+    "emoji": "📍",
+    "cat": "ATTRACTIONS",
+    "sub": "Inbound arrival point",
+    "maps": "https://maps.google.com/?q=Christchurch%20Airport",
+    "address": "30 Durey Road, Harewood, Christchurch 8053, New Zealand",
+    "desc": "The trip’s arrival airport. Use this card only for navigation and arrival logistics.",
+    "signature": [
+      "ROLE · International arrival point",
+      "NEXT · Rental-car shuttle and collection"
+    ],
+    "worth": [],
+    "categoryLabel": "📍 Experience",
+    "transport": "Self-drive / walk",
+    "audit": "NZ Master Itinerary v3.0",
+    "status": "planned"
+  },
+  "rental-cars-247": {
+    "title": "Rental Cars 247 Christchurch",
+    "emoji": "📍",
+    "cat": "ATTRACTIONS",
+    "sub": "Rental-car collection",
+    "maps": "https://maps.google.com/?q=Rental%20Cars%20247%20Christchurch",
+    "address": "264 Russley Road, Avonhead, Christchurch, New Zealand",
+    "desc": "Rental Cars 247 is the confirmed rental provider for the Lee family. The booked vehicle is a Mitsubishi ASX or similar.",
+    "signature": [
+      "COMPANY · Rental Cars 247",
+      "CAR · Mitsubishi ASX or similar"
+    ],
+    "worth": [],
+    "categoryLabel": "📍 Experience",
+    "transport": "Self-drive / walk",
+    "audit": "NZ Master Itinerary v3.0",
+    "status": "planned"
+  },
+  "lake-tekapo": {
+    "guideType": "SCENIC",
+    "title": "Lake Tekapo",
+    "emoji": "📍",
+    "cat": "ATTRACTIONS",
+    "sub": "Mackenzie Country destination",
+    "maps": "https://maps.google.com/?q=Lake%20Tekapo",
+    "address": "Lake Tekapo, Canterbury, New Zealand",
+    "desc": "A small alpine settlement beside a turquoise glacial lake, used as the overnight base between Christchurch and Aoraki / Mt Cook.",
+    "signature": [
+      "WHY STAY · Breaks the road trip naturally",
+      "SEE · Lakefront, Church of the Good Shepherd and dark sky"
+    ],
+    "worth": [],
+    "categoryLabel": "🏞 Scenic Destination",
+    "transport": "Self-drive / walk",
+    "audit": "NZ Master Itinerary v3.0",
+    "status": "planned"
+  },
+  "hustl-five-mile": {
+    "title": "Hustl. Cafe",
+    "emoji": "☕",
+    "cat": "DINING",
+    "sub": "Primary Day 5 brunch · Five Mile",
+    "hours": "Daily 7:00 AM–4:00 PM",
+    "maps": "https://maps.google.com/?q=Hustl+Cafe+Five+Mile+Queenstown",
+    "address": "Five Mile, Frankton, Queenstown, New Zealand",
+    "desc": "An easy all-day brunch stop near Sudima, with strong coffee and a broad breakfast-and-lunch menu before heading into Queenstown.",
+    "signature": [
+      "TRY · Eggs on toast or the breakfast bun",
+      "DRINK · Coffee",
+      "GOOD FOR · Relaxed 11:00 AM brunch after a sleep-in"
+    ],
+    "worth": [
+      "Primary choice because it is close to Sudima and keeps the morning unhurried."
+    ],
+    "categoryLabel": "🍽 Dining",
+    "transport": "Walk / short drive",
+    "audit": "OFFICIAL WEBSITE VERIFIED",
+    "status": "planned"
+  },
+  "moinho-five-mile": {
+    "title": "Moinho Cafe & Eatery",
+    "emoji": "☕",
+    "cat": "DINING",
+    "sub": "Day 5 brunch option · Five Mile",
+    "hours": "Daily 7:00 AM–5:00 PM",
+    "maps": "https://maps.google.com/?q=Moinho+Cafe+6%2F32+Grant+Road+Frankton+Queenstown",
+    "address": "6/32 Grant Road, Five Mile, Frankton, Queenstown, New Zealand",
+    "desc": "A Brazilian-style cafe with Kiwi breakfast dishes and a pay-by-weight lunch buffet, useful when the group wants more variety.",
+    "signature": [
+      "TRY · Kiwi breakfast favourites or Brazilian dishes",
+      "LUNCH · Pay-by-weight buffet from 10:30 AM",
+      "GOOD FOR · Mixed appetites"
+    ],
+    "worth": [
+      "Choose this when the group prefers buffet variety over a standard brunch menu."
+    ],
+    "categoryLabel": "🍽 Dining",
+    "transport": "Walk / short drive",
+    "audit": "OFFICIAL WEBSITE VERIFIED",
+    "status": "optional"
+  },
+  "joes-five-mile": {
+    "title": "Joe's Garage Five Mile",
+    "emoji": "🍳",
+    "cat": "DINING",
+    "sub": "Family-friendly Day 5 brunch option",
+    "hours": "Mon–Fri 7:00 AM–9:00 PM · Sat–Sun 8:00 AM–9:00 PM",
+    "maps": "https://maps.google.com/?q=Joe%27s+Garage+Five+Mile+36+Grant+Road+Queenstown",
+    "address": "Building 8, 36 Grant Road, Five Mile, Queenstown 9371, New Zealand",
+    "desc": "A reliable family-friendly cafe for breakfast, burgers and coffee, with an easy menu for adults and children.",
+    "signature": [
+      "TRY · Brekkie, burgers or rolls",
+      "DRINK · Coffee",
+      "GOOD FOR · Easy family choice"
+    ],
+    "worth": [
+      "Best backup when the group wants a familiar menu and straightforward seating."
+    ],
+    "categoryLabel": "🍽 Dining",
+    "transport": "Walk / short drive",
+    "audit": "OFFICIAL LISTING VERIFIED",
+    "status": "optional"
+  },
+  "queenstown-market": {
+    "guideType": "MARKET",
+    "title": "Queenstown Market",
+    "emoji": "🛍️",
+    "cat": "ATTRACTIONS",
+    "sub": "Saturday lakefront artisan market",
+    "hours": "Saturday · 9:30 AM–3:30 PM",
+    "maps": "https://maps.google.com/?q=Queenstown+Market+Earnslaw+Park+Queenstown",
+    "address": "Earnslaw Park, Queenstown 9300, New Zealand",
+    "desc": "Browse local artisan stalls, pick up a snack and enjoy the lakefront before checking into Windsor Lodge.",
+    "signature": [
+      "SEE · Local art and handmade products",
+      "EAT · Market snacks",
+      "SETTING · Earnslaw Park lakefront"
+    ],
+    "worth": [
+      "PARKING · Man Street Car Park is the easiest reliable option, about a 5-minute walk."
+    ],
+    "categoryLabel": "📍 Experience",
+    "transport": "Self-drive / walk",
+    "audit": "OFFICIAL MARKET WEBSITE VERIFIED",
+    "status": "planned",
+    "addressAudit": "OFFICIAL / VERIFIED"
+  },
+  "freshchoice-queenstown": {
+    "title": "FreshChoice Queenstown",
+    "emoji": "🛒",
+    "cat": "SHOP",
+    "sub": "Airbnb grocery stop",
+    "hours": "Daily 7:00 AM–10:00 PM",
+    "maps": "https://maps.google.com/?q=FreshChoice+Queenstown+64+Gorge+Road+Queenstown",
+    "address": "64 Gorge Road, Queenstown 9300, New Zealand",
+    "desc": "Stock up on groceries, drinks and breakfast supplies for the three-night Windsor Lodge stay.",
+    "signature": [
+      "BUY · Breakfast supplies, drinks, snacks and shared-house essentials",
+      "TIMING · After Windsor Lodge check-in"
+    ],
+    "worth": [],
+    "categoryLabel": "🛒 Shopping",
+    "transport": "Self-drive",
+    "audit": "OFFICIAL STORE WEBSITE VERIFIED",
+    "status": "planned",
+    "addressAudit": "OFFICIAL / VERIFIED"
+  },
+  "freshchoice-te-anau": {
+    "title": "FreshChoice Te Anau",
+    "emoji": "🛒",
+    "cat": "SHOP",
+    "sub": "Te Anau stay supplies",
+    "hours": "Daily 7:00 AM–8:00 PM",
+    "maps": "https://maps.google.com/?q=FreshChoice+Te+Anau+5+Milford+Crescent+Te+Anau",
+    "address": "5 Milford Crescent, Te Anau 9600, New Zealand",
+    "desc": "Stock up for tomorrow’s Milford Sound day trip, including breakfast, snacks, drinks or an optional packed lunch for the cruise.",
+    "signature": [
+      "BUY · Breakfast supplies and fresh food",
+      "PACK · Snacks, drinks and an optional cruise lunch",
+      "TIMING · Stop before settling into Lakefront Lodge"
+    ],
+    "worth": [],
+    "categoryLabel": "🛒 Shopping",
+    "transport": "Self-drive",
+    "audit": "OFFICIAL STORE HOURS / PLANNED SUPPLY STOP",
+    "status": "planned",
+    "addressAudit": "KNOWN STORE ADDRESS"
+  },
+  "queenstown-central": {
+    "title": "Queenstown Central",
+    "emoji": "📍",
+    "cat": "ATTRACTIONS",
+    "sub": "Flexible central Queenstown base",
+    "maps": "https://maps.google.com/?q=Queenstown%20Central",
+    "address": "Queenstown, Otago, New Zealand",
+    "desc": "Queenstown’s compact lakefront centre, where restaurants, shops and many activity meeting points are within walking distance.",
+    "signature": [
+      "USE FOR · Dining, shopping and free time",
+      "NOTE · Parking can take extra time"
+    ],
+    "worth": [],
+    "categoryLabel": "📍 Experience",
+    "transport": "Self-drive / walk",
+    "audit": "NZ Master Itinerary v3.0",
+    "status": "optional",
+    "addressAudit": "AREA / ROUTE CARD · navigation target intentionally uses a route or area, not a storefront address"
+  },
+  "te-anau": {
+    "guideType": "SCENIC",
+    "title": "Te Anau",
+    "emoji": "📍",
+    "cat": "ATTRACTIONS",
+    "sub": "Fiordland base",
+    "maps": "https://maps.google.com/?q=Te%20Anau",
+    "address": "Te Anau, Southland, New Zealand",
+    "desc": "The lakeside gateway to Fiordland and the practical base for Milford Sound. The town centre is compact and suited to an easy final evening.",
+    "signature": [
+      "WHY STAY · Best base for Milford Sound",
+      "USE FOR · Supplies, meals and lakefront walks"
+    ],
+    "worth": [],
+    "categoryLabel": "📍 Experience",
+    "transport": "Self-drive / walk",
+    "audit": "NZ Master Itinerary v3.0",
+    "status": "planned",
+    "addressAudit": "AREA / ROUTE CARD · navigation target intentionally uses a route or area, not a storefront address"
+  },
+  "mt-john": {
+    "title": "Mt John Observatory / Stargazing Tour",
+    "emoji": "📍",
+    "cat": "ACTIVITIES",
+    "sub": "Optional, not booked; decide on the day",
+    "meetingPoint": "University of Canterbury Mt John Observatory, Mount John Summit",
+    "bookingNote": "Weather dependent · book only if the forecast and energy suit.",
+    "maps": "https://www.google.com/maps/search/?api=1&query=University+of+Canterbury+Mt+John+Observatory%2C+Lake+Tekapo",
+    "address": "University of Canterbury Mt John Observatory, Mount John Summit, Godley Peaks Road, Lake Takapō 7999, New Zealand",
+    "desc": "A guided stargazing experience at the University of Canterbury Mt John Observatory on Mount John Summit, using the Mackenzie Basin’s dark skies for telescope viewing when weather permits.",
+    "signature": [
+      "WHAT IT IS · Guided dark-sky and telescope experience",
+      "BEST FOR · Clear nights",
+      "BOOKING · Optional and weather dependent"
+    ],
+    "worth": [],
+    "categoryLabel": "📍 Experience",
+    "transport": "Self-drive / walk",
+    "audit": "NZ Master Itinerary v3.0",
+    "status": "optional",
+    "addressAudit": "OFFICIAL / VERIFIED"
+  },
+  "milford-road-merchant": {
+    "title": "Milford Road Merchant",
+    "emoji": "☕",
+    "cat": "DINING",
+    "sub": "Te Anau breakfast, coffee and food-to-go",
+    "hours": "Mon–Sat 7:00 AM–4:00 PM · Sun closed",
+    "maps": "https://maps.google.com/?q=Milford+Road+Merchant+225+Milford+Road+Te+Anau",
+    "address": "225 Milford Road, Te Anau 9600, New Zealand",
+    "desc": "A local cafe and general store serving coffee, breakfast cups, pies, sausage rolls and fresh baked treats — practical for an early breakfast or food to take on the road.",
+    "signature": [
+      "FOOD · Coffee, breakfast cups, pies and baked treats",
+      "GOOD FOR · Early start or takeaway breakfast",
+      "ROUTE FIT · On Milford Road"
+    ],
+    "worth": [
+      "WORTH IT · ★★★★☆ · Useful early-morning road-trip stop"
+    ],
+    "categoryLabel": "☕ Dining",
+    "transport": "Self-drive / walk",
+    "audit": "Specific venue · verify live hours close to travel",
+    "status": "optional"
+  },
+  "lakefront-cafe-te-anau": {
+    "title": "The Lakefront Cafe",
+    "emoji": "☕",
+    "cat": "DINING",
+    "sub": "Lake-view breakfast and brunch in Te Anau",
+    "hours": "Summer daily 7:30 AM–5:00 PM · winter daily about 8:00 AM–2:00 PM",
+    "maps": "https://www.google.com/maps/search/?api=1&query=The+Lakefront+Cafe%2C+94+Te+Anau+Terrace%2C+Te+Anau+9600",
+    "address": "94 Te Anau Terrace, Te Anau 9600, New Zealand",
+    "desc": "A lakefront cafe serving coffee, fresh pastries, cabinet food and a brunch menu, suitable for a relaxed final-morning breakfast before the drive to Queenstown.",
+    "signature": [
+      "FOOD · Brunch, pastries, cabinet food and coffee",
+      "GOOD FOR · Sit-down breakfast with a lake view",
+      "ROUTE FIT · Near Lakefront Lodge"
+    ],
+    "worth": [
+      "WORTH IT · ★★★★☆ · Best if the group wants a relaxed sit-down breakfast"
+    ],
+    "categoryLabel": "☕ Dining",
+    "transport": "Self-drive / walk",
+    "audit": "Specific venue · verify live hours close to travel",
+    "status": "optional",
+    "addressAudit": "OFFICIAL / VERIFIED"
+  },
+  "redcliff": {
+    "title": "Redcliff Cafe & Bar",
+    "emoji": "🍽️",
+    "cat": "DINING",
+    "sub": "Contemporary New Zealand dinner in Te Anau",
+    "hours": "Daily from 3:00 PM · dinner from 4:30 PM",
+    "maps": "https://maps.google.com/?q=Redcliff+Cafe+and+Bar+Te+Anau",
+    "address": "12 Mokonui Street, Te Anau 9600, New Zealand",
+    "desc": "A Te Anau dinner restaurant focused on contemporary New Zealand food, including local meat and seafood, suited to a more special final evening.",
+    "signature": [
+      "FOOD · Contemporary New Zealand dishes",
+      "GOOD FOR · A proper final-night dinner",
+      "STYLE · More special than a casual pie or pub stop"
+    ],
+    "worth": [
+      "WORTH IT · ★★★★☆ · Strong alternative for the final Te Anau dinner"
+    ],
+    "categoryLabel": "🍽 Dining",
+    "transport": "Self-drive / walk",
+    "audit": "Specific dining alternative · booking may be useful",
+    "status": "optional"
+  },
+  "better-batter": {
+    "title": "The Better Batter NZ",
+    "emoji": "🍟",
+    "cat": "DINING",
+    "sub": "Day 2 flexible meal · Lunch or afternoon tea near Peppers",
+    "hours": "Published hours vary · check same-day hours before visiting",
+    "maps": "https://maps.google.com/?q=The+Better+Batter+NZ+Lakeside+Drive+Lake+Tekapo+7999+New+Zealand",
+    "address": "Lakeside Drive, Lake Tekapo 7999, New Zealand",
+    "desc": "A casual fish-and-chips takeaway close to Peppers Bluewater Resort. Use it after arriving in Tekapo as either lunch or afternoon tea, depending on the day’s timing and whether you stopped in Fairlie.",
+    "signature": [
+      "FOOD · Fish and chips, battered fish, burgers and fried seafood",
+      "GOOD FOR · Quick family lunch and takeaway picnic",
+      "ROUTE FIT · Lakeside Drive in central Lake Tekapo"
+    ],
+    "worth": [
+      "WORTH IT · ★★★★★ · Primary Day 2 lunch choice",
+      "Opening is limited and it is closed on Thursday according to the supplied listing; confirm the travel-day hours closer to departure.",
+      "Takeaway seating can be limited, so use the lakefront if the weather is suitable."
+    ],
+    "categoryLabel": "🍟 Dining",
+    "price": "NZD 10–20",
+    "transport": "Self-drive / walk",
+    "audit": "Day 2 flexible meal after arrival",
+    "status": "optional",
+    "itineraryRole": "Day 2 Flexible Meal"
+  },
+  "christchurch-cbd-discovery-walk": {
+    "title": "Christchurch CBD Discovery Walk",
+    "emoji": "🚶",
+    "cat": "ATTRACTIONS",
+    "sub": "Day 2 alternative to Quake City · 60–90 minutes",
+    "maps": "https://www.google.com/maps/dir/?api=1&origin=C1+Espresso%2C+185+High+Street%2C+Christchurch&destination=Central+Park+at+Little+High%2C+255+St+Asaph+Street%2C+Christchurch&travelmode=walking&waypoints=Beehive+Collective%2C+4%2F82+Cashel+Street%2C+Christchurch%7CAbode%2C+2%2F82+Cashel+Street%2C+Christchurch%7CHettie%27s+Rock+%26+Crystal+Shop%2C+Riverside+Lane%2C+82+Cashel+Street%2C+Christchurch%7CDF+Souvenirs%2C+99+Cashel+Street%2C+Christchurch%7CBridge+of+Remembrance%2C+Christchurch%7CRiverside+Market%2C+96+Oxford+Terrace%2C+Christchurch",
+    "address": "Start: C1 Espresso, 185 High Street · Finish: return to Central Park at Little High, 255 St Asaph Street",
+    "desc": "A practical 60–90 minute walking loop after C1 Espresso, offered as the alternative to Quake City. The order below keeps the shops together around Riverside Lane and Cashel Street before a short riverfront finish, then returns you to the recommended car park.",
+    "signature": [
+      "1 · BEEHIVE COLLECTIVE — 4/82 Cashel Street · Local makers, NZ-made ceramics, art, candles, skincare and distinctive small gifts.",
+      "2 · ABODE — 2/82 Cashel Street · Curated homeware, kitchen pieces, clothing, jewellery and design-led gifts.",
+      "3 · HETTIE’S ROCK & CRYSTAL SHOP — Riverside Lane, 82 Cashel Street · Crystals, gemstones, fossils and inexpensive collector pieces the kids may enjoy.",
+      "4 · DF SOUVENIRS — 99 Cashel Street · The broadest stop for classic NZ souvenirs, merino/possum products, skincare, jewellery and All Blacks gifts.",
+      "5 · BRIDGE OF REMEMBRANCE & AVON RIVER — A brief scenic finish rather than another shop.",
+      "6 · RIVERSIDE MARKET — Walk through the lanes, then return to Central Park at Little High."
+    ],
+    "worth": [
+      "ROUTE · Open the navigation button for the full walking order and live directions.",
+      "ALTERNATIVE · Choose this instead of Quake City, not as an extra full activity.",
+      "TIME-SAVER · If short on time, prioritise Beehive Collective, Hettie’s and DF Souvenirs.",
+      "OPENING HOURS · Most retail stores open around 10:00 am; check live hours if leaving Christchurch early."
+    ],
+    "categoryLabel": "🚶 Alternative Route",
+    "price": "Free to browse",
+    "transport": "Walk",
+    "audit": "Day 2 alternative route",
+    "status": "optional",
+    "itineraryRole": "Day 2 Alternative to Quake City",
+    "routeStops": [
+      {
+        "name": "Beehive Collective",
+        "address": "4/82 Cashel Street",
+        "look": "NZ-made ceramics, local art, candles, skincare and small gifts from local makers.",
+        "time": "10–15 min"
+      },
+      {
+        "name": "Abode",
+        "address": "2/82 Cashel Street",
+        "look": "Curated homeware, kitchen pieces, clothing, jewellery and design-led gifts.",
+        "time": "10 min"
+      },
+      {
+        "name": "Hettie’s Rock & Crystal Shop",
+        "address": "Riverside Lane, 82 Cashel Street",
+        "look": "Crystals, gemstones, fossils and small collector pieces; likely the most interesting stop for the kids.",
+        "time": "10–15 min"
+      },
+      {
+        "name": "DF Souvenirs",
+        "address": "99 Cashel Street",
+        "look": "Classic NZ souvenirs, merino/possum products, skincare, jewellery and All Blacks gifts.",
+        "time": "15–20 min"
+      },
+      {
+        "name": "Bridge of Remembrance & Avon River",
+        "address": "Cashel Street at Oxford Terrace",
+        "look": "A short scenic finish for the memorial arch, river and central-city atmosphere.",
+        "time": "10 min"
+      },
+      {
+        "name": "Riverside Market lanes",
+        "address": "96 Oxford Terrace",
+        "look": "Walk through the indoor lanes, then return to the car.",
+        "time": "5–10 min"
+      }
+    ],
+    "addressAudit": "AREA / ROUTE CARD · navigation target intentionally uses a route or area, not a storefront address"
+  },
+  "lake-tekapo-village": {
+    "guideType": "SCENIC",
+    "title": "Lake Tekapo Village",
+    "emoji": "📍",
+    "cat": "ATTRACTIONS",
+    "sub": "Church, sheepdog statue and lakeside walk",
+    "maps": "https://www.google.com/maps/dir/?api=1&origin=Church+of+the+Good+Shepherd%2C+Lake+Tekapo&destination=Lake+Tekapo+Footbridge%2C+Lake+Tekapo&travelmode=walking&waypoints=Sheepdog+Memorial%2C+Lake+Tekapo",
+    "address": "Pioneer Drive, Lake Tekapo 7999, New Zealand",
+    "desc": "Park near the lakefront and follow a compact walking loop through Lake Tekapo’s best-known village sights before dinner.",
+    "signature": [
+      "CHURCH OF THE GOOD SHEPHERD · The classic stone-church and turquoise-lake view",
+      "SHEEPDOG MEMORIAL · A small local landmark beside the lake",
+      "LAKESIDE WALK · Easy photos and a relaxed stretch before dinner",
+      "SUGGESTED TIME · 30–60 minutes"
+    ],
+    "routeStops": [
+      {
+        "name": "Church of the Good Shepherd",
+        "address": "Pioneer Drive, Lake Tekapo 7999",
+        "time": "15–20 min",
+        "look": "See the iconic stone church framed by the turquoise lake and mountains."
+      },
+      {
+        "name": "Sheepdog Memorial",
+        "address": "Pioneer Drive lakefront, Lake Tekapo 7999",
+        "time": "5–10 min",
+        "look": "A quick local landmark and an easy family photo stop beside the water."
+      },
+      {
+        "name": "Lakefront and footbridge walk",
+        "address": "Lake Tekapo lakefront toward the pedestrian bridge",
+        "time": "15–30 min",
+        "look": "Enjoy open lake views, village photos and a gentle stretch after the drive."
+      }
+    ],
+    "worth": [
+      "WORTH IT · ★★★★★ · The essential Lake Tekapo arrival experience",
+      "September is before the main lupin season.",
+      "Keep the stop flexible for weather, light and family energy."
+    ],
+    "categoryLabel": "📍 Area Walk",
+    "price": "Free",
+    "transport": "Self-drive + walk",
+    "audit": "Day 2 planned area walk",
+    "status": "planned",
+    "itineraryRole": "Day 2 Lake Tekapo Village",
+    "addressAudit": "AREA / ROUTE CARD · navigation target intentionally uses a route or area, not a storefront address"
+  },
+  "riverside-parking": {
+    "title": "Parking for Riverside Market",
+    "emoji": "🚗",
+    "cat": "PARKING",
+    "sub": "Day 1 recommended parking · 1–2 minute walk",
+    "maps": "https://www.google.com/maps/search/?api=1&query=Central+Park+at+Riverside%2C+23+Lichfield+Street%2C+Christchurch",
+    "address": "Central Park at Riverside, 23 Lichfield Street, Christchurch Central City, Christchurch 8011, New Zealand",
+    "desc": "The simplest arrival-night parking choice for Riverside Market: a paid ground-level car park immediately beside the market, avoiding an extra walk after the flight.",
+    "signature": [
+      "WALK · About 1–2 minutes to Riverside Market",
+      "TYPE · Paid ground-level parking",
+      "BEST FOR · Riverside Market dinner and a brief riverfront stroll"
+    ],
+    "worth": [
+      "Navigate to the car park rather than Riverside Market itself so Google Maps takes you directly to the vehicle entrance."
+    ],
+    "categoryLabel": "🚗 Recommended Parking",
+    "transport": "Self-drive",
+    "audit": "Day 1 parking recommendation",
+    "status": "planned",
+    "itineraryRole": "Parking for Riverside Market"
+  },
+  "c1-parking": {
+    "title": "Parking for C1 Espresso",
+    "emoji": "🚗",
+    "cat": "PARKING",
+    "sub": "Day 2 recommended parking · 4–6 minute walk",
+    "maps": "https://www.google.com/maps/search/?api=1&query=Central+Park+at+Little+High%2C+255+St+Asaph+Street%2C+Christchurch",
+    "address": "Central Park at Little High, 255 St Asaph Street, Christchurch Central City, Christchurch 8011, New Zealand",
+    "desc": "A straightforward paid ground-level car park near High Street. It works for breakfast at C1 Espresso and also leaves the car in a practical position for the optional CBD Discovery Walk.",
+    "signature": [
+      "WALK · About 4–6 minutes to C1 Espresso",
+      "TYPE · Paid ground-level parking",
+      "BEST FOR · C1 Espresso plus the optional CBD Discovery Walk"
+    ],
+    "worth": [
+      "Navigate to the car park first, then walk to C1 Espresso. Keep the car parked if choosing the Discovery Walk."
+    ],
+    "categoryLabel": "🚗 Recommended Parking",
+    "transport": "Self-drive + walk",
+    "audit": "Day 2 parking recommendation",
+    "status": "planned",
+    "itineraryRole": "Parking for C1 Espresso"
+  },
+  "scroggin": {
+    "title": "Scroggin Coffee and Eatery",
+    "emoji": "☕",
+    "cat": "DINING",
+    "sub": "Day 4 primary breakfast · backcountry-hut inspired café",
+    "hours": "Daily 7:00 AM–3:00 PM · kitchen closes 2:30 PM",
+    "maps": "https://www.google.com/maps/search/?api=1&query=Scroggin+Coffee+and+Eatery%2C+71+Ardmore+Street%2C+Wanaka+9305",
+    "address": "71 Ardmore Street, Wānaka 9305, New Zealand",
+    "desc": "A relaxed Wānaka café inspired by New Zealand backcountry huts, with a seasonal menu built around local and sustainable produce, house-baked pastries and quality coffee.",
+    "signature": [
+      "WHY GO · Hut-inspired design and a strong local, seasonal food focus",
+      "RECOMMENDED PICKS · One-Hander breakfast bun, seasonal shakshuka, beef sando, house-baked pastries and coffee",
+      "NOTE · The menu changes seasonally, so current dishes may vary"
+    ],
+    "worth": [
+      "WORTH IT · ★★★★★ · Strong primary breakfast before the Crown Range drive",
+      "Allow enough time for a sit-down breakfast, but leave Wānaka early enough to protect Cardrona and Queenstown timing."
+    ],
+    "categoryLabel": "☕ Dining",
     "price": "$–$$",
-    "transport": "Walk-in option · 47/1/13 Quốc Hương",
-    "audit": "Address and daily 09:00–21:00 hours confirmed."
+    "transport": "Self-drive / walk",
+    "audit": "OFFICIAL / VERIFIED · menu is seasonal",
+    "status": "planned",
+    "phone": "+64 3 443 1187",
+    "website": "https://www.scrogginwanaka.co.nz/",
+    "email": "info@scrogginwanaka.co.nz",
+    "addressAudit": "OFFICIAL / VERIFIED"
   },
-  "golden-lotus-thao-dien": {
-    "title": "Golden Lotus Healing World",
-    "emoji": "♨️",
-    "cat": "SPA",
-    "sub": "Day 4 Open List · Big-capacity backup",
-    "hours": "09:00–00:00 daily",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Golden%20Lotus%20Healing%20World%2016A%20Street%2010%20Thao%20Dien%20Ho%20Chi%20Minh",
-    "address": "16A Street No. 10, Thảo Điền, Ho Chi Minh City, Vietnam",
-    "desc": "大型 Korean-style healing complex，massage 之外亦有 sauna、bathhouse、jjimjilbang。唔係 boutique spa 氣氛，但勝在規模大、開得夜，適合其他細 Spa 無四人位時做 backup。",
-    "signature": ["Massage", "Sauna / bathhouse", "Jjimjilbang · large complex"],
-    "worth": ["四人臨時想一起休息時，規模較大的實用後備。", "開到午夜，唔需要為它鎖死下午時間。"],
-    "categoryLabel": "♨️ Spa",
-    "price": "$$",
-    "transport": "Walk-in backup · 16A Street No. 10",
-    "audit": "Official site confirms Thảo Điền address, 09:00–00:00 daily and massage / sauna / bathhouse services."
+  "southwark": {
+    "title": "Southwark Hotel & Apartments",
+    "emoji": "🏨",
+    "cat": "STAY",
+    "sub": "Confirmed · 22–23 Sep",
+    "hours": "2:00 PM → 10:00 AM",
+    "maps": "https://www.google.com/maps/search/?api=1&query=Southwark+Hotel+%26+Apartments%2C+25+Southwark+Street%2C+Christchurch+8011",
+    "address": "25 Southwark Street, Christchurch Central City, Christchurch 8011, New Zealand",
+    "desc": "Walk to Riverside Market and C1, explore central Christchurch without parking, then collect the car for Tekapo.",
+    "signature": [
+      "STAY · 2:00 PM → 10:00 AM",
+      "PARKING · Confirmed · NZD 15 · pay at hotel",
+      "NEARBY · C1 · 6 min walk",
+      "NEARBY · Riverside · 14 min walk",
+      "NEARBY · PAK’nSAVE Moorhouse · ~5 min drive"
+    ],
+    "worth": [
+      "Buy road-trip food before Lake Tekapo."
+    ],
+    "categoryLabel": "🏨 Stay",
+    "transport": "Walk / self-drive",
+    "audit": "SUPPLIED TRIP DETAILS",
+    "status": "confirmed",
+    "addressAudit": "OFFICIAL ADDRESS / SUPPLIED TRIP DETAILS"
+  },
+  "paknsave-moorhouse": {
+    "title": "PAK’nSAVE Moorhouse",
+    "emoji": "🛒",
+    "cat": "SHOP",
+    "sub": "Road-trip supplies before Tekapo",
+    "hours": "Daily 7:00 AM–11:00 PM",
+    "maps": "https://www.google.com/maps/search/?api=1&query=PAK%27nSAVE+Moorhouse%2C+297+Moorhouse+Avenue%2C+Christchurch+8011",
+    "address": "297 Moorhouse Avenue, Sydenham, Christchurch 8011, New Zealand",
+    "desc": "Stock up on road-trip food and supplies before leaving Christchurch for Lake Tekapo.",
+    "signature": [
+      "STOP · After collecting the vehicle",
+      "PARKING · Free customer parking",
+      "BUY · Road-trip food and supplies",
+      "NEXT · Fairlie / Lake Tekapo"
+    ],
+    "worth": [],
+    "categoryLabel": "🛒 Shop",
+    "transport": "Self-drive",
+    "audit": "OFFICIAL ADDRESS / PLANNED SUPPLY STOP",
+    "status": "planned",
+    "addressAudit": "OFFICIAL / VERIFIED"
   }
 };
 
 const CATEGORIES={
   "STAY": [
     {
-      "key": "fusion"
+      "key": "southwark"
+    },
+    {
+      "key": "peppers"
+    },
+    {
+      "key": "sudima-five-mile"
+    },
+    {
+      "key": "queenstown-house"
+    },
+    {
+      "key": "lakefront-lodge"
+    },
+    {
+      "key": "edgewater"
     }
   ],
-  "CAFÉS": [
+  "DINING": [
     {
-      "key": "bakes"
+      "key": "riverside"
     },
     {
-      "key": "ivoire"
+      "key": "greedy-cow"
     },
     {
-      "key": "cong"
+      "key": "c1-espresso"
     },
     {
-      "key": "marou"
+      "key": "better-batter"
     },
     {
-      "key": "cafe-apartments"
+      "key": "fairlie-bakehouse"
     },
     {
-      "key": "running-bean"
+      "key": "kohan"
     },
     {
-      "key": "social-club"
-    }
-  ],
-  "RESTAURANTS": [
-    {
-      "key": "bep-me-in"
+      "key": "mt-cook-salmon"
     },
     {
-      "key": "com-tam-moc"
+      "key": "stoaker-room"
     },
     {
-      "key": "little-bear"
+      "key": "big-fig"
     },
     {
-      "key": "lune"
+      "key": "scroggin"
     },
     {
-      "key": "omakase-tiger"
+      "key": "federal-diner"
     },
     {
-      "key": "pho-sol"
+      "key": "pedros"
     },
     {
-      "key": "pho-vietnam"
+      "key": "winnies"
     },
     {
-      "key": "pizza4ps"
+      "key": "lone-star"
     },
     {
-      "key": "quan-thuy"
+      "key": "mackenzies"
     },
     {
-      "key": "late-night-supper"
+      "key": "fergbaker"
     },
     {
-      "key": "man-moi"
+      "key": "flame"
     },
     {
-      "key": "oc-dao"
-    }
-  ],
-  "SHOP": [
-    {
-      "key": "garmentory"
+      "key": "saigon-kingdom"
     },
     {
-      "key": "dauple"
+      "key": "mrs-woollys"
     },
     {
-      "key": "libe"
+      "key": "arrowtown-bakery"
     },
     {
-      "key": "nosbyn"
+      "key": "aosta"
     },
     {
-      "key": "ohquao"
+      "key": "sandfly-cafe"
     },
     {
-      "key": "push-push"
+      "key": "miles-better-pies"
     },
     {
-      "key": "saigon-concept"
+      "key": "fat-duck"
     },
     {
-      "key": "new-playground"
+      "key": "edgewater-restaurant"
     },
     {
-      "key": "louh"
+      "key": "lakefront-cafe-te-anau"
     },
     {
-      "key": "dalla-saigon"
+      "key": "milford-road-merchant"
     },
     {
-      "key": "rubies"
-    },
-    {
-      "key": "lane-ci"
-    },
-    {
-      "key": "takashimaya"
-    }
-  ],
-  "SPA": [
-    {
-      "key": "ha-spa"
-    },
-    {
-      "key": "moc-huong"
-    },
-    {
-      "key": "nha-suga"
-    },
-    {
-      "key": "moc-healing"
-    },
-    {
-      "key": "nara-spa"
-    },
-    {
-      "key": "mojo-spa"
-    },
-    {
-      "key": "thao-dien-spa"
-    },
-    {
-      "key": "golden-lotus-thao-dien"
+      "key": "redcliff"
     }
   ],
   "ATTRACTIONS": [
     {
-      "key": "fine-arts"
+      "key": "lake-pukaki"
     },
     {
-      "key": "book-street"
+      "key": "lindis-pass"
     },
     {
-      "key": "notre-dame"
+      "key": "wanaka-tree"
     },
     {
-      "key": "post-office"
+      "key": "cardrona"
     },
     {
-      "key": "pink-church"
+      "key": "arrowtown"
     },
     {
-      "key": "war-museum"
+      "key": "chinese-settlement"
     },
     {
-      "key": "cu-chi"
+      "key": "te-anau-bird"
+    },
+    {
+      "key": "quake-city"
+    },
+    {
+      "key": "glenorchy-paradise"
+    },
+    {
+      "key": "christchurch-cbd-discovery-walk"
+    },
+    {
+      "key": "lake-tekapo-village"
     }
   ],
-
-
+  "ACTIVITIES": [
+    {
+      "key": "ultimate-alpine"
+    },
+    {
+      "key": "hooker-valley"
+    },
+    {
+      "key": "skyline"
+    },
+    {
+      "key": "kiwi-park"
+    },
+    {
+      "key": "deer-park"
+    },
+    {
+      "key": "milford"
+    },
+    {
+      "key": "hydro-glowworm"
+    },
+    {
+      "key": "tasman-blue-lakes"
+    },
+    {
+      "key": "skippers-4wd"
+    },
+    {
+      "key": "gold-panning"
+    },
+    {
+      "key": "mt-john"
+    },
+    {
+      "key": "puzzling-world"
+    },
+    {
+      "key": "wanaka-lavender"
+    }
+  ],
+  "SHOP": [
+    {
+      "key": "paknsave-moorhouse"
+    },
+    {
+      "key": "freshchoice-queenstown"
+    },
+    {
+      "key": "freshchoice-te-anau"
+    },
+    {
+      "key": "queenstown-market"
+    }
+  ]
 };
 
 const GUIDE_ORDER=[
-  "fusion",
-  "bakes",
-  "cong",
-  "marou",
-  "cafe-apartments",
-  "running-bean",
-  "bep-me-in",
-  "late-night-supper",
-  "com-tam-moc",
-  "little-bear",
-  "lune",
-  "man-moi",
-  "omakase-tiger",
-  "ivoire",
-  "pho-sol",
-  "pho-vietnam",
-  "pizza4ps",
-  "quan-thuy",
-  "garmentory",
-  "dauple",
-  "libe",
-  "nosbyn",
-  "ohquao",
-  "push-push",
-  "saigon-concept",
-  "new-playground",
-  "louh",
-  "dalla-saigon",
-  "rubies",
-  "lane-ci",
-  "takashimaya",
-  "ha-spa",
-  "moc-huong",
-  "mojo-spa",
-  "thao-dien-spa",
-  "golden-lotus-thao-dien",
-  "nha-suga",
-  "fine-arts",
-  "book-street",
-  "notre-dame",
-  "post-office",
-  "pink-church",
-  "war-museum",
-  "social-club",
-  "moc-healing",
-  "cu-chi",
-  "nara-spa",
-  "oc-dao"
+  "southwark",
+  "peppers",
+  "sudima-five-mile",
+  "queenstown-house",
+  "lakefront-lodge",
+  "edgewater",
+  "riverside",
+  "greedy-cow",
+  "c1-espresso",
+  "better-batter",
+  "fairlie-bakehouse",
+  "kohan",
+  "mt-cook-salmon",
+  "stoaker-room",
+  "scroggin",
+  "big-fig",
+  "federal-diner",
+  "pedros",
+  "winnies",
+  "lone-star",
+  "mackenzies",
+  "fergbaker",
+  "flame",
+  "saigon-kingdom",
+  "mrs-woollys",
+  "arrowtown-bakery",
+  "aosta",
+  "sandfly-cafe",
+  "miles-better-pies",
+  "fat-duck",
+  "edgewater-restaurant",
+  "lake-tekapo-village",
+  "lake-pukaki",
+  "lindis-pass",
+  "wanaka-tree",
+  "cardrona",
+  "puzzling-world",
+  "arrowtown",
+  "chinese-settlement",
+  "te-anau-bird",
+  "quake-city",
+  "christchurch-cbd-discovery-walk",
+  "wanaka-lavender",
+  "glenorchy-paradise",
+  "ultimate-alpine",
+  "hooker-valley",
+  "skyline",
+  "kiwi-park",
+  "deer-park",
+  "milford",
+  "hydro-glowworm",
+  "tasman-blue-lakes",
+  "skippers-4wd",
+  "gold-panning",
+  "mt-john",
+  "lakefront-cafe-te-anau",
+  "milford-road-merchant",
+  "redcliff",
+  "paknsave-moorhouse",
+  "freshchoice-queenstown",
+  "freshchoice-te-anau",
+  "queenstown-market"
 ];
 
 const DAY_LINKS={
-  "fusion": [
+  "peppers": [
     [
-      "Day 1",
-      "day.html?day=1#fusion"
+      "Day 2",
+      "day.html?day=2#peppers"
     ]
   ],
-  "ivoire": [
-    [
-      "Day 1",
-      "day.html?day=1#ivoire"
-    ]
-  ],
-  "pho-sol": [
-    [
-      "Day 1",
-      "day.html?day=1#pho-sol"
-    ]
-  ],
-  "post-office": [
-    [
-      "Day 1",
-      "day.html?day=1#post-office"
-    ]
-  ],
-  "notre-dame": [
-    [
-      "Day 1",
-      "day.html?day=1#post-office"
-    ]
-  ],
-  "book-street": [
-    [
-      "Day 1",
-      "day.html?day=1#post-office"
-    ]
-  ],
-  "nha-suga": [
-    [
-      "Day 1",
-      "day.html?day=1#nha-suga"
-    ]
-  ],
-  "omakase-tiger": [
-    [
-      "Day 1",
-      "day.html?day=1#omakase-tiger"
-    ]
-  ],
-  "cafe-apartments": [
-    [
-      "Day 1",
-      "day.html?day=1#nha-suga"
-    ]
-  ],
-  "marou": [
+  "queenstown-house": [
     [
       "Day 5",
-      "day.html?day=5#takashimaya"
+      "day.html?day=5#airbnb-checkin-d5"
     ]
   ],
-  "pho-vietnam": [
+  "freshchoice-te-anau": [
     [
-      "Day 5",
-      "day.html?day=5#pho-vietnam"
+      "Day 8",
+      "day.html?day=8#freshchoice-te-anau-d8"
     ]
   ],
-  "fine-arts": [
+  "riverside": [
     [
-      "Day 5",
-      "day.html?day=5#fine-arts"
+      "Day 1",
+      "day.html?day=1#riverside"
     ]
   ],
-  "bep-me-in": [
+  "c1-espresso": [
     [
-      "Day 5",
-      "day.html?day=5#bep-me-in"
+      "Day 2",
+      "day.html?day=2#breakfast-chc"
     ]
   ],
-  "takashimaya": [
+  "fairlie-bakehouse": [
     [
-      "Day 5",
-      "day.html?day=5#takashimaya"
+      "Day 2",
+      "day.html?day=2#fairlie-pit-stop"
     ]
   ],
-  "ha-spa": [
+  "kohan": [
     [
-      "Day 5",
-      "day.html?day=5#ha-spa"
+      "Day 2",
+      "day.html?day=2#kohan"
     ]
   ],
-  "man-moi": [
+  "mt-cook-salmon": [
     [
-      "Day 5",
-      "day.html?day=5#bep-me-in"
+      "Day 3",
+      "day.html?day=3#alpine-salmon"
+    ]
+  ],
+  "big-fig": [
+    [
+      "Day 3",
+      "day.html?day=3#wanaka-dinner"
     ],
     [
-      "Day 3",
-      "day.html?day=3#man-moi"
+      "Day 4",
+      "day.html?day=4#wanaka-breakfast"
     ]
   ],
-  "late-night-supper": [
+  "lake-pukaki": [
+    [
+      "Day 3",
+      "day.html?day=3#pukaki-lookout"
+    ]
+  ],
+  "hooker-valley": [
+    [
+      "Day 3",
+      "day.html?day=3#hooker-valley"
+    ]
+  ],
+  "lindis-pass": [
+    [
+      "Day 3",
+      "day.html?day=3#lindis-pass"
+    ]
+  ],
+  "wanaka-tree": [
+    [
+      "Day 4",
+      "day.html?day=4#wanaka-tree-morning"
+    ]
+  ],
+  "cardrona": [
+    [
+      "Day 4",
+      "day.html?day=4#cardrona"
+    ]
+  ],
+  "puzzling-world": [
+    [
+      "Day 4",
+      "day.html?day=4#puzzling-world"
+    ]
+  ],
+  "skyline": [
+    [
+      "Day 6",
+      "day.html?day=6#luge-d6"
+    ]
+  ],
+  "kiwi-park": [
+    [
+      "Day 6",
+      "day.html?day=6#kiwi-park-d6"
+    ]
+  ],
+  "arrowtown": [
+    [
+      "Day 7",
+      "day.html?day=7#arrowtown"
+    ]
+  ],
+  "chinese-settlement": [
+    [
+      "Day 7",
+      "day.html?day=7#chinese-settlement"
+    ]
+  ],
+  "deer-park": [
+    [
+      "Day 7",
+      "day.html?day=7#deer-park"
+    ]
+  ],
+  "lone-star": [
+    [
+      "Day 7",
+      "day.html?day=7#lone-star"
+    ]
+  ],
+  "lakefront-lodge": [
+    [
+      "Day 8",
+      "day.html?day=8#lakefront-lodge"
+    ]
+  ],
+  "te-anau-bird": [
+    [
+      "Day 8",
+      "day.html?day=8#te-anau-bird"
+    ]
+  ],
+  "milford": [
+    [
+      "Day 9",
+      "day.html?day=9#milford-tour"
+    ]
+  ],
+  "hydro-glowworm": [
+    [
+      "Day 9",
+      "day.html?day=9#milford-tour"
+    ]
+  ],
+  "edgewater": [
+    [
+      "Day 3",
+      "day.html?day=3#edgewater"
+    ],
+    [
+      "Day 4",
+      "day.html?day=4#edgewater-checkout"
+    ]
+  ],
+  "quake-city": [
+    [
+      "Day 2",
+      "day.html?day=2#quake-city"
+    ]
+  ],
+  "mackenzies": [
+    [
+      "Day 2",
+      "day.html?day=2#kohan"
+    ]
+  ],
+  "tasman-blue-lakes": [
+    [
+      "Day 3",
+      "day.html?day=3#hooker-valley"
+    ]
+  ],
+  "fergbaker": [
+    [
+      "Day 4",
+      "day.html?day=4#flex-lunch"
+    ],
+    [
+      "Day 6",
+      "day.html?day=6#lunch-skyline-d6"
+    ]
+  ],
+  "flame": [
+    [
+      "Day 6",
+      "day.html?day=6#flame-d6"
+    ]
+  ],
+  "saigon-kingdom": [
+    [
+      "Day 10",
+      "day.html?day=10#departure-lunch"
+    ]
+  ],
+  "arrowtown-bakery": [
+    [
+      "Day 7",
+      "day.html?day=7#arrowtown-lunch"
+    ]
+  ],
+  "aosta": [
+    [
+      "Day 7",
+      "day.html?day=7#arrowtown-lunch"
+    ]
+  ],
+  "gold-panning": [
+    [
+      "Day 7",
+      "day.html?day=7#arrowtown"
+    ]
+  ],
+  "sandfly-cafe": [
+    [
+      "Day 8",
+      "day.html?day=8#te-anau-lunch"
+    ],
+    [
+      "Day 10",
+      "day.html?day=10#departure-breakfast"
+    ]
+  ],
+  "miles-better-pies": [
+    [
+      "Day 8",
+      "day.html?day=8#miles-better-pies"
+    ]
+  ],
+  "fat-duck": [
+    [
+      "Day 9",
+      "day.html?day=9#final-te-anau"
+    ]
+  ],
+  "edgewater-restaurant": [
+    [
+      "Day 3",
+      "day.html?day=3#wanaka-dinner"
+    ]
+  ],
+  "queenstown-central": [
+    [
+      "Day 6",
+      "day.html?day=6#flex-afternoon"
+    ]
+  ],
+  "te-anau": [
+    [
+      "Day 10",
+      "day.html?day=10#depart-te-anau"
+    ]
+  ],
+  "mt-john": [
+    [
+      "Day 2",
+      "day.html?day=2#stargazing"
+    ]
+  ],
+  "milford-road-merchant": [
+    [
+      "Day 10",
+      "day.html?day=10#departure-breakfast"
+    ]
+  ],
+  "lakefront-cafe-te-anau": [
+    [
+      "Day 10",
+      "day.html?day=10#departure-breakfast"
+    ]
+  ],
+  "redcliff": [
+    [
+      "Day 9",
+      "day.html?day=9#final-te-anau"
+    ]
+  ],
+  "better-batter": [
+    [
+      "Day 2",
+      "day.html?day=2#better-batter"
+    ]
+  ],
+  "christchurch-cbd-discovery-walk": [
+    [
+      "Day 2",
+      "day.html?day=2#quake-city"
+    ]
+  ],
+  "lake-tekapo-village": [
+    [
+      "Day 2",
+      "day.html?day=2#lake-tekapo-village"
+    ]
+  ],
+  "scroggin": [
+    [
+      "Day 4",
+      "day.html?day=4#wanaka-breakfast"
+    ]
+  ],
+  "ultimate-alpine": [
+    [
+      "Day 3",
+      "day.html?day=3#ultimate-alpine-flight"
+    ]
+  ],
+  "sudima-five-mile": [
+    [
+      "Day 4",
+      "day.html?day=4#sudima-five-mile"
+    ]
+  ],
+  "southwark": [
     [
       "Day 1",
-      "day.html?day=1#late-night-supper"
-    ]
-  ],
-  "com-tam-moc": [
-    [
-      "Day 4",
-      "day.html?day=2#com-tam-moc"
-    ]
-  ],
-  "garmentory": [
-    [
-      "Day 4",
-      "day.html?day=2#garmentory"
-    ]
-  ],
-  "dalla-saigon": [
-    [
-      "Day 4",
-      "day.html?day=2#dalla-saigon"
-    ]
-  ],
-  "rubies": [
-    [
-      "Day 4",
-      "day.html?day=2#shopping-tqd"
-    ]
-  ],
-  "lane-ci": [
-    [
-      "Day 4",
-      "day.html?day=2#shopping-tqd"
-    ]
-  ],
-  "pizza4ps": [
+      "day.html?day=1#southwark"
+    ],
     [
       "Day 2",
-      "day.html?day=4#pizza4ps"
+      "day.html?day=2#return-southwark"
     ]
   ],
-  "libe": [
+  "paknsave-moorhouse": [
     [
       "Day 2",
-      "day.html?day=4#shopping-nguyen-trai"
+      "day.html?day=2#paknsave-moorhouse"
     ]
-  ],
-  "dauple": [
-    [
-      "Day 2",
-      "day.html?day=4#shopping-nguyen-trai"
-    ]
-  ],
-  "nosbyn": [
-    [
-      "Day 2",
-      "day.html?day=4#shopping-nguyen-trai"
-    ]
-  ],
-  "moc-healing": [
-    [
-      "Day 2",
-      "day.html?day=4#moc-healing"
-    ]
-  ],
-  "lune": [
-    [
-      "Day 2",
-      "day.html?day=4#lune"
-    ]
-  ],
-  "cu-chi": [
-    [
-      "Day 3",
-      "day.html?day=3#cu-chi"
-    ]
-  ],
-  "war-museum": [
-    [
-      "Day 3",
-      "day.html?day=3#war-museum"
-    ]
-  ],
-  "nara-spa": [
-    [
-      "Day 3",
-      "day.html?day=3#nara-spa"
-    ]
-  ],
-  "oc-dao": [
-    [
-      "Day 3",
-      "day.html?day=3#oc-dao"
-    ]
-  ],
-  "running-bean": [
-    [
-      "Day 2",
-      "day.html?day=4#running-bean"
-    ]
-  ],
-  "pink-church": [
-    [
-      "Day 4",
-      "day.html?day=4#pink-church"
-    ]
-  ],
-  "cong": [
-    [
-      "Day 4",
-      "day.html?day=4#pink-church"
-    ]
-  ],
-  "push-push": [
-    [
-      "Day 4",
-      "day.html?day=4#push-push"
-    ]
-  ],
-  "saigon-concept": [
-    [
-      "Day 4",
-      "day.html?day=4#thao-dien-open-list"
-    ]
-  ],
-  "ohquao": [
-    [
-      "Day 4",
-      "day.html?day=4#thao-dien-open-list"
-    ]
-  ],
-  "louh": [
-    [
-      "Day 4",
-      "day.html?day=4#thao-dien-open-list"
-    ]
-  ],
-  "bakes": [
-    [
-      "Day 4",
-      "day.html?day=4#thao-dien-open-list"
-    ]
-  ],
-  "moc-huong": [
-    [
-      "Day 4",
-      "day.html?day=4#thao-dien-open-list"
-    ]
-  ],
-
-  "mojo-spa": [["Day 4","day.html?day=4#thao-dien-open-list"]],
-  "thao-dien-spa": [["Day 4","day.html?day=4#thao-dien-open-list"]],
-  "golden-lotus-thao-dien": [["Day 4","day.html?day=4#thao-dien-open-list"]],
+  ]
 };
 
 const FRIENDS={
-  "christal": "🧸 Christal",
-  "crystal": "👓 Crystal",
-  "mero": "✝️ Mero",
-  "vivian": "👟 Vivian"
+  "lee": "MEL · Lee",
+  "fowlers": "SYD · Fowlers",
+  "yau": "NTL · Yau"
 };
 
 const BOOKINGS_DATA={
-  "bk-fusion-original": {
-    "id": "bk-fusion-original",
-    "bookingId": "bk-fusion-original",
-    "eventId": "fusion",
-    "day": 1,
-    "dayId": "day1",
-    "status": "confirmed",
-    "date": "2026-10-30",
-    "time": "",
-    "bookingName": "",
-    "bookingCategory": "Accommodation",
-    "category": "Accommodation",
+  "peppers-booking": {
+    "id": "peppers-booking",
     "type": "accommodation",
-    "title": "Fusion Original Saigon Centre",
-    "depositPaid": "",
-    "depositAmount": "",
-    "depositCurrency": "",
-    "bookingMethod": "Official website / Email",
-    "bookingContact": "",
-    "secondaryContact": "",
-    "bookingUrl": "https://saigoncentre.fusionoriginals.com/",
-    "notes": "2 Bedroom Suite · Pay at hotel. Total AUD 1,693; cashback AUD 215. Net is a calculated display value, not stored as source truth.",
-    "totalAmount": "AUD 1,693",
-    "cashbackAmount": "AUD 215",
-    "netTotalAUD": "AUD 1,478",
-    "price": "AUD 1,693",
-    "paymentLabel": "Pay at hotel",
-    "stayDates": "30 Oct – 3 Nov 2026",
-    "roomType": "2 Bedroom Suite",
-    "checkIn": "14:00",
-    "checkOut": "12:00",
-    "nights": 4,
-    "email": "reservations.fosc@fusionoriginals.com",
-    "address": "65 Lê Lợi, Sài Gòn Ward, Ho Chi Minh City, Vietnam",
-    "bookingHandoff": "已訂。要查 booking / 改資料：用 Fusion official website，或 email reservations.fosc@fusionoriginals.com。",
-    "placeId": "fusion",
-    "paymentStatus": "pay_at_hotel"
-  },
-  "bk-omakase-tiger": {
-    "id": "bk-omakase-tiger",
-    "bookingId": "bk-omakase-tiger",
-    "eventId": "omakase-tiger",
-    "timelineItemId": "omakase-tiger",
-    "day": 1,
-    "dayId": "day1",
+    "title": "Peppers Bluewater Resort",
     "status": "confirmed",
-    "date": "2026-10-30",
-    "time": "17:30",
-    "bookingName": "Crystal Cheung",
-    "bookingCategory": "Restaurants",
-    "category": "Restaurants",
-    "type": "restaurant",
-    "emoji": "🍣",
-    "title": "Omakase Tiger",
-    "depositPaid": "Paid",
-    "depositAmount": "2000000",
-    "depositCurrency": "VND",
-    "bookingMethod": "WhatsApp",
-    "bookingContact": "",
-    "secondaryContact": "",
-    "bookingUrl": "https://omakasetiger.com/en",
-    "notes": "已確認 30 Oct 17:30；訂金 2,000,000 VND（約 AUD 112）已付。",
-    "paymentStatus": "deposit paid",
-    "signatureDishes": ["Seasonal omakase course", "Sake pairing", "Penthouse sunset counter"],
-    "bookingHandoff": "已確認 30 Oct 17:30，訂金 2,000,000 VND 已付。唔需要重新訂；如要改資料，用 official website 或 email omakasetigersgn@gmail.com。",
-    "email": "",
-    "whatsapp": "+84 93 201 4124",
-    "depositAUD": "AUD 112",
-    "placeId": "omakase-tiger"
-  },
-  "bk-lune": {
-    "id": "bk-lune",
-    "bookingId": "bk-lune",
-    "eventId": "lune",
-    "timelineItemId": "lune",
-    "day": 2,
+    "displayStatus": "CONFIRMED",
+    "guideDayLabel": "Day 2",
+    "guideStatus": "confirmed",
+    "date": "2026-09-23",
+    "time": "Check-in",
+    "placeId": "peppers",
     "dayId": "day2",
-    "status": "pending",
-    "date": "2026-10-31",
-    "time": "18:30",
-    "bookingName": "",
-    "bookingCategory": "Restaurants",
-    "category": "Restaurants",
-    "type": "restaurant",
-    "emoji": "🥂",
-    "title": "LÜNE Restaurant & Bar",
-    "depositPaid": "",
-    "depositAmount": "",
-    "depositCurrency": "",
-    "bookingMethod": "Official online reservation / Email",
-    "bookingContact": "",
-    "secondaryContact": "",
-    "bookingUrl": "https://www.adrienguenzi.com/reservations",
-    "notes": "18:30 dinner for 4; Monday dinner service is open. Fashion Day shopping後先返 Fusion 放低戰利品 / freshen up，再輕身 Grab 去 LÚNE。",
-    "signatureDishes": ["Canadian lobster raviolo", "Phở foie gras terrine", "Sea urchin + A5 wagyu"],
-    "email": "contact-lune@hdnt.vn",
-    "address": "17/14 Lê Thánh Tôn, Sài Gòn, Ho Chi Minh City, Vietnam",
-    "bookingHandoff": "未訂。首選 official reservation page；4人，2 Nov 18:30。需要直接聯絡可 email contact-lune@hdnt.vn。",
-    "placeId": "lune"
+    "guests": 4,
+    "reference": "1359046173275966",
+    "paymentStatus": "paid",
+    "notes": "",
+    "stayDates": "23–24 Sep 2026",
+    "nights": 1,
+    "roomType": "Two-Bedroom Suite with Mountain View · 2 double beds · 107 m²",
+    "checkIn": "2:00 PM",
+    "checkOut": "10:00 AM",
+    "address": "State Highway 8, Lake Tekapo 7945, New Zealand",
+    "phone": "+64 3 360 1063",
+    "price": "AUD 397.65 prepaid · net AUD 329.44 after AUD 68.21 cashback",
+    "checkInInstructions": "Check in at reception. Confirm any late-arrival instructions directly with the property before travel.",
+    "platform": "Trip.com",
+    "cancellation": "Non-refundable; cannot be modified",
+    "paymentLabel": "PAID",
+    "totalAmount": "AUD 397.65",
+    "discountLabel": "Cashback",
+    "discountAmount": "\u2212AUD 68.21",
+    "netTotalAUD": "AUD 329.44",
+    "approximateNet": false
   },
-  "bk-pizza4ps": {
-    "id": "bk-pizza4ps",
-    "bookingId": "bk-pizza4ps",
-    "eventId": "pizza4ps",
-    "timelineItemId": "pizza4ps",
-    "day": 2,
-    "dayId": "day2",
-    "status": "pending",
-    "date": "2026-10-31",
-    "time": "13:00",
-    "bookingName": "",
-    "bookingCategory": "Restaurants",
-    "category": "Restaurants",
-    "type": "restaurant",
-    "emoji": "🍕",
-    "title": "Pizza 4P’s Bến Thành",
-    "address": "8 Thủ Khoa Huân, Bến Thành, District 1, Ho Chi Minh City",
-    "depositPaid": "",
-    "depositAmount": "",
-    "depositCurrency": "",
-    "bookingMethod": "Official online reservation",
-    "bookingContact": "",
-    "secondaryContact": "",
-    "bookingUrl": "https://www.tablecheck.com/vi/pizza-4ps-hcm-ben-thanh/reserve/landing",
-    "notes": "Bến Thành branch · 8 Thủ Khoa Huân。Reserve lunch for 4 at 13:00；食完步行接 Mộc Healing。",
-    "signatureDishes": ["Crab tomato cream spaghetti", "House-made 4-cheese pizza + honey", "Burrata / Parma ham pizza"],
-    "bookingHandoff": "未訂。一定揀 Bến Thành branch · 8 Thủ Khoa Huân；4人，2 Nov 13:00。直接用 official Book a Table / TableCheck。",
-    "placeId": "pizza4ps"
-  },
-  "bk-nha-suga": {
-    "id": "bk-nha-suga",
-    "bookingId": "bk-nha-suga",
-    "eventId": "nha-suga",
-    "timelineItemId": "nha-suga",
-    "day": 1,
-    "dayId": "day1",
-    "status": "pending",
-    "date": "2026-10-30",
-    "time": "14:30",
-    "bookingName": "",
-    "bookingCategory": "Spa",
-    "category": "Spa",
-    "type": "spa",
-    "title": "Spa Nhà Suga Premium Korea Headspa — Nguyễn Huệ",
-    "depositPaid": "",
-    "depositAmount": "",
-    "depositCurrency": "",
-    "bookingMethod": "Email",
-    "bookingContact": "",
-    "secondaryContact": "",
-    "bookingUrl": "",
-    "notes": "Hours: daily 09:00–20:00。Confirm treatment duration and arrival time。",
-    "email": "nhasuga2021@gmail.com",
-    "address": "8th Floor, 42 Nguyễn Huệ, Bến Nghé, District 1, Ho Chi Minh City",
-    "bookingHandoff": "未訂。現時可用 email：nhasuga2021@gmail.com。4人，30 Oct 下午；寫明 Nguyễn Huệ branch、想做 head spa，並確認 treatment duration / arrival instructions。",
-    "placeId": "nha-suga"
-  },
-  "bk-ha-spa": {
-    "id": "bk-ha-spa",
-    "bookingId": "bk-ha-spa",
-    "eventId": "ha-spa",
-    "timelineItemId": "ha-spa",
-    "day": 5,
+  "queenstown-booking": {
+    "id": "queenstown-booking",
+    "type": "accommodation",
+    "title": "Windsor Lodge · Alpine Luxury for large groups",
+    "status": "confirmed",
+    "displayStatus": "CONFIRMED",
+    "guideDayLabel": "Days 5–7",
+    "guideStatus": "confirmed",
+    "date": "2026-09-26",
+    "time": "3:00 PM",
+    "placeId": "queenstown-house",
     "dayId": "day5",
-    "status": "pending",
-    "date": "2026-11-03",
-    "time": "15:30",
-    "bookingName": "",
-    "bookingCategory": "Spa",
-    "category": "Spa",
-    "type": "spa",
-    "title": "Hạ Spa — Tân Bình",
-    "depositPaid": "",
-    "depositAmount": "",
-    "depositCurrency": "",
-    "bookingMethod": "Official website / WhatsApp",
-    "bookingContact": "",
-    "secondaryContact": "",
-    "bookingUrl": "https://haspamassage.vn/lien-he/",
-    "notes": "Confirm timing against airport transfer.",
-    "address": "334 Nguyễn Trọng Tuyển, Ward 2, Tân Bình, Ho Chi Minh City",
-    "bookingHandoff": "未訂。Tân Bình branch；可用 official website 或 WhatsApp +84 908 661 683。4人，3 Nov 15:30；預約時確認療程長度同機場 transfer timing。",
-    "whatsapp": "+84 908 661 683",
-    "placeId": "ha-spa"
+    "timelineItemId": "airbnb-checkin-d5",
+    "guests": 11,
+    "guestSummary": "9 guests + 2 children",
+    "reference": "HMMTJ38BES",
+    "paymentStatus": "Charge scheduled 17 Sep 2026",
+    "notes": "Hosted by Alison · all three families",
+    "stayDates": "26–29 Sep 2026",
+    "nights": 3,
+    "roomType": "Windsor Lodge · Alpine Luxury for large groups",
+    "checkIn": "3:00 PM",
+    "checkOut": "10:00 AM",
+    "address": "7 Windsor Place, Queenstown, New Zealand",
+    "phone": "",
+    "price": "AUD 4,683.99 · charge scheduled 17 Sep 2026",
+    "platform": "Airbnb",
+    "host": "Alison",
+    "cancellation": "Free cancellation before 3:00 PM on 25 Sep 2026; cancellation before check-in at 3:00 PM on 26 Sep qualifies for a partial refund.",
+    "referenceLabel": "Airbnb confirmation code",
+    "paymentLabel": "CHARGE SCHEDULED",
+    "chargeDate": "17 Sep 2026",
+    "totalAmount": "AUD 4,683.99",
+    "netTotalAUD": "AUD 4,683.99",
+    "approximateNet": false
   },
-  "bk-transfer-in": {
-    "id": "bk-transfer-in",
-    "bookingId": "bk-transfer-in",
-    "eventId": "airport-transfer",
-    "timelineItemId": "airport-transfer",
-    "day": 1,
+  "car-rental": {
+    "id": "car-rental",
+    "type": "rentalCar",
+    "title": "Rental Cars 247",
+    "status": "confirmed",
+    "date": "2026-09-22",
+    "time": "17:30 pickup",
+    "placeId": null,
     "dayId": "day1",
-    "status": "pending",
-    "date": "2026-10-30",
-    "time": "06:00",
-    "bookingName": "",
-    "bookingCategory": "Transport",
-    "category": "Transport",
-    "type": "transport",
-    "title": "Airport transfer · Arrival",
-    "depositPaid": "",
-    "depositAmount": "",
-    "depositCurrency": "",
-    "bookingMethod": "Klook online booking",
-    "bookingContact": "",
-    "secondaryContact": "",
-    "bookingUrl": "https://www.klook.com/airport-transfers/service/sgn-tan-son-nhat-international-airport/",
-    "notes": "未預約。Arrival transfer 暫定使用 Klook；預約後再補 booking reference / contact / payment details。",
-    "standalone": true
-,
-    "bookingHandoff": "未訂。直接用 Klook SGN airport transfer page；選可坐4人＋行李的車，destination 填 Fusion Original Saigon Centre / 65 Lê Lợi。落單後把 voucher/reference 補回 Booking card。"
+    "guests": 4,
+    "reference": "IM50036714",
+    "paymentStatus": "AUD 11.61 deposit paid · AUD 513.05 due at pickup",
+    "notes": "Mitsubishi ASX or similar · Booking 72600|087471A8AD6EE7A|87471 · pickup Christchurch · return Queenstown 1 Oct 17:00",
+    "provider": "Rental Cars 247",
+    "vehicle": "Mitsubishi ASX or Similar",
+    "bookingNumber": "72600|087471A8AD6EE7A|87471",
+    "pickupAddress": "79 Stanleys Road, Harewood, Christchurch",
+    "pickupDepotAddress": "79 Stanleys Road, Harewood, Christchurch",
+    "returnAddress": "2/13 Red Oaks Drive, Frankton, Queenstown",
+    "phone": "0800 247 727",
+    "officePhone": "+64 09 869 3318",
+    "email": "christchurch@rentalcars247.co.nz",
+    "standalone": true,
+    "oneWay": true,
+    "pickupDateTime": "2026-09-22 17:30",
+    "pickupNavigationDestination": "https://maps.google.com/?q=79+Stanleys+Road+Harewood+Christchurch",
+    "returnDateTime": "2026-10-01 17:00",
+    "returnDepotAddress": "2/13 Red Oaks Drive, Frankton, Queenstown",
+    "returnNavigationDestination": "https://maps.google.com/?q=2%2F13+Red+Oaks+Drive+Frankton+Queenstown",
+    "shuttleCollectionAddress": "264 Russley Road, Avonhead, Christchurch",
+    "price": "AUD 524.66 total",
+    "paymentLabel": "DEPOSIT PAID",
+    "totalAmount": "AUD 524.66",
+    "depositPaid": "AUD 11.61",
+    "balanceDue": "AUD 513.05",
+    "payAtPickup": "AUD 513.05",
+    "netTotalAUD": "AUD 524.66",
+    "approximateNet": false
   },
-  "bk-man-moi": {
-    "id": "bk-man-moi",
-    "bookingId": "bk-man-moi",
-    "eventId": "man-moi",
-    "timelineItemId": "man-moi",
-    "day": 3,
+  "lakefront-booking": {
+    "id": "lakefront-booking",
+    "type": "accommodation",
+    "title": "Lakefront Lodge",
+    "status": "confirmed",
+    "displayStatus": "CONFIRMED",
+    "guideDayLabel": "Days 8–10",
+    "guideStatus": "confirmed",
+    "date": "2026-09-29",
+    "time": "Check-in from 14:00",
+    "placeId": "lakefront-lodge",
+    "dayId": "day8",
+    "guests": 11,
+    "reference": "685406630",
+    "paymentStatus": "paid",
+    "notes": "",
+    "stayDates": "29 Sep–1 Oct 2026",
+    "nights": 2,
+    "roomType": "3 rooms · Lee: Executive Apartment, 1 Bedroom, Jetted Tub; bedding request 1 king + 2 twins",
+    "checkIn": "From 2:00 PM",
+    "checkOut": "By 10:00 AM",
+    "address": "58 Lakefront Drive, Te Anau 9600, New Zealand",
+    "phone": "+64 3 249 7546",
+    "price": "AUD 1,541.13 paid · actual net cash cost AUD 1,391.13",
+    "checkInInstructions": "Check in at reception. Keep the Milford Sound departure items ready the night before.",
+    "platform": "Luxury Escapes",
+    "cancellation": "Free cancellation until 21 Sep 2026, 4:00 pm local property time",
+    "referenceLabel": "Luxury Escapes reference",
+    "paymentLabel": "PAID",
+    "totalAmount": "AUD 1,541.13",
+    "discountLabel": "Cashback",
+    "discountAmount": "\u2212AUD 150.00",
+    "netTotalAUD": "AUD 1,391.13",
+    "approximateNet": false
+  },
+  "edgewater-booking": {
+    "id": "edgewater-booking",
+    "type": "accommodation",
+    "title": "Edgewater",
+    "status": "confirmed",
+    "displayStatus": "CONFIRMED",
+    "guideDayLabel": "Day 3",
+    "guideStatus": "confirmed",
+    "date": "2026-09-24",
+    "time": "Check-in",
+    "placeId": "edgewater",
     "dayId": "day3",
-    "status": "pending",
-    "date": "2026-11-01",
-    "time": "14:30",
-    "bookingName": "",
-    "bookingCategory": "Restaurants",
-    "category": "Restaurants",
-    "type": "restaurant",
-    "emoji": "🍲",
-    "title": "Mặn Mòi – Bến Nghé",
-    "depositPaid": "",
-    "depositAmount": "",
-    "depositCurrency": "",
-    "bookingMethod": "Official online reservation",
-    "bookingContact": "",
-    "secondaryContact": "",
-    "bookingUrl": "https://manmoi.vn/en/book-a-table/",
-    "notes": "14:30 late lunch · 4 人。Cu Chi tour 直接 drop 到餐廳；預留 60–65 分鐘，15:40 左右接 War Remnants Museum。",
-    "signatureDishes": ["Pork jowl", "Sticky rice chicken", "Vietnamese home-style claypot / soup"],
-    "address": "Level 3, VNPT Building, Gate 6, Nguyễn Văn Bình, Sài Gòn Ward, Ho Chi Minh City",
-    "bookingHandoff": "未訂。用 Mặn Mòi official Book a Table，選 Bến Nghé branch（唔好揀其他 branch），4人，1 Nov 14:30。",
-    "placeId": "man-moi"
+    "guests": 4,
+    "reference": "73499810818218",
+    "paymentStatus": "paid",
+    "notes": "Confirmed booking.",
+    "stayDates": "24–25 Sep 2026",
+    "nights": 1,
+    "roomType": "Premium Suite",
+    "checkIn": "From 3:00 PM",
+    "checkOut": "By 10:30 AM",
+    "address": "54 Sargood Drive, Wānaka 9305, New Zealand",
+    "phone": "",
+    "price": "AUD 402.47 paid · net AUD 343.82 after AUD 58.65 cashback",
+    "platform": "Expedia",
+    "cancellation": "Free cancellation before 2:00 pm on 10 Sep 2026",
+    "checkInInstructions": "",
+    "paymentLabel": "PAID",
+    "totalAmount": "AUD 402.47",
+    "cashbackAmount": "\u2212AUD 58.65",
+    "netTotalAUD": "AUD 343.82",
+    "approximateNet": false
   },
-  "bk-moc-healing": {
-    "id": "bk-moc-healing",
-    "bookingId": "bk-moc-healing",
-    "eventId": "moc-healing",
-    "timelineItemId": "moc-healing",
-    "day": 2,
-    "dayId": "day2",
-    "status": "pending",
-    "date": "2026-10-31",
-    "time": "14:20",
-    "bookingName": "",
-    "bookingCategory": "Spa",
-    "category": "Spa",
-    "type": "spa",
-    "emoji": "🦶",
-    "title": "Mộc Healing Spa",
-    "depositPaid": "",
-    "depositAmount": "",
-    "depositCurrency": "",
-    "bookingMethod": "Official website / Email",
-    "bookingContact": "",
-    "secondaryContact": "",
-    "bookingUrl": "https://mochealingspa.com/",
-    "notes": "14:20–15:20 · 約 60 分鐘 foot-focused treatment。Pizza 4P’s Bến Thành 食完沿同一條 Thủ Khoa Huân 步行過來；做完直接開始 Bến Thành → Nguyễn Trãi shopping walk。",
-    "email": "mochealingspa@gmail.com",
-    "address": "39–41 Thủ Khoa Huân, Bến Thành, Ho Chi Minh City",
-    "bookingHandoff": "未訂。4人，2 Nov 14:20，約60分鐘 foot-focused treatment。用 official website booking form；如要補充要求可 email mochealingspa@gmail.com。",
-    "placeId": "moc-healing"
-  },
-  "bk-cu-chi": {
-    "id": "bk-cu-chi",
-    "bookingId": "bk-cu-chi",
-    "eventId": "cu-chi",
-    "timelineItemId": "cu-chi",
-    "day": 3,
-    "dayId": "day3",
-    "status": "pending",
-    "date": "2026-11-01",
-    "time": "07:30",
-    "bookingName": "",
-    "bookingCategory": "Activities",
-    "category": "Activities",
+  "ultimate-alpine-booking": {
+    "id": "ultimate-alpine-booking",
     "type": "activity",
-    "title": "Cu Chi Tunnels Private Tour",
-    "depositPaid": "",
-    "depositAmount": "",
-    "depositCurrency": "",
-    "bookingMethod": "Klook online booking · Private Tour",
-    "bookingContact": "",
-    "secondaryContact": "",
-    "bookingUrl": "https://www.klook.com/en-AU/activity/137200-cu-chi-tunnels-private-day-tour-with-chinese-speaking-guide/",
-    "notes": "Private tour for 4. Request: skip included lunch; no factory stop; drop directly at Mặn Mòi. Planning anchor: arrive Mặn Mòi about 14:30.",
-    "bookingHandoff": "未訂。Klook 揀 Private Tour，4人，1 Nov，目標 07:30 出發。落單後用 Klook message operator：skip included lunch、no factory stop、約14:30直接 drop Mặn Mòi Bến Nghé；要書面確認。",
-    "placeId": "cu-chi"
-  },
-  "bk-nara": {
-    "id": "bk-nara",
-    "bookingId": "bk-nara",
-    "eventId": "nara-spa",
-    "timelineItemId": "nara-spa",
-    "day": 3,
+    "category": "Activities",
+    "subCategory": "Scenic Flight",
+    "title": "Ultimate Alpine Experience · Helicopter + Ski Plane",
+    "status": "confirmed",
+    "date": "2026-09-24",
+    "time": "11:55 AM check-in · 12:30 PM departure",
+    "placeId": "ultimate-alpine",
     "dayId": "day3",
-    "status": "pending",
-    "date": "2026-11-01",
-    "time": "17:15",
-    "bookingName": "",
-    "bookingCategory": "Spa",
-    "category": "Spa",
-    "type": "spa",
-    "emoji": "🫧",
-    "title": "Nara Spa",
-    "depositPaid": "",
-    "depositAmount": "",
-    "depositCurrency": "",
-    "bookingMethod": "Official online form / WhatsApp / Email",
-    "bookingContact": "",
-    "secondaryContact": "",
-    "bookingUrl": "https://www.naraspasaigon.com/",
-    "notes": "17:15–18:45 · 約 90 分鐘。指定 Massage + Hair Wash / Hair Spa。",
-    "email": "paperplanes198gg@gmail.com",
-    "address": "595/74 Nguyễn Đình Chiểu, Bàn Cờ, District 3, Ho Chi Minh City",
-    "bookingHandoff": "未訂。4人，1 Nov 17:15，目標90分鐘 Massage + Hair Wash / Hair Spa。可用 official online form、WhatsApp +84 903 877 906，或 email paperplanes198gg@gmail.com。入口在巷內，預約後問清楚到店指示。",
-    "whatsapp": "+84 903 877 906",
-    "placeId": "nara-spa"
+    "timelineItemId": "ultimate-alpine-flight",
+    "guests": 4,
+    "adults": 3,
+    "children": 1,
+    "reference": "368794189 + 368802157",
+    "paymentStatus": "paid",
+    "price": "AUD 1,482.57 paid · net AUD 1,429.96 after AUD 52.61 cashback",
+    "paymentLabel": "PAID",
+    "totalAmount": "AUD 1,482.57",
+    "cashbackAmount": "−AUD 52.61",
+    "netTotalAUD": "AUD 1,429.96",
+    "approximateNet": false,
+    "provider": "INFLITE Mt Cook",
+    "phone": "+64 3 281 4502",
+    "meetingPoint": "Mt Cook Glacier Guiding, Aoraki Mt Cook Airport, Unit 2, State Highway 80, 7999, New Zealand",
+    "duration": "45 minutes",
+    "experience": "Helicopter + ski plane scenic flight with one alpine snow landing",
+    "weatherRequirement": "Call before leaving Lake Tekapo to confirm weather and minimum passenger numbers.",
+    "checkInRequirement": "Arrive 35 minutes before departure.",
+    "travellers": [
+      "Crystal",
+      "Alvin",
+      "Austin",
+      "Chelsea"
+    ],
+    "platform": "Trip.com / Travelmore",
+    "cancellation": "Weather cancellation handled according to supplied voucher terms."
+  },
+  "sudima-booking": {
+    "id": "sudima-booking",
+    "type": "accommodation",
+    "title": "Sudima Queenstown Five Mile",
+    "status": "confirmed",
+    "date": "2026-09-25",
+    "time": "Check-in",
+    "placeId": "sudima-five-mile",
+    "dayId": "day4",
+    "guests": 4,
+    "reference": "",
+    "paymentStatus": "pay at property",
+    "notes": "Lee family transition stay.",
+    "stayDates": "25–26 Sep 2026",
+    "nights": 1,
+    "roomType": "Two-bedroom accommodation",
+    "checkIn": "2:00 PM",
+    "checkOut": "11:00 AM",
+    "address": "22 Grant Road, Frankton, Queenstown 9300, New Zealand",
+    "phone": "",
+    "price": "NZD 407.20 · pay at hotel · approx. net AUD 324.26",
+    "cashback": "AUD 17.79",
+    "netPrice": "AUD 324.26",
+    "displayStatus": "CONFIRMED",
+    "guideDayLabel": "Day 4",
+    "guideStatus": "confirmed",
+    "checkInInstructions": "",
+    "platform": "Expedia",
+    "cancellation": "Check current Expedia booking terms",
+    "paymentLabel": "PAY AT HOTEL",
+    "totalAmount": "NZD 407.20 \u00b7 \u2248 AUD 342.05",
+    "cashbackAmount": "\u2212AUD 17.79",
+    "netTotalAUD": "AUD 324.26",
+    "approximateNet": true,
+    "fxNote": "Planning estimate \u00b7 1 NZD \u2248 0.84 AUD"
+  },
+  "luxe-milford-booking": {
+    "id": "luxe-milford-booking",
+    "type": "activity",
+    "category": "Activities",
+    "subCategory": "Tour",
+    "title": "Luxe Tours — Premium Milford Sound Day Tour",
+    "status": "confirmed",
+    "date": "2026-09-30",
+    "time": "9:00 AM main departure · hotel pickup approximately 9:05–9:15 AM",
+    "placeId": "milford",
+    "dayId": "day9",
+    "timelineItemId": "milford-tour",
+    "guests": 11,
+    "adults": 5,
+    "children": 6,
+    "reference": "MSDTV10NT4",
+    "bookingName": "Alvin Lee",
+    "paymentStatus": "pay later",
+    "paymentLabel": "PAY LATER",
+    "originalTotal": "NZD 3,189",
+    "totalAmount": "NZD 3,189",
+    "discount": "NZD 440 total · NZD 40 per guest",
+    "discountLabel": "Discount",
+    "discountAmount": "−NZD 440",
+    "price": "NZD 2,749 balance due",
+    "netPrice": "NZD 2,749",
+    "adultPrice": "NZD 339 standard · NZD 299 after discount",
+    "childPrice": "NZD 249 standard · NZD 209 after discount",
+    "familyBreakdown": [
+      {
+        "partyId": "lee",
+        "label": "Lee",
+        "composition": "2 Adults + 2 Children",
+        "total": "NZD 1,016"
+      },
+      {
+        "partyId": "fowlers",
+        "label": "Fowlers",
+        "composition": "1 Adult + 2 Children",
+        "total": "NZD 717"
+      },
+      {
+        "partyId": "yau",
+        "label": "Yau",
+        "composition": "2 Adults + 2 Children",
+        "total": "NZD 1,016"
+      }
+    ],
+    "tourType": "Premium small-group coach + two-hour Milford Sound cruise",
+    "bookingWay": "Online · Luxe Tours / Rezdy",
+    "pickupAddress": "Lakefront Lodge, 58 Lakefront Drive, Te Anau 9600, New Zealand",
+    "pickupNote": "Pickup address supplied: Lakefront Lodge · final pickup time to be advised / approximately 9:05–9:15 AM. Be ready outside the main entrance near the street by 8:55 AM.",
+    "dropOff": "Return drop-off at Lakefront Lodge at approximately 5:30 PM, subject to road, weather and tour conditions.",
+    "provider": "Luxe Tours",
+    "phone": "+64 21 090 75802",
+    "email": "bookings@luxetours.co.nz",
+    "website": "https://www.luxetours.co.nz/luxe-milford-sound-day-tour",
+    "bookingUrl": "https://www.luxetours.co.nz/luxe-milford-sound-day-tour",
+    "lunchStatus": "Not arranged yet · the group may prepare food or purchase food onboard; confirm later.",
+    "snacks": "6 sweet muffin snacks + 5 savoury muffin/scone snacks selected",
+    "cancellation": "Full refund up to 5 days before departure.",
+    "notes": "Confirmed for Day 9. Pay later. Keep the booking confirmation available as proof of booking."
+  },
+  "southwark-booking": {
+    "id": "southwark-booking",
+    "type": "accommodation",
+    "title": "Southwark Hotel & Apartments",
+    "status": "confirmed",
+    "displayStatus": "CONFIRMED",
+    "guideDayLabel": "Day 1",
+    "guideStatus": "confirmed",
+    "date": "2026-09-22",
+    "time": "Check-in",
+    "placeId": "southwark",
+    "dayId": "day1",
+    "timelineItemId": "southwark",
+    "stayDates": "22–23 Sep 2026",
+    "nights": 1,
+    "checkIn": "2:00 PM",
+    "checkOut": "10:00 AM",
+    "address": "25 Southwark Street, Christchurch Central City, Christchurch 8011, New Zealand",
+    "roomType": "Business Double or Twin Room",
+    "bookingName": "Crystal Cheung",
+    "reference": "73514451853261",
+    "referenceLabel": "Expedia itinerary",
+    "platform": "Expedia",
+    "purchaseDate": "5 Aug 2026",
+    "paymentStatus": "Paid · Mastercard 0636",
+    "roomPrice": "AUD 177.80",
+    "taxes": "AUD 26.67",
+    "price": "AUD 204.47",
+    "cashback": "AUD 28.98",
+    "parking": "Confirmed · NZD 15 · pay at hotel",
+    "notes": "",
+    "paymentLabel": "PAID",
+    "totalAmount": "AUD 204.47",
+    "cashbackAmount": "\u2212AUD 28.98",
+    "netTotalAUD": "AUD 175.49",
+    "approximateNet": false
   }
 };
 
 const TRIP_DATA={
   "checklist": {
-    "title": "✅ Checklist",
-    "body": "<div class='checklist-mini trip-checklist-compact'><label class='check-row'><input type='checkbox' data-check onchange='saveChecklist()'> Passport</label><label class='check-row'><input type='checkbox' data-check onchange='saveChecklist()'> E-Visa</label><label class='check-row'><input type='checkbox' data-check onchange='saveChecklist()'> Travel Insurance</label><label class='check-row'><input type='checkbox' data-check onchange='saveChecklist()'> Credit Card</label><label class='check-row'><input type='checkbox' data-check onchange='saveChecklist()'> AUD 500 Cash</label><label class='check-row'><input type='checkbox' data-check onchange='saveChecklist()'> eSIM</label><label class='check-row'><input type='checkbox' data-check onchange='saveChecklist()'> Grab App</label><label class='check-row'><input type='checkbox' data-check onchange='saveChecklist()'> Offline Maps</label><label class='check-row'><input type='checkbox' data-check onchange='saveChecklist()'> Power Bank</label><label class='check-row'><input type='checkbox' data-check onchange='saveChecklist()'> Online Check-in</label><div class='ready-box' id='readyBox'><h2>✈ WE ARE READY</h2><p>Let's Go!</p></div></div>"
-  },
-  "emergency": {
-    "title": "☎️ Emergency",
-    "body": "<div class='fact-grid trip-facts-compact'><div class='fact'><strong>Police</strong><a href='tel:113'>113</a></div><div class='fact'><strong>Fire</strong><a href='tel:114'>114</a></div><div class='fact'><strong>Ambulance</strong><a href='tel:115'>115</a></div><div class='fact'><strong>Hotel</strong><a href='tel:+842836222265'>+84 28 3622 2265</a></div><div class='fact'><strong>Australian Consulate-General</strong><a href='tel:+842835218100'>+84 28 3521 8100</a><br>20/F Vincom Centre, 47 Lý Tự Trọng, D1</div><div class='fact'><strong>24-hour Consular Emergency</strong><a href='tel:+61262613305'>+61 2 6261 3305</a></div></div><p class='timestamp'>Local emergency lines may operate mainly in Vietnamese. Contact the hotel or travel insurer when practical.</p>"
+    "title": "✅ Before the Trip",
+    "body": "<div class='checklist-mini trip-checklist-compact'><label class='check-row'><input type='checkbox' data-check onchange='saveChecklist()'> Passport</label><label class='check-row'><input type='checkbox' data-check onchange='saveChecklist()'> Travel Insurance</label><label class='check-row'><input type='checkbox' data-check onchange='saveChecklist()'> Driver Licence</label><label class='check-row'><input type='checkbox' data-check onchange='saveChecklist()'> Rental confirmation</label><label class='check-row'><input type='checkbox' data-check onchange='saveChecklist()'> Accommodation confirmations</label><label class='check-row'><input type='checkbox' data-check onchange='saveChecklist()'> Credit Card</label><label class='check-row'><input type='checkbox' data-check onchange='saveChecklist()'> NZD / payment cards</label><label class='check-row'><input type='checkbox' data-check onchange='saveChecklist()'> Offline Maps</label><label class='check-row'><input type='checkbox' data-check onchange='saveChecklist()'> Power Bank</label><label class='check-row'><input type='checkbox' data-check onchange='saveChecklist()'> Warm layers & rain jacket</label><p class='checklist-progress' id='checklistProgress'>0 / 10 Complete</p><div class='ready-box' id='readyBox'><h2>🚙 WE ARE READY</h2><p>South Island Road Trip</p></div></div>"
   },
   "flights": {
     "title": "✈️ Flights",
-    "body": "<div class='fact-grid trip-facts-compact'><div class='fact'><strong>Outbound · Fri 30 Oct</strong>VietJet VJ082<br>MEL 01:30 → SGN 05:55<br>7kg carry-on · 20kg checked</div><div class='fact'><strong>Return · Tue 3 Nov</strong>Vietnam Airlines VN781<br>SGN 21:10 → MEL 09:25 +1<br>7kg carry-on · 20kg checked</div></div>"
+    "body": "<div class='fact-grid'><div class='fact'><strong>Outbound · 22 Sep 2026</strong>Jetstar JQ171 · Economy<br>MEL T2 11:05 → CHC T1 16:25<br>Qantas ref E6K0J2 · Jetstar ref LVIS9B</div><div class='fact'><strong>Inbound · 1 Oct 2026</strong>Virgin Australia VA146 · Economy<br>ZQN 18:40 → MEL T2 19:10<br>Booking ref EDQLHX<br>Seats 28B · 28C · 28D · 28E</div></div>"
+  },
+  "vehicle": {
+    "title": "🚙 Rental Car",
+    "body": "<p><strong>Rental Cars 247 · Mitsubishi ASX or Similar</strong><br>Confirmed · Reference IM50036714</p><div class='fact-grid rental-price-grid'><div class='fact'><strong>Total</strong>AUD 524.66</div><div class='fact'><strong>Deposit paid</strong>AUD 11.61</div><div class='fact'><strong>Pay at pickup</strong>AUD 513.05</div></div><div class='fact-grid rental-depot-grid'><div class='fact rental-depot-card'><strong>Pickup depot</strong>22 Sep · 5:30 PM<br><span class='rental-depot-address'>79 Stanleys Road, Harewood, Christchurch</span><div class='trip-action-row rental-depot-actions'><a class='pill' href='https://maps.google.com/?q=79+Stanleys+Road+Harewood+Christchurch' target='_blank' rel='noopener'>Navigate to pickup depot</a></div></div><div class='fact rental-depot-card'><strong>Return depot</strong>1 Oct · 5:00 PM<br><span class='rental-depot-address'>2/13 Red Oaks Drive, Frankton, Queenstown</span><div class='trip-action-row rental-depot-actions'><a class='pill' href='https://maps.google.com/?q=2%2F13+Red+Oaks+Drive+Frankton+Queenstown' target='_blank' rel='noopener'>Navigate to return depot</a></div></div><div class='fact'><strong>Booking</strong>72600|087471A8AD6EE7A|87471</div><div class='fact rental-office-card'><strong>Office</strong><a href='tel:+6498693318'>+64 09 869 3318</a><br><a href='mailto:christchurch@rentalcars247.co.nz'>christchurch@rentalcars247.co.nz</a></div></div><h3>Pickup Instructions</h3><ol><li>Call <a href='tel:0800247727'>0800 247 727</a>.</li><li>Choose <strong>Option 2</strong>.</li><li>Exit Christchurch Airport via <strong>Door 1 or Door 2</strong>.</li><li>Wait at the <strong>Park & Ride pickup area</strong>.</li><li>Take the Airpark Canterbury shuttle showing <strong>Russley Road</strong>.</li></ol><p class='timestamp'>Shuttle collection point: 264 Russley Road, Avonhead, Christchurch</p>"
   },
   "stay": {
-    "title": "🏨 Stay",
-    "body": "<p><strong>Fusion Original Saigon Centre</strong><br>今次四人行的城市 base。位置連住 Saigon Centre / Takashimaya，落雨、太熱或者夜晚返酒店都方便。</p><div class='hotel-card'><p class='kicker'>Hotel Address</p><p><strong>Fusion Original Saigon Centre</strong><br>65 Đường Lê Lợi<br>Takashimaya Saigon Centre<br>District 1, Ho Chi Minh City, Vietnam</p><div class='guide-next-row'><button class='pill' onclick=\"copyText('Fusion Original Saigon Centre, 65 Đường Lê Lợi, Takashimaya Saigon Centre, District 1, Ho Chi Minh City, Vietnam')\">📋 Copy Address</button></div></div><div class='fact-grid hotel-facts'><div class='fact'><strong>Phone</strong><a href='tel:+842836222265'>+84 28 3622 2265</a></div><div class='fact'><strong>Check-in</strong>2:00 pm – 12:00 am</div><div class='fact'><strong>Check-out</strong>Before 12:00 pm</div><div class='fact'><strong>Room</strong>2 Bedroom Suite</div></div>"
+    "title": "🏨 Accommodation",
+    "body": "<div id='accommodationInfoRoot'></div>"
   },
-  "activities": {"title":"🎟️ Activities","body":""},
-  "transport": {"title":"🚐 Transport","body":""}
+  "emergency": {
+    "title": "☎️ Emergency",
+    "body": "<div class='fact-grid emergency-grid'><div class='fact'><strong>Emergency services</strong><a class='mini-btn' href='tel:111'>Call 111</a></div><div class='fact'><strong>Police · Non-emergency</strong><a class='mini-btn' href='tel:105'>Call 105</a></div><div class='fact'><strong>Healthline · 24 hours</strong>0800 611 116<br><a class='mini-btn' href='tel:0800611116'>Call</a></div><div class='fact'><strong>National Poisons Centre</strong>0800 764 766<br><a class='mini-btn' href='tel:0800764766'>Call</a></div><div class='fact'><strong>Rental Cars 247</strong>0800 247 727<br><a class='mini-btn' href='tel:0800247727'>Call</a></div><div class='fact'><strong>Australian consular emergency</strong>+61 2 6261 3305<br><a class='mini-btn' href='tel:+61262613305'>Call</a></div></div><h3>Nearby Medical Care</h3><div class='fact-grid emergency-grid'><div class='fact'><strong>Tekapo / Mt Cook · Twizel Medical Centre</strong>03 435 0777 · After hours 027 438 2777<br>15 Mackenzie Drive, Twizel<div class='trip-action-row'><a class='mini-btn' href='tel:+6434350777'>Call</a><a class='mini-btn' href='https://maps.google.com/?q=Twizel+Medical+Centre+15+Mackenzie+Drive+Twizel' target='_blank' rel='noopener'>Navigate</a></div></div><div class='fact'><strong>Queenstown · Lakes District Hospital</strong>03 441 0015<br>20 Douglas Street, Frankton<div class='trip-action-row'><a class='mini-btn' href='tel:+6434410015'>Call</a><a class='mini-btn' href='https://maps.google.com/?q=Lakes+District+Hospital+20+Douglas+Street+Frankton+Queenstown' target='_blank' rel='noopener'>Navigate</a></div></div><div class='fact'><strong>Te Anau · Fiordland Medical Centre</strong>03 249 7007<br>25 Luxmore Drive, Te Anau<div class='trip-action-row'><a class='mini-btn' href='tel:+6432497007'>Call</a><a class='mini-btn' href='https://maps.google.com/?q=Fiordland+Medical+Centre+25+Luxmore+Drive+Te+Anau' target='_blank' rel='noopener'>Navigate</a></div></div></div><p class='timestamp'>Travel insurance contact not yet supplied.</p>"
+  },
+  "activities": {
+    "title": "🎟️ Activities",
+    "body": "<div id=\"activityBookingRoot\"></div>"
+  }
 };
 
 const TRIP_ORDER=[
   "flights",
+  "vehicle",
   "stay",
   "activities",
-  "transport",
   "checklist",
   "emergency"
 ];
 
 const ITINERARY_DATA={
   "1": {
-    "dayEmoji": "🛬",
-    "title": "Day 1 · Saigon Companion",
-    "kicker": "Day 1 · 30 Oct • Friday",
-    "heading": "Hello Saigon",
-    "areaLabel": "DISTRICT 1 · CENTRAL SAIGON",
+    "title": "Day 1 · New Zealand Companion",
+    "kicker": "Day 1 · 22 Sep • Tuesday",
+    "heading": "Arrival in Christchurch",
     "legend": [
-      "☀️ Morning",
-      "🍜 Midday",
-      "🌙 Evening"
+      "✈️ Arrival",
+      "🚙 Car pickup",
+      "🌙 Easy evening"
     ],
+    "drive": {
+      "route": "Christchurch Airport → Rental Cars 247 → Southwark Hotel & Apartments",
+      "distance": "≈ 15 km",
+      "drivingTime": "≈ 20–25 min after vehicle collection",
+      "road": "Airport / city roads",
+      "stops": [
+        "Rental Cars 247",
+        "Southwark Hotel & Apartments"
+      ],
+      "note": "The driving route ends at Southwark. Riverside Market is on foot.",
+      "contingency": "Skip the CBD dinner only if the flight, baggage collection or car pickup runs significantly late.",
+      "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=Christchurch+Airport%2C+Christchurch%2C+New+Zealand&destination=Southwark+Hotel+%26+Apartments%2C+25+Southwark+Street%2C+Christchurch+8011&travelmode=driving&waypoints=Rental+Cars+247%2C+264+Russley+Road%2C+Christchurch%2C+New+Zealand"
+    },
     "items": [
       {
-        "id": "airport-arrival",
-        "time": "06:00",
-        "title": "🛬 Arrive Ho Chi Minh City",
+        "id": "chc-arrival",
+        "time": "16:25",
+        "title": "✈️ Arrive at Christchurch Airport",
         "details": [
-          "抵達 SGN；預留 immigration、行李與接送集合時間。"
+          "Clear immigration and biosecurity."
         ],
-        "route": "🚐 To next stop：出關後乘已預訂 Klook Private Transfer → Fusion Original。",
-        "map": "https://www.google.com/maps/search/?api=1&query=Tan%20Son%20Nhat%20International%20Airport",
+        "route": "Next: rental-car shuttle / collection · allow ≈ 30–60 min after baggage.",
+        "map": "https://maps.google.com/?q=Christchurch%20Airport",
         "type": "transport",
         "dayId": "day1",
-        "placeId": "tan-son-nhat-airport",
+        "placeId": "christchurch-airport",
         "bookingId": null
       },
       {
-        "id": "airport-transfer",
-        "time": "~07:15–08:00",
-        "title": "🚐 Klook Private Transfer → Fusion",
-        "details": [
-          "Private transfer 直達 Fusion Original；到酒店先 drop luggage。",
-          "正式 check-in 14:00；如果約 12:00 已有房就提早入房，唔需要硬等到 14:00。"
-        ],
-        "route": "💵 To next stop：放低行李後先處理 VND；三個選項按當日方便／rate 揀一個。",
-        "map": "https://www.google.com/maps/search/?api=1&query=Fusion%20Original%20Saigon%20Centre%2065%20Le%20Loi%20Ho%20Chi%20Minh%20City",
-        "type": "transport",
-        "dayId": "day1",
-        "placeId": "fusion",
-        "bookingId": "bk-transfer-in"
-      },
-      {
-        "id": "day1-currency",
-        "time": "~08:00–08:45",
-        "title": "💵 VND · Pick One",
-        "details": [
-          "🏧 VPBank · 165–167–169 Hàm Nghi — Wise withdrawal；首選 no-operator-fee ATM。",
-          "💱 Takashimaya B2 — 最方便的 cash exchange option；開門後先睇 AUD rate。",
-          "💱 Hà Tâm · 2 Nguyễn An Ninh — rate-check option；近期營業狀態曾反覆，當日開門先用。",
-          "三個都只係 Timeline options，不開 Guide；揀一個搞掂就繼續早餐。"
-        ],
-        "route": "🚶 To next stop：處理好現金後去 Phở SOL Bến Thành。",
-        "type": "money",
-        "dayId": "day1",
-        "nonPlace": true,
-        "nonPlaceRole": "preparation",
-        "placeId": null,
-        "bookingId": null
-      },
-      {
-        "id": "pho-sol",
-        "time": "~09:00–10:00",
-        "title": "🍜 Phở SOL · Bến Thành",
-        "details": [
-          "第一餐慢慢食；唔需要趕住開始 sightseeing。"
-        ],
-        "route": "🚕 To next stop：食完直接 Grab → Central Post Office / Book Street。",
-        "map": "https://www.google.com/maps/search/?api=1&query=Ph%E1%BB%9F%20SOL%2032%20Ph%E1%BA%A1m%20H%E1%BB%93ng%20Th%C3%A1i%2C%20B%E1%BA%BFn%20Th%C3%A0nh%2C%20H%E1%BB%93%20Ch%C3%AD%20Minh%2C%20Vietnam",
-        "type": "meal",
-        "dayId": "day1",
-        "placeId": "pho-sol",
-        "bookingId": null
-      },
-      {
-        "id": "post-office",
-        "time": "~10:15–11:30",
-        "title": "📮 Post Office · Book Street · Cathedral",
-        "copyAddressEligible": false,
-        "details": [
-          "三個經典點集中同一區；按當日精神慢慢行、影相。"
-        ],
-        "route": "🚶 To next stop：行去 Ivoire；想快返酒店亦可以直接 skip。",
-        "map": "https://www.google.com/maps/search/?api=1&query=Saigon%20Central%20Post%20Office%202%20Cong%20xa%20Paris%20Ho%20Chi%20Minh%20City",
-        "type": "experience",
-        "dayId": "day1",
-        "placeId": "post-office",
-        "bookingId": null
-      },
-      {
-        "id": "ivoire",
-        "time": "~11:30–12:15",
-        "title": "🍰 Ivoire Pastry · Optional",
-        "details": [
-          "有時間、有精神：坐低食 cake / coffee。",
-          "想返酒店：直接 takeaway 幾件 cake，返房慢慢食。",
-          "如果酒店已通知房間 ready，可以縮短甚至 skip。"
-        ],
-        "route": "🏨 To next stop：Grab / walk back to Fusion，睇房間是否已 ready。",
-        "map": "https://www.google.com/maps/search/?api=1&query=Ivoire%20Pastry%20Boutique%2028%20Cao%20Ba%20Quat%20Ho%20Chi%20Minh%20City",
-        "type": "meal",
-        "dayId": "day1",
-        "placeId": "ivoire",
-        "bookingId": null,
-        "guideIds": ["ivoire"]
-      },
-      {
-        "id": "day1-hotel-reset",
-        "time": "~12:30–14:30",
-        "title": "🏨 Fusion · Early Check-in if Ready + Reset",
-        "details": [
-          "目標約 12:30 返酒店；有房就直接 early check-in。",
-          "Guaranteed check-in 14:00；未 ready 就在酒店／Takashimaya 輕鬆等，不另塞景點。",
-          "入房後沖涼、換衫、休息；第一日留返體力俾 17:30 Omakase。"
-        ],
-        "route": "🚶 To next stop：休息後先去 Nguyễn Huệ / The Cafe Apartments；17:00 左右離開去 Tiger。",
-        "map": "https://www.google.com/maps/search/?api=1&query=Fusion%20Original%20Saigon%20Centre%2065%20Le%20Loi%20Ho%20Chi%20Minh%20City",
-        "type": "rest",
-        "dayId": "day1",
-        "placeId": "fusion",
-        "bookingId": "bk-fusion-original"
-      },
-      {
-        "id": "nha-suga",
-        "time": "~14:30–17:00",
-        "title": "☕🫧 The Cafe Apartments · Explore / Headspa",
-        "details": [
-          "下午保持彈性：有精神先去 Cafe Apartments；想做 Headspa 就去 Nhà Suga。",
-          "如果第一日太攰，寧願酒店休息耐啲，唔需要為咗填滿 timeline 硬去。",
-          "17:00 左右離開，第一輪 Tiger 是 17:30 sunset seating。"
-        ],
-        "route": "🚕 To next stop：17:00 左右由 Nguyễn Huệ 叫 Grab → Omakase Tiger；目標 17:15–17:20 到。",
-        "map": "https://www.google.com/maps/search/?api=1&query=The%20Cafe%20Apartments%2042%20Nguyen%20Hue%20District%201%20Ho%20Chi%20Minh%20City",
-        "type": "experience",
-        "dayId": "day1",
-        "placeId": "cafe-apartments",
-        "bookingId": "bk-nha-suga",
-        "guideIds": ["cafe-apartments","nha-suga"]
-      },
-      {
-        "id": "omakase-tiger",
+        "id": "car-pickup",
         "time": "17:30",
-        "title": "🌇🍣 Omakase Tiger · First Seating",
+        "title": "🚙 Rental Cars 247 · Mitsubishi ASX or similar",
         "details": [
-          "已確認 17:30 場次；訂金已付。",
-          "Penthouse setting；17:30 啱啱由 sunset 食到入夜。"
+          "Rental Cars 247",
+          "Mitsubishi ASX or similar"
         ],
-        "route": "🌇 17:30 first seating：Penthouse sunset Omakase。食完之後再按 energy 決定夜晚。",
-        "map": "https://www.google.com/maps/search/?api=1&query=Omakase%20Tiger%2085%2F9%20Ph%E1%BA%A1m%20Vi%E1%BA%BFt%20Ch%C3%A1nh%2C%20Th%E1%BA%A1nh%20M%E1%BB%B9%20T%C3%A2y%2C%20H%E1%BB%93%20Ch%C3%AD%20Minh%20700000%2C%20Vietnam",
-        "type": "meal",
+        "route": "Next: Southwark Hotel & Apartments · drive to central Christchurch.",
+        "map": "https://maps.google.com/?q=Rental+Cars+247+264+Russley+Road+Avonhead+Christchurch",
+        "type": "transport",
         "dayId": "day1",
-        "placeId": "omakase-tiger",
-        "bookingId": "bk-omakase-tiger"
+        "placeId": "rental-cars-247",
+        "bookingId": "car-rental"
       },
-
       {
-        "id": "return-hotel",
-        "time": "20:15 onwards",
-        "title": "🛌 返回酒店",
+        "id": "southwark",
+        "time": "Check-in",
+        "title": "🏨 Check in · Southwark Hotel & Apartments",
         "details": [
-          "第一晚重點是 settle in，不拖到太夜。"
+          "2:00 PM → 10:00 AM",
+          "Parking · NZD 15 · pre-book"
         ],
-        "route": "",
-        "map": "https://www.google.com/maps/search/?api=1&query=Fusion%20Original%20Saigon%20Centre%20Fusion%20Original%20Saigon%20Centre%2C%2065%20L%C3%AA%20L%E1%BB%A3i%2C%20B%E1%BA%BFn%20Ngh%C3%A9%2C%20District%201%2C%20Ho%20Chi%20Minh%20City",
+        "route": "Next: leave the car at Southwark · walk 14 min to Riverside Market.",
+        "map": "https://www.google.com/maps/search/?api=1&query=Southwark+Hotel+%26+Apartments%2C+25+Southwark+Street%2C+Christchurch+8011",
         "type": "rest",
         "dayId": "day1",
-        "placeId": "fusion",
-        "bookingId": "bk-fusion-original"
+        "placeId": "southwark",
+        "bookingId": "southwark-booking"
       },
       {
-        "id": "late-night-supper",
-        "time": "Optional",
-        "title": "🌙 酒店宵夜",
+        "id": "riverside",
+        "time": "Evening",
+        "title": "🍽 Dinner · Riverside Market",
         "details": [
-          "想食鹹：Oanh Cua 蟹料理，可查官方 delivery／GrabFood。",
-          "想食甜：GrabFood 搜 BINGO、Dessert、Chè、Tofu 或 Bingsu，篩選 Open Now。"
+          "Dinner from the open stalls."
         ],
-        "route": "🏨 Delivery option：送到 Fusion Original lobby；完全 optional。",
-        "map": "https://www.google.com/maps/search/?api=1&query=Oanh%20Cua%20214%2F1B%20Nguy%E1%BB%85n%20Tr%C3%A3i%20Ho%20Chi%20Minh%20City",
-        "type": "optional",
+        "route": "Next: walk 14 min back to Southwark.",
+        "map": "https://www.google.com/maps/dir/?api=1&origin=Southwark+Hotel+%26+Apartments%2C+25+Southwark+Street%2C+Christchurch&destination=Riverside+Market%2C+96+Oxford+Terrace%2C+Christchurch&travelmode=walking",
+        "type": "meal",
         "dayId": "day1",
-        "placeId": "late-night-supper",
+        "placeId": "riverside",
         "bookingId": null
       }
     ],
     "dayId": "day1"
   },
   "2": {
-    "dayEmoji": "🛍️",
-    "title": "Day 2 · Saigon Companion",
-    "kicker": "Day 2 · 31 Oct • Saturday",
-    "heading": "Fashion Day",
-    "areaLabel": "LOCAL FASHION · FOOT RESET · LÚNE",
+    "title": "Day 2 · New Zealand Companion",
+    "kicker": "Day 2 · 23 Sep • Wednesday",
+    "heading": "Christchurch to Lake Tekapo",
     "legend": [
-      "🛍️ Fashion",
-      "🍕 Indoor Break",
-      "🌙 Dinner"
+      "🚙 Mackenzie Country",
+      "⛪ Lake Tekapo",
+      "🌌 Flexible stargazing"
     ],
+    "drive": {
+      "route": "Southwark → PAK’nSAVE Moorhouse → Fairlie → Peppers → Lake Tekapo Village → dinner → optional stargazing",
+      "distance": "≈ 235–250 km total",
+      "drivingTime": "≈ 3 hr 20–40 min total",
+      "road": "Christchurch city roads / SH1 / SH79 / SH8",
+      "stops": [
+        "PAK’nSAVE Moorhouse",
+        "Fairlie Bakehouse (optional)",
+        "Peppers Bluewater Resort",
+        "The Better Batter NZ (optional)",
+        "Lake Tekapo Village",
+        "Kohan or Mackenzies dinner",
+        "Mt John Observatory / Stargazing Tour (optional)"
+      ],
+      "note": "Walk to C1 and the central-city activity first. Driving starts after returning to Southwark and collecting the vehicle.",
+      "contingency": "If the day runs late, protect check-in and dinner first, then skip Better Batter or stargazing.",
+      "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=Southwark+Hotel+%26+Apartments%2C+25+Southwark+Street%2C+Christchurch&destination=University+of+Canterbury+Mt+John+Observatory%2C+Mount+John+Summit%2C+Lake+Tekapo%2C+New+Zealand&travelmode=driving&waypoints=PAK%27nSAVE+Moorhouse%2C+297+Moorhouse+Avenue%2C+Christchurch%7CFairlie+Bakehouse%2C+74+Main+Street%2C+Fairlie%7CPeppers+Bluewater+Resort%2C+State+Highway+8%2C+Lake+Tekapo%7CThe+Better+Batter+NZ%2C+Lakeside+Drive%2C+Lake+Tekapo%7CChurch+of+the+Good+Shepherd%2C+Lake+Tekapo%7CKohan+Japanese+Restaurant%2C+6+Rapuwai+Lane%2C+Lake+Tekapo"
+    },
     "items": [
       {
-        "id": "com-tam-moc",
-        "time": "09:00–10:00",
-        "title": "🍚 Cơm Tấm Mộc",
-        "details": ["炭香碎米飯先墊底；今日主角是 shopping，不把早餐拖長。"],
-        "route": "🚕 下一站：Grab 去 11 Garmentory，10:15 開始 Fashion Day。",
-        "map": "https://www.google.com/maps/search/?api=1&query=C%C6%A1m%20T%E1%BA%A5m%20M%E1%BB%99c%2085%20L%C3%BD%20T%E1%BB%B1%20Tr%E1%BB%8Dng%2C%20B%E1%BA%BFn%20Th%C3%A0nh%2C%20H%E1%BB%93%20Ch%C3%AD%20Minh%20700000%2C%20Vietnam",
-        "type": "meal", "dayId": "day2", "placeId": "com-tam-moc", "bookingId": null
+        "id": "breakfast-chc",
+        "time": "Morning",
+        "title": "☕ Breakfast · C1 Espresso",
+        "details": [
+          "Walk 6 min from Southwark for breakfast."
+        ],
+        "route": "Next: walk to Quake City or follow the CBD Discovery Walk.",
+        "map": "https://www.google.com/maps/dir/?api=1&origin=Southwark+Hotel+%26+Apartments%2C+25+Southwark+Street%2C+Christchurch&destination=C1+Espresso%2C+185+High+Street%2C+Christchurch&travelmode=walking",
+        "type": "meal",
+        "dayId": "day2",
+        "placeId": "c1-espresso",
+        "bookingId": null
       },
       {
-        "id": "garmentory",
-        "time": "10:15–11:15",
-        "title": "🧥 11 Garmentory",
-        "details": ["先由本地設計選物開始，看看今日第一輪 local fashion。"],
-        "route": "🚕 下一站：Grab → Dalla Saigon · 64 Trần Quang Diệu，從這裡開始上午 shopping cluster。",
-        "map": "https://www.google.com/maps/search/?api=1&query=11%20Garmentory%20117B%20Nguy%E1%BB%85n%20%C4%90%C3%ACnh%20Ch%C3%ADnh%2C%20Ph%C6%B0%E1%BB%9Dng%20C%E1%BA%A7u%20Ki%E1%BB%87u%2C%20Ho%20Chi%20Minh%20City%2C%20Vietnam",
-        "type": "shoppingWindow", "dayId": "day2", "placeId": "garmentory", "bookingId": null, "showShoppingDirectory": true
+        "id": "quake-city",
+        "time": "Morning",
+        "title": "🏛️ Quake City",
+        "details": [
+          "Primary morning activity · allow about 45–60 minutes.",
+          "Alternative: choose the Christchurch CBD Discovery Walk instead if you prefer shopping and city exploration."
+        ],
+        "route": "Next: complete the chosen central-Christchurch sequence, then walk back to Southwark.",
+        "map": "https://maps.google.com/?q=Quake%20City",
+        "type": "experience",
+        "dayId": "day2",
+        "placeId": "quake-city",
+        "bookingId": null,
+        "guideIds": [
+          "quake-city",
+          "christchurch-cbd-discovery-walk"
+        ],
+        "optionsLabel": "View primary & alternative"
       },
       {
-        "id": "shopping-tqd",
-        "time": "11:30–12:45",
-        "title": "🛍 Trần Quang Diệu · Fashion Cluster",
-        "details": ["Dalla → RUBIES → Lane Cì；三間沿同一段 Trần Quang Diệu 逛過去。"],
-        "route": "🚕 下一站：12:45 左右 Grab → Pizza 4P’s Bến Thành · 8 Thủ Khoa Huân。",
-        "map": "https://www.google.com/maps/search/?api=1&query=Dalla%20Saigon%2064%20Tr%E1%BA%A7n%20Quang%20Di%E1%BB%87u%20Ph%C6%B0%E1%BB%9Dng%2014%20Qu%E1%BA%ADn%203%20H%E1%BB%93%20Ch%C3%AD%20Minh",
-        "type": "shoppingWindow", "dayId": "day2", "placeId": "dalla-saigon", "bookingId": null,
-        "guideIds": ["dalla-saigon","rubies","lane-ci"], "showShoppingDirectory": true
+        "id": "return-southwark",
+        "time": "Late morning",
+        "title": "🏨 Return to Southwark · check out / collect vehicle",
+        "details": [
+          "Walk back after the central-Christchurch activity.",
+          "Check out and collect the vehicle."
+        ],
+        "route": "Next: PAK’nSAVE Moorhouse · ~5 min drive.",
+        "map": "https://www.google.com/maps/search/?api=1&query=Southwark+Hotel+%26+Apartments%2C+25+Southwark+Street%2C+Christchurch+8011",
+        "type": "transport",
+        "dayId": "day2",
+        "placeId": "southwark",
+        "bookingId": "southwark-booking"
       },
       {
-        "id": "pizza4ps",
-        "time": "13:00–14:15",
-        "title": "🍕 Pizza 4P’s · Bến Thành",
-        "details": ["最熱的時段留在冷氣裡；pizza + 自家芝士，讓腳也休息一餐。"],
-        "route": "🚶 下一站：沿 Thủ Khoa Huân 步行去 Mộc Healing Spa · 39–41 Thủ Khoa Huân。",
-        "map": "https://www.google.com/maps/search/?api=1&query=Pizza%204P%27s%20Ben%20Thanh%208%20Thu%20Khoa%20Huan%20Ho%20Chi%20Minh%20City",
-        "type": "meal", "dayId": "day2", "placeId": "pizza4ps", "bookingId": "bk-pizza4ps"
+        "id": "paknsave-moorhouse",
+        "time": "Late morning",
+        "title": "🛒 PAK’nSAVE Moorhouse",
+        "details": [
+          "Buy food and supplies for the following road-trip days."
+        ],
+        "route": "Next: Fairlie Bakehouse · drive toward Lake Tekapo.",
+        "map": "https://www.google.com/maps/search/?api=1&query=PAK%27nSAVE+Moorhouse%2C+297+Moorhouse+Avenue%2C+Christchurch+8011",
+        "type": "transport",
+        "dayId": "day2",
+        "placeId": "paknsave-moorhouse",
+        "bookingId": null
       },
       {
-        "id": "moc-healing",
-        "time": "14:20–15:20",
-        "title": "🦶 Mộc Healing · Foot Reset",
-        "details": ["60 分鐘 foot-focused reset；食完飯行過來，下午再開第二輪 shopping。"],
-        "route": "🚶 下一站：由 Bến Thành 一路步行逛 NOSBYN → Dauple by Ka’s → LIBÉ；不為每間店重新叫車。",
-        "map": "https://www.google.com/maps/search/?api=1&query=Moc%20Healing%20Spa%2039%2041%20Thu%20Khoa%20Huan%20Ben%20Thanh%20Ho%20Chi%20Minh",
-        "type": "spa", "dayId": "day2", "placeId": "moc-healing", "bookingId": "bk-moc-healing"
+        "id": "fairlie-pit-stop",
+        "time": "Optional",
+        "title": "🥧 Optional pit stop · Fairlie Bakehouse",
+        "details": [
+          "Quick pie, coffee, toilet and stretch stop on the drive.",
+          "Skip it if timing is tight or everyone prefers to eat after arriving in Tekapo."
+        ],
+        "route": "Next: Peppers Bluewater Resort · ≈ 35–40 min drive.",
+        "map": "https://maps.google.com/?q=Fairlie+Bakehouse+74+Main+Street+Fairlie",
+        "type": "rest",
+        "dayId": "day2",
+        "placeId": "fairlie-bakehouse",
+        "bookingId": null
       },
       {
-        "id": "shopping-nguyen-trai",
-        "time": "15:25–17:15",
-        "title": "🛍 Bến Thành → Nguyễn Trãi · Local Fashion Walk",
-        "details": ["NOSBYN · 9 Phan Chu Trinh → Dauple by Ka’s · 70 Phạm Hồng Thái → LIBÉ · 52 Nguyễn Trãi。一路向 Nguyễn Trãi 行，沿途先逛真正順路的店。"],
-        "route": "🚕 下一站：約 17:15 Grab 返回 Fusion Original，放低戰利品、補妝再出門。",
-        "map": "https://www.google.com/maps/search/?api=1&query=NOSBYN%209%20Phan%20Chu%20Trinh%20Ho%20Chi%20Minh%20City",
-        "type": "shoppingWindow", "dayId": "day2", "placeId": "nosbyn", "bookingId": null,
-        "guideIds": ["nosbyn","dauple","libe"], "showShoppingDirectory": true
+        "id": "peppers",
+        "time": "After 14:00",
+        "title": "🏨 Check in · Peppers Bluewater Resort",
+        "details": [
+          "Check-out before 10:00 next day."
+        ],
+        "route": "Next: optional The Better Batter NZ · ≈ 2–5 min drive or short walk.",
+        "map": "https://maps.google.com/?q=Peppers+Bluewater+Resort+Lake+Tekapo",
+        "type": "rest",
+        "dayId": "day2",
+        "placeId": "peppers",
+        "bookingId": "peppers-booking"
       },
       {
-        "id": "hotel-reset",
-        "time": "17:25–18:05",
-        "title": "🛍️ → 🏨 Fusion · Drop Bags & Freshen Up",
-        "details": ["把今日戰利品留在房間，補妝、換口氣，再輕身去晚餐。"],
-        "route": "🚕 下一站：18:10 左右 Grab → LÚNE · 17/14 Lê Thánh Tôn，18:30 入席。",
-        "map": "https://www.google.com/maps/search/?api=1&query=Fusion%20Original%20Saigon%20Centre%2065%20Le%20Loi%20Ho%20Chi%20Minh",
-        "type": "stay", "dayId": "day2", "placeId": "fusion", "bookingId": null
+        "id": "better-batter",
+        "time": "Optional",
+        "title": "🍟 The Better Batter NZ",
+        "details": [
+          "Stop for fish and chips, a snack or afternoon tea only if appetite and timing suit.",
+          "This works best if you skipped Fairlie Bakehouse or want something small after check-in."
+        ],
+        "route": "Next: Lake Tekapo Village · ≈ 2–5 min drive or short walk.",
+        "map": "https://maps.google.com/?q=The+Better+Batter+NZ+Lakeside+Drive+Lake+Tekapo+7999+New+Zealand",
+        "type": "meal",
+        "dayId": "day2",
+        "placeId": "better-batter",
+        "bookingId": null,
+        "guideIds": [
+          "better-batter"
+        ]
       },
       {
-        "id": "lune",
-        "time": "18:30–20:30",
-        "title": "🥂 LÚNE",
-        "details": ["放低 shopping bags 再來；Fashion Day 最後換成一張安靜餐桌。"],
-        "route": "🏨 下一站：Dinner 後 Grab 返回 Fusion。",
-        "map": "https://www.google.com/maps/search/?api=1&query=L%C3%9ANE%20Restaurant%20%26%20Bar%2017%2F14%20L%C3%AA%20Th%C3%A1nh%20T%C3%B4n%2C%20S%C3%A0i%20G%C3%B2n%2C%20H%E1%BB%93%20Ch%C3%AD%20Minh%2070000%2C%20Vietnam",
-        "type": "meal", "dayId": "day2", "placeId": "lune", "bookingId": "bk-lune"
+        "id": "lake-tekapo-village",
+        "time": "Afternoon",
+        "title": "📍 Lake Tekapo Village",
+        "details": [
+          "Explore the Church of the Good Shepherd, Sheepdog Statue and lakeside photo spots on foot.",
+          "Allow about 30–60 minutes and adjust for weather and light."
+        ],
+        "route": "Next: Kohan Japanese Restaurant · ≈ 5 min drive or walk, depending on where you parked.",
+        "map": "https://maps.google.com/?q=Church+of+the+Good+Shepherd+Lake+Tekapo",
+        "type": "experience",
+        "dayId": "day2",
+        "placeId": "lake-tekapo-village",
+        "bookingId": null
+      },
+      {
+        "id": "kohan",
+        "time": "Evening",
+        "title": "🍣 Dinner · Kohan Japanese Restaurant",
+        "details": [
+          "A relaxed dinner built around fresh salmon and Japanese comfort food after a long drive and an optional soak at Tekapo Springs."
+        ],
+        "route": "Next: Tekapo Springs · ≈ 5 min drive.",
+        "map": "https://maps.google.com/?q=Kohan+Japanese+Restaurant+Lake+Tekapo",
+        "type": "meal",
+        "dayId": "day2",
+        "placeId": "kohan",
+        "bookingId": null,
+        "guideIds": [
+          "kohan",
+          "mackenzies"
+        ],
+        "optionsLabel": "Alternative options"
+      },
+      {
+        "id": "stargazing",
+        "time": "Evening",
+        "title": "🌌 Stargazing · only if conditions and energy suit",
+        "details": [
+          "Mt John Observatory / stargazing tour is not booked; decide on the day."
+        ],
+        "route": null,
+        "map": "https://www.google.com/maps/search/?api=1&query=University+of+Canterbury+Mt+John+Observatory%2C+Mount+John+Summit%2C+Lake+Tekapo",
+        "type": "experience",
+        "dayId": "day2",
+        "placeId": "mt-john",
+        "bookingId": null
       }
     ],
     "dayId": "day2"
   },
   "3": {
-    "dayEmoji": "🪖",
-    "title": "Day 3 · Saigon Companion",
-    "kicker": "Day 3 · 1 Nov • Sunday",
-    "heading": "War Day",
-    "areaLabel": "CU CHI → DISTRICT 3 → SAIGON NIGHT",
+    "title": "Day 3 · New Zealand Companion",
+    "kicker": "Day 3 · 24 Sep • Thursday",
+    "heading": "Lake Tekapo via Aoraki / Mt Cook to Wānaka",
     "legend": [
-      "🪖 History",
-      "🫧 Reset",
-      "🦀 Ốc + Beer"
+      "🚁 Confirmed scenic flight",
+      "🥾 Short Hooker walk",
+      "🚙 Long drive"
     ],
+    "drive": {
+      "route": "Peppers Bluewater → Lake Pukaki Lookout → Mt Cook Alpine Salmon → Aoraki / Mt Cook Airport → Hooker Valley Track → Lindis Pass → Edgewater",
+      "distance": "≈ 325 km",
+      "drivingTime": "≈ 4 hr 35 min",
+      "road": "SH8 / SH80 / SH8 / SH6",
+      "stops": [
+        "Breakfast at Peppers or optional Greedy Cow",
+        "Lake Pukaki Lookout",
+        "Mt Cook Alpine Salmon",
+        "Ultimate Alpine Experience",
+        "Hooker Valley Track · first swing bridge",
+        "Packed / simple lunch",
+        "Lindis Pass",
+        "Edgewater check-in"
+      ],
+      "note": "Leave around 08:30. Drive directly from Mt Cook Alpine Salmon to Aoraki / Mt Cook Airport so the 11:55 check-in is protected; do the Hooker Valley short walk after the flight.",
+      "contingency": "Call INFLITE before leaving Lake Tekapo. If the flight is cancelled by weather, go directly to Hooker Valley and extend the walk to 60–90 minutes; keep the Wānaka arrival flexible.",
+      "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=Peppers+Bluewater+Resort%2C+Lake+Tekapo%2C+New+Zealand&destination=Edgewater%2C+54+Sargood+Drive%2C+Wanaka%2C+New+Zealand&travelmode=driving&waypoints=Lake+Pukaki+Lookout%2C+New+Zealand%7CMt+Cook+Alpine+Salmon%2C+Lake+Pukaki%7CMt+Cook+Glacier+Guiding%2C+Aoraki+Mt+Cook+Airport%7CWhite+Horse+Hill+Car+Park%2C+Hooker+Valley+Road%2C+New+Zealand%7CLindis+Pass+Viewpoint%2C+New+Zealand"
+    },
     "items": [
       {
-        "id": "cu-chi",
-        "time": "07:30–14:30",
-        "title": "🪖 Cu Chi Tunnels · Private Tour",
+        "id": "peppers-light-breakfast",
+        "time": "Morning",
+        "title": "🥣 Light breakfast at Peppers Bluewater",
         "details": [
-          "四人 private tour。Skip tour lunch、不要 factory stop；回城直接 drop Mặn Mòi。",
-          "14:30 左右直接到 Mặn Mòi。"
+          "Keep breakfast light before the scenic flight and road journey."
         ],
-        "route": "🚐 下一站：請司機直接 drop Mặn Mòi；不先返酒店。",
-        "map": "https://www.google.com/maps/search/?api=1&query=Cu%20Chi%20Tunnels%20Ho%20Chi%20Minh%20City",
-        "type": "experience",
-        "dayId": "day3",
-        "placeId": "cu-chi",
-        "bookingId": "bk-cu-chi"
-      },
-      {
-        "id": "man-moi",
-        "time": "14:30–15:35",
-        "title": "🍲 Mặn Mòi",
-        "details": [
-          "坐低食一桌越南家常菜；留足 60–65 分鐘，不趕這餐。"
-        ],
-        "route": "🚶 下一站：去 War Remnants Museum；若午餐早完，時間全部留給 museum。",
-        "map": "https://www.google.com/maps/search/?api=1&query=M%E1%BA%B7n%20M%C3%B2i%20B%E1%BA%BFn%20Ngh%C3%A9%20VNPT%20Building%20Gate%206%20Nguy%E1%BB%85n%20V%C4%83n%20B%C3%ACnh%20Ho%20Chi%20Minh%20City",
+        "route": "Next: depart Lake Tekapo for Lake Pukaki · ≈ 45–50 min drive.",
         "type": "meal",
         "dayId": "day3",
-        "placeId": "man-moi",
+        "placeId": "peppers",
+        "bookingId": "peppers-booking",
+        "guideIds": [
+          "peppers",
+          "greedy-cow"
+        ],
+        "optionsLabel": "Breakfast option · The Greedy Cow Cafe"
+      },
+      {
+        "id": "leave-tekapo",
+        "time": "08:30",
+        "title": "🚙 Depart Lake Tekapo",
+        "details": [
+          "Leave around 08:30 to protect the confirmed 11:55 flight check-in."
+        ],
+        "route": "Next: Lake Pukaki Lookout · ≈ 45–50 min drive.",
+        "map": "https://maps.google.com/?q=Lake%20Tekapo",
+        "type": "transport",
+        "dayId": "day3",
+        "placeId": "lake-tekapo",
         "bookingId": null
       },
       {
-        "id": "war-museum",
-        "time": "15:40–17:00",
-        "title": "🏛 War Remnants Museum",
+        "id": "pukaki-lookout",
+        "time": "Around 09:20",
+        "title": "📸 Lake Pukaki Lookout",
         "details": [
-          "Cu Chi 看現場，museum 看留下來的記憶；War Day 在這裡補完另一半。"
+          "Allow about 15–20 minutes.",
+          "Shorten the stop if wind, cloud or timing requires it."
         ],
-        "route": "🚕 下一站：短 Grab 去 Nara Spa，17:15 開始 full reset。",
-        "map": "https://www.google.com/maps/search/?api=1&query=War%20Remnants%20Museum%20War%20Remnants%20Museum%2C%2028%20V%C3%B5%20V%C4%83n%20T%E1%BA%A7n%2C%20District%203%2C%20Ho%20Chi%20Minh%20City",
+        "route": "Next: Mt Cook Alpine Salmon · ≈ 5 min drive.",
+        "map": "https://maps.google.com/?q=Lake+Pukaki+Lookout",
         "type": "experience",
         "dayId": "day3",
-        "placeId": "war-museum",
+        "placeId": "lake-pukaki",
         "bookingId": null
       },
       {
-        "id": "nara-spa",
-        "time": "17:15–18:45",
-        "title": "🫧 Nara Spa · Hair Reset",
+        "id": "alpine-salmon",
+        "time": "Around 09:45",
+        "title": "🐟 Mt Cook Alpine Salmon · light brunch",
         "details": [
-          "Massage + Hair Wash / Hair Spa，約 90 分鐘；把 Cu Chi 的熱與塵洗走。"
+          "Use this as a quick morning snack or light brunch rather than a full lunch.",
+          "Aim to leave by about 10:05 so the confirmed flight check-in remains comfortable."
         ],
-        "route": "🚕 下一站：Grab 去 Ốc Đào；19:15–19:30 到就好。",
-        "map": "https://www.google.com/maps/search/?api=1&query=Nara%20Spa%209%20%C4%90%E1%BB%97%20Quang%20%C4%90%E1%BA%A9u%20Ho%20Chi%20Minh%20City",
-        "type": "spa",
-        "dayId": "day3",
-        "placeId": "nara-spa",
-        "bookingId": "bk-nara"
-      },
-      {
-        "id": "oc-dao",
-        "time": "19:15 onwards",
-        "title": "🦀 Ốc Đào · Ốc + Beer",
-        "details": [
-          "今晚要的是螺、貝、海鮮和冰啤酒；熱鬧一點，才像 Saigon。"
-        ],
-        "route": "🏨 下一站：食完直接 Grab 返回 Fusion；今晚到此為止。",
-        "map": "https://www.google.com/maps/search/?api=1&query=%E1%BB%90c%20%C4%90%C3%A0o%20212B%2FD48%20Nguy%E1%BB%85n%20Tr%C3%A3i%20Ho%20Chi%20Minh%20City",
+        "route": "Next: Mt Cook Glacier Guiding at Aoraki / Mt Cook Airport · allow ≈ 45–50 min; arrive well before 11:55.",
+        "map": "https://maps.google.com/?q=Mt+Cook+Alpine+Salmon+Lake+Pukaki",
         "type": "meal",
         "dayId": "day3",
-        "placeId": "oc-dao",
+        "placeId": "mt-cook-salmon",
         "bookingId": null
+      },
+      {
+        "id": "ultimate-alpine-flight",
+        "time": "11:55 check-in",
+        "title": "🚁 Helicopter + Ski Plane Glacier Flight",
+        "details": [
+          "45-minute scenic flight over Aoraki / Mt Cook and the Tasman Glacier with one alpine snow landing, weather permitting.",
+          "Call the operator before leaving Lake Tekapo to confirm flying conditions and minimum passenger numbers.",
+          "Wear warm layers, sunglasses and secure footwear; carry only small essentials."
+        ],
+        "route": "Next: Hooker Valley Track at White Horse Hill car park · ≈ 15–20 min drive after the flight.",
+        "map": "https://www.google.com/maps/search/?api=1&query=Mt+Cook+Glacier+Guiding%2C+Aoraki+Mt+Cook+Airport%2C+Unit+2%2C+State+Highway+80%2C+7999%2C+New+Zealand",
+        "type": "experience",
+        "dayId": "day3",
+        "placeId": "ultimate-alpine",
+        "bookingId": "ultimate-alpine-booking"
+      },
+      {
+        "id": "hooker-valley",
+        "time": "Around 13:35",
+        "title": "🥾 Hooker Valley Track · short walk",
+        "details": [
+          "After the scenic flight, drive to White Horse Hill and walk only to the first swing bridge and return.",
+          "Allow about 40–50 minutes.",
+          "If the scenic flight is cancelled, move this walk into the late morning and extend it to 60–90 minutes according to weather and family energy."
+        ],
+        "route": "Next: packed or simple lunch, then depart for Wānaka around 14:30–14:45.",
+        "map": "https://www.google.com/maps/search/?api=1&query=White+Horse+Hill+Car+Park%2C+Hooker+Valley+Road%2C+Aoraki%2FMount+Cook+National+Park%2C+New+Zealand",
+        "type": "experience",
+        "dayId": "day3",
+        "placeId": "hooker-valley",
+        "bookingId": null,
+        "guideIds": [
+          "hooker-valley",
+          "tasman-blue-lakes"
+        ],
+        "optionsLabel": "Weather alternative"
+      },
+      {
+        "id": "mt-cook-simple-lunch",
+        "time": "Around 14:25",
+        "title": "🥪 Packed / simple lunch",
+        "details": [
+          "Use a packed lunch or quick snack after the walk.",
+          "Avoid a long sit-down lunch so the drive to Wānaka remains relaxed."
+        ],
+        "route": "Next: Wānaka via Lindis Pass · depart around 14:30–14:45.",
+        "type": "meal",
+        "dayId": "day3",
+        "placeId": null,
+        "bookingId": null,
+        "nonPlace": true,
+        "nonPlaceRole": "meal-choice"
+      },
+      {
+        "id": "omarama-fuel-check",
+        "time": "Optional",
+        "title": "⛽ Fuel check · Omarama",
+        "details": [
+          "Refuel if the tank is below half before continuing across Lindis Pass."
+        ],
+        "route": "Next: Lindis Pass · ≈ 30–35 min drive.",
+        "type": "transport",
+        "dayId": "day3",
+        "placeId": null,
+        "bookingId": null,
+        "nonPlace": true,
+        "nonPlaceRole": "fuel-check"
+      },
+      {
+        "id": "lindis-pass",
+        "time": "Afternoon",
+        "title": "📸 Lindis Pass",
+        "details": [
+          "Allow 10–15 minutes at the signed lookout only."
+        ],
+        "route": "Next: Edgewater · ≈ 1 hr 15 min drive.",
+        "map": "https://maps.google.com/?q=Lindis+Pass+Lookout",
+        "type": "experience",
+        "dayId": "day3",
+        "placeId": "lindis-pass",
+        "bookingId": null
+      },
+      {
+        "id": "edgewater",
+        "time": "Evening",
+        "title": "🏨 Check in · Edgewater Premium Suite",
+        "details": [
+          "Check-in from 3:00 pm; expected arrival is likely around 6:00–7:00 pm.",
+          "Check-out by 10:30 am on 25 September.",
+          "Skip Wānaka Lavender Farm and move That Wānaka Tree to the next morning if the day runs late."
+        ],
+        "route": "Next: dinner at Edgewater Restaurant or Big Fig.",
+        "map": "https://maps.google.com/?q=Edgewater+54+Sargood+Drive+Wanaka",
+        "type": "rest",
+        "dayId": "day3",
+        "placeId": "edgewater",
+        "bookingId": "edgewater-booking"
+      },
+      {
+        "id": "wanaka-dinner",
+        "time": "Evening",
+        "title": "🍽️ Dinner · Edgewater Restaurant",
+        "details": [
+          "Primary: stay at the resort for the easiest dinner after the long day.",
+          "Alternative: Big Fig if the family still wants to go into Wānaka town."
+        ],
+        "route": "Finish at Edgewater.",
+        "map": "https://maps.google.com/?q=Edgewater+Restaurant+Wanaka",
+        "type": "meal",
+        "dayId": "day3",
+        "placeId": "edgewater",
+        "bookingId": null,
+        "guideIds": [
+          "edgewater",
+          "big-fig"
+        ],
+        "optionsLabel": "Dinner alternative"
       }
     ],
     "dayId": "day3"
   },
   "4": {
-    "dayEmoji": "🌿",
-    "title": "Day 4 · Saigon Companion",
-    "kicker": "Day 4 · 2 Nov • Monday",
-    "heading": "Thảo Điền Open Day",
-    "areaLabel": "TÂN ĐỊNH → THẢO ĐIỀN",
+    "title": "Day 4 · New Zealand Companion",
+    "kicker": "Day 4 · 25 Sep • Friday",
+    "heading": "Wānaka to Queenstown · Transition Day",
     "legend": [
-      "🌸 Tân Định Morning",
-      "🎲 Thảo Điền Open List",
-      "🌿 No Checklist"
+      "🧩 Puzzling World",
+      "🚙 Crown Range",
+      "🏨 Sudima transition stay"
     ],
+    "drive": {
+      "route": "Edgewater → Wānaka lakefront → Puzzling World → Queenstown / Frankton → Sudima Five Mile",
+      "distance": "Crown Range ≈ 70 km · via Cromwell ≈ 120 km",
+      "drivingTime": "Crown Range ≈ 1 hr · via Cromwell ≈ 1 hr 30 min",
+      "road": "Choose Crown Range or SH6 via Cromwell after checking conditions",
+      "stops": [
+        "That Wānaka Tree / lakefront",
+        "Wānaka breakfast",
+        "Puzzling World",
+        "Cardrona Hotel",
+        "Queenstown / Frankton lunch",
+        "Sudima Queenstown Five Mile",
+        "Dinner"
+      ],
+      "note": "Leave after Edgewater check-out. Crown Range is shorter and scenic; SH6 via Cromwell is longer but usually easier in poor weather, darkness or icy conditions.",
+      "contingency": "Check NZTA and the weather before departure. Use extra caution after dark for reduced visibility and wildlife.",
+      "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=Edgewater%2C+54+Sargood+Drive%2C+Wanaka%2C+New+Zealand&destination=Sudima+Queenstown+Five+Mile%2C+22+Grant+Road%2C+Frankton%2C+Queenstown%2C+New+Zealand&travelmode=driving&waypoints=That+Wanaka+Tree%2C+Wanaka%7CPuzzling+World%2C+Wanaka%7CCardrona+Hotel%2C+Cardrona"
+    },
     "items": [
       {
-        "id": "running-bean",
-        "time": "08:30–09:15",
-        "title": "☕ The Running Bean",
+        "id": "wanaka-tree-morning",
+        "time": "Morning",
+        "title": "🌳 Wānaka lakefront · That Wānaka Tree",
         "details": [
-          "慢慢食早餐、飲第一杯咖啡；今日不需要一早追時間。"
+          "Use the morning for the lakefront photo stop if it was skipped after Mt Cook.",
+          "Keep this short and relaxed before breakfast and check-out."
         ],
-        "route": "🚕 下一站：Grab 去 Tân Định Pink Church，09:30 左右到。",
-        "map": "https://www.google.com/maps/search/?api=1&query=The%20Running%20Bean%20115%20H%E1%BB%93%20T%C3%B9ng%20M%E1%BA%ADu%2C%20Ho%20Chi%20Minh%20City%2C%20Vietnam",
-        "type": "meal",
-        "dayId": "day4",
-        "placeId": "running-bean",
-        "bookingId": null
-      },
-      {
-        "id": "pink-church",
-        "time": "09:30–10:00",
-        "title": "🩷 Tân Định Pink Church",
-        "details": [
-          "短停、影相；Cộng 只作 optional，想看高位角度才上樓。"
-        ],
-        "route": "🚶 下一站：Cộng 可快閃；之後步行／短 Grab 去 PUSH PUSH。",
-        "map": "https://www.google.com/maps/search/?api=1&query=T%C3%A2n%20%C4%90%E1%BB%8Bnh%20Church%20Tan%20Dinh%20Church%2C%20289%20Hai%20B%C3%A0%20Tr%C6%B0ng%2C%20Ward%208%2C%20District%203%2C%20Ho%20Chi%20Minh%20City",
+        "route": "Next: Wānaka breakfast · short drive.",
+        "map": "https://maps.google.com/?q=That+Wanaka+Tree",
         "type": "experience",
         "dayId": "day4",
-        "placeId": "pink-church",
-        "bookingId": null,
-        "guideIds": [
-          "pink-church",
-          "cong"
-        ]
-      },
-      {
-        "id": "push-push",
-        "time": "10:15–10:45",
-        "title": "👖 PUSH PUSH Official",
-        "details": [
-          "還在 Tân Định，順手看一輪年輕 local fashion；有感覺才試。"
-        ],
-        "route": "🚕 下一站：由這裡 Grab 入 Thảo Điền。落車後不再跟時間表。",
-        "map": "https://www.google.com/maps/search/?api=1&query=Push%20Push%20Official%2020%20Nguy%E1%BB%85n%20V%C4%83n%20Nguy%E1%BB%85n%2C%20T%C3%A2n%20%C4%90%E1%BB%8Bnh%2C%20H%E1%BB%93%20Ch%C3%AD%20Minh%20700000%2C%20Vietnam",
-        "type": "shoppingWindow",
-        "dayId": "day4",
-        "placeId": "push-push",
+        "placeId": "wanaka-tree",
         "bookingId": null
       },
       {
-        "id": "thao-dien-open-list",
-        "time": "~11:00 onwards",
-        "title": "🎲 Thảo Điền · Open List",
-        "summary": "由入 Thảo Điền 開始，不跟時間表。行到哪裡、肚餓就食、想坐就飲、想做 Spa 才做。",
+        "id": "wanaka-breakfast",
+        "time": "Morning",
+        "title": "☕ Breakfast · Scroggin Coffee and Eatery",
         "details": [
-          "🛍 Browse · OHQUAO · Saigon Concept · LOUH · Shopping Directory 裏其他順路小店",
-          "🥐 Coffee / Sweet · Bakes，或者沿途見到想坐的 café",
-          "🍽 Eat · 不設固定 lunch；行到哪裡，按當時胃口選",
-          "🌿 Spa · Walk-in Picks · Mộc Hương · Mojo · Thao Dien Spa · Golden Lotus；行到附近、想休息先揀",
-          "🥂 Farewell · 可以正式食 dinner、wine + small plates、買個蛋糕返 Fusion，甚至不再食一餐"
+          "Primary: Scroggin Coffee and Eatery.",
+          "Alternative: Big Fig for a faster counter-service meal."
         ],
-        "route": "🏨 收尾時由當時位置 Grab 返回 Fusion。",
-        "map": "https://www.google.com/maps/search/?api=1&query=OHQUAO%2019%20Duong%20So%2038%20Thao%20Dien%20Ho%20Chi%20Minh%20City",
-        "type": "openList",
+        "route": "Next: Edgewater check-out / Puzzling World.",
+        "map": "https://www.google.com/maps/search/?api=1&query=Scroggin+Coffee+and+Eatery%2C+71+Ardmore+Street%2C+Wanaka+9305",
+        "type": "meal",
         "dayId": "day4",
-        "placeId": "ohquao",
+        "placeId": "scroggin",
         "bookingId": null,
-        "guideIds": ["ohquao","saigon-concept","louh","bakes","moc-huong","mojo-spa","thao-dien-spa","golden-lotus-thao-dien"],
-        "showShoppingDirectory": true
+        "guideIds": [
+          "scroggin",
+          "big-fig"
+        ],
+        "optionsLabel": "View primary & alternative"
+      },
+      {
+        "id": "edgewater-checkout",
+        "time": "By 10:30",
+        "title": "🏨 Check out · Edgewater",
+        "details": [
+          "Check out by 10:30 am."
+        ],
+        "route": "Next: Puzzling World · ≈ 10 min drive.",
+        "map": "https://maps.google.com/?q=Edgewater+54+Sargood+Drive+Wanaka",
+        "type": "rest",
+        "dayId": "day4",
+        "placeId": "edgewater",
+        "bookingId": "edgewater-booking"
+      },
+      {
+        "id": "puzzling-world",
+        "time": "Late morning",
+        "title": "🧩 Puzzling World",
+        "details": [
+          "Allow 90–120 minutes."
+        ],
+        "route": "Next: Cardrona Hotel · ≈ 25 min drive.",
+        "map": "https://maps.google.com/?q=Puzzling+World+188+W%C4%81naka%E2%80%93Luggate+Highway%2C+W%C4%81naka+9382%2C+New+Zealand",
+        "type": "experience",
+        "dayId": "day4",
+        "placeId": "puzzling-world",
+        "bookingId": null
+      },
+      {
+        "id": "wanaka-queenstown-route-choice",
+        "time": "Afternoon",
+        "title": "🚙 Route choice · Wānaka to Queenstown",
+        "details": [
+          "Primary: Crown Range Road · shorter and more scenic, but steeper with more bends.",
+          "Alternative: SH6 via Cromwell · about 30 minutes longer, with gentler roads for poor weather, darkness or possible ice.",
+          "Check NZTA and the weather before leaving; use extra caution after dark for wildlife and reduced visibility."
+        ],
+        "route": "Next: Frankton / Queenstown · Crown Range ≈ 1 hr or SH6 via Cromwell ≈ 1 hr 30 min.",
+        "map": "https://www.google.com/maps/dir/?api=1&origin=Wanaka%2C+New+Zealand&destination=Sudima+Queenstown+Five+Mile%2C+22+Grant+Road%2C+Frankton%2C+Queenstown%2C+New+Zealand&travelmode=driving&waypoints=Cardrona+Hotel%2C+Cardrona",
+        "routeOptions": [
+          {
+            "label": "Crown Range",
+            "map": "https://www.google.com/maps/dir/?api=1&origin=Wanaka%2C+New+Zealand&destination=Sudima+Queenstown+Five+Mile%2C+22+Grant+Road%2C+Frankton%2C+Queenstown%2C+New+Zealand&travelmode=driving&waypoints=Cardrona+Hotel%2C+Cardrona"
+          },
+          {
+            "label": "Via Cromwell",
+            "map": "https://www.google.com/maps/dir/?api=1&origin=Wanaka%2C+New+Zealand&destination=Sudima+Queenstown+Five+Mile%2C+22+Grant+Road%2C+Frankton%2C+Queenstown%2C+New+Zealand&travelmode=driving&waypoints=Cromwell%2C+New+Zealand"
+          }
+        ],
+        "type": "transport",
+        "dayId": "day4",
+        "placeId": "cardrona",
+        "bookingId": null
+      },
+      {
+        "id": "flex-lunch",
+        "time": "Afternoon",
+        "title": "🥧 Lunch · Fergbaker",
+        "details": [
+          "Primary: Fergbaker for a quick Queenstown meal.",
+          "Alternative: Saigon Kingdom Viet in Frankton."
+        ],
+        "route": "Next: Sudima Queenstown Five Mile.",
+        "map": "https://maps.google.com/?q=Fergbaker+Queenstown",
+        "type": "meal",
+        "dayId": "day4",
+        "placeId": "fergbaker",
+        "bookingId": null,
+        "guideIds": [
+          "fergbaker",
+          "saigon-kingdom"
+        ],
+        "optionsLabel": "Alternative options"
+      },
+      {
+        "id": "sudima-five-mile",
+        "time": "Check-in",
+        "title": "🏨 Check in · Sudima Queenstown Five Mile",
+        "details": [
+          "Booked one-night transition stay for the Lee family on 25 September.",
+          "Two-bedroom accommodation.",
+          "Cashback: AUD 17.79.",
+          "The shared Airbnb may change to 26–29 September; revised dates are not yet final."
+        ],
+        "route": "Settle in before dinner.",
+        "map": "https://maps.google.com/?q=Sudima+Queenstown+Five+Mile+22+Grant+Road+Frankton+Queenstown",
+        "type": "rest",
+        "dayId": "day4",
+        "placeId": "sudima-five-mile",
+        "bookingId": "sudima-booking"
+      },
+      {
+        "id": "day4-dinner",
+        "time": "Evening",
+        "title": "🍽️ Dinner · Flexible Queenstown / Five Mile",
+        "details": [
+          "Choose an easy dinner close to Sudima after the transfer day.",
+          "Pedro's House of Lamb can move to 26 September when all three families are together."
+        ],
+        "route": "Finish at Sudima Queenstown Five Mile.",
+        "type": "meal",
+        "dayId": "day4",
+        "placeId": null,
+        "bookingId": null,
+        "nonPlace": true,
+        "nonPlaceRole": "meal-choice"
       }
     ],
     "dayId": "day4"
   },
   "5": {
-    "dayEmoji": "✈️",
-    "title": "Day 5 · Saigon Companion",
-    "kicker": "Day 5 · 3 Nov • Tuesday",
-    "heading": "One Last Look",
-    "areaLabel": "DISTRICT 1 → TÂN BÌNH · AIRPORT",
+    "title": "Day 5 · New Zealand Companion",
+    "kicker": "Day 5 · 26 Sep • Saturday",
+    "heading": "Sleep In, Five Mile Brunch & Queenstown Market",
     "legend": [
-      "☀️ Morning",
-      "🍜 Midday",
-      "🌙 Evening"
+      "😴 Sleep in",
+      "☕ Five Mile brunch",
+      "🛍️ Queenstown Market",
+      "🏡 Airbnb check-in",
+      "🍖 Pedro's dinner"
     ],
+    "drive": {
+      "route": "Sudima Five Mile → Queenstown Market → Windsor Lodge → FreshChoice → Pedro's → Windsor Lodge",
+      "distance": "≈ 20 km",
+      "drivingTime": "≈ 40 min total",
+      "road": "Local Queenstown roads",
+      "stops": [
+        "Five Mile brunch",
+        "Queenstown Market · Earnslaw Park",
+        "Windsor Lodge",
+        "FreshChoice Queenstown",
+        "Pedro's House of Lamb"
+      ],
+      "note": "Sleep in, check out at 11:00 AM and brunch near Sudima before the Saturday market. Check in, buy Airbnb supplies, then collect an easy shared dinner.",
+      "contingency": "If the market runs late, one person can complete check-in while the others finish browsing; FreshChoice is open into the evening.",
+      "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=Sudima+Queenstown+Five+Mile%2C+22+Grant+Road%2C+Frankton%2C+Queenstown&destination=7+Windsor+Place%2C+Queenstown%2C+New+Zealand&travelmode=driving&waypoints=Queenstown+Market%2C+Earnslaw+Park%2C+Queenstown%7CFreshChoice+Queenstown%2C+64+Gorge+Road%2C+Queenstown"
+    },
     "items": [
       {
-        "id": "pho-vietnam",
-        "time": "09:30–10:30",
-        "title": "🍜 Phở Việt Nam Bến Thành",
+        "id": "sudima-checkout-d5",
+        "time": "11:00 AM",
+        "title": "🏨 Check out · Sudima Five Mile",
         "details": [
-          "最後一碗石鍋河粉，距酒店步行或 Grab 3–5 分鐘。"
+          "Sleep in, pack slowly and check out by 11:00 AM."
         ],
-        "route": "🚶 To next stop：步行約 4 分鐘去 Museum of Fine Arts。",
-        "map": "https://www.google.com/maps/search/?api=1&query=Ph%E1%BB%9F%20Vi%E1%BB%87t%20Nam%20B%E1%BA%BFn%20Th%C3%A0nh%2014%20Ph%E1%BA%A1m%20H%E1%BB%93ng%20Th%C3%A1i%2C%20B%E1%BA%BFn%20Th%C3%A0nh%2C%20H%E1%BB%93%20Ch%C3%AD%20Minh%2070000%2C%20Vietnam",
-        "type": "meal",
+        "route": "Next: brunch at Five Mile · walk or take a short drive.",
+        "map": "https://maps.google.com/?q=Sudima+Queenstown+Five+Mile+22+Grant+Road+Frankton+Queenstown",
+        "type": "rest",
         "dayId": "day5",
-        "placeId": "pho-vietnam",
-        "bookingId": null
+        "placeId": "sudima-five-mile",
+        "bookingId": "sudima-booking"
       },
       {
-        "id": "fine-arts",
-        "time": "10:30–11:45",
-        "title": "🏛 Museum of Fine Arts",
+        "id": "five-mile-brunch-d5",
+        "time": "11:15 AM–12:30 PM",
+        "title": "☕ Brunch · Hustl. Cafe",
         "details": [
-          "復古人文街拍，彩色玻璃與老升降機。"
+          "Relaxed brunch near Sudima before driving into Queenstown.",
+          "Options: Moinho Cafe or Joe's Garage Five Mile."
         ],
-        "route": "🚕 To next stop：Grab 約 4 分鐘去 Bếp Mẹ Ỉn。",
-        "map": "https://www.google.com/maps/search/?api=1&query=Fine%20Arts%20Museum%20Ho%20Chi%20Minh%20City%20Museum%20of%20Fine%20Arts%2C%2097A%20Ph%C3%B3%20%C4%90%E1%BB%A9c%20Ch%C3%ADnh%2C%20District%201%2C%20Ho%20Chi%20Minh%20City",
+        "route": "Next: drive to Queenstown CBD, park and walk to Earnslaw Park.",
+        "map": "https://maps.google.com/?q=Hustl+Cafe+Five+Mile+Queenstown",
+        "type": "meal",
+        "dayId": "day5",
+        "placeId": "hustl-five-mile",
+        "bookingId": null,
+        "guideIds": [
+          "hustl-five-mile",
+          "moinho-five-mile",
+          "joes-five-mile"
+        ],
+        "optionsLabel": "Brunch options"
+      },
+      {
+        "id": "queenstown-market-d5",
+        "time": "1:00 PM–2:40 PM",
+        "title": "🛍️ Queenstown Market + lakefront",
+        "details": [
+          "Browse local crafts, gifts and snacks at Earnslaw Park, then enjoy a short lakefront wander."
+        ],
+        "route": "Next: Windsor Lodge · leave by about 2:40 PM for 3:00 PM check-in.",
+        "map": "https://maps.google.com/?q=Queenstown+Market+Earnslaw+Park+Queenstown",
         "type": "experience",
         "dayId": "day5",
-        "placeId": "fine-arts",
+        "placeId": "queenstown-market",
         "bookingId": null
       },
       {
-        "id": "bep-me-in",
-        "time": "11:45–13:00",
-        "title": "🥞 Bếp Mẹ Ỉn",
+        "id": "airbnb-checkin-d5",
+        "time": "3:00 PM",
+        "title": "🏡 Check in · Windsor Lodge",
         "details": [
-          "Michelin Bib Gourmand；黃金煎餅、椰子炒飯與越式拼盤。",
-          "🥖 Optional add-on：隔籬 Bánh Mì Mẹ Ỉn；可問店員能否送法包過來一齊 share。"
+          "Check in together, allocate rooms and unload the cars."
         ],
-        "route": "🚕 To next stop：Grab 約 3 分鐘去 Takashimaya。",
-        "map": "https://www.google.com/maps/search/?api=1&query=B%E1%BA%BFp%20M%E1%BA%B9%20%E1%BB%88n%20136%2F9%20L%C3%AA%20Th%C3%A1nh%20T%C3%B4n%2C%20B%E1%BA%BFn%20Th%C3%A0nh%2C%20H%E1%BB%93%20Ch%C3%AD%20Minh%2C%20Vietnam",
+        "route": "Next: FreshChoice Queenstown for breakfast, drinks and snacks.",
+        "map": "https://maps.google.com/?q=7+Windsor+Place+Queenstown",
+        "type": "rest",
+        "dayId": "day5",
+        "placeId": "queenstown-house",
+        "bookingId": "queenstown-booking"
+      },
+      {
+        "id": "freshchoice-d5",
+        "time": "3:45 PM",
+        "title": "🛒 FreshChoice Queenstown · Airbnb supplies",
+        "details": [
+          "Buy breakfast food, drinks and snacks for the shared stay."
+        ],
+        "route": "Return to Windsor Lodge and relax.",
+        "map": "https://maps.google.com/?q=FreshChoice+Queenstown+64+Gorge+Road+Queenstown",
+        "type": "shopping",
+        "dayId": "day5",
+        "placeId": "freshchoice-queenstown",
+        "bookingId": null
+      },
+      {
+        "id": "pedros-dinner-d5",
+        "time": "6:30 PM",
+        "title": "🍖 Dinner · Pedro's House of Lamb",
+        "details": [
+          "Pick up slow-cooked lamb and potatoes to share at Windsor Lodge.",
+          "Options: Winnie's Gourmet Pizza Bar or Lone Star Queenstown for a sit-down group dinner."
+        ],
+        "route": "Order ahead, collect from Gorge Road and return to Windsor Lodge.",
+        "map": "https://maps.google.com/?q=Pedro%27s+House+of+Lamb+47+Gorge+Road%2C+Queenstown+9300%2C+New+Zealand",
         "type": "meal",
         "dayId": "day5",
-        "placeId": "bep-me-in",
-        "bookingId": null
-      },
-      {
-        "id": "takashimaya",
-        "time": "13:00–14:15",
-        "title": "🛍 Takashimaya + Maison Marou",
-        "details": [
-          "最後手信時間：朱古力、咖啡、茶葉與乾果。"
+        "placeId": "pedros",
+        "bookingId": null,
+        "guideIds": [
+          "pedros",
+          "winnies",
+          "lone-star"
         ],
-        "route": "🚶 To next stop：回 Fusion Original 提行李。",
-        "map": "https://maps.google.com/?q=Takashimaya+Saigon",
-        "type": "shoppingWindow",
-        "dayId": "day5",
-        "placeId": "takashimaya",
-        "bookingId": null
-      },
-      {
-        "id": "hotel-luggage",
-        "time": "14:15–14:45",
-        "title": "🧳 返回酒店 · 提行李",
-        "details": [
-          "回 Fusion Original 提取寄存行李。"
-        ],
-        "route": "🚕 To next stop：14:45 出發，Grab 約 20–25 分鐘去 Hạ Spa。",
-        "map": "https://www.google.com/maps/search/?api=1&query=Fusion%20Original%20Saigon%20Centre%20Fusion%20Original%20Saigon%20Centre%2C%2065%20L%C3%AA%20L%E1%BB%A3i%2C%20B%E1%BA%BFn%20Ngh%C3%A9%2C%20District%201%2C%20Ho%20Chi%20Minh%20City",
-        "type": "buffer",
-        "dayId": "day5",
-        "placeId": "fusion",
-        "bookingId": null
-      },
-      {
-        "id": "grab-ha-spa",
-        "time": "14:45–15:30",
-        "title": "🚕 Grab → Hạ Spa",
-        "details": [
-          "提早離開 D1，避開黃昏塞車。"
-        ],
-        "route": "🚶 To next stop：抵達後直接入療程。",
-        "map": "https://www.google.com/maps/search/?api=1&query=H%E1%BA%A1%20Spa%20334%20Nguy%E1%BB%85n%20Tr%E1%BB%8Dng%20Tuy%E1%BB%83n%2C%20Ward%202%2C%20T%C3%A2n%20B%C3%ACnh%20District%2C%20H%E1%BB%93%20Ch%C3%AD%20Minh%20700000%2C%20Vietnam",
-        "type": "transport",
-        "dayId": "day5",
-        "placeId": "ha-spa",
-        "bookingId": "bk-ha-spa"
-      },
-      {
-        "id": "ha-spa",
-        "time": "15:30–17:30",
-        "title": "💆‍♀️ Hạ Spa",
-        "details": [
-          "草本洗頭 + 全身熱石按摩；近機場。"
-        ],
-        "route": "🚕 To next stop：Grab 約 2 分鐘去新山一機場國際航廈。",
-        "map": "https://www.google.com/maps/search/?api=1&query=H%E1%BA%A1%20Spa%20334%20Nguy%E1%BB%85n%20Tr%E1%BB%8Dng%20Tuy%E1%BB%83n%2C%20Ward%202%2C%20T%C3%A2n%20B%C3%ACnh%20District%2C%20H%E1%BB%93%20Ch%C3%AD%20Minh%20700000%2C%20Vietnam",
-        "type": "spa",
-        "dayId": "day5",
-        "placeId": "ha-spa",
-        "bookingId": "bk-ha-spa"
-      },
-      {
-        "id": "airport-transfer-final",
-        "time": "17:45–18:00",
-        "title": "🚕 Hạ Spa → Airport",
-        "details": [
-          "前往新山一國際機場。"
-        ],
-        "route": "🚶 To next stop：國際線 Check-in 櫃檯。",
-        "map": "https://maps.google.com/?q=Tan+Son+Nhat+International+Airport",
-        "type": "transport",
-        "dayId": "day5",
-        "placeId": "tan-son-nhat-airport",
-        "bookingId": null
-      },
-      {
-        "id": "airport",
-        "time": "18:00–21:10",
-        "title": "✈️ Check-in / Duty Free / Boarding",
-        "details": [
-          "預留 3 小時處理 check-in、過關與登機。"
-        ],
-        "route": "",
-        "map": "",
-        "type": "transport",
-        "dayId": "day5",
-        "placeId": "tan-son-nhat-airport",
-        "bookingId": null
+        "optionsLabel": "Dinner options"
       }
     ],
     "dayId": "day5"
+  },
+  "6": {
+    "title": "Day 6 · New Zealand Companion",
+    "kicker": "Day 6 · 27 Sep • Sunday",
+    "heading": "Skyline, Luge, Kiwi Park & Group Day",
+    "legend": [
+      "🚡 Skyline",
+      "🏎️ Luge",
+      "🐦 Kiwi Park"
+    ],
+    "drive": {
+      "route": "Windsor Lodge → Skyline / Kiwi Park → Queenstown town → Windsor Lodge",
+      "distance": "≈ 8 km local",
+      "drivingTime": "≈ 25 min total",
+      "road": "Local Queenstown roads",
+      "stops": [
+        "Skyline Queenstown",
+        "Kiwi Park",
+        "Queenstown town centre"
+      ],
+      "note": "All three families do the original Day 5 activities together. Most movement around Brecon Street and town is on foot once parked.",
+      "contingency": "Keep Kiwi Park optional if Skyline runs late or the group is tired.",
+      "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=7+Windsor+Place%2C+Queenstown%2C+New+Zealand&destination=7+Windsor+Place%2C+Queenstown%2C+New+Zealand&travelmode=driving&waypoints=Skyline+Queenstown%2C+53+Brecon+Street%2C+Queenstown%2C+New+Zealand%7CQueenstown+Central%2C+Queenstown%2C+New+Zealand"
+    },
+    "items": [
+      {
+        "id": "airbnb-breakfast-d6",
+        "time": "Morning",
+        "title": "🥣 Breakfast at Windsor Lodge",
+        "details": [
+          "Breakfast together before heading to Skyline."
+        ],
+        "route": "Next: Skyline Queenstown · allow for parking and the walk to Brecon Street.",
+        "type": "meal",
+        "dayId": "day6",
+        "placeId": "queenstown-house",
+        "bookingId": "queenstown-booking"
+      },
+      {
+        "id": "skyline-d6",
+        "time": "Morning",
+        "title": "🚡 Skyline Queenstown Gondola",
+        "details": [
+          "Check the booked gondola and Luge session times before departure."
+        ],
+        "route": "Next: Luge · within the Skyline complex.",
+        "map": "https://maps.google.com/?q=Skyline+Queenstown+53+Brecon+Street%2C+Queenstown+9300%2C+New+Zealand",
+        "type": "experience",
+        "dayId": "day6",
+        "placeId": "skyline",
+        "bookingId": null
+      },
+      {
+        "id": "luge-d6",
+        "time": "Morning",
+        "title": "🏎️ Luge",
+        "details": [
+          "Consider a multi-ride family pass."
+        ],
+        "route": "Next: Fergbaker / town lunch · gondola down, then walk.",
+        "map": "https://maps.google.com/?q=Skyline+Queenstown+53+Brecon+Street%2C+Queenstown+9300%2C+New+Zealand",
+        "type": "experience",
+        "dayId": "day6",
+        "placeId": "skyline",
+        "bookingId": null
+      },
+      {
+        "id": "lunch-skyline-d6",
+        "time": "Afternoon",
+        "title": "🍽️ Lunch · Fergbaker",
+        "details": [
+          "Pies, pastries, sandwiches and sweet baked goods beside Fergburger."
+        ],
+        "route": "Next: Kiwi Park · about 10 min walk.",
+        "map": "https://maps.google.com/?q=Fergbaker",
+        "type": "meal",
+        "dayId": "day6",
+        "placeId": "fergbaker",
+        "bookingId": null,
+        "guideIds": [
+          "fergbaker",
+          "saigon-kingdom"
+        ],
+        "optionsLabel": "Options"
+      },
+      {
+        "id": "kiwi-park-d6",
+        "time": "Afternoon",
+        "title": "🐦 Kiwi Park Queenstown",
+        "details": [
+          "Optional if the group is tired or Skyline runs late."
+        ],
+        "route": "Next: dinner in Queenstown town centre.",
+        "map": "https://maps.google.com/?q=Kiwi+Park+Queenstown+51+Brecon+Street%2C+Queenstown+9300%2C+New+Zealand",
+        "type": "experience",
+        "dayId": "day6",
+        "placeId": "kiwi-park",
+        "bookingId": null
+      },
+      {
+        "id": "flame-d6",
+        "time": "Evening",
+        "title": "🔥 Dinner · Flame Bar & Grill",
+        "details": [
+          "A hearty central Queenstown group dinner with ribs, steaks, burgers and flame-grilled dishes."
+        ],
+        "route": "Return to Windsor Lodge.",
+        "map": "https://maps.google.com/?q=Flame%20Bar%20%26%20Grill",
+        "type": "meal",
+        "dayId": "day6",
+        "placeId": "flame",
+        "bookingId": null
+      }
+    ],
+    "dayId": "day6"
+  },
+  "7": {
+    "title": "Day 7 · New Zealand Companion",
+    "kicker": "Day 7 · 28 Sep • Monday",
+    "heading": "Arrowtown & Deer Park Heights",
+    "legend": [
+      "🏘️ Arrowtown",
+      "🏚️ Chinese Settlement",
+      "🦌 Deer Park"
+    ],
+    "drive": {
+      "route": "Queenstown → Arrowtown → Deer Park Heights → Queenstown",
+      "distance": "≈ 65 km",
+      "drivingTime": "≈ 1 hr 20 min",
+      "road": "SH6 / local roads",
+      "stops": [
+        "Arrowtown",
+        "Chinese Settlement",
+        "Deer Park Heights"
+      ],
+      "note": "Leave around 09:30. Lunch remains separate from the main driving route.",
+      "contingency": "Keep the slow-holiday pace and adjust for weather, road conditions and family energy.",
+      "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=6+Earnslaw+Terrace%2C+Queenstown%2C+New+Zealand&destination=6+Earnslaw+Terrace%2C+Queenstown%2C+New+Zealand&travelmode=driving&waypoints=Arrowtown+Chinese+Settlement%2C+Arrowtown%2C+New+Zealand%7CDeer+Park+Heights%2C+432+Peninsula+Road%2C+Queenstown%2C+New+Zealand"
+    },
+    "items": [
+      {
+        "id": "airbnb-breakfast-d7",
+        "time": "Morning",
+        "title": "🥣 Breakfast at Windsor Lodge",
+        "details": [
+          "Breakfast at the accommodation."
+        ],
+        "route": "Next: Historic Arrowtown · ≈ 20–25 min drive.",
+        "type": "meal",
+        "dayId": "day7",
+        "placeId": "queenstown-house",
+        "bookingId": "queenstown-booking"
+      },
+      {
+        "id": "arrowtown",
+        "time": "Morning",
+        "title": "🏘️ Historic Arrowtown",
+        "details": [
+          "Allow a departure buffer before leaving Queenstown."
+        ],
+        "route": "Next: Chinese Settlement · ≈ 5–10 min walk.",
+        "map": "https://maps.google.com/?q=Historic+Arrowtown+Buckingham+Street%2C+Arrowtown+9302%2C+New+Zealand",
+        "type": "experience",
+        "dayId": "day7",
+        "placeId": "arrowtown",
+        "bookingId": null,
+        "guideIds": [
+          "arrowtown",
+          "gold-panning"
+        ]
+      },
+      {
+        "id": "chinese-settlement",
+        "time": "Morning",
+        "title": "🏚️ Chinese Settlement walk",
+        "details": [
+          "Keep timing flexible according to weather, queues and family energy."
+        ],
+        "route": "Next: Arrowtown lunch · ≈ 5–10 min walk.",
+        "map": "https://maps.google.com/?q=Arrowtown+Chinese+Settlement+Chinese+Village%2C+Arrowtown+9302%2C+New+Zealand",
+        "type": "experience",
+        "dayId": "day7",
+        "placeId": "chinese-settlement",
+        "bookingId": null
+      },
+      {
+        "id": "arrowtown-lunch",
+        "time": "Afternoon",
+        "title": "🍽️ Lunch · Arrowtown Bakery",
+        "details": [
+          "A traditional Arrowtown bakery known for savoury pies, pastries and quick takeaway food — useful when the group wants an easy lunch without a full restaurant booking."
+        ],
+        "route": "Next: Deer Park Heights · ≈ 25–30 min drive.",
+        "map": "https://maps.google.com/?q=Arrowtown%20Bakery",
+        "type": "meal",
+        "dayId": "day7",
+        "placeId": "arrowtown-bakery",
+        "bookingId": null,
+        "guideIds": [
+          "arrowtown-bakery",
+          "aosta"
+        ],
+        "optionsLabel": "Alternative options"
+      },
+      {
+        "id": "deer-park",
+        "time": "Afternoon",
+        "title": "🦌 Deer Park Heights",
+        "details": [
+          "Use rental-car registration for gate access. Bring small NZ coins for animal feed if still required."
+        ],
+        "route": "Next: Queenstown dinner · ≈ 20–25 min drive.",
+        "map": "https://maps.google.com/?q=Deer+Park+Heights+432+Peninsula+Road%2C+Kelvin+Heights%2C+Queenstown+9300%2C+New+Zealand",
+        "type": "experience",
+        "dayId": "day7",
+        "placeId": "deer-park",
+        "bookingId": null
+      },
+      {
+        "id": "lone-star",
+        "time": "Evening",
+        "title": "🍽 Dinner · Lone Star Queenstown",
+        "details": [
+          "A casual Queenstown restaurant serving large portions of ribs, steaks, burgers and other hearty New Zealand-style meals."
+        ],
+        "route": "Next: Windsor Lodge · ≈ 10 min drive.",
+        "map": "https://maps.google.com/?q=Lone+Star+Queenstown+14+Brecon+Street%2C+Queenstown+9300%2C+New+Zealand",
+        "type": "meal",
+        "dayId": "day7",
+        "placeId": "lone-star",
+        "bookingId": null
+      }
+    ],
+    "dayId": "day7"
+  },
+  "8": {
+    "title": "Day 8 · New Zealand Companion",
+    "kicker": "Day 8 · 29 Sep • Tuesday",
+    "heading": "Queenstown to Te Anau",
+    "legend": [
+      "🚙 Relaxed transition",
+      "🏨 Lakefront Lodge",
+      "🐦 Bird Sanctuary"
+    ],
+    "drive": {
+      "route": "Queenstown → Kingston / Mossburn → FreshChoice Te Anau → Lakefront Lodge",
+      "distance": "≈ 175 km",
+      "drivingTime": "≈ 2 hr 20 min",
+      "road": "SH6 / SH97 / SH94",
+      "stops": [
+        "Kingston / Mossburn",
+        "FreshChoice Te Anau",
+        "Lakefront Lodge"
+      ],
+      "note": "Leave around 09:30. Buy Te Anau supplies locally before settling into the lodge.",
+      "contingency": "Keep the slow-holiday pace and adjust for weather, road conditions and family energy.",
+      "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=6+Earnslaw+Terrace%2C+Queenstown%2C+New+Zealand&destination=Lakefront+Lodge%2C+58+Lakefront+Drive%2C+Te+Anau%2C+New+Zealand&travelmode=driving&waypoints=Kingston%2C+Southland%2C+New+Zealand%7CMossburn%2C+Southland%2C+New+Zealand%7CFreshChoice+Te+Anau%2C+5+Milford+Crescent%2C+Te+Anau"
+    },
+    "items": [
+      {
+        "id": "airbnb-breakfast-d8",
+        "time": "Morning",
+        "title": "🥣 Breakfast at Windsor Lodge",
+        "details": [
+          "Breakfast at the accommodation."
+        ],
+        "route": "Next: check out, then optional fuel stop before leaving Queenstown.",
+        "type": "meal",
+        "dayId": "day8",
+        "placeId": "queenstown-house",
+        "bookingId": "queenstown-booking"
+      },
+      {
+        "id": "queenstown-fuel-check",
+        "time": "Around 09:25",
+        "title": "⛽ Fuel check · Z Queenstown",
+        "details": [
+          "Optional top-up before the longer drive to Te Anau.",
+          "Use this stop if the tank is below half."
+        ],
+        "route": "Next: leave Queenstown for Kingston / Te Anau.",
+        "type": "transport",
+        "dayId": "day8",
+        "placeId": null,
+        "bookingId": null,
+        "nonPlace": true,
+        "nonPlaceRole": "fuel-check"
+      },
+      {
+        "id": "depart-queenstown",
+        "time": "Around 09:35",
+        "title": "🚙 Leave Queenstown for Te Anau",
+        "details": [
+          "Begin the relaxed transfer to Te Anau after check-out and any fuel stop.",
+          "Kingston remains an optional comfort stop."
+        ],
+        "route": "Next: optional Kingston lakefront stop · ≈ 35–40 min drive.",
+        "map": "https://maps.google.com/?q=7+Windsor+Place+Queenstown",
+        "type": "transport",
+        "dayId": "day8",
+        "placeId": "queenstown-house",
+        "bookingId": null
+      },
+      {
+        "id": "kingston-pit-stop",
+        "time": "Optional",
+        "title": "🌊 Kingston lakefront pit stop",
+        "details": [
+          "Short toilet, stretch and lake-view break on the drive to Te Anau."
+        ],
+        "route": "Next: Sandfly Cafe, Te Anau · ≈ 1 hr 35 min drive.",
+        "type": "rest",
+        "dayId": "day8",
+        "placeId": null,
+        "bookingId": null,
+        "nonPlace": true,
+        "nonPlaceRole": "comfort-stop"
+      },
+      {
+        "id": "te-anau-lunch",
+        "time": "Afternoon",
+        "title": "☕ Lunch · Sandfly Cafe",
+        "details": [
+          "A casual Te Anau cafe serving breakfast, brunch, coffee and light lunch dishes — a practical first meal after the drive from Queenstown."
+        ],
+        "route": "Next: FreshChoice Te Anau · ≈ 2–4 min drive.",
+        "map": "https://maps.google.com/?q=Sandfly%20Cafe",
+        "type": "meal",
+        "dayId": "day8",
+        "placeId": "sandfly-cafe",
+        "bookingId": null
+      },
+      {
+        "id": "freshchoice-te-anau-d8",
+        "time": "Afternoon",
+        "title": "🛒 FreshChoice Te Anau",
+        "details": [
+          "Buy breakfast supplies, fresh food, drinks and Milford-day snacks for the Te Anau stay."
+        ],
+        "route": "Next: Lakefront Lodge · ≈ 3–5 min drive.",
+        "map": "https://maps.google.com/?q=FreshChoice+Te+Anau+5+Milford+Crescent+Te+Anau",
+        "type": "shopping",
+        "dayId": "day8",
+        "placeId": "freshchoice-te-anau",
+        "bookingId": null
+      },
+      {
+        "id": "lakefront-lodge",
+        "time": "From 14:00",
+        "title": "🏨 Check in · Lakefront Lodge",
+        "details": [
+          "Check in for 2 nights."
+        ],
+        "route": "Next: Te Anau Bird Sanctuary · ≈ 5 min drive.",
+        "map": "https://maps.google.com/?q=Lakefront+Lodge+58+Lakefront+Drive%2C+Te+Anau+9600%2C+New+Zealand",
+        "type": "rest",
+        "dayId": "day8",
+        "placeId": "lakefront-lodge",
+        "bookingId": "lakefront-booking"
+      },
+      {
+        "id": "te-anau-bird",
+        "time": "Afternoon",
+        "title": "🐦 Te Anau Bird Sanctuary and lakeside walk",
+        "details": [
+          "Optional if the transfer runs late."
+        ],
+        "route": "Next: Te Anau lakefront / town · ≈ 5 min drive.",
+        "map": "https://maps.google.com/?q=Te+Anau+Bird+Sanctuary+Punanga+Manu+o+Te+Ana-au%2C+Lakefront+Drive%2C+Te+Anau+9600%2C+New+Zealand",
+        "type": "experience",
+        "dayId": "day8",
+        "placeId": "te-anau-bird",
+        "bookingId": null
+      },
+      {
+        "id": "miles-better-pies",
+        "time": "Evening",
+        "title": "🍽️ Dinner · Miles Better Pies",
+        "details": [
+          "A compact Te Anau pie shop specialising in savoury takeaway pies."
+        ],
+        "route": "Next: Lakefront Lodge · ≈ 5 min drive.",
+        "map": "https://maps.google.com/?q=Miles%20Better%20Pies",
+        "type": "meal",
+        "dayId": "day8",
+        "placeId": "miles-better-pies",
+        "bookingId": null,
+        "guideIds": [
+          "miles-better-pies",
+          "fat-duck"
+        ],
+        "optionsLabel": "Alternative options"
+      }
+    ],
+    "dayId": "day8"
+  },
+  "9": {
+    "title": "Day 9 · New Zealand Companion",
+    "kicker": "Day 9 · 30 Sep • Wednesday",
+    "heading": "Luxe Tours Milford Sound Day Tour",
+    "legend": [
+      "✅ Booked",
+      "🚌 Small group",
+      "🚢 Cruise",
+      "🌧️ Weather ready"
+    ],
+    "drive": {
+      "route": "Lakefront Lodge → Milford Road scenic stops → Milford Sound → Lakefront Lodge (Luxe Tours)",
+      "distance": "≈ 240 km return",
+      "drivingTime": "≈ 4 hr 30 min road time",
+      "road": "Milford Road / SH94",
+      "stops": [
+        "Te Anau Downs",
+        "Eglinton Valley",
+        "Mirror Lakes",
+        "Knobs Flat",
+        "Hollyford Valley Lookout",
+        "Monkey Creek",
+        "Short nature walk",
+        "Milford Sound cruise"
+      ],
+      "note": "Confirmed Luxe Tours premium small-group tour. Stops are indicative and follow weather, road conditions, timing and guide discretion.",
+      "contingency": "Keep the slow-holiday pace and adjust for weather, road conditions and family energy.",
+      "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=Lakefront+Lodge%2C+58+Lakefront+Drive%2C+Te+Anau%2C+New+Zealand&destination=Lakefront+Lodge%2C+58+Lakefront+Drive%2C+Te+Anau%2C+New+Zealand&travelmode=driving&waypoints=Homer+Tunnel%2C+Fiordland+National+Park%2C+New+Zealand%7CMilford+Sound+Visitor+Terminal%2C+Milford+Sound%2C+New+Zealand"
+    },
+    "items": [
+      {
+        "id": "tour-breakfast",
+        "time": "Morning",
+        "title": "🥣 Early breakfast at Lakefront Lodge",
+        "details": [
+          "Eat at Lakefront Lodge before pickup.",
+          "Be outside the main entrance near the street by 8:55 AM.",
+          "Lunch is not arranged yet; prepare food beforehand or plan to purchase food onboard."
+        ],
+        "route": "Next: Luxe Tours hotel pickup · approximately 9:05–9:15 AM.",
+        "type": "meal",
+        "dayId": "day9",
+        "placeId": null,
+        "bookingId": null,
+        "nonPlace": true,
+        "nonPlaceRole": "accommodation-meal"
+      },
+      {
+        "id": "milford-tour",
+        "time": "8:55 AM",
+        "title": "✅ Booked · Luxe Tours Premium Milford Sound Day Tour",
+        "details": [
+          "Pickup address supplied: Lakefront Lodge · final pickup time to be advised / approximately 9:05–9:15 AM.",
+          "Premium small-group coach, local driver-guide, scenic Milford Road stops and a two-hour RealNZ cruise.",
+          "Booking reference: MSDTV10NT4 · 11 guests · pay-later balance NZD 2,749."
+        ],
+        "route": "Expected return and hotel drop-off around 5:30 PM, subject to conditions.",
+        "map": "https://maps.google.com/?q=Lakefront+Lodge+58+Lakefront+Drive+Te+Anau",
+        "type": "experience",
+        "dayId": "day9",
+        "placeId": "milford",
+        "bookingId": "luxe-milford-booking",
+        "guideIds": [
+          "milford",
+          "hydro-glowworm",],
+        "optionsLabel": "Related Fiordland guides"
+      },
+      {
+        "id": "tour-lunch",
+        "time": "Afternoon",
+        "title": "🥪 Lunch · Not arranged yet",
+        "details": [
+          "The group may prepare food before departure or purchase food onboard the cruise.",
+          "Confirm the final lunch plan later. Morning café snacks are included."
+        ],
+        "route": "Next: Continue the Luxe Tours itinerary and return to Te Anau.",
+        "type": "meal",
+        "dayId": "day9",
+        "placeId": null,
+        "bookingId": null,
+        "nonPlace": true,
+        "nonPlaceRole": "operator-meal"
+      },
+      {
+        "id": "final-te-anau",
+        "time": "Evening",
+        "title": "🍽️ Dinner · The Fat Duck Cafe",
+        "details": [
+          "A Te Anau cafe and restaurant serving breakfast, cafe meals and New Zealand-style dinner dishes; a sit-down alternative when the group wants more than takeaway pies."
+        ],
+        "route": "Next: Lakefront Lodge · short drive or walk, depending on the selected restaurant.",
+        "type": "meal",
+        "dayId": "day9",
+        "placeId": "fat-duck",
+        "bookingId": null,
+        "guideIds": [
+          "fat-duck",
+          "redcliff"
+        ],
+        "optionsLabel": "Alternative options"
+      }
+    ],
+    "dayId": "day9"
+  },
+  "10": {
+    "title": "Day 10 · New Zealand Companion",
+    "kicker": "Day 10 · 1 Oct • Thursday",
+    "heading": "Te Anau to Queenstown Airport & Departure",
+    "legend": [
+      "🚙 Airport drive",
+      "⛽ Car return",
+      "✈️ Melbourne flight"
+    ],
+    "drive": {
+      "route": "Te Anau → Frankton lunch → Z Queenstown → Rental Cars 247 → Queenstown Airport",
+      "distance": "≈ 175 km",
+      "drivingTime": "≈ 2 hr 20 min",
+      "road": "SH94 / SH97 / SH6",
+      "stops": [
+        "Frankton lunch",
+        "Z Queenstown final refuel",
+        "Rental Cars 247 depot",
+        "Queenstown Airport"
+      ],
+      "note": "Leave around 09:30 after breakfast and check-out. Final refuel, rental depot and airport shuttle each have their own navigation.",
+      "contingency": "Keep the slow-holiday pace and adjust for weather, road conditions and family energy.",
+      "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=Lakefront+Lodge%2C+58+Lakefront+Drive%2C+Te+Anau%2C+New+Zealand&destination=Queenstown+Airport%2C+Sir+Henry+Wigley+Drive%2C+Frankton%2C+New+Zealand&travelmode=driving&waypoints=Saigon+Kingdom+Viet%2C+Frankton%7CZ+Queenstown%2C+846+Frankton+Road%2C+Queenstown%7CRental+Cars+247%2C+2%2F13+Red+Oaks+Drive%2C+Frankton%2C+Queenstown"
+    },
+    "items": [
+      {
+        "id": "departure-breakfast",
+        "time": "Around 08:00",
+        "title": "🍽️ Breakfast · Sandfly Cafe",
+        "details": [
+          "A casual Te Anau cafe serving breakfast, brunch, coffee and light lunch dishes before the drive to Queenstown."
+        ],
+        "route": "Next: Lakefront Lodge check-out · short drive or walk, depending on the selected cafe.",
+        "type": "meal",
+        "dayId": "day10",
+        "placeId": "sandfly-cafe",
+        "bookingId": null,
+        "guideIds": [
+          "sandfly-cafe",
+          "milford-road-merchant",
+          "lakefront-cafe-te-anau"
+        ],
+        "optionsLabel": "Alternative options"
+      },
+      {
+        "id": "checkout-lakefront",
+        "time": "Around 09:15",
+        "title": "🏨 Check out · Lakefront Lodge",
+        "details": [
+          "Complete check-out before the 10:00 am hotel deadline."
+        ],
+        "route": "Next: leave Te Anau around 09:30.",
+        "map": "https://maps.google.com/?q=Lakefront+Lodge+58+Lakefront+Drive%2C+Te+Anau+9600%2C+New+Zealand",
+        "type": "rest",
+        "dayId": "day10",
+        "placeId": "lakefront-lodge",
+        "bookingId": "lakefront-booking"
+      },
+      {
+        "id": "depart-te-anau",
+        "time": "Around 09:30",
+        "title": "🚙 Leave Te Anau",
+        "details": [
+          "Allow around two hours twenty minutes plus any comfort stop.",
+          "Protect the airport buffer and skip optional stops if delayed."
+        ],
+        "route": "Next: Saigon Kingdom Viet · ≈ 2 hr 20 min drive.",
+        "map": "https://maps.google.com/?q=Te%20Anau",
+        "type": "transport",
+        "dayId": "day10",
+        "placeId": "te-anau",
+        "bookingId": null
+      },
+      {
+        "id": "departure-lunch",
+        "time": "Afternoon",
+        "title": "🍽️ Lunch · Saigon Kingdom Viet",
+        "details": [
+          "A Vietnamese restaurant in the Frankton area serving familiar noodle soups, rice dishes and other Vietnamese comfort food — practical before the airport or while shopping nearby."
+        ],
+        "route": "Next: Rental Cars 247 return depot · ≈ 5–10 min drive.",
+        "map": "https://maps.google.com/?q=Saigon%20Kingdom%20Viet",
+        "type": "meal",
+        "dayId": "day10",
+        "placeId": "saigon-kingdom",
+        "bookingId": null,
+        "guideIds": [
+          "saigon-kingdom",
+          "fergbaker"
+        ],
+        "optionsLabel": "Alternative options"
+      },
+      {
+        "id": "final-refuel",
+        "time": "15:00",
+        "title": "⛽ Final refuel · Z Queenstown",
+        "details": [
+          "Required before returning the rental car.",
+          "Fill the tank, then continue to the rental depot."
+        ],
+        "route": "Next: Rental Cars 247 depot · ≈ 5–10 min drive.",
+        "type": "transport",
+        "dayId": "day10",
+        "placeId": null,
+        "bookingId": null,
+        "nonPlace": true,
+        "nonPlaceRole": "final-refuel"
+      },
+      {
+        "id": "car-return",
+        "time": "15:30",
+        "title": "🚙 Return car · Rental Cars 247 depot",
+        "details": [
+          "Return depot · 2/13 Red Oaks Drive, Frankton.",
+          "Use the depot shuttle to Queenstown Airport after handover."
+        ],
+        "route": "Next: Queenstown Airport by rental-company shuttle.",
+        "map": "https://maps.google.com/?q=Rental+Cars+247+2%2F13+Red+Oaks+Drive+Frankton+Queenstown",
+        "type": "transport",
+        "dayId": "day10",
+        "placeId": "rental-cars-247",
+        "bookingId": "car-rental"
+      },
+      {
+        "id": "airport-shuttle",
+        "time": "After return",
+        "title": "🚌 Shuttle to Queenstown Airport",
+        "details": [
+          "Take the Rental Cars 247 shuttle after the vehicle handover."
+        ],
+        "route": "Next: check in for VA146.",
+        "map": "https://maps.google.com/?q=Queenstown+Airport+Sir+Henry+Wigley+Drive+Frankton",
+        "type": "transport",
+        "dayId": "day10",
+        "placeId": "airport-queenstown",
+        "bookingId": null
+      },
+      {
+        "id": "flight-home",
+        "time": "18:40",
+        "title": "✈️ Virgin Australia VA146 · Queenstown to Melbourne",
+        "details": [
+          "Lee family only.",
+          "VA146 · ZQN 18:40 → MEL T2 19:10."
+        ],
+        "route": "Next: Melbourne arrival · 19:10 local time.",
+        "map": "https://maps.google.com/?q=Queenstown+Airport+Sir+Henry+Wigley+Drive%2C+Frankton%2C+Queenstown+9300%2C+New+Zealand",
+        "type": "transport",
+        "dayId": "day10",
+        "placeId": "airport-queenstown",
+        "bookingId": null
+      }
+    ],
+    "dayId": "day10"
   }
 };
-globalThis.TRAVEL_DATASETS=Object.freeze({PLACES,CATEGORIES,GUIDE_ORDER,DAY_LINKS,FRIENDS,BOOKINGS_DATA,TRIP_DATA,TRIP_ORDER,ITINERARY_DATA});
-if(globalThis.TravelEngineIntegrity){globalThis.TRAVEL_ENGINE_ACCEPTANCE=globalThis.TravelEngineIntegrity.acceptTripData(globalThis.TRAVEL_DATASETS,globalThis.TRIP_CONFIG||{});}
-(function computeMasterItineraryRevision(){function hashString(input){let h1=0xdeadbeef^input.length,h2=0x41c6ce57^input.length;for(let i=0;i<input.length;i++){const ch=input.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}h1=Math.imul(h1^(h1>>>16),2246822507);h1^=Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507);h2^=Math.imul(h1^(h1>>>13),3266489909);return(4294967296*(2097151&h2)+(h1>>>0)).toString(16);}try{globalThis.MASTER_ITINERARY_REVISION=hashString(JSON.stringify(ITINERARY_DATA));}catch(error){globalThis.MASTER_ITINERARY_REVISION=null;}})();
-if(typeof TRIP_SYNC!=='undefined'&&typeof TRIP_SYNC.hydrateStaticData==='function'){TRIP_SYNC.hydrateStaticData({PLACES,CATEGORIES,GUIDE_ORDER,DAY_LINKS,FRIENDS,BOOKINGS_DATA,TRIP_DATA,TRIP_ORDER,ITINERARY_DATA});}
+
+
+
+/* RC13.1: explicit bridge for runtimes inside module-style closures.
+   Top-level const bindings are not properties of globalThis, so publication
+   must read the real datasets through this canonical namespace. */
+globalThis.TRAVEL_DATASETS=Object.freeze({
+  PLACES,CATEGORIES,GUIDE_ORDER,DAY_LINKS,FRIENDS,BOOKINGS_DATA,
+  TRIP_DATA,TRIP_ORDER,ITINERARY_DATA
+});
+if(globalThis.TravelEngineIntegrity){
+  globalThis.TRAVEL_ENGINE_ACCEPTANCE=globalThis.TravelEngineIntegrity.acceptTripData(
+    globalThis.TRAVEL_DATASETS,
+    globalThis.TRIP_CONFIG||{}
+  );
+}
+
+/* RC15: deterministic master-itinerary content fingerprint.
+   MUST be computed here, on the ITINERARY_DATA literally shipped in this
+   file, and MUST happen before TRIP_SYNC.hydrateStaticData() runs below —
+   otherwise a stale cloud snapshot could overwrite ITINERARY_DATA first and
+   the "master" revision would end up describing the cloud data instead of
+   the deployed master. This is a pure content hash, not a build/version
+   string: it changes exactly when ITINERARY_DATA's content changes, so
+   itinerary-authority.js and sync-runtime.js can tell a same-master edit
+   apart from a genuinely new master with no manual bumping required. */
+(function computeMasterItineraryRevision(){
+  function hashString(input){
+    let h1=0xdeadbeef^input.length,h2=0x41c6ce57^input.length;
+    for(let i=0;i<input.length;i++){
+      const ch=input.charCodeAt(i);
+      h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);
+    }
+    h1=Math.imul(h1^(h1>>>16),2246822507);h1^=Math.imul(h2^(h2>>>13),3266489909);
+    h2=Math.imul(h2^(h2>>>16),2246822507);h2^=Math.imul(h1^(h1>>>13),3266489909);
+    return (4294967296*(2097151&h2)+(h1>>>0)).toString(16);
+  }
+  try{
+    globalThis.MASTER_ITINERARY_REVISION=hashString(JSON.stringify(ITINERARY_DATA));
+  }catch(error){
+    globalThis.MASTER_ITINERARY_REVISION=null;
+    if(globalThis.console&&console.warn)console.warn('[data.js] Could not compute MASTER_ITINERARY_REVISION',error);
+  }
+})();
+
+/* Stage 9A-2: apply a validated cached publication before page renderers run. */
+if(typeof TRIP_SYNC!=='undefined'&&typeof TRIP_SYNC.hydrateStaticData==='function'){
+  TRIP_SYNC.hydrateStaticData({PLACES,CATEGORIES,GUIDE_ORDER,DAY_LINKS,FRIENDS,BOOKINGS_DATA,TRIP_DATA,TRIP_ORDER,ITINERARY_DATA});
+}

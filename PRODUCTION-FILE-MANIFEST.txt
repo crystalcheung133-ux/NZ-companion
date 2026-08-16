@@ -1,20 +1,14 @@
-Saigon Companion Production File Manifest
+Travel Engine Production File Manifest
 Generated: 2026-08-15
-Base: VN Companion RC29.40 · Travel Engine 25.6.2 Production Freeze
-Reference trip: Vietnam
-
+Release: NZ-RC25.4.2-ENGINE-25.6.2-CI-GATE-CANDIDATE
 Production root files:
 
 - .vercelignore
-- RELEASE.json
 - admin.js
 - analytics-runtime.js
 - app-runtime.js
 - asset-config.js
 - booking-authority.js
-- booking-permissions.js
-- booking-sync-runtime.js
-- ccmv-logo-calibrated.png
 - complete-runtime.js
 - core-runtime.js
 - currency-runtime.js
@@ -40,7 +34,6 @@ Production root files:
 - itinerary-authority.js
 - itinerary.html
 - locale-config.js
-- logo-monogram-transparent.png
 - manifest.webmanifest
 - memory.html
 - moment-sync-runtime.js
@@ -51,6 +44,8 @@ Production root files:
 - money.js
 - navigation-config.js
 - navigation.js
+- nz-adventure-logo.png
+- nz-adventure-mark.png
 - offline.html
 - party-render-runtime.js
 - place.html
@@ -58,7 +53,6 @@ Production root files:
 - pwa.js
 - reset-runtime.js
 - script.js
-- shopping-directory-data.js
 - storage-config.js
 - storage.js
 - styles.css

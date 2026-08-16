@@ -1,2 +1,23 @@
-/* Saigon RC1 locale */
-(function(root){'use strict';root.LOCALE_CONFIG=Object.freeze({locale:'en-AU',language:'en',region:'VN',currency:Object.freeze({code:'VND',symbol:'₫',name:'Vietnamese Dong'}),timeZone:'Asia/Ho_Chi_Minh',dateFormat:'DD/MM/YYYY',timeFormat:'24h',numberFormat:'en-AU',distanceUnit:'km',temperatureUnit:'C',weekStart:'Monday'});})(globalThis);
+/* locale-config.js — Stage 7C canonical locale configuration.
+   Single source for locale, currency, timezone and formatting conventions.
+   Runtime formatting is owned by formatter.js. */
+(function(root){
+  'use strict';
+
+  const locale = Object.freeze({
+    locale: 'en-NZ',
+    language: 'en-NZ',
+    region: 'NZ',
+    currency: Object.freeze({ code: 'NZD', symbol: '$', name: 'New Zealand Dollar' }),
+    timeZone: 'Pacific/Auckland',
+    dateFormat: 'DD/MM/YYYY',
+    timeFormat: '24h',
+    numberFormat: 'en-NZ',
+    distanceUnit: 'km',
+    temperatureUnit: 'C',
+    weekStart: 'Monday'
+  });
+
+  root.LOCALE_CONFIG = locale;
+
+})(globalThis);

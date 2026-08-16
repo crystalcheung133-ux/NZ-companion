@@ -7,7 +7,7 @@
   function categoryFor(key){
     const guide=source(); if(!guide)return '';
     const categories=guide.categories||{};
-    const preferred=['ATTRACTIONS','DINING','ACTIVITIES','EXPERIENCE','EXPERIENCES','SHOP','SHOPPING','STAY','SPA','WELLNESS','TRANSPORT'];
+    const preferred=['ATTRACTIONS','ACTIVITIES','DINING','STAY','SHOP','TRANSPORT'];
     const ordered=preferred.concat(Object.keys(categories).filter(function(cat){return !preferred.includes(cat);}));
     return ordered.find(function(cat){return (categories[cat]||[]).some(function(item){return keyOf(item)===key;});})||'';
   }

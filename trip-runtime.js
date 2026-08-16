@@ -83,7 +83,7 @@ function getBookingsByCategory(category){
     return false;
   }).sort(function(a,b){return String(a.date||'').localeCompare(String(b.date||''))||String(a.time||'').localeCompare(String(b.time||''));});
 }
-let activeBookingDetail=null;
+var activeBookingDetail=null;
 function bookingReferenceLabel(booking){
   return booking&&booking.referenceLabel?booking.referenceLabel:'Booking reference';
 }
@@ -681,8 +681,13 @@ function bookingEntityIcon(booking,category){
   if(booking&&booking.emoji)return String(booking.emoji);
   const type=String(booking&&booking.type||'').toLowerCase();
   const title=String(booking&&booking.title||'').toLowerCase();
-  if(type==='restaurant')return title.includes('omakase')?'🍣':title.includes('little bear')?'🧸':title.includes('pizza')?'🍕':title.includes('lune')?'🇫🇷':'🍽️';
-  if(type==='spa')return title.includes('suga')||title.includes('head')?'🫧':title.includes('mộc hương')||title.includes('moc huong')||title.includes('wellness')?'🌿':title.includes('hạ spa')||title.includes('ha spa')?'💆‍♀️':'💆';
+  if(type==='restaurant')return title.includes('omakase')?'🍣':title.includes('pizza')?'🍕':'🍽️';
+  if(type==='spa'){
+    if(/head|hair/.test(title))return '🫧';
+    if(/foot/.test(title))return '🦶';
+    if(/wellness/.test(title))return '🌿';
+    return '💆';
+  }
   if(type==='transport')return title.includes('airport')?'✈️':'🚐';
   if(type==='activity'||type==='experience')return title.includes('cooking')?'👩‍🍳':'🎟️';
   return bookingCategoryIcon(category);

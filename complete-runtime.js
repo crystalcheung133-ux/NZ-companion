@@ -104,7 +104,7 @@
       alert('Save or discard the pending Admin changes before completing the trip.');
       return false;
     }
-    const ok=window.confirm((typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.admin&&TRIP_CONFIG.admin.completeMessage)||'Complete this trip? All trip content will remain available to browse, but editing will be disabled until an administrator reopens the trip.');
+    const ok=window.confirm((typeof TRIP_CONFIG!=='undefined'&&TRIP_CONFIG.admin&&TRIP_CONFIG.admin.completeMessage)||'Complete this trip? All trip content will remain available to browse, but editing will be disabled until an admin reopens the trip.');
     if(!ok) return false;
     const next={version:1,tripId:tripId(),completed:true,completedAt:new Date().toISOString(),completedBy:ADMIN_USER};
     persist(next);

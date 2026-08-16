@@ -8,8 +8,8 @@
     if(!p||!Array.isArray(p.order)||!p.order.length)return null;
     return {order:p.order.slice(),identities:p.identities||{},defaultKey:p.order.indexOf(p.defaultKey)>=0?p.defaultKey:p.order[0]};
   }
-  function ident(m,key){ const x=m.identities[key]||{}; return {emoji:x.emoji||'',code:x.code||String(key).slice(0,3).toUpperCase(),name:x.name||key}; }
-  function label(m,key){ const x=ident(m,key); return (x.emoji?x.emoji+' ':x.code+' · ')+x.name; }
+  function ident(m,key){ const x=m.identities[key]||{}; return {code:x.code||String(key).slice(0,3).toUpperCase(),name:x.name||key}; }
+  function label(m,key){ const x=ident(m,key); return x.code+' · '+x.name; }
   function valid(m,key){ return m.order.indexOf(key)>=0?key:m.defaultKey; }
   function optionHtml(m,key,selected){ return '<option value="'+esc(key)+'"'+(key===selected?' selected':'')+'>'+esc(label(m,key))+'</option>'; }
   function renderPartySelect(el,m){
@@ -17,17 +17,11 @@
     el.innerHTML=m.order.map(function(key){return optionHtml(m,key,selected);}).join('');
   }
   function renderFriends(m){
-    const modal=document.getElementById('mamaModal');
-    const sheet=modal&&modal.querySelector('.guide-sheet');
-    if(sheet){
-      const kicker=sheet.querySelector('.kicker'); if(kicker)kicker.textContent=(root.TRIP_CONFIG?.participants?.selectionKicker||'TRAVELLER');
-      const heading=sheet.querySelector('h2'); if(heading)heading.textContent=(root.TRIP_CONFIG?.participants?.selectionTitle||'User Selection');
-    }
     const list=document.querySelector('#mamaModal .friend-choice-list'); if(!list)return;
-    const stored=typeof root.getStoredFriend==='function'?root.getStoredFriend():null; const current=stored?valid(m,stored):null;
+    const current=typeof root.getFriend==='function'?valid(m,root.getFriend()):m.defaultKey;
     list.innerHTML=m.order.map(function(key){
       const x=ident(m,key);
-      return '<button type="button" class="family-choice'+(key===current?' active':'')+'" data-family="'+esc(key)+'" onclick="setFriend(\''+esc(key)+'\')"><span class="family-identity family-'+esc(key)+'"><span class="family-code">'+esc(x.emoji||x.code)+'</span><span class="family-name">'+esc(x.name)+'</span></span></button>';
+      return '<button type="button" class="family-choice'+(key===current?' active':'')+'" data-family="'+esc(key)+'" onclick="setFriend(\''+esc(key)+'\')"><span class="family-identity family-'+esc(key)+'"><span class="family-code">'+esc(x.code)+'</span><span class="family-name">'+esc(x.name)+'</span></span></button>';
     }).join('');
   }
   function splitOptionHtml(m,key,picker){
@@ -39,7 +33,6 @@
   }
   function run(){
     const m=model(); if(!m)return;
-    if(document.documentElement)document.documentElement.dataset.partyPresentation=(root.TRIP_CONFIG&&root.TRIP_CONFIG.participants&&root.TRIP_CONFIG.participants.presentation)||'badge';
     document.querySelectorAll('select[data-party-options]').forEach(function(el){renderPartySelect(el,m);});
     document.querySelectorAll('[data-party-split-options]').forEach(function(holder){renderSplitOptions(holder,m);});
     renderFriends(m);

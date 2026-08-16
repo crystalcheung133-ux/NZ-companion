@@ -95,12 +95,7 @@
       if(state.rate){
         const unit=MONEY.convert(1,state.rate,state.base,state.quote);
         const freshness=state.source==='live'?'live':`saved ${state.date||'offline'}`;
-        if(unit && unit < 0.01){
-          const inverse=1/unit;
-          meta.textContent=`1 ${state.quote} ≈ ${FORMATTER.decimal(inverse,0)} ${state.base} · ${freshness}`;
-        }else{
-          meta.textContent=`1 ${state.base} ≈ ${formatMoney(unit)} ${state.quote} · ${freshness}`;
-        }
+        meta.textContent=`1 ${state.base} ≈ ${formatMoney(unit)} ${state.quote} · ${freshness}`;
       }else{
         meta.textContent='Rate unavailable';
       }

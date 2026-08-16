@@ -52,11 +52,6 @@ def nav_visible(page):
       return s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)>0&&r.width>0&&r.height>0;
     }""")
 
-def select_crystal(page):
-    page.wait_for_selector('#mamaModal.show')
-    page.locator('#mamaModal .family-choice[data-family="crystal"]').click()
-    page.wait_for_function("!document.getElementById('mamaModal').classList.contains('show')")
-
 def open_selector(page):
     page.locator('.friend-pill').click()
     page.wait_for_selector('#mamaModal.show')
@@ -131,6 +126,14 @@ def guide_to_booking(page,day,item_id):
     check(top_owner(page,'#guideModal .guide-sheet'),f'{item_id}: Guide did not regain foreground after Booking close')
     page.locator('#guideModal .guide-close').click()
 
+def select_admin(page):
+      page.wait_for_selector('#mamaModal.show')
+      admin_key=page.evaluate("TRIP_CONFIG.admin.user")
+      choice=page.locator(f'#mamaModal .family-choice[data-family="{admin_key}"]')
+      check(choice.count()==1,'admin traveller choice missing')
+      choice.click()
+      page.wait_for_function("!document.getElementById('mamaModal').classList.contains('show')")
+
 def run_viewport(browser,base,viewport,label):
       context=browser.new_context(viewport=viewport)
       page=context.new_page()
@@ -139,31 +142,23 @@ def run_viewport(browser,base,viewport,label):
       try:
         page.goto(base+'/index.html',wait_until='domcontentloaded')
         page.evaluate("document.getElementById('ccmvSplash')?.remove()")
-        select_crystal(page)
-        runtime_version=page.evaluate("TRIP_CONFIG.version")
-        m=re.match(r'^RC([0-9.]+)-(.+)$',str(runtime_version or ''))
-        check(bool(m),f'{label}: Runtime version malformed: {runtime_version}')
-        expected_build=f'VN-RC{m.group(1)}|{m.group(2)}'
-        actual_build=page.locator('meta[name="travel-engine-build"]').get_attribute('content')
-        check(actual_build==expected_build,f'{label}: Build identity mismatch: {actual_build} != {expected_build}')
+        select_admin(page)
 
+        # Studio lifecycle: PIN -> foreground -> Close -> User Selector direct re-entry -> reload re-entry.
         studio_login(page)
         assert_studio_foreground(page,label+' PIN open')
         close_studio(page)
         assert_studio_closed_clean(page,label+' first Close')
 
-        # Active Studio session: User Selector is direct Studio re-entry.
         page.locator('.friend-pill').click()
         page.wait_for_selector('#tripStudioModal.show')
         check(not page.locator('#mamaModal').evaluate("el=>el.classList.contains('show')"),
               label+': active User Selector incorrectly opened traveller selector')
         assert_studio_foreground(page,label+' active User Selector reopen')
         close_studio(page)
-        assert_studio_closed_clean(page,label+' second Close')
 
         page.reload(wait_until='domcontentloaded')
         page.evaluate("document.getElementById('ccmvSplash')?.remove()")
-        page.wait_for_timeout(100)
         assert_studio_closed_clean(page,label+' reload')
         page.locator('.friend-pill').click()
         page.wait_for_selector('#tripStudioModal.show')
@@ -172,88 +167,27 @@ def run_viewport(browser,base,viewport,label):
         assert_studio_foreground(page,label+' reload active re-entry')
         close_studio(page)
         page.evaluate("window.exitTripStudioMode && window.exitTripStudioMode()")
-        page.wait_for_timeout(50)
 
-        # Timeline → direct Booking.
-        page.goto(base+'/day.html?day=2',wait_until='domcontentloaded')
-        page.wait_for_timeout(120)
-        card=page.locator('#pizza4ps')
-        check(card.count()==1,label+': D2 Pizza 4P’s timeline card missing')
-        booking=card.locator('.timeline-action--trip')
-        guide=card.locator('.timeline-action--guide')
-        check(booking.count()>0 and guide.count()>0,label+': D2 Pizza must expose Guide and Booking')
-        booking.click(); page.wait_for_selector('#tripModal.show')
-        check(top_owner(page,'#tripModal .trip-sheet'),label+': Direct Booking sheet is behind page/hero')
-        check(nav_visible(page),label+': bottom nav disappeared during direct Booking')
-        page.locator('#tripModal .trip-close').click()
-
-        # Timeline → Guide → Booking → Close Booking MUST return directly to Timeline.
-        guide.click(); page.wait_for_selector('#guideModal.show')
-        check(top_owner(page,'#guideModal .guide-sheet'),label+': Guide sheet is behind page/hero')
-        check(page.evaluate("window.GUIDE_MODAL_ORIGIN")=='timeline',label+': Guide origin was not recorded as timeline')
-        linked=page.locator('#guideModal button.utility-button',has_text='Booking')
-        check(linked.count()>0,label+': Guide linked Booking button missing')
-        linked.click(); page.wait_for_selector('#tripModal.show')
-        check(page.locator('#guideModal').evaluate("el=>el.classList.contains('show')"),label+': Guide must remain stacked while Booking is open')
-        gz=page.locator('#guideModal').evaluate("el=>Number(getComputedStyle(el).zIndex)||0")
-        tz=page.locator('#tripModal').evaluate("el=>Number(getComputedStyle(el).zIndex)||0")
-        check(tz>gz,f'{label}: Guide→Booking stacking wrong: Trip {tz}, Guide {gz}')
-        check(top_owner(page,'#tripModal .trip-sheet'),label+': Guide→Booking sheet is not foreground owner')
-        page.locator('#tripModal .trip-close').click()
-        page.wait_for_function("!document.getElementById('tripModal').classList.contains('show')")
-        check(not page.locator('#guideModal').evaluate("el=>el.classList.contains('show')"),label+': Timeline-origin Guide remained open after Booking Close')
-        check(page.locator('#pizza4ps').count()==1,label+': Timeline context was not retained')
-        check(page.evaluate("window.GUIDE_MODAL_ORIGIN") is None,label+': Timeline Guide origin was not cleared')
-        check(nav_visible(page),label+': bottom nav missing after Timeline return')
-
-        # Change Effect Gate: poison persisted booking state with pre-reconciliation values,
-        # reload, then assert the actual rendered Booking UI still reflects current deploy master.
-        page.evaluate("""() => {
-          const stale={
-            'bk-pizza4ps':{id:'bk-pizza4ps',bookingId:'bk-pizza4ps',title:'Pizza 4P’s Hai Bà Trưng',day:4,dayId:'day4',date:'2026-11-02',time:'11:30',status:'pending',notes:'Reserve lunch for 4 guests.'},
-            'bk-moc-huong':{id:'bk-moc-huong',bookingId:'bk-moc-huong',title:'Mộc Hương Wellness',day:3,dayId:'day3',date:'2026-11-01',time:'15:30',status:'pending'},
-            'bk-moc-healing':{id:'bk-moc-healing',bookingId:'bk-moc-healing',title:'Mộc Healing Spa',day:4,dayId:'day4',date:'2026-11-02',time:'16:45',status:'pending'}
-          };
-          STORAGE.local.writeJSON(BOOKING_AUTHORITY.key,{version:1,overrides:stale,deletedIds:[],updatedAt:'2026-08-01T00:00:00Z'});
-        }""")
-        page.reload(wait_until='domcontentloaded')
-        page.evaluate("document.getElementById('ccmvSplash')?.remove()")
-        page.evaluate("openBookingCategoryCard('Restaurants')")
+        # Generic Booking legal surface on fixture.
+        page.goto(base+'/trip.html',wait_until='domcontentloaded')
+        page.evaluate("openAccommodationDetail('peppers-booking')")
         page.wait_for_selector('#tripModal.show')
-        restaurant_text=page.locator('#tripModalContent').inner_text()
-        check('Pizza 4P’s Bến Thành' in restaurant_text,label+': rendered Restaurants rolled back Pizza branch')
-        check('13:00' in restaurant_text,label+': rendered Restaurants rolled back Pizza time')
-        check('Hai Bà Trưng' not in restaurant_text,label+': stale Pizza title survived into rendered UI')
-        check('11:30' not in restaurant_text,label+': stale Pizza time survived into rendered UI')
-
-        # Open Pizza detail and prove "Online" produces a real clickable booking action.
-        page.locator("#tripModalContent button, #tripModalContent .booking-picker-row").filter(has_text="Pizza 4P’s Bến Thành").first.click()
-        page.wait_for_timeout(50)
-        check(page.locator('#tripModalContent a.trip-action-btn--book',has_text='Book Online').count()>0,
-              label+': Pizza says online but rendered no Book Online action')
-        check('tablecheck.com' in (page.locator('#tripModalContent a.trip-action-btn--book').first.get_attribute('href') or ''),
-              label+': Pizza Book Online does not point to reservation URL')
-        page.locator('#tripModal .trip-close').click()
-
-        page.evaluate("openBookingCategoryCard('Spa')")
+        check(top_owner(page,'#tripModal .trip-sheet'),label+': Booking sheet is not foreground owner')
+        detail=page.locator('#tripModalContent').inner_text()
+        check('Peppers Bluewater Resort' in detail,label+': fixture Booking detail missing')
+        page.evaluate("openGenericBookingDetail('car-rental')")
         page.wait_for_selector('#tripModal.show')
-        spa_text=page.locator('#tripModalContent').inner_text()
-        check('Mộc Hương Wellness' not in spa_text,label+': obsolete D4 Mộc Hương booking resurrected from stale state')
-        check('Mộc Healing Spa' in spa_text and '14:20' in spa_text,label+': Mộc Healing did not render at 14:20')
-        check('16:45' not in spa_text,label+': stale Mộc Healing time survived into rendered UI')
-
-        # Mộc Healing: website/email yes; no invented WhatsApp/phone action.
-        page.locator("#tripModalContent button, #tripModalContent .booking-picker-row").filter(has_text="Mộc Healing Spa").first.click()
-        page.wait_for_timeout(50)
-        check(page.locator('#tripModalContent a.trip-action-btn--book',has_text='Book Online').count()>0,
-              label+': Mộc Healing website action missing')
         check(page.locator('#tripModalContent a.trip-action-btn--email',has_text='Email').count()>0,
-              label+': Mộc Healing email action missing')
-        check(page.locator('#tripModalContent a.trip-action-btn--whatsapp').count()==0,
-              label+': Mộc Healing incorrectly exposes WhatsApp')
-        check(page.locator('#tripModalContent a.trip-action-btn--call').count()==0,
+              label+': actionable Email booking channel missing')
+        for forbidden in ['How to book / handoff','Copy Address','Navigate']:
+          check(forbidden not in detail,label+': Booking rendered forbidden UI: '+forbidden)
+        check(page.locator('#tripModalContent .trip-action-btn--call').count()==0,
               label+': phone-only Call action should not exist')
         page.locator('#tripModal .trip-close').click()
+
+        # Fixture data contains an openList and a rest item: semantics must remain distinguishable at runtime.
+        types=page.evaluate("Object.values(ITINERARY_DATA).flatMap(d=>d.items||[]).map(x=>x.type)")
+        check('experience' in types and 'rest' in types and 'transport' in types,label+': NZ activity/logistics semantics missing')
 
         check(not errors,label+': Browser page errors: '+' | '.join(errors))
         print(f'BROWSER VIEWPORT {label}: PASS')

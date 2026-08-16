@@ -1,0 +1,25 @@
+-- NZ Companion security hardening proposal
+-- DRAFT ONLY — DO NOT APPLY DIRECTLY TO PRODUCTION.
+-- Requires coordinated client changes and staging verification.
+
+-- Goals:
+-- 1) REVOKE anon execution of destructive/admin RPCs.
+-- 2) Add server-side authorization inside reset_trip.
+-- 3) Replace broad `auth.uid() is not null` policies with membership / role predicates.
+-- 4) Keep anonymous sign-in only if anonymous users are explicitly registered to the trip.
+
+-- Example direction (illustrative only):
+-- revoke execute on function public.reset_trip(text) from anon;
+-- revoke execute on function public.reset_trip(text) from authenticated;
+--
+-- Replace reset_trip with a new signature such as:
+--   reset_trip(p_trip_id text, p_admin_credential text)
+-- that validates a server-side hashed credential or a real admin membership before mutation.
+--
+-- For regular reads/writes, use an explicit membership predicate rather than:
+--   auth.uid() is not null
+--
+-- Do not apply until:
+-- - staging project/branch exists;
+-- - NZ client calls are updated;
+-- - real-device reset/offline tests pass.

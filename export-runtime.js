@@ -103,7 +103,7 @@
      expense storage and recomputes its own summary) rather than reaching
      into expenses.js's private helpers, so the Expenses Engine file itself
      is not modified. Mirrors the same independent-calculation pattern the
-     Vietnam Companion's Export Centre uses for its own Expenses group. */
+     the reusable Export Centre pattern uses for its Expenses group. */
   function expenseParticipantOrder(){return (window.TRIP_CONFIG&&TRIP_CONFIG.participants&&TRIP_CONFIG.participants.order)||Object.keys((window.TRIP_CONFIG&&TRIP_CONFIG.participants&&TRIP_CONFIG.participants.identities)||{});}
   function expenseLabelFor(k){const identities=(window.TRIP_CONFIG&&TRIP_CONFIG.participants&&TRIP_CONFIG.participants.identities)||{};const id=identities[k];return id?`${id.code} · ${id.name}`:(k||'');}
   function readExpensesRaw(){try{return (window.STORAGE&&window.STORAGE_CONFIG)?STORAGE.local.readJSON(STORAGE_CONFIG.keys.expenses,[]):[];}catch(error){return [];}}

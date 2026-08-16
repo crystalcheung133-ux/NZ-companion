@@ -80,7 +80,7 @@
   }
   function toRemote(record,deleted=false){
     const r=normalizeRecord(record);
-    return {id:r.id,trip_id:config.tripId,payload:r,actor_family:(typeof root.getFriend==='function'?root.getFriend():null)||(root.TRIP_CONFIG?.participants?.defaultKey||'unknown'),created_at:r.createdAt,updated_at:r.updatedAt,deleted_at:deleted?(r.deletedAt||r.updatedAt):null,generation:root.TRIP_GENERATION?.getLocal?.()||1};
+    return {id:r.id,trip_id:config.tripId,payload:r,actor_family:(typeof root.getFriend==='function'?root.getFriend():null)||(TRIP_CONFIG?.participants?.defaultKey||Object.keys(TRIP_CONFIG?.participants?.identities||{})[0]||'unknown'),created_at:r.createdAt,updated_at:r.updatedAt,deleted_at:deleted?(r.deletedAt||r.updatedAt):null,generation:root.TRIP_GENERATION?.getLocal?.()||1};
   }
   function fromRemote(row){
     const payload=normalizeRecord(Object.assign({},row.payload||{},{id:row.id,createdAt:row.created_at,updatedAt:row.updated_at}));
