@@ -44,8 +44,19 @@
   }catch(error){ if(value)value.textContent='Open today’s forecast'; if(meta)meta.textContent='Live details ›'; }
  }
  function updateHomeDash(){
-  const now=new Date(); const diff=Math.ceil((target-now)/86400000); const c=document.getElementById('countdownText');
-  if(c){if(diff>7)c.textContent=`${diff} days to go`;else if(diff>1)c.textContent='One week to go';else if(diff===1)c.textContent='Pack your bags';else if(diff===0)c.textContent=TRIP_CONFIG.home.welcomeMessage;else c.textContent=TRIP_CONFIG.home.completedMessage;}
+  const now=new Date();
+  // Compare calendar dates rather than rolling 24-hour windows so the home card
+  // shows the real number of local days remaining before departure.
+  const todayUTC=Date.UTC(now.getFullYear(),now.getMonth(),now.getDate());
+  const targetUTC=Date.UTC(target.getFullYear(),target.getMonth(),target.getDate());
+  const diff=Math.round((targetUTC-todayUTC)/86400000);
+  const c=document.getElementById('countdownText');
+  if(c){
+    if(diff>1)c.textContent=`${diff} days to go`;
+    else if(diff===1)c.textContent='Tomorrow!';
+    else if(diff===0)c.textContent=TRIP_CONFIG.home.welcomeMessage;
+    else c.textContent=TRIP_CONFIG.home.completedMessage;
+  }
   const duringTrip=now>=target&&now<=tripEnd; const displayZone=duringTrip?GEO_CONFIG.homeTimeZone:TRIP_CONFIG.timeZone; const displayLabel=duringTrip?('Home · '+GEO_CONFIG.homeLabel):TRIP_CONFIG.home.clockLabel;
   const t=document.getElementById('hcmTime'); const label=document.getElementById('homeClockLabel'); const nz=document.getElementById('clockNzValue'); const mel=document.getElementById('clockMelValue');
   if(t)t.textContent=formatClock(now,displayZone); if(label)label.textContent=displayLabel; if(nz)nz.textContent=formatClock(now,TRIP_CONFIG.timeZone); if(mel)mel.textContent=formatClock(now,GEO_CONFIG.homeTimeZone);

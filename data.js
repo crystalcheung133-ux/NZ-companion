@@ -929,6 +929,27 @@ const PLACES={
     "audit": "PLANNED",
     "status": "planned"
   },
+  "jervois-steak-house": {
+    "title": "Jervois Steak House",
+    "emoji": "🍽️",
+    "cat": "DINING",
+    "sub": "Booked family dinner · 25 Sep · 5:45 PM",
+    "maps": "https://www.google.com/maps/search/?api=1&query=Jervois+Steak+House%2C+8+Duke+Street%2C+Queenstown+9300%2C+New+Zealand",
+    "website": "https://jervoissteakhouse.co.nz/",
+    "address": "8 Duke Street, Queenstown 9300, New Zealand",
+    "phone": "+64 3 442 6263",
+    "desc": "Booked dinner with the Yau family at 5:45 PM on 25 September.",
+    "signature": [
+      "BOOKED · 5:45 PM on Friday 25 September",
+      "WITH · Yau family",
+      "STYLE · Steak house · group dinner"
+    ],
+    "worth": [],
+    "categoryLabel": "🍽 Dining",
+    "transport": "Self-drive / walk",
+    "audit": "CONFIRMED",
+    "status": "confirmed"
+  },
   "flame": {
     "title": "Flame Bar & Grill",
     "emoji": "🍽️",
@@ -1820,6 +1841,9 @@ const CATEGORIES={
       "key": "fergbaker"
     },
     {
+      "key": "jervois-steak-house"
+    },
+    {
       "key": "flame"
     },
     {
@@ -1971,6 +1995,7 @@ const GUIDE_ORDER=[
   "lone-star",
   "mackenzies",
   "fergbaker",
+  "jervois-steak-house",
   "flame",
   "saigon-kingdom",
   "mrs-woollys",
@@ -2204,6 +2229,12 @@ const DAY_LINKS={
     [
       "Day 6",
       "day.html?day=6#lunch-skyline-d6"
+    ]
+  ],
+  "jervois-steak-house": [
+    [
+      "Day 4",
+      "day.html?day=4#jervois-dinner"
     ]
   ],
   "flame": [
@@ -3392,20 +3423,23 @@ const ITINERARY_DATA={
         "bookingId": "sudima-booking"
       },
       {
-        "id": "day4-dinner",
-        "time": "Evening",
-        "title": "🍽️ Dinner · Flexible Queenstown / Five Mile",
+        "id": "jervois-dinner",
+        "time": "5:45 PM",
+        "title": "🥩 Jervois Steak House · Dinner with Yau Family",
         "details": [
-          "Choose an easy dinner close to Sudima after the transfer day.",
-          "Pedro's House of Lamb can move to 26 September when all three families are together."
+          "Booked for 5:45 PM.",
+          "Family dinner with the Yau family.",
+          "8 Duke Street, Queenstown."
         ],
-        "route": "Finish at Sudima Queenstown Five Mile.",
+        "route": "Dinner in central Queenstown after settling in at Sudima.",
+        "map": "https://www.google.com/maps/search/?api=1&query=Jervois+Steak+House%2C+8+Duke+Street%2C+Queenstown+9300%2C+New+Zealand",
         "type": "meal",
         "dayId": "day4",
-        "placeId": null,
+        "placeId": "jervois-steak-house",
         "bookingId": null,
-        "nonPlace": true,
-        "nonPlaceRole": "meal-choice"
+        "guideIds": [
+          "jervois-steak-house"
+        ]
       }
     ],
     "dayId": "day4"
