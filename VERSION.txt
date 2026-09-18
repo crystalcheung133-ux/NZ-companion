@@ -1,1 +1,1 @@
-NZ Companion RC25.4.2 · Travel Engine 25.6.2 CI-Gate Candidate
+NZ Companion RC25.5.0 · Travel Engine 25.7.0 Shared-Ready Integrity Candidate

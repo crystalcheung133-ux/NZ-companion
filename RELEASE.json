@@ -1,10 +1,10 @@
 {
-  "engine_version": "25.6.2",
-  "artifact_version": "NZ Companion RC25.4.2 · Travel Engine 25.6.2 CI-Gate Candidate",
+  "engine_version": "25.7.0",
+  "artifact_version": "NZ Companion RC25.5.0 · Travel Engine 25.7.0 Shared-Ready Integrity Candidate",
   "baseline_engine": "25.6.0",
-  "release_date": "2026-08-15",
-  "release_type": "ci-gate-candidate",
-  "runtime_behavior_change": false,
+  "release_date": "2026-09-18",
+  "release_type": "shared-ready-integrity-candidate",
+  "runtime_behavior_change": true,
   "capabilities_changed": [
     "Travel Engine 25.6.0 dedicated Studio shell and lifecycle",
     "Revision-aware Booking Authority with bookingMasterRevision",
@@ -28,7 +28,7 @@
     "booking appliesTo / partyIds subgroup assignment"
   ],
   "migration_source": "NZ Companion RC25.3.9.3 · Travel Engine 25.4.20.3 Production Freeze",
-  "release_status": "CI-GATE CANDIDATE — canonical desktop Studio geometry + Studio ON pill",
+  "release_status": "CANDIDATE — Engine 25.7 local-first atomic booking save + shared-facing content cleanup + Chromium/WebKit browser gate",
   "validation": {
     "chromium_desktop_1280x800": "PASS",
     "chromium_mobile_390x844": "PASS",
@@ -45,8 +45,10 @@
     "browser_evidence": "Desktop 1280x800 PASS + Mobile 390x844 PASS, repeated twice"
   },
   "changes": [
-    "Canonical desktop Trip Studio width increased to 760px; mobile remains capped at 430px",
-    "STUDIO ON header state standardized as a compact theme-aware pill across Companions",
-    "Added CI contract for Studio geometry and header state indicator"
+    "Ported Engine 25.7 local-first atomic Booking Save with booking-ID in-flight mutation guard",
+    "Removed build-era editorial star ratings and internal planning wording from shared-facing Guide/Booking content",
+    "Added shared-facing content CI contract",
+    "Expanded browser release gate to Chromium desktop/mobile and WebKit 390x844/430x932",
+    "Browser workflow is fast-gate focused; full Master CI remains available for final promotion"
   ]
 }

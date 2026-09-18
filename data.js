@@ -146,7 +146,7 @@ const PLACES={
       "ROUTE FIT · Central Lake Tekapo"
     ],
     "worth": [
-      "Recommended; confirm live opening hours before travel."
+      "Check live opening hours before travel."
     ],
     "categoryLabel": "☕ Dining",
     "price": "$–$",
@@ -188,12 +188,11 @@ const PLACES={
     "address": "74 Main Street, Fairlie 7925, New Zealand",
     "desc": "An optional road-trip break between Christchurch and Lake Tekapo for a quick pie, coffee and stretch. Stop only if timing and appetite suit; skip it when you prefer to continue straight to Tekapo.",
     "signature": [
-      "WHY WE PICKED THIS · The strongest food stop on the Christchurch–Tekapo route",
+      "HIGHLIGHT · The strongest food stop on the Christchurch–Tekapo route",
       "TRY · Steak and cheese pie, salmon pie, sweet pastry",
       "SUGGESTED TIME · 30–45 minutes"
     ],
     "worth": [
-      "WORTH IT · ★★★★★ · Make this the main lunch stop",
       "Popular flavours can sell out, so earlier is better.",
       "Buy an extra pie or pastry for the car."
     ],
@@ -214,12 +213,11 @@ const PLACES={
     "address": "6 Rapuwai Lane, Lake Tekapo 7999, New Zealand",
     "desc": "A relaxed dinner built around fresh salmon and Japanese comfort food after a long drive and an optional soak at Tekapo Springs.",
     "signature": [
-      "WHY WE PICKED THIS · Fresh salmon in the place where it feels most fitting",
+      "HIGHLIGHT · Fresh salmon in the place where it feels most fitting",
       "TRY · Salmon don, Tekapo roll, sashimi or shared bentos",
       "SUGGESTED TIME · 75–90 minutes"
     ],
     "worth": [
-      "WORTH IT · ★★★★★ · Best planned dinner in Tekapo",
       "Booking is strongly recommended.",
       "If Springs runs late, protect the reservation rather than squeezing in too many activities."
     ],
@@ -240,12 +238,11 @@ const PLACES={
     "address": "Lake Pukaki Visitor Centre, State Highway 80, Canterbury 7999, New Zealand",
     "desc": "A food stop where the setting is part of the meal: salmon beside turquoise water with Aoraki / Mt Cook on the horizon.",
     "signature": [
-      "WHY WE PICKED THIS · The journey becomes part of lunch",
+      "HIGHLIGHT · The journey becomes part of lunch",
       "TRY · Sashimi, salmon salad or smoked salmon",
       "SUGGESTED TIME · 30–45 minutes"
     ],
     "worth": [
-      "WORTH IT · ★★★★★ · Do not skip on a clear day",
       "Go early for the best selection.",
       "Treat this as a light meal so the Mt Cook walk remains comfortable."
     ],
@@ -270,7 +267,6 @@ const PLACES={
       "GOOD FOR · A distinctive but relaxed family dinner after the Mt Cook drive"
     ],
     "worth": [
-      "WORTH IT · ★★★★☆ · Best planned sit-down dinner for Day 3",
       "Arrive before the all-day menu finishes at 7:30 pm.",
       "Reservation contact · wanaka@thestoakerroom.co.nz · 03 445 4841"
     ],
@@ -297,7 +293,6 @@ const PLACES={
       "STYLE · Choose dishes from the counter"
     ],
     "worth": [
-      "WORTH IT · ★★★★☆ · Best practical Wānaka fallback",
       "Usually easier than committing to a long restaurant meal.",
       "Also works well for breakfast the next morning if open."
     ],
@@ -322,7 +317,6 @@ const PLACES={
       "ROUTE FIT · Before leaving Wānaka"
     ],
     "worth": [
-      "WORTH IT · ★★★★☆ · Choose if nobody is rushing",
       "Leave by around 09:30 to protect the Cardrona stop."
     ],
     "categoryLabel": "☕ Dining",
@@ -346,7 +340,6 @@ const PLACES={
       "BEST FOR · Clear morning visibility"
     ],
     "worth": [
-      "WORTH IT · ★★★★★ · Never skip in clear weather",
       "It can be very windy; keep jackets accessible.",
       "If cloud hides Mt Cook, the lake colour is still worth the stop."
     ],
@@ -368,12 +361,11 @@ const PLACES={
     "address": "White Horse Hill Car Park, end of Hooker Valley Road, Aoraki / Mount Cook National Park 7999, New Zealand",
     "desc": "A flexible out-and-back walk: the first suspension bridge already delivers alpine scenery, so there is no pressure to complete the full track.",
     "signature": [
-      "WHY WE PICKED THIS · Big mountain views without committing to a long hike",
+      "HIGHLIGHT · Big mountain views without committing to a long hike",
       "FAMILY FIT · Choose 40–90 minutes based on energy",
       "TURNAROUND · First bridge or second bridge"
     ],
     "worth": [
-      "WORTH IT · ★★★★★ · The main experience of Day 3",
       "Wear layers and proper shoes; alpine wind changes quickly.",
       "Turn back early if weather, visibility or timing deteriorates."
     ],
@@ -399,7 +391,6 @@ const PLACES={
       "BEST FOR · A leg stretch late in the drive"
     ],
     "worth": [
-      "WORTH IT · ★★★★☆ · Keep if daylight remains",
       "Use only the signed lookout parking area.",
       "Wind and cold can make this a very quick stop."
     ],
@@ -425,7 +416,6 @@ const PLACES={
       "BEST TIME · Evening or next morning depending on light"
     ],
     "worth": [
-      "WORTH IT · ★★★☆☆ · Flexible, not essential",
       "Move it to Day 4 morning if arrival is late.",
       "Stay on the shore and respect the protected tree."
     ],
@@ -449,7 +439,6 @@ const PLACES={
       "DON’T MISS · Historic frontage and garden"
     ],
     "worth": [
-      "WORTH IT · ★★★★☆ · Best stop on the Wānaka–Queenstown leg",
       "Roadside parking can be busy; use marked areas."
     ],
     "categoryLabel": "📍 Scenic Stop",
@@ -479,7 +468,7 @@ const PLACES={
     "categoryLabel": "🧩 Attractions",
     "price": "Combo: Adult NZ$32.50 · Child 5–15 NZ$23.50 · Family (2A+2C) NZ$99",
     "transport": "Self-drive / walk",
-    "audit": "M4.7 master integration",
+    "audit": "PLANNED",
     "status": "planned",
     "hours": "Daily from 9:00 am · Last admission 4:30 pm · Closed Christmas Day",
     "website": "https://www.puzzlingworld.co.nz/prices-and-deals/",
@@ -505,7 +494,7 @@ const PLACES={
     "categoryLabel": "🍖 Dining",
     "price": "$",
     "transport": "Self-drive / takeaway",
-    "audit": "M4.7 master integration",
+    "audit": "PLANNED",
     "status": "planned"
   },
   "skyline": {
@@ -531,7 +520,7 @@ const PLACES={
     "categoryLabel": "🚡 Activities",
     "price": "Gondola: Adult NZ$69 · Child NZ$48 · Gondola + 3 Luge: Adult NZ$99 · Child NZ$68",
     "transport": "Self-drive / walk",
-    "audit": "M4.7 master integration",
+    "audit": "PLANNED",
     "status": "planned",
     "phone": "+64 3 441 0101",
     "website": "https://queenstown.skyline.co.nz/pricing-and-packages/"
@@ -558,7 +547,7 @@ const PLACES={
     "categoryLabel": "🐦 Activities",
     "price": "$",
     "transport": "Self-drive / walk",
-    "audit": "M4.7 master integration",
+    "audit": "PLANNED",
     "status": "planned"
   },
   "winnies": {
@@ -581,7 +570,7 @@ const PLACES={
     "categoryLabel": "🍕 Dining",
     "price": "$",
     "transport": "Walk",
-    "audit": "M4.7 master integration",
+    "audit": "PLANNED",
     "status": "planned"
   },
   "arrowtown": {
@@ -604,7 +593,7 @@ const PLACES={
     "categoryLabel": "🏘️ Attractions",
     "price": "Free",
     "transport": "Self-drive / walk",
-    "audit": "M4.7 master integration",
+    "audit": "PLANNED",
     "status": "planned"
   },
   "chinese-settlement": {
@@ -627,7 +616,7 @@ const PLACES={
     "categoryLabel": "🏚️ Attractions",
     "price": "Free",
     "transport": "Walk",
-    "audit": "M4.7 master integration",
+    "audit": "PLANNED",
     "status": "planned"
   },
   "deer-park": {
@@ -652,7 +641,7 @@ const PLACES={
     "categoryLabel": "🦌 Activities",
     "price": "$",
     "transport": "Self-drive",
-    "audit": "M4.7 master integration",
+    "audit": "PLANNED",
     "status": "planned"
   },
   "lone-star": {
@@ -675,7 +664,7 @@ const PLACES={
     "categoryLabel": "🍽️ Dining",
     "price": "$",
     "transport": "Walk",
-    "audit": "M4.7 master integration",
+    "audit": "PLANNED",
     "status": "planned"
   },
   "lakefront-lodge": {
@@ -720,7 +709,7 @@ const PLACES={
     "categoryLabel": "🐦 Attractions",
     "price": "Free",
     "transport": "Self-drive / walk",
-    "audit": "M4.7 master integration",
+    "audit": "PLANNED",
     "status": "planned"
   },
   "milford": {
@@ -778,7 +767,7 @@ const PLACES={
     "categoryLabel": "✨ Activities",
     "price": "$",
     "transport": "Self-drive / walk",
-    "audit": "M4.7 master integration",
+    "audit": "PLANNED",
     "status": "optional"
   },
   "airport-queenstown": {
@@ -799,7 +788,7 @@ const PLACES={
     "categoryLabel": "✈️ Attractions",
     "price": "Free",
     "transport": "Self-drive",
-    "audit": "M4.7 master integration",
+    "audit": "PLANNED",
     "status": "planned"
   },
   "edgewater": {
@@ -810,7 +799,7 @@ const PLACES={
     "hours": "3:00 PM → 10:30 AM",
     "maps": "https://maps.google.com/?q=Edgewater",
     "address": "54 Sargood Drive, Wānaka 9305, New Zealand",
-    "desc": "Chosen as the preferred Wānaka stop after the long Aoraki / Mt Cook driving day, with a Premium Suite and an easy lakeside setting for a quiet evening.",
+    "desc": "A comfortable lakeside Wānaka stay with a Premium Suite, well placed for a quiet evening after the Aoraki / Mt Cook drive.",
     "signature": [
       "Premium Suite for the Lee family",
       "Lakefront setting for a quiet arrival evening",
@@ -823,7 +812,7 @@ const PLACES={
     "categoryLabel": "🏨 Stay",
     "price": "AUD 402.47 paid; net AUD 343.82 after cashback",
     "transport": "Self-drive / walk",
-    "audit": "NZ Master Itinerary v3.0",
+    "audit": "PLANNED",
     "status": "confirmed"
   },
   "quake-city": {
@@ -845,7 +834,7 @@ const PLACES={
     ],
     "categoryLabel": "📍 Experience",
     "transport": "Self-drive / walk",
-    "audit": "OFFICIAL TRAVELLER-SUPPLIED SCREENSHOTS · SEP–MAY HOURS AND ADMISSION",
+    "audit": "VERIFIED",
     "status": "planned",
     "hours": "Daily 10:00 am–5:00 pm · Closed Christmas Day",
     "price": "Adult NZ$25 · Student/Senior NZ$20 · Under 15 free with an adult",
@@ -895,7 +884,7 @@ const PLACES={
     ],
     "categoryLabel": "📍 Experience",
     "transport": "Self-drive / walk",
-    "audit": "OFFICIAL TRAVELLER-SUPPLIED SCREENSHOTS · SEP–MAY HOURS AND ADMISSION",
+    "audit": "VERIFIED",
     "status": "planned"
   },
   "tasman-blue-lakes": {
@@ -916,7 +905,7 @@ const PLACES={
     "worth": [],
     "categoryLabel": "📍 Experience",
     "transport": "Self-drive / walk",
-    "audit": "NZ Master Itinerary v3.0",
+    "audit": "PLANNED",
     "status": "optional",
     "addressAudit": "OFFICIAL / VERIFIED"
   },
@@ -937,7 +926,7 @@ const PLACES={
     "worth": [],
     "categoryLabel": "🍽 Dining",
     "transport": "Self-drive / walk",
-    "audit": "NZ Master Itinerary v3.0",
+    "audit": "PLANNED",
     "status": "planned"
   },
   "flame": {
@@ -957,7 +946,7 @@ const PLACES={
     "worth": [],
     "categoryLabel": "🍽 Dining",
     "transport": "Self-drive / walk",
-    "audit": "NZ Master Itinerary v3.0",
+    "audit": "PLANNED",
     "status": "planned"
   },
   "saigon-kingdom": {
@@ -977,7 +966,7 @@ const PLACES={
     "worth": [],
     "categoryLabel": "🍽 Dining",
     "transport": "Self-drive / walk",
-    "audit": "NZ Master Itinerary v3.0",
+    "audit": "PLANNED",
     "status": "planned",
     "addressAudit": "OFFICIAL / VERIFIED"
   },
@@ -998,7 +987,7 @@ const PLACES={
     "worth": [],
     "categoryLabel": "📍 Experience",
     "transport": "Self-drive / walk",
-    "audit": "NZ Master Itinerary v3.0",
+    "audit": "PLANNED",
     "status": "optional",
     "addressAudit": "AREA / ROUTE CARD · navigation target intentionally uses a route or area, not a storefront address"
   },
@@ -1019,7 +1008,7 @@ const PLACES={
     "worth": [],
     "categoryLabel": "🍽 Dining",
     "transport": "Self-drive / walk",
-    "audit": "NZ Master Itinerary v3.0",
+    "audit": "PLANNED",
     "status": "planned"
   },
   "skippers-4wd": {
@@ -1040,7 +1029,7 @@ const PLACES={
     "worth": [],
     "categoryLabel": "📍 Experience",
     "transport": "Self-drive / walk",
-    "audit": "NZ Master Itinerary v3.0",
+    "audit": "PLANNED",
     "status": "optional",
     "addressAudit": "OFFICIAL / VERIFIED"
   },
@@ -1061,7 +1050,7 @@ const PLACES={
     "worth": [],
     "categoryLabel": "🍽 Dining",
     "transport": "Self-drive / walk",
-    "audit": "NZ Master Itinerary v3.0",
+    "audit": "PLANNED",
     "status": "planned"
   },
   "aosta": {
@@ -1081,7 +1070,7 @@ const PLACES={
     "worth": [],
     "categoryLabel": "🍽 Dining",
     "transport": "Self-drive / walk",
-    "audit": "NZ Master Itinerary v3.0",
+    "audit": "PLANNED",
     "status": "optional"
   },
   "gold-panning": {
@@ -1102,7 +1091,7 @@ const PLACES={
     "worth": [],
     "categoryLabel": "📍 Experience",
     "transport": "Self-drive / walk",
-    "audit": "NZ Master Itinerary v3.0",
+    "audit": "PLANNED",
     "status": "optional",
     "addressAudit": "OFFICIAL / VERIFIED"
   },
@@ -1123,7 +1112,7 @@ const PLACES={
     "worth": [],
     "categoryLabel": "🍽 Dining",
     "transport": "Self-drive / walk",
-    "audit": "NZ Master Itinerary v3.0",
+    "audit": "PLANNED",
     "status": "planned",
     "addressAudit": "OFFICIAL / VERIFIED"
   },
@@ -1144,7 +1133,7 @@ const PLACES={
     "worth": [],
     "categoryLabel": "🍽 Dining",
     "transport": "Self-drive / walk",
-    "audit": "NZ Master Itinerary v3.0",
+    "audit": "PLANNED",
     "status": "planned",
     "addressAudit": "OFFICIAL / VERIFIED"
   },
@@ -1165,7 +1154,7 @@ const PLACES={
     "worth": [],
     "categoryLabel": "🍽 Dining",
     "transport": "Self-drive / walk",
-    "audit": "NZ Master Itinerary v3.0",
+    "audit": "PLANNED",
     "status": "optional",
     "addressAudit": "OFFICIAL / VERIFIED"
   },
@@ -1186,7 +1175,7 @@ const PLACES={
     "worth": [],
     "categoryLabel": "🍽 Dining",
     "transport": "Self-drive / walk",
-    "audit": "NZ Master Itinerary v3.0",
+    "audit": "PLANNED",
     "status": "optional"
   },
   "christchurch-airport": {
@@ -1204,7 +1193,7 @@ const PLACES={
     "worth": [],
     "categoryLabel": "📍 Experience",
     "transport": "Self-drive / walk",
-    "audit": "NZ Master Itinerary v3.0",
+    "audit": "PLANNED",
     "status": "planned"
   },
   "rental-cars-247": {
@@ -1222,7 +1211,7 @@ const PLACES={
     "worth": [],
     "categoryLabel": "📍 Experience",
     "transport": "Self-drive / walk",
-    "audit": "NZ Master Itinerary v3.0",
+    "audit": "PLANNED",
     "status": "planned"
   },
   "lake-tekapo": {
@@ -1241,7 +1230,7 @@ const PLACES={
     "worth": [],
     "categoryLabel": "🏞 Scenic Destination",
     "transport": "Self-drive / walk",
-    "audit": "NZ Master Itinerary v3.0",
+    "audit": "PLANNED",
     "status": "planned"
   },
   "hustl-five-mile": {
@@ -1390,7 +1379,7 @@ const PLACES={
     "worth": [],
     "categoryLabel": "📍 Experience",
     "transport": "Self-drive / walk",
-    "audit": "NZ Master Itinerary v3.0",
+    "audit": "PLANNED",
     "status": "optional",
     "addressAudit": "AREA / ROUTE CARD · navigation target intentionally uses a route or area, not a storefront address"
   },
@@ -1410,7 +1399,7 @@ const PLACES={
     "worth": [],
     "categoryLabel": "📍 Experience",
     "transport": "Self-drive / walk",
-    "audit": "NZ Master Itinerary v3.0",
+    "audit": "PLANNED",
     "status": "planned",
     "addressAudit": "AREA / ROUTE CARD · navigation target intentionally uses a route or area, not a storefront address"
   },
@@ -1432,7 +1421,7 @@ const PLACES={
     "worth": [],
     "categoryLabel": "📍 Experience",
     "transport": "Self-drive / walk",
-    "audit": "NZ Master Itinerary v3.0",
+    "audit": "PLANNED",
     "status": "optional",
     "addressAudit": "OFFICIAL / VERIFIED"
   },
@@ -1451,7 +1440,6 @@ const PLACES={
       "ROUTE FIT · On Milford Road"
     ],
     "worth": [
-      "WORTH IT · ★★★★☆ · Useful early-morning road-trip stop"
     ],
     "categoryLabel": "☕ Dining",
     "transport": "Self-drive / walk",
@@ -1473,7 +1461,6 @@ const PLACES={
       "ROUTE FIT · Near Lakefront Lodge"
     ],
     "worth": [
-      "WORTH IT · ★★★★☆ · Best if the group wants a relaxed sit-down breakfast"
     ],
     "categoryLabel": "☕ Dining",
     "transport": "Self-drive / walk",
@@ -1496,7 +1483,6 @@ const PLACES={
       "STYLE · More special than a casual pie or pub stop"
     ],
     "worth": [
-      "WORTH IT · ★★★★☆ · Strong alternative for the final Te Anau dinner"
     ],
     "categoryLabel": "🍽 Dining",
     "transport": "Self-drive / walk",
@@ -1518,7 +1504,6 @@ const PLACES={
       "ROUTE FIT · Lakeside Drive in central Lake Tekapo"
     ],
     "worth": [
-      "WORTH IT · ★★★★★ · Primary Day 2 lunch choice",
       "Opening is limited and it is closed on Thursday according to the supplied listing; confirm the travel-day hours closer to departure.",
       "Takeaway seating can be limited, so use the lakefront if the weather is suitable."
     ],
@@ -1633,7 +1618,6 @@ const PLACES={
       }
     ],
     "worth": [
-      "WORTH IT · ★★★★★ · The essential Lake Tekapo arrival experience",
       "September is before the main lupin season.",
       "Keep the stop flexible for weather, light and family energy."
     ],
@@ -1704,7 +1688,6 @@ const PLACES={
       "NOTE · The menu changes seasonally, so current dishes may vary"
     ],
     "worth": [
-      "WORTH IT · ★★★★★ · Strong primary breakfast before the Crown Range drive",
       "Allow enough time for a sit-down breakfast, but leave Wānaka early enough to protect Cardrona and Queenstown timing."
     ],
     "categoryLabel": "☕ Dining",
@@ -2537,7 +2520,7 @@ const BOOKINGS_DATA={
     "guests": 4,
     "reference": "73499810818218",
     "paymentStatus": "paid",
-    "notes": "Confirmed booking.",
+    "notes": "",
     "stayDates": "24–25 Sep 2026",
     "nights": 1,
     "roomType": "Premium Suite",
@@ -2606,7 +2589,7 @@ const BOOKINGS_DATA={
     "guests": 4,
     "reference": "",
     "paymentStatus": "pay at property",
-    "notes": "Lee family transition stay.",
+    "notes": "",
     "stayDates": "25–26 Sep 2026",
     "nights": 1,
     "roomType": "Two-bedroom accommodation",

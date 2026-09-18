@@ -11,8 +11,8 @@ for(const token of [
  'nav_visible',
  "active User Selector incorrectly opened traveller selector",
  "reload active User Selector incorrectly opened traveller selector",
- "'mobile-390x844'",
- "'desktop-1280x800'",
+ "'chromium-mobile-390x844'",
+ "'chromium-desktop-1280x800'",
  "openAccommodationDetail('peppers-booking')",
  "trip-action-btn--email",
  "How to book / handoff",
@@ -24,5 +24,6 @@ assert(gate.includes('BROWSER_BASE_URL'),'Browser smoke must support validating 
 assert(!runner.includes('|| true'),'Browser runner must never convert a failed browser test into PASS');
 const workflow=fs.readFileSync('.github/workflows/browser-release-smoke.yml','utf8');
 assert(workflow.includes('sh ci-tests/run-browser.sh'),'GitHub browser workflow must execute canonical browser runner');
-assert(workflow.includes('playwright install --with-deps chromium'),'GitHub browser workflow must provision a real Chromium');
+assert(workflow.includes('playwright install --with-deps chromium webkit'),'GitHub browser workflow must provision Chromium + WebKit');
+assert(gate.includes("'webkit-mobile-390x844'")&&gate.includes("'webkit-mobile-430x932'"),'Browser smoke must cover both WebKit mobile viewports');
 console.log('BROWSER GATE DEFINITION: PASS — portable Studio lifecycle, Booking allow-list and activity semantics are mandatory.');

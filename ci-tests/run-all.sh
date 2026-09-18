@@ -26,9 +26,10 @@ run "BACKWARD COMPAT" node ci-tests/test-stage1-backward-compat.js
 
 run "CANONICAL STUDIO + EXPENSE DEEP-LINK" node ci-tests/test-canonical-studio-expense-deeplink.js
 run "CANONICAL STUDIO VISUAL CONTRACT 25.6.2" node ci-tests/test-studio-visual-contract-2562.js
+run "SHARED-FACING CONTENT" node ci-tests/test-shared-facing-content.js
 if [ "$failed" -eq 0 ]; then
-  printf '\nNZ 25.6 MIGRATION CI PASSED\n'
+  printf '\nNZ 25.7 SHARED-READY CI PASSED\n'
   exit 0
 fi
-printf '\nNZ 25.6 MIGRATION CI FAILED\n' >&2
+printf '\nNZ 25.7 SHARED-READY CI FAILED\n' >&2
 exit 1

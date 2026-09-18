@@ -491,13 +491,47 @@ async function deleteBookingRecord(bookingId){
   }catch(error){console.error('Booking delete failed',error);alert('Could not delete this booking. Please check your connection and try again.');return false;}
 }
 window.deleteBookingRecord=deleteBookingRecord;
+/* commitBookingSave — generic Engine local-first save orchestration.
+   The local Booking Authority is the immediate durable/UI commit boundary. Remote sync is
+   best-effort after that boundary: a slow or unavailable network must not hold the editor
+   open or turn an already-saved local mutation into a user-visible failure.
+   Returns {ok:true, committed:true, degraded, booking} after local commit. */
+async function commitBookingSave(record,deps){
+  deps=deps||{};
+  if(typeof deps.validate==='function'){
+    let valid;
+    try{valid=deps.validate(record);}
+    catch(validationError){return {ok:false,committed:false,reason:(validationError&&validationError.message)||'validation-failed'};}
+    if(valid===false)return {ok:false,committed:false,reason:'validation-failed'};
+  }
+  let localResult;
+  try{localResult=deps.localSave(record);}
+  catch(localError){return {ok:false,committed:false,reason:(localError&&localError.message)||'save-failed'};}
+  if(!localResult||!localResult.ok)return {ok:false,committed:false,reason:(localResult&&localResult.reason)||'save-failed'};
+  let booking=localResult.booking||record;
+  if(!deps.syncEnabled)return {ok:true,committed:true,degraded:false,booking:booking};
+  try{
+    Promise.resolve(deps.syncPush(booking)).catch(function(syncError){console.error('Booking save: remote sync pending',syncError);});
+  }catch(syncError){console.error('Booking save: remote sync pending',syncError);}
+  return {ok:true,committed:true,degraded:true,booking:booking};
+}
+window.commitBookingSave=commitBookingSave;
+// Engine-level mutation guard: DOM disabled state is presentation only. The booking ID lock
+// is the authoritative concurrency boundary, so direct/programmatic duplicate submits cannot
+// start a second commit while the first mutation is unresolved.
+const BOOKING_SAVE_IN_FLIGHT=new Set();
+window.BOOKING_SAVE_IN_FLIGHT=BOOKING_SAVE_IN_FLIGHT;
 async function saveBookingEdit(event,bookingId){
   event.preventDefault();
   if(!(window.BOOKING_PERMISSIONS&&BOOKING_PERMISSIONS.canEdit())){alert(window.BOOKING_PERMISSIONS?BOOKING_PERMISSIONS.denialMessage():'Booking editing is not available.');return false;}
   const form=event.currentTarget;const current=getBookingById(bookingId);if(!current||!window.BOOKING_AUTHORITY){alert('Booking editor is not ready. Please close and reopen this booking.');return false;}
+  const saveButton=form.querySelector('.booking-edit-save');
+  if(BOOKING_SAVE_IN_FLIGHT.has(bookingId))return false;
+  if(saveButton&&saveButton.disabled)return false;
+  BOOKING_SAVE_IN_FLIGHT.add(bookingId);
   const formData=new FormData(form);const next=Object.assign({},current);
   formData.forEach(function(value,key){next[key]=String(value).trim();});
-  next.status=String(next.status||'pending').toLowerCase()==='confirmed'?'confirmed':'pending';
+  {const rawStatus=String(next.status||'pending').toLowerCase();next.status=rawStatus==='confirmed'?'confirmed':(rawStatus==='planned'?'planned':'pending');}
   const viaChoice=next.bookingVia||'';
   const viaOther=next.bookingViaOther||'';
   const viaValue=viaChoice==='Other'?viaOther:viaChoice;
@@ -508,26 +542,34 @@ async function saveBookingEdit(event,bookingId){
   if(next.dayId&&!/^day\d+$/.test(next.dayId))next.dayId='day'+String(next.dayId).replace(/\D/g,'');
   next.updatedBy=(window.getFriend&&window.getFriend())||'admin';next.updatedAt=new Date().toISOString();
   const liveTarget=typeof PRODUCTION_BOOKINGS!=='undefined'&&PRODUCTION_BOOKINGS&&PRODUCTION_BOOKINGS.byId?PRODUCTION_BOOKINGS.byId:null;
-  const saveButton=form.querySelector('.booking-edit-save');
   if(saveButton){saveButton.disabled=true;saveButton.textContent='Saving…';}
-  let result;
+  let outcome;
   try{
-    if(window.BOOKING_SYNC&&BOOKING_SYNC.enabled()){
-      const remote=await BOOKING_SYNC.push(next);
-      if(!remote||!remote.ok)throw new Error('remote-save-failed');
-      next=remote.booking||next;
-    }
-    result=BOOKING_AUTHORITY.save(bookingId,next,liveTarget);
-    if(!result||!result.ok)throw new Error((result&&result.reason)||'save-failed');
-    clearBookingEditSession();
-    if(saveButton)saveButton.textContent='Saved ✓';
-    document.dispatchEvent(new CustomEvent('travelengine:bookingchange',{detail:{bookingId:bookingId,booking:result.booking}}));
-    setTimeout(function(){returnToBookingDetail(bookingId,result.booking,true);},180);
-  }catch(error){
-    if(saveButton){saveButton.disabled=false;saveButton.textContent='Save Booking';}
-    console.error('Booking save failed',error);
-    alert('Could not finish saving the booking. Please try again.');
+    outcome=await commitBookingSave(next,{
+      syncEnabled:!!(window.BOOKING_SYNC&&BOOKING_SYNC.enabled()),
+      syncPush:function(payload){return BOOKING_SYNC.push(payload);},
+      localSave:function(payload){return BOOKING_AUTHORITY.save(bookingId,payload,liveTarget);}
+    });
+  }catch(commitError){
+    console.error('Booking save: unexpected commit exception',commitError);
+    outcome={ok:false,committed:false,reason:(commitError&&commitError.message)||'save-failed'};
+  }finally{
+    BOOKING_SAVE_IN_FLIGHT.delete(bookingId);
   }
+  if(!outcome.ok){
+    if(saveButton){saveButton.disabled=false;saveButton.textContent='Save Booking';}
+    console.error('Booking save failed',outcome.reason);
+    alert('Could not finish saving the booking. Please try again.');
+    return false;
+  }
+  clearBookingEditSession();
+  if(saveButton)saveButton.textContent=outcome.degraded?'Saved · sync pending':'Saved ✓';
+  try{document.dispatchEvent(new CustomEvent('travelengine:bookingchange',{detail:{bookingId:bookingId,booking:outcome.booking,syncPending:outcome.degraded}}));}
+  catch(dispatchError){console.error('Booking save: post-commit change event failed (value remains saved)',dispatchError);}
+  setTimeout(function(){
+    try{returnToBookingDetail(bookingId,outcome.booking,true);}
+    catch(reopenError){console.error('Booking save: post-commit reopen failed (value remains saved)',reopenError);}
+  },180);
   return false;
 }
 function reopenSavedBooking(){

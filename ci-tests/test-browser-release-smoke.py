@@ -198,11 +198,17 @@ def run():
   with target_base() as base, sync_playwright() as pw:
     browser=pw.chromium.launch(headless=True,executable_path=os.environ.get('CHROMIUM_PATH') or shutil.which('chromium') or shutil.which('google-chrome') or None,args=['--no-sandbox'])
     try:
-      run_viewport(browser,base,{'width':1280,'height':800},'desktop-1280x800')
-      run_viewport(browser,base,{'width':390,'height':844},'mobile-390x844')
+      run_viewport(browser,base,{'width':1280,'height':800},'chromium-desktop-1280x800')
+      run_viewport(browser,base,{'width':390,'height':844},'chromium-mobile-390x844')
       print('BROWSER INTERACTION SMOKE: PASS — desktop + mobile Studio lifecycle and Timeline → Guide → Booking return contract.')
     finally:
       browser.close()
+    webkit=pw.webkit.launch(headless=True)
+    try:
+      run_viewport(webkit,base,{'width':390,'height':844},'webkit-mobile-390x844')
+      run_viewport(webkit,base,{'width':430,'height':932},'webkit-mobile-430x932')
+    finally:
+      webkit.close()
 
 if __name__=='__main__':
   try: run()

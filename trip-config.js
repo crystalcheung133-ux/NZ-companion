@@ -102,8 +102,8 @@
     splashDestination: 'NEW ZEALAND 2026',
     storageNamespace: 'nz-family-2026',
     bookingMasterRevision: 1,
-    version: 'RC25.4.0',
-    buildLabel: 'NZ Companion · Travel Engine 25.6.0 migration candidate',
+    version:'RC25.5.0-25.7.0',
+    buildLabel:'NZ Companion RC25.5.0 · Travel Engine 25.7.0 Shared-Ready Integrity Candidate',
     theme: root.THEME_CONFIG.colors
   });
 
