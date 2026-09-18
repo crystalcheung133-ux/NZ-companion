@@ -1,9 +1,9 @@
 {
   "engine_version": "25.7.0",
-  "artifact_version": "NZ Companion RC25.5.1 · Travel Engine 25.7.0 Shared-Ready Integrity Candidate",
+  "artifact_version": "NZ Companion RC25.5.2 · Travel Engine 25.7.0 Calm Shared Experience Candidate",
   "baseline_engine": "25.6.0",
   "release_date": "2026-09-18",
-  "release_type": "shared-ready-integrity-candidate",
+  "release_type": "calm-shared-experience-candidate",
   "runtime_behavior_change": true,
   "capabilities_changed": [
     "Travel Engine 25.6.0 dedicated Studio shell and lifecycle",
@@ -28,7 +28,7 @@
     "booking appliesTo / partyIds subgroup assignment"
   ],
   "migration_source": "NZ Companion RC25.3.9.3 · Travel Engine 25.4.20.3 Production Freeze",
-  "release_status": "CANDIDATE — Engine 25.7 local-first atomic booking save + shared-facing content cleanup + Chromium/WebKit browser gate",
+  "release_status": "CANDIDATE — Calm shared-facing travel experience on Engine 25.7.0",
   "validation": {
     "chromium_desktop_1280x800": "PASS",
     "chromium_mobile_390x844": "PASS",
@@ -45,10 +45,13 @@
     "browser_evidence": "Desktop 1280x800 PASS + Mobile 390x844 PASS, repeated twice"
   },
   "changes": [
-    "Ported Engine 25.7 local-first atomic Booking Save with booking-ID in-flight mutation guard",
-    "Removed build-era editorial star ratings and internal planning wording from shared-facing Guide/Booking content",
-    "Added shared-facing content CI contract",
-    "Expanded browser release gate to Chromium desktop/mobile and WebKit 390x844/430x932",
-    "Browser workflow is fast-gate focused; full Master CI remains available for final promotion"
-  ]
+    "Kept Engine 25.7 local-first atomic Booking Save and browser release gate",
+    "Softened itinerary wording so flexible stops feel optional rather than deadline-driven",
+    "Replaced build/planning language with traveller-facing wording",
+    "Changed timeline route prompts from “Next” to the calmer “From here” while retaining navigation context",
+    "Preserved fixed-time wording only where it reflects a real booking, check-in or transport requirement",
+    "Retained three-family Expenses, Moments and shared-trip identity features"
+  ],
+  "release": "RC25.5.2",
+  "label": "Calm Shared Experience"
 }

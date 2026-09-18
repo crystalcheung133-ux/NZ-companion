@@ -219,7 +219,7 @@ const PLACES={
     ],
     "worth": [
       "Booking is strongly recommended.",
-      "If Springs runs late, protect the reservation rather than squeezing in too many activities."
+      "Keep the rest of the afternoon light around the reservation; there is no need to fit everything in."
     ],
     "categoryLabel": "🍣 Dining",
     "price": "$",
@@ -317,7 +317,7 @@ const PLACES={
       "ROUTE FIT · Before leaving Wānaka"
     ],
     "worth": [
-      "Leave by around 09:30 to protect the Cardrona stop."
+      "A morning departure leaves plenty of room for a relaxed Cardrona stop."
     ],
     "categoryLabel": "☕ Dining",
     "price": "$–$",
@@ -1709,7 +1709,7 @@ const PLACES={
       "NOTE · The menu changes seasonally, so current dishes may vary"
     ],
     "worth": [
-      "Allow enough time for a sit-down breakfast, but leave Wānaka early enough to protect Cardrona and Queenstown timing."
+      "Enjoy breakfast, then head toward Cardrona when the group is ready; the stop can stay flexible."
     ],
     "categoryLabel": "☕ Dining",
     "price": "$–$$",
@@ -2642,7 +2642,7 @@ const BOOKINGS_DATA={
     "cashbackAmount": "\u2212AUD 17.79",
     "netTotalAUD": "AUD 324.26",
     "approximateNet": true,
-    "fxNote": "Planning estimate \u00b7 1 NZD \u2248 0.84 AUD"
+    "fxNote": "Reference rate \u00b7 1 NZD \u2248 0.84 AUD"
   },
   "luxe-milford-booking": {
     "id": "luxe-milford-booking",
@@ -2705,7 +2705,7 @@ const BOOKINGS_DATA={
     "lunchStatus": "Not arranged yet · the group may prepare food or purchase food onboard; confirm later.",
     "snacks": "6 sweet muffin snacks + 5 savoury muffin/scone snacks selected",
     "cancellation": "Full refund up to 5 days before departure.",
-    "notes": "Confirmed for Day 9. Pay later. Keep the booking confirmation available as proof of booking."
+    "notes": "Pay later · keep the booking confirmation handy."
   },
   "southwark-booking": {
     "id": "southwark-booking",
@@ -2813,7 +2813,7 @@ const ITINERARY_DATA={
         "details": [
           "Clear immigration and biosecurity."
         ],
-        "route": "Next: rental-car shuttle / collection · allow ≈ 30–60 min after baggage.",
+        "route": "From here: rental-car shuttle / collection · allow ≈ 30–60 min after baggage.",
         "map": "https://maps.google.com/?q=Christchurch%20Airport",
         "type": "transport",
         "dayId": "day1",
@@ -2828,7 +2828,7 @@ const ITINERARY_DATA={
           "Rental Cars 247",
           "Mitsubishi ASX or similar"
         ],
-        "route": "Next: Southwark Hotel & Apartments · drive to central Christchurch.",
+        "route": "From here: Southwark Hotel & Apartments · drive to central Christchurch.",
         "map": "https://maps.google.com/?q=Rental+Cars+247+264+Russley+Road+Avonhead+Christchurch",
         "type": "transport",
         "dayId": "day1",
@@ -2843,7 +2843,7 @@ const ITINERARY_DATA={
           "2:00 PM → 10:00 AM",
           "Parking · NZD 15 · pre-book"
         ],
-        "route": "Next: leave the car at Southwark · walk 14 min to Riverside Market.",
+        "route": "From here: leave the car at Southwark · walk 14 min to Riverside Market.",
         "map": "https://www.google.com/maps/search/?api=1&query=Southwark+Hotel+%26+Apartments%2C+25+Southwark+Street%2C+Christchurch+8011",
         "type": "rest",
         "dayId": "day1",
@@ -2857,7 +2857,7 @@ const ITINERARY_DATA={
         "details": [
           "Dinner from the open stalls."
         ],
-        "route": "Next: walk 14 min back to Southwark.",
+        "route": "From here: walk 14 min back to Southwark.",
         "map": "https://www.google.com/maps/dir/?api=1&origin=Southwark+Hotel+%26+Apartments%2C+25+Southwark+Street%2C+Christchurch&destination=Riverside+Market%2C+96+Oxford+Terrace%2C+Christchurch&travelmode=walking",
         "type": "meal",
         "dayId": "day1",
@@ -2891,7 +2891,7 @@ const ITINERARY_DATA={
         "Mt John Observatory / Stargazing Tour (optional)"
       ],
       "note": "Walk to C1 and the central-city activity first. Driving starts after returning to Southwark and collecting the vehicle.",
-      "contingency": "If the day runs late, protect check-in and dinner first, then skip Better Batter or stargazing.",
+      "contingency": "Better Batter and stargazing are flexible; enjoy them only if they suit the afternoon.",
       "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=Southwark+Hotel+%26+Apartments%2C+25+Southwark+Street%2C+Christchurch&destination=University+of+Canterbury+Mt+John+Observatory%2C+Mount+John+Summit%2C+Lake+Tekapo%2C+New+Zealand&travelmode=driving&waypoints=PAK%27nSAVE+Moorhouse%2C+297+Moorhouse+Avenue%2C+Christchurch%7CFairlie+Bakehouse%2C+74+Main+Street%2C+Fairlie%7CPeppers+Bluewater+Resort%2C+State+Highway+8%2C+Lake+Tekapo%7CThe+Better+Batter+NZ%2C+Lakeside+Drive%2C+Lake+Tekapo%7CChurch+of+the+Good+Shepherd%2C+Lake+Tekapo%7CKohan+Japanese+Restaurant%2C+6+Rapuwai+Lane%2C+Lake+Tekapo"
     },
     "items": [
@@ -2902,7 +2902,7 @@ const ITINERARY_DATA={
         "details": [
           "Walk 6 min from Southwark for breakfast."
         ],
-        "route": "Next: walk to Quake City or follow the CBD Discovery Walk.",
+        "route": "From here: walk to Quake City or follow the CBD Discovery Walk.",
         "map": "https://www.google.com/maps/dir/?api=1&origin=Southwark+Hotel+%26+Apartments%2C+25+Southwark+Street%2C+Christchurch&destination=C1+Espresso%2C+185+High+Street%2C+Christchurch&travelmode=walking",
         "type": "meal",
         "dayId": "day2",
@@ -2917,7 +2917,7 @@ const ITINERARY_DATA={
           "Primary morning activity · allow about 45–60 minutes.",
           "Alternative: choose the Christchurch CBD Discovery Walk instead if you prefer shopping and city exploration."
         ],
-        "route": "Next: complete the chosen central-Christchurch sequence, then walk back to Southwark.",
+        "route": "From here: complete the chosen central-Christchurch sequence, then walk back to Southwark.",
         "map": "https://maps.google.com/?q=Quake%20City",
         "type": "experience",
         "dayId": "day2",
@@ -2937,7 +2937,7 @@ const ITINERARY_DATA={
           "Walk back after the central-Christchurch activity.",
           "Check out and collect the vehicle."
         ],
-        "route": "Next: PAK’nSAVE Moorhouse · ~5 min drive.",
+        "route": "From here: PAK’nSAVE Moorhouse · ~5 min drive.",
         "map": "https://www.google.com/maps/search/?api=1&query=Southwark+Hotel+%26+Apartments%2C+25+Southwark+Street%2C+Christchurch+8011",
         "type": "transport",
         "dayId": "day2",
@@ -2951,7 +2951,7 @@ const ITINERARY_DATA={
         "details": [
           "Buy food and supplies for the following road-trip days."
         ],
-        "route": "Next: Fairlie Bakehouse · drive toward Lake Tekapo.",
+        "route": "From here: Fairlie Bakehouse · drive toward Lake Tekapo.",
         "map": "https://www.google.com/maps/search/?api=1&query=PAK%27nSAVE+Moorhouse%2C+297+Moorhouse+Avenue%2C+Christchurch+8011",
         "type": "transport",
         "dayId": "day2",
@@ -2964,9 +2964,9 @@ const ITINERARY_DATA={
         "title": "🥧 Optional pit stop · Fairlie Bakehouse",
         "details": [
           "Quick pie, coffee, toilet and stretch stop on the drive.",
-          "Skip it if timing is tight or everyone prefers to eat after arriving in Tekapo."
+          "Stop only if everyone feels like a break; continuing straight to Tekapo is equally fine."
         ],
-        "route": "Next: Peppers Bluewater Resort · ≈ 35–40 min drive.",
+        "route": "From here: Peppers Bluewater Resort · ≈ 35–40 min drive.",
         "map": "https://maps.google.com/?q=Fairlie+Bakehouse+74+Main+Street+Fairlie",
         "type": "rest",
         "dayId": "day2",
@@ -2980,7 +2980,7 @@ const ITINERARY_DATA={
         "details": [
           "Check-out before 10:00 next day."
         ],
-        "route": "Next: optional The Better Batter NZ · ≈ 2–5 min drive or short walk.",
+        "route": "From here: optional The Better Batter NZ · ≈ 2–5 min drive or short walk.",
         "map": "https://maps.google.com/?q=Peppers+Bluewater+Resort+Lake+Tekapo",
         "type": "rest",
         "dayId": "day2",
@@ -2995,7 +2995,7 @@ const ITINERARY_DATA={
           "Stop for fish and chips, a snack or afternoon tea only if appetite and timing suit.",
           "This works best if you skipped Fairlie Bakehouse or want something small after check-in."
         ],
-        "route": "Next: Lake Tekapo Village · ≈ 2–5 min drive or short walk.",
+        "route": "From here: Lake Tekapo Village · ≈ 2–5 min drive or short walk.",
         "map": "https://maps.google.com/?q=The+Better+Batter+NZ+Lakeside+Drive+Lake+Tekapo+7999+New+Zealand",
         "type": "meal",
         "dayId": "day2",
@@ -3013,7 +3013,7 @@ const ITINERARY_DATA={
           "Explore the Church of the Good Shepherd, Sheepdog Statue and lakeside photo spots on foot.",
           "Allow about 30–60 minutes and adjust for weather and light."
         ],
-        "route": "Next: Kohan Japanese Restaurant · ≈ 5 min drive or walk, depending on where you parked.",
+        "route": "From here: Kohan Japanese Restaurant · ≈ 5 min drive or walk, depending on where you parked.",
         "map": "https://maps.google.com/?q=Church+of+the+Good+Shepherd+Lake+Tekapo",
         "type": "experience",
         "dayId": "day2",
@@ -3027,7 +3027,7 @@ const ITINERARY_DATA={
         "details": [
           "A relaxed dinner built around fresh salmon and Japanese comfort food after a long drive and an optional soak at Tekapo Springs."
         ],
-        "route": "Next: Tekapo Springs · ≈ 5 min drive.",
+        "route": "From here: Tekapo Springs · ≈ 5 min drive.",
         "map": "https://maps.google.com/?q=Kohan+Japanese+Restaurant+Lake+Tekapo",
         "type": "meal",
         "dayId": "day2",
@@ -3092,7 +3092,7 @@ const ITINERARY_DATA={
         "details": [
           "Keep breakfast light before the scenic flight and road journey."
         ],
-        "route": "Next: depart Lake Tekapo for Lake Pukaki · ≈ 45–50 min drive.",
+        "route": "From here: depart Lake Tekapo for Lake Pukaki · ≈ 45–50 min drive.",
         "type": "meal",
         "dayId": "day3",
         "placeId": "peppers",
@@ -3108,9 +3108,9 @@ const ITINERARY_DATA={
         "time": "08:30",
         "title": "🚙 Depart Lake Tekapo",
         "details": [
-          "Leave around 08:30 to protect the confirmed 11:55 flight check-in."
+          "The 11:55 flight has a fixed check-in time; the morning can stay relaxed around that booking."
         ],
-        "route": "Next: Lake Pukaki Lookout · ≈ 45–50 min drive.",
+        "route": "From here: Lake Pukaki Lookout · ≈ 45–50 min drive.",
         "map": "https://maps.google.com/?q=Lake%20Tekapo",
         "type": "transport",
         "dayId": "day3",
@@ -3125,7 +3125,7 @@ const ITINERARY_DATA={
           "Allow about 15–20 minutes.",
           "Shorten the stop if wind, cloud or timing requires it."
         ],
-        "route": "Next: Mt Cook Alpine Salmon · ≈ 5 min drive.",
+        "route": "From here: Mt Cook Alpine Salmon · ≈ 5 min drive.",
         "map": "https://maps.google.com/?q=Lake+Pukaki+Lookout",
         "type": "experience",
         "dayId": "day3",
@@ -3140,7 +3140,7 @@ const ITINERARY_DATA={
           "Use this as a quick morning snack or light brunch rather than a full lunch.",
           "Aim to leave by about 10:05 so the confirmed flight check-in remains comfortable."
         ],
-        "route": "Next: Mt Cook Glacier Guiding at Aoraki / Mt Cook Airport · allow ≈ 45–50 min; arrive well before 11:55.",
+        "route": "From here: Mt Cook Glacier Guiding at Aoraki / Mt Cook Airport · allow ≈ 45–50 min; arrive well before 11:55.",
         "map": "https://maps.google.com/?q=Mt+Cook+Alpine+Salmon+Lake+Pukaki",
         "type": "meal",
         "dayId": "day3",
@@ -3156,7 +3156,7 @@ const ITINERARY_DATA={
           "Call the operator before leaving Lake Tekapo to confirm flying conditions and minimum passenger numbers.",
           "Wear warm layers, sunglasses and secure footwear; carry only small essentials."
         ],
-        "route": "Next: Hooker Valley Track at White Horse Hill car park · ≈ 15–20 min drive after the flight.",
+        "route": "From here: Hooker Valley Track at White Horse Hill car park · ≈ 15–20 min drive after the flight.",
         "map": "https://www.google.com/maps/search/?api=1&query=Mt+Cook+Glacier+Guiding%2C+Aoraki+Mt+Cook+Airport%2C+Unit+2%2C+State+Highway+80%2C+7999%2C+New+Zealand",
         "type": "experience",
         "dayId": "day3",
@@ -3172,7 +3172,7 @@ const ITINERARY_DATA={
           "Allow about 40–50 minutes.",
           "If the scenic flight is cancelled, move this walk into the late morning and extend it to 60–90 minutes according to weather and family energy."
         ],
-        "route": "Next: packed or simple lunch, then depart for Wānaka around 14:30–14:45.",
+        "route": "From here: packed or simple lunch, then depart for Wānaka around 14:30–14:45.",
         "map": "https://www.google.com/maps/search/?api=1&query=White+Horse+Hill+Car+Park%2C+Hooker+Valley+Road%2C+Aoraki%2FMount+Cook+National+Park%2C+New+Zealand",
         "type": "experience",
         "dayId": "day3",
@@ -3192,7 +3192,7 @@ const ITINERARY_DATA={
           "Use a packed lunch or quick snack after the walk.",
           "Avoid a long sit-down lunch so the drive to Wānaka remains relaxed."
         ],
-        "route": "Next: Wānaka via Lindis Pass · depart around 14:30–14:45.",
+        "route": "From here: Wānaka via Lindis Pass · depart around 14:30–14:45.",
         "type": "meal",
         "dayId": "day3",
         "placeId": null,
@@ -3207,7 +3207,7 @@ const ITINERARY_DATA={
         "details": [
           "Refuel if the tank is below half before continuing across Lindis Pass."
         ],
-        "route": "Next: Lindis Pass · ≈ 30–35 min drive.",
+        "route": "From here: Lindis Pass · ≈ 30–35 min drive.",
         "type": "transport",
         "dayId": "day3",
         "placeId": null,
@@ -3222,7 +3222,7 @@ const ITINERARY_DATA={
         "details": [
           "Allow 10–15 minutes at the signed lookout only."
         ],
-        "route": "Next: Edgewater · ≈ 1 hr 15 min drive.",
+        "route": "From here: Edgewater · ≈ 1 hr 15 min drive.",
         "map": "https://maps.google.com/?q=Lindis+Pass+Lookout",
         "type": "experience",
         "dayId": "day3",
@@ -3236,9 +3236,9 @@ const ITINERARY_DATA={
         "details": [
           "Check-in from 3:00 pm; expected arrival is likely around 6:00–7:00 pm.",
           "Check-out by 10:30 am on 25 September.",
-          "Skip Wānaka Lavender Farm and move That Wānaka Tree to the next morning if the day runs late."
+          "Wānaka Lavender Farm and That Wānaka Tree are flexible and can move to the next morning if that feels better."
         ],
-        "route": "Next: dinner at Edgewater Restaurant or Big Fig.",
+        "route": "From here: dinner at Edgewater Restaurant or Big Fig.",
         "map": "https://maps.google.com/?q=Edgewater+54+Sargood+Drive+Wanaka",
         "type": "rest",
         "dayId": "day3",
@@ -3304,7 +3304,7 @@ const ITINERARY_DATA={
           "Use the morning for the lakefront photo stop if it was skipped after Mt Cook.",
           "Keep this short and relaxed before breakfast and check-out."
         ],
-        "route": "Next: Wānaka breakfast · short drive.",
+        "route": "From here: Wānaka breakfast · short drive.",
         "map": "https://maps.google.com/?q=That+Wanaka+Tree",
         "type": "experience",
         "dayId": "day4",
@@ -3319,7 +3319,7 @@ const ITINERARY_DATA={
           "Primary: Scroggin Coffee and Eatery.",
           "Alternative: Big Fig for a faster counter-service meal."
         ],
-        "route": "Next: Edgewater check-out / Puzzling World.",
+        "route": "From here: Edgewater check-out / Puzzling World.",
         "map": "https://www.google.com/maps/search/?api=1&query=Scroggin+Coffee+and+Eatery%2C+71+Ardmore+Street%2C+Wanaka+9305",
         "type": "meal",
         "dayId": "day4",
@@ -3338,7 +3338,7 @@ const ITINERARY_DATA={
         "details": [
           "Check out by 10:30 am."
         ],
-        "route": "Next: Puzzling World · ≈ 10 min drive.",
+        "route": "From here: Puzzling World · ≈ 10 min drive.",
         "map": "https://maps.google.com/?q=Edgewater+54+Sargood+Drive+Wanaka",
         "type": "rest",
         "dayId": "day4",
@@ -3352,7 +3352,7 @@ const ITINERARY_DATA={
         "details": [
           "Allow 90–120 minutes."
         ],
-        "route": "Next: Cardrona Hotel · ≈ 25 min drive.",
+        "route": "From here: Cardrona Hotel · ≈ 25 min drive.",
         "map": "https://maps.google.com/?q=Puzzling+World+188+W%C4%81naka%E2%80%93Luggate+Highway%2C+W%C4%81naka+9382%2C+New+Zealand",
         "type": "experience",
         "dayId": "day4",
@@ -3368,7 +3368,7 @@ const ITINERARY_DATA={
           "Alternative: SH6 via Cromwell · about 30 minutes longer, with gentler roads for poor weather, darkness or possible ice.",
           "Check NZTA and the weather before leaving; use extra caution after dark for wildlife and reduced visibility."
         ],
-        "route": "Next: Frankton / Queenstown · Crown Range ≈ 1 hr or SH6 via Cromwell ≈ 1 hr 30 min.",
+        "route": "From here: Frankton / Queenstown · Crown Range ≈ 1 hr or SH6 via Cromwell ≈ 1 hr 30 min.",
         "map": "https://www.google.com/maps/dir/?api=1&origin=Wanaka%2C+New+Zealand&destination=Sudima+Queenstown+Five+Mile%2C+22+Grant+Road%2C+Frankton%2C+Queenstown%2C+New+Zealand&travelmode=driving&waypoints=Cardrona+Hotel%2C+Cardrona",
         "routeOptions": [
           {
@@ -3393,7 +3393,7 @@ const ITINERARY_DATA={
           "Primary: Fergbaker for a quick Queenstown meal.",
           "Alternative: Saigon Kingdom Viet in Frankton."
         ],
-        "route": "Next: Sudima Queenstown Five Mile.",
+        "route": "From here: Sudima Queenstown Five Mile.",
         "map": "https://maps.google.com/?q=Fergbaker+Queenstown",
         "type": "meal",
         "dayId": "day4",
@@ -3468,7 +3468,7 @@ const ITINERARY_DATA={
         "Pedro's House of Lamb"
       ],
       "note": "Sleep in, check out at 11:00 AM and brunch near Sudima before the Saturday market. Check in, buy Airbnb supplies, then collect an easy shared dinner.",
-      "contingency": "If the market runs late, one person can complete check-in while the others finish browsing; FreshChoice is open into the evening.",
+      "contingency": "The market and FreshChoice are flexible around check-in; split up briefly only if that is convenient for the group.",
       "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=Sudima+Queenstown+Five+Mile%2C+22+Grant+Road%2C+Frankton%2C+Queenstown&destination=7+Windsor+Place%2C+Queenstown%2C+New+Zealand&travelmode=driving&waypoints=Queenstown+Market%2C+Earnslaw+Park%2C+Queenstown%7CFreshChoice+Queenstown%2C+64+Gorge+Road%2C+Queenstown"
     },
     "items": [
@@ -3479,7 +3479,7 @@ const ITINERARY_DATA={
         "details": [
           "Sleep in, pack slowly and check out by 11:00 AM."
         ],
-        "route": "Next: brunch at Five Mile · walk or take a short drive.",
+        "route": "From here: brunch at Five Mile · walk or take a short drive.",
         "map": "https://maps.google.com/?q=Sudima+Queenstown+Five+Mile+22+Grant+Road+Frankton+Queenstown",
         "type": "rest",
         "dayId": "day5",
@@ -3494,7 +3494,7 @@ const ITINERARY_DATA={
           "Relaxed brunch near Sudima before driving into Queenstown.",
           "Options: Moinho Cafe or Joe's Garage Five Mile."
         ],
-        "route": "Next: drive to Queenstown CBD, park and walk to Earnslaw Park.",
+        "route": "From here: drive to Queenstown CBD, park and walk to Earnslaw Park.",
         "map": "https://maps.google.com/?q=Hustl+Cafe+Five+Mile+Queenstown",
         "type": "meal",
         "dayId": "day5",
@@ -3514,7 +3514,7 @@ const ITINERARY_DATA={
         "details": [
           "Browse local crafts, gifts and snacks at Earnslaw Park, then enjoy a short lakefront wander."
         ],
-        "route": "Next: Windsor Lodge · leave by about 2:40 PM for 3:00 PM check-in.",
+        "route": "From here: Windsor Lodge · leave by about 2:40 PM for 3:00 PM check-in.",
         "map": "https://maps.google.com/?q=Queenstown+Market+Earnslaw+Park+Queenstown",
         "type": "experience",
         "dayId": "day5",
@@ -3528,7 +3528,7 @@ const ITINERARY_DATA={
         "details": [
           "Check in together, allocate rooms and unload the cars."
         ],
-        "route": "Next: FreshChoice Queenstown for breakfast, drinks and snacks.",
+        "route": "From here: FreshChoice Queenstown for breakfast, drinks and snacks.",
         "map": "https://maps.google.com/?q=7+Windsor+Place+Queenstown",
         "type": "rest",
         "dayId": "day5",
@@ -3592,8 +3592,8 @@ const ITINERARY_DATA={
         "Kiwi Park",
         "Queenstown town centre"
       ],
-      "note": "All three families do the original Day 5 activities together. Most movement around Brecon Street and town is on foot once parked.",
-      "contingency": "Keep Kiwi Park optional if Skyline runs late or the group is tired.",
+      "note": "All three families are together today. Once parked near Brecon Street, most of the Skyline and town area is easy to explore on foot.",
+      "contingency": "Kiwi Park is optional; decide after Skyline depending on weather and how everyone feels.",
       "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=7+Windsor+Place%2C+Queenstown%2C+New+Zealand&destination=7+Windsor+Place%2C+Queenstown%2C+New+Zealand&travelmode=driving&waypoints=Skyline+Queenstown%2C+53+Brecon+Street%2C+Queenstown%2C+New+Zealand%7CQueenstown+Central%2C+Queenstown%2C+New+Zealand"
     },
     "items": [
@@ -3604,7 +3604,7 @@ const ITINERARY_DATA={
         "details": [
           "Breakfast together before heading to Skyline."
         ],
-        "route": "Next: Skyline Queenstown · allow for parking and the walk to Brecon Street.",
+        "route": "From here: Skyline Queenstown · allow for parking and the walk to Brecon Street.",
         "type": "meal",
         "dayId": "day6",
         "placeId": "queenstown-house",
@@ -3617,7 +3617,7 @@ const ITINERARY_DATA={
         "details": [
           "Check the booked gondola and Luge session times before departure."
         ],
-        "route": "Next: Luge · within the Skyline complex.",
+        "route": "From here: Luge · within the Skyline complex.",
         "map": "https://maps.google.com/?q=Skyline+Queenstown+53+Brecon+Street%2C+Queenstown+9300%2C+New+Zealand",
         "type": "experience",
         "dayId": "day6",
@@ -3631,7 +3631,7 @@ const ITINERARY_DATA={
         "details": [
           "Consider a multi-ride family pass."
         ],
-        "route": "Next: Fergbaker / town lunch · gondola down, then walk.",
+        "route": "From here: Fergbaker / town lunch · gondola down, then walk.",
         "map": "https://maps.google.com/?q=Skyline+Queenstown+53+Brecon+Street%2C+Queenstown+9300%2C+New+Zealand",
         "type": "experience",
         "dayId": "day6",
@@ -3645,7 +3645,7 @@ const ITINERARY_DATA={
         "details": [
           "Pies, pastries, sandwiches and sweet baked goods beside Fergburger."
         ],
-        "route": "Next: Kiwi Park · about 10 min walk.",
+        "route": "From here: Kiwi Park · about 10 min walk.",
         "map": "https://maps.google.com/?q=Fergbaker",
         "type": "meal",
         "dayId": "day6",
@@ -3662,9 +3662,9 @@ const ITINERARY_DATA={
         "time": "Afternoon",
         "title": "🐦 Kiwi Park Queenstown",
         "details": [
-          "Optional if the group is tired or Skyline runs late."
+          "Optional; decide after Skyline depending on how everyone feels."
         ],
-        "route": "Next: dinner in Queenstown town centre.",
+        "route": "From here: dinner in Queenstown town centre.",
         "map": "https://maps.google.com/?q=Kiwi+Park+Queenstown+51+Brecon+Street%2C+Queenstown+9300%2C+New+Zealand",
         "type": "experience",
         "dayId": "day6",
@@ -3719,7 +3719,7 @@ const ITINERARY_DATA={
         "details": [
           "Breakfast at the accommodation."
         ],
-        "route": "Next: Historic Arrowtown · ≈ 20–25 min drive.",
+        "route": "From here: Historic Arrowtown · ≈ 20–25 min drive.",
         "type": "meal",
         "dayId": "day7",
         "placeId": "queenstown-house",
@@ -3732,7 +3732,7 @@ const ITINERARY_DATA={
         "details": [
           "Allow a departure buffer before leaving Queenstown."
         ],
-        "route": "Next: Chinese Settlement · ≈ 5–10 min walk.",
+        "route": "From here: Chinese Settlement · ≈ 5–10 min walk.",
         "map": "https://maps.google.com/?q=Historic+Arrowtown+Buckingham+Street%2C+Arrowtown+9302%2C+New+Zealand",
         "type": "experience",
         "dayId": "day7",
@@ -3750,7 +3750,7 @@ const ITINERARY_DATA={
         "details": [
           "Keep timing flexible according to weather, queues and family energy."
         ],
-        "route": "Next: Arrowtown lunch · ≈ 5–10 min walk.",
+        "route": "From here: Arrowtown lunch · ≈ 5–10 min walk.",
         "map": "https://maps.google.com/?q=Arrowtown+Chinese+Settlement+Chinese+Village%2C+Arrowtown+9302%2C+New+Zealand",
         "type": "experience",
         "dayId": "day7",
@@ -3764,7 +3764,7 @@ const ITINERARY_DATA={
         "details": [
           "A traditional Arrowtown bakery known for savoury pies, pastries and quick takeaway food — useful when the group wants an easy lunch without a full restaurant booking."
         ],
-        "route": "Next: Deer Park Heights · ≈ 25–30 min drive.",
+        "route": "From here: Deer Park Heights · ≈ 25–30 min drive.",
         "map": "https://maps.google.com/?q=Arrowtown%20Bakery",
         "type": "meal",
         "dayId": "day7",
@@ -3783,7 +3783,7 @@ const ITINERARY_DATA={
         "details": [
           "Use rental-car registration for gate access. Bring small NZ coins for animal feed if still required."
         ],
-        "route": "Next: Queenstown dinner · ≈ 20–25 min drive.",
+        "route": "From here: Queenstown dinner · ≈ 20–25 min drive.",
         "map": "https://maps.google.com/?q=Deer+Park+Heights+432+Peninsula+Road%2C+Kelvin+Heights%2C+Queenstown+9300%2C+New+Zealand",
         "type": "experience",
         "dayId": "day7",
@@ -3797,7 +3797,7 @@ const ITINERARY_DATA={
         "details": [
           "A casual Queenstown restaurant serving large portions of ribs, steaks, burgers and other hearty New Zealand-style meals."
         ],
-        "route": "Next: Windsor Lodge · ≈ 10 min drive.",
+        "route": "From here: Windsor Lodge · ≈ 10 min drive.",
         "map": "https://maps.google.com/?q=Lone+Star+Queenstown+14+Brecon+Street%2C+Queenstown+9300%2C+New+Zealand",
         "type": "meal",
         "dayId": "day7",
@@ -3838,7 +3838,7 @@ const ITINERARY_DATA={
         "details": [
           "Breakfast at the accommodation."
         ],
-        "route": "Next: check out, then optional fuel stop before leaving Queenstown.",
+        "route": "From here: check out, then optional fuel stop before leaving Queenstown.",
         "type": "meal",
         "dayId": "day8",
         "placeId": "queenstown-house",
@@ -3852,7 +3852,7 @@ const ITINERARY_DATA={
           "Optional top-up before the longer drive to Te Anau.",
           "Use this stop if the tank is below half."
         ],
-        "route": "Next: leave Queenstown for Kingston / Te Anau.",
+        "route": "From here: leave Queenstown for Kingston / Te Anau.",
         "type": "transport",
         "dayId": "day8",
         "placeId": null,
@@ -3868,7 +3868,7 @@ const ITINERARY_DATA={
           "Begin the relaxed transfer to Te Anau after check-out and any fuel stop.",
           "Kingston remains an optional comfort stop."
         ],
-        "route": "Next: optional Kingston lakefront stop · ≈ 35–40 min drive.",
+        "route": "From here: optional Kingston lakefront stop · ≈ 35–40 min drive.",
         "map": "https://maps.google.com/?q=7+Windsor+Place+Queenstown",
         "type": "transport",
         "dayId": "day8",
@@ -3882,7 +3882,7 @@ const ITINERARY_DATA={
         "details": [
           "Short toilet, stretch and lake-view break on the drive to Te Anau."
         ],
-        "route": "Next: Sandfly Cafe, Te Anau · ≈ 1 hr 35 min drive.",
+        "route": "From here: Sandfly Cafe, Te Anau · ≈ 1 hr 35 min drive.",
         "type": "rest",
         "dayId": "day8",
         "placeId": null,
@@ -3897,7 +3897,7 @@ const ITINERARY_DATA={
         "details": [
           "A casual Te Anau cafe serving breakfast, brunch, coffee and light lunch dishes — a practical first meal after the drive from Queenstown."
         ],
-        "route": "Next: FreshChoice Te Anau · ≈ 2–4 min drive.",
+        "route": "From here: FreshChoice Te Anau · ≈ 2–4 min drive.",
         "map": "https://maps.google.com/?q=Sandfly%20Cafe",
         "type": "meal",
         "dayId": "day8",
@@ -3911,7 +3911,7 @@ const ITINERARY_DATA={
         "details": [
           "Buy breakfast supplies, fresh food, drinks and Milford-day snacks for the Te Anau stay."
         ],
-        "route": "Next: Lakefront Lodge · ≈ 3–5 min drive.",
+        "route": "From here: Lakefront Lodge · ≈ 3–5 min drive.",
         "map": "https://maps.google.com/?q=FreshChoice+Te+Anau+5+Milford+Crescent+Te+Anau",
         "type": "shopping",
         "dayId": "day8",
@@ -3925,7 +3925,7 @@ const ITINERARY_DATA={
         "details": [
           "Check in for 2 nights."
         ],
-        "route": "Next: Te Anau Bird Sanctuary · ≈ 5 min drive.",
+        "route": "From here: Te Anau Bird Sanctuary · ≈ 5 min drive.",
         "map": "https://maps.google.com/?q=Lakefront+Lodge+58+Lakefront+Drive%2C+Te+Anau+9600%2C+New+Zealand",
         "type": "rest",
         "dayId": "day8",
@@ -3937,9 +3937,9 @@ const ITINERARY_DATA={
         "time": "Afternoon",
         "title": "🐦 Te Anau Bird Sanctuary and lakeside walk",
         "details": [
-          "Optional if the transfer runs late."
+          "Optional; decide on arrival depending on how everyone feels."
         ],
-        "route": "Next: Te Anau lakefront / town · ≈ 5 min drive.",
+        "route": "From here: Te Anau lakefront / town · ≈ 5 min drive.",
         "map": "https://maps.google.com/?q=Te+Anau+Bird+Sanctuary+Punanga+Manu+o+Te+Ana-au%2C+Lakefront+Drive%2C+Te+Anau+9600%2C+New+Zealand",
         "type": "experience",
         "dayId": "day8",
@@ -3953,7 +3953,7 @@ const ITINERARY_DATA={
         "details": [
           "A compact Te Anau pie shop specialising in savoury takeaway pies."
         ],
-        "route": "Next: Lakefront Lodge · ≈ 5 min drive.",
+        "route": "From here: Lakefront Lodge · ≈ 5 min drive.",
         "map": "https://maps.google.com/?q=Miles%20Better%20Pies",
         "type": "meal",
         "dayId": "day8",
@@ -4007,7 +4007,7 @@ const ITINERARY_DATA={
           "Be outside the main entrance near the street by 8:55 AM.",
           "Lunch is not arranged yet; prepare food beforehand or plan to purchase food onboard."
         ],
-        "route": "Next: Luxe Tours hotel pickup · approximately 9:05–9:15 AM.",
+        "route": "From here: Luxe Tours hotel pickup · approximately 9:05–9:15 AM.",
         "type": "meal",
         "dayId": "day9",
         "placeId": null,
@@ -4043,7 +4043,7 @@ const ITINERARY_DATA={
           "The group may prepare food before departure or purchase food onboard the cruise.",
           "Confirm the final lunch plan later. Morning café snacks are included."
         ],
-        "route": "Next: Continue the Luxe Tours itinerary and return to Te Anau.",
+        "route": "From here: Continue the Luxe Tours itinerary and return to Te Anau.",
         "type": "meal",
         "dayId": "day9",
         "placeId": null,
@@ -4058,7 +4058,7 @@ const ITINERARY_DATA={
         "details": [
           "A Te Anau cafe and restaurant serving breakfast, cafe meals and New Zealand-style dinner dishes; a sit-down alternative when the group wants more than takeaway pies."
         ],
-        "route": "Next: Lakefront Lodge · short drive or walk, depending on the selected restaurant.",
+        "route": "From here: Lakefront Lodge · short drive or walk, depending on the selected restaurant.",
         "type": "meal",
         "dayId": "day9",
         "placeId": "fat-duck",
@@ -4104,7 +4104,7 @@ const ITINERARY_DATA={
         "details": [
           "A casual Te Anau cafe serving breakfast, brunch, coffee and light lunch dishes before the drive to Queenstown."
         ],
-        "route": "Next: Lakefront Lodge check-out · short drive or walk, depending on the selected cafe.",
+        "route": "From here: Lakefront Lodge check-out · short drive or walk, depending on the selected cafe.",
         "type": "meal",
         "dayId": "day10",
         "placeId": "sandfly-cafe",
@@ -4123,7 +4123,7 @@ const ITINERARY_DATA={
         "details": [
           "Complete check-out before the 10:00 am hotel deadline."
         ],
-        "route": "Next: leave Te Anau around 09:30.",
+        "route": "From here: leave Te Anau around 09:30.",
         "map": "https://maps.google.com/?q=Lakefront+Lodge+58+Lakefront+Drive%2C+Te+Anau+9600%2C+New+Zealand",
         "type": "rest",
         "dayId": "day10",
@@ -4136,9 +4136,9 @@ const ITINERARY_DATA={
         "title": "🚙 Leave Te Anau",
         "details": [
           "Allow around two hours twenty minutes plus any comfort stop.",
-          "Protect the airport buffer and skip optional stops if delayed."
+          "The airport is the only fixed endpoint; keep any stops on the drive flexible."
         ],
-        "route": "Next: Saigon Kingdom Viet · ≈ 2 hr 20 min drive.",
+        "route": "From here: Saigon Kingdom Viet · ≈ 2 hr 20 min drive.",
         "map": "https://maps.google.com/?q=Te%20Anau",
         "type": "transport",
         "dayId": "day10",
@@ -4152,7 +4152,7 @@ const ITINERARY_DATA={
         "details": [
           "A Vietnamese restaurant in the Frankton area serving familiar noodle soups, rice dishes and other Vietnamese comfort food — practical before the airport or while shopping nearby."
         ],
-        "route": "Next: Rental Cars 247 return depot · ≈ 5–10 min drive.",
+        "route": "From here: Rental Cars 247 return depot · ≈ 5–10 min drive.",
         "map": "https://maps.google.com/?q=Saigon%20Kingdom%20Viet",
         "type": "meal",
         "dayId": "day10",
@@ -4172,7 +4172,7 @@ const ITINERARY_DATA={
           "Required before returning the rental car.",
           "Fill the tank, then continue to the rental depot."
         ],
-        "route": "Next: Rental Cars 247 depot · ≈ 5–10 min drive.",
+        "route": "From here: Rental Cars 247 depot · ≈ 5–10 min drive.",
         "type": "transport",
         "dayId": "day10",
         "placeId": null,
@@ -4188,7 +4188,7 @@ const ITINERARY_DATA={
           "Return depot · 2/13 Red Oaks Drive, Frankton.",
           "Use the depot shuttle to Queenstown Airport after handover."
         ],
-        "route": "Next: Queenstown Airport by rental-company shuttle.",
+        "route": "From here: Queenstown Airport by rental-company shuttle.",
         "map": "https://maps.google.com/?q=Rental+Cars+247+2%2F13+Red+Oaks+Drive+Frankton+Queenstown",
         "type": "transport",
         "dayId": "day10",
@@ -4202,7 +4202,7 @@ const ITINERARY_DATA={
         "details": [
           "Take the Rental Cars 247 shuttle after the vehicle handover."
         ],
-        "route": "Next: check in for VA146.",
+        "route": "From here: check in for VA146.",
         "map": "https://maps.google.com/?q=Queenstown+Airport+Sir+Henry+Wigley+Drive+Frankton",
         "type": "transport",
         "dayId": "day10",
@@ -4217,7 +4217,7 @@ const ITINERARY_DATA={
           "Lee family only.",
           "VA146 · ZQN 18:40 → MEL T2 19:10."
         ],
-        "route": "Next: Melbourne arrival · 19:10 local time.",
+        "route": "From here: Melbourne arrival · 19:10 local time.",
         "map": "https://maps.google.com/?q=Queenstown+Airport+Sir+Henry+Wigley+Drive%2C+Frankton%2C+Queenstown+9300%2C+New+Zealand",
         "type": "transport",
         "dayId": "day10",
