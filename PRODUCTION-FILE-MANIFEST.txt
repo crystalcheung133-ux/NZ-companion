@@ -1,9 +1,12 @@
-Travel Engine Production File Manifest
-Generated: 2026-08-15
-Release: NZ-RC25.4.2-ENGINE-25.6.2-CI-GATE-CANDIDATE
+Saigon Companion Production File Manifest
+Generated: 2026-09-18
+Base: NZ Companion RC25.5.3
+Reference trip: Vietnam
+
 Production root files:
 
 - .vercelignore
+- RELEASE.json
 - admin.js
 - analytics-runtime.js
 - app-runtime.js
@@ -14,6 +17,9 @@ Production root files:
 - currency-runtime.js
 - data.js
 - day.html
+- documents-runtime.js
+- documents.html
+- documents.js
 - engine-integrity.js
 - expense-notification-runtime.js
 - expense-sync-runtime.js

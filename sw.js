@@ -1,5 +1,5 @@
 importScripts('./theme-config.js', './asset-config.js', './locale-config.js', './formatter.js', './navigation-config.js', './trip-config.js', './storage-config.js');
-const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-nz25-3-1-dual-currency-badge-fix`;
+const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-nz25-7-1-documents-v1`;
 const CRITICAL_EXTENSIONS = /\.(?:css|js)$/i;
 const ASSETS = [
   './',
@@ -58,6 +58,10 @@ const ASSETS = [
   './itinerary.html',
   './memory.html',
   './moments.html',
+  './documents.html',
+  './documents-runtime.js',
+  './documents.js',
+  './documents/Edgewater-First-Table-JL8DQZ.pdf',
   './expenses.html',
   './trip.html'
 ];
