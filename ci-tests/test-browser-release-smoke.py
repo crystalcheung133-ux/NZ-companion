@@ -135,6 +135,7 @@ def select_admin(page):
 
 def run_viewport(browser,base,viewport,label):
       context=browser.new_context(viewport=viewport)
+      context.add_init_script("localStorage.setItem('nz_friend','lee')")
       page=context.new_page()
       errors=[]
       page.on('pageerror',lambda e: errors.append(str(e)))
@@ -158,6 +159,7 @@ def run_viewport(browser,base,viewport,label):
 
         page.reload(wait_until='domcontentloaded')
         page.evaluate("document.getElementById('ccmvSplash')?.remove()")
+        select_admin(page)
         assert_studio_closed_clean(page,label+' reload')
         page.locator('.friend-pill').click()
         page.wait_for_selector('#tripStudioModal.show')

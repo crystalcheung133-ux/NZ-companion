@@ -599,8 +599,12 @@ function openDeepLinkedBooking(){
   const bookingId=new URLSearchParams(window.location.search).get('bookingId');
   if(!bookingId)return;
   const booking=getBookingById(bookingId);
-  if(!booking)return;
-  setTimeout(function(){returnToBookingDetail(bookingId,booking);},0);
+  if(!booking){document.documentElement.classList.add('handoff-ready');document.documentElement.classList.remove('handoff-prepaint');return;}
+  setTimeout(function(){
+    returnToBookingDetail(bookingId,booking);
+    document.documentElement.classList.add('handoff-ready');
+    document.documentElement.classList.remove('handoff-prepaint');
+  },0);
 }
 document.addEventListener('DOMContentLoaded',openDeepLinkedBooking);
 

@@ -2856,3 +2856,11 @@ body.documents-page .docs-form{display:grid!important;gap:0!important}
   .document-entry-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}
   .document-entry-actions .mini-btn:nth-child(n+3){grid-column:1/-1}
 }
+
+/* RC25.7.8 — canonical foreground handoff / modal layering */
+html.handoff-prepaint body{visibility:hidden}
+html.handoff-ready body{visibility:visible}
+.trip-modal,.guide-modal,.moments-modal{z-index:9000!important}
+.trip-modal.show,.guide-modal.show,.moments-modal.show{padding-top:max(18px,env(safe-area-inset-top,0px))!important}
+.trip-modal .trip-sheet,.guide-modal .guide-sheet{position:relative;z-index:1;max-height:calc(100dvh - 36px - env(safe-area-inset-top,0px));overflow:auto}
+.documents-page .doc-viewer{z-index:9200!important}

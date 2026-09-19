@@ -67,3 +67,6 @@ python ci-tests/test-documents-return-hidpi-edgewater.py
 
 echo "== DOCUMENT NAV + CARD + RETURN V2 =="
 python ci-tests/test-documents-nav-card-return-v2.py
+
+echo "== HANDOFF + FOREGROUND + RELEASE IDENTITY == "
+python ci-tests/test-handoff-layer-release-gate.py
