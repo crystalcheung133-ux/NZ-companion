@@ -483,7 +483,7 @@ function openBookingEdit(bookingId){
   const booking=getBookingById(bookingId);if(!booking)return;
   const content=document.getElementById('tripModalContent');const modal=document.getElementById('tripModal');if(!content||!modal)return;
   activeBookingDetail={type:booking.type,id:bookingId};
-  content.innerHTML=`<div class="trip-onepage booking-edit-onepage"><button class="accommodation-back" type="button" onclick="requestBookingEditClose('${escapeTripHTML(bookingId)}')">‹ Booking details</button><p class="kicker">Trip Studio · Booking</p><h2>Edit ${escapeTripHTML(booking.title)}</h2><form id="bookingEditForm" class="booking-edit-form" novalidate onsubmit="return saveBookingEdit(event,'${escapeTripHTML(bookingId)}')"><div class="booking-edit-grid">${bookingEditFields(booking)}</div>${bookingAttachmentsHTML(bookingId)}<div class="booking-edit-actions"><button class="pill" type="button" onclick="requestBookingEditClose('${escapeTripHTML(bookingId)}')">Cancel</button><button class="pill booking-delete-btn" type="button" onclick="deleteBookingRecord('${escapeTripHTML(bookingId)}')">Delete Booking</button><button class="pill booking-edit-save" type="submit">Save Booking</button></div><p class="timestamp">Pending and not booked are the same state. Remove bookings that are cancelled and no longer needed.</p></form></div>`;
+  content.innerHTML=`<div class="trip-onepage booking-edit-onepage"><button class="accommodation-back" type="button" onclick="requestBookingEditClose('${escapeTripHTML(bookingId)}')">‹ Booking details</button><p class="kicker">Trip Studio · Booking</p><h2>Edit ${escapeTripHTML(booking.title)}</h2><form id="bookingEditForm" class="booking-edit-form" novalidate onsubmit="return saveBookingEdit(event,'${escapeTripHTML(bookingId)}')"><div class="booking-edit-grid">${bookingEditFields(booking)}</div><div class="booking-edit-actions"><button class="pill" type="button" onclick="requestBookingEditClose('${escapeTripHTML(bookingId)}')">Cancel</button><button class="pill booking-delete-btn" type="button" onclick="deleteBookingRecord('${escapeTripHTML(bookingId)}')">Delete Booking</button><button class="pill booking-edit-save" type="submit">Save Booking</button></div><p class="timestamp">Pending and not booked are the same state. Remove bookings that are cancelled and no longer needed.</p></form></div>`;
   modal.classList.add('show');
   const form=document.getElementById('bookingEditForm');
   bookingEditSession={bookingId:bookingId,initialSnapshot:bookingEditFormSnapshot(form)};
@@ -595,8 +595,6 @@ async function saveBookingEdit(event,bookingId){
     alert('Could not finish saving the booking. Please try again.');
     return false;
   }
-  try{await savePendingBookingAttachment(form,outcome.booking||next);}
-  catch(attachmentError){console.error('Booking attachment save failed',attachmentError);alert('Booking saved, but the attachment could not be saved. Please try attaching it again.');}
   clearBookingEditSession();
   if(saveButton)saveButton.textContent=outcome.degraded?'Saved · sync pending':'Saved ✓';
   try{document.dispatchEvent(new CustomEvent('travelengine:bookingchange',{detail:{bookingId:bookingId,booking:outcome.booking,syncPending:outcome.degraded}}));}

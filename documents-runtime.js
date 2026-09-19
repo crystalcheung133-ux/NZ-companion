@@ -9,10 +9,23 @@ function read(){let x=[];try{x=store?.readJSON?store.readJSON(KEY,[]):JSON.parse
 function write(x){if(store?.writeJSON)store.writeJSON(KEY,x);else localStorage.setItem(KEY,JSON.stringify(x));document.dispatchEvent(new CustomEvent('travelengine:documentschanged'))}
 function configured(){return !!(cfg.enabled&&cfg.url&&cfg.anonKey&&root.SUPABASE?.isConfigured?.())}
 async function cloudUpload(doc,file){if(!configured()||!navigator.onLine)return doc;await root.SUPABASE.getSession();const c=root.SUPABASE.getClient();const safe=(file.name||'document').replace(/[^a-zA-Z0-9._-]+/g,'-');const path=`${cfg.tripId}/${doc.id}/${safe}`;const up=await c.storage.from(bucket).upload(path,file,{upsert:true,contentType:file.type||'application/octet-stream'});if(up.error)throw up.error;const pub=c.storage.from(bucket).getPublicUrl(path).data?.publicUrl;doc.fileUrl=pub||doc.fileUrl;doc.filePath=path;const row={id:doc.id,trip_id:cfg.tripId,payload:doc,created_at:doc.createdAt,updated_at:doc.updatedAt};const q=await c.from(table).upsert(row,{onConflict:'id'});if(q.error)throw q.error;return doc}
-async function add(meta,file){const now=new Date().toISOString(),doc={id:uuid(),title:meta.title||file?.name||'Document',category:meta.category||'Other',note:meta.note||'',pinned:!!meta.pinned,linkType:meta.linkType||'trip',linkId:meta.linkId||'',linkLabel:meta.linkLabel||'Trip-wide',fileName:file?.name||'',mimeType:file?.type||'',createdAt:now,updatedAt:now};if(file){const url=URL.createObjectURL(file);doc.localObjectUrl=url;try{await cloudUpload(doc,file)}catch(e){doc.uploadPending=true;doc.uploadError=e.message||String(e)}}const list=read().filter(x=>x.id!==doc.id);list.push(doc);write(list);return doc}
-async function sync(){if(!configured()||!navigator.onLine)return read();try{await root.SUPABASE.getSession();const c=root.SUPABASE.getClient();const q=await c.from(table).select('payload').eq('trip_id',cfg.tripId);if(q.error)throw q.error;const local=read(), map=new Map(local.map(x=>[x.id,x]));(q.data||[]).forEach(r=>{const d=r.payload;if(d?.id&&!d.seeded)map.set(d.id,d)});const out=[...map.values()];write(out);return out}catch(e){return read()}}
+
+function fileToBase64(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result||'').split(',')[1]||'');r.onerror=()=>reject(r.error||new Error('file-read-failed'));r.readAsDataURL(file)})}
+function base64ToFile(d){if(!d.pendingBase64)return null;const raw=atob(d.pendingBase64),bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);return new File([bytes],d.fileName||'document',{type:d.mimeType||'application/octet-stream'})}
+async function retryPending(list){
+ if(!configured()||!navigator.onLine)return list;
+ let changed=false;
+ for(const d of list){
+  if(!d.uploadPending||!d.pendingBase64)continue;
+  try{const f=base64ToFile(d);await cloudUpload(d,f);delete d.uploadPending;delete d.uploadError;delete d.pendingBase64;d.updatedAt=new Date().toISOString();changed=true}catch(e){d.uploadError=e.message||String(e)}
+ }
+ if(changed)write(list);
+ return list;
+}
+
+async function add(meta,file){const now=new Date().toISOString(),doc={id:uuid(),title:meta.title||file?.name||'Document',category:meta.category||'Other',note:meta.note||'',pinned:!!meta.pinned,linkType:'trip',linkId:'',linkLabel:'Trip-wide',fileName:file?.name||'',mimeType:file?.type||'',createdAt:now,updatedAt:now};if(file){doc.localObjectUrl=URL.createObjectURL(file);try{await cloudUpload(doc,file)}catch(e){doc.uploadPending=true;doc.uploadError=e.message||String(e);if(file.size<=2500000)try{doc.pendingBase64=await fileToBase64(file)}catch(_){} }}const list=read().filter(x=>x.id!==doc.id);list.push(doc);write(list);return doc}
+async function sync(){let local=read();if(!configured()||!navigator.onLine)return local;try{local=await retryPending(local);await root.SUPABASE.getSession();const c=root.SUPABASE.getClient();const q=await c.from(table).select('payload').eq('trip_id',cfg.tripId);if(q.error)throw q.error;const map=new Map(local.map(x=>[x.id,x]));(q.data||[]).forEach(r=>{const d=r.payload;if(!d?.id||d.seeded)return;const l=map.get(d.id);if(!l||String(d.updatedAt||'')>=String(l.updatedAt||'')||!l.uploadPending)map.set(d.id,d)});const out=[...map.values()];write(out);return out}catch(e){return read()}}
 function update(id,patch){const list=read(),i=list.findIndex(x=>x.id===id);if(i<0)return;list[i]=Object.assign({},list[i],patch,{updatedAt:new Date().toISOString()});write(list);if(configured()&&navigator.onLine&&!list[i].seeded){root.SUPABASE.getSession().then(()=>root.SUPABASE.getClient().from(table).upsert({id:list[i].id,trip_id:cfg.tripId,payload:list[i],created_at:list[i].createdAt,updated_at:list[i].updatedAt},{onConflict:'id'})).catch(()=>{})}}
 function remove(id){const d=read().find(x=>x.id===id);if(d?.seeded)return false;write(read().filter(x=>x.id!==id));if(configured()&&navigator.onLine)root.SUPABASE.getSession().then(()=>root.SUPABASE.getClient().from(table).delete().eq('id',id).eq('trip_id',cfg.tripId)).catch(()=>{});return true}
-function byBooking(bookingId){return read().filter(d=>d.linkType==='booking'&&d.linkId===bookingId)}
-root.TRIP_DOCUMENTS=Object.freeze({read,add,sync,update,remove,byBooking});
+root.TRIP_DOCUMENTS=Object.freeze({read,add,sync,update,remove});
 })(globalThis);

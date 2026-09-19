@@ -46,5 +46,6 @@ python ci-tests/test-documents-js-scope.py
 echo "== CALM TIMELINE CONTRACT =="
 python ci-tests/test-calm-timeline-contract.py
 
-echo "== BOOKING DOCUMENTS V2 =="
-python ci-tests/test-booking-documents-v2.py
+
+echo "== CALM DOCUMENTS UI + SYNC =="
+python ci-tests/test-documents-calm-ui-sync.py
