@@ -52,3 +52,6 @@ python ci-tests/test-documents-calm-ui-sync.py
 
 echo "== DOCUMENTS RUNTIME CLEAN =="
 python ci-tests/test-documents-runtime-clean.py
+
+echo "== DOCUMENT EDIT + VIEWER CLOSE =="
+python ci-tests/test-documents-edit-viewer-contract.py

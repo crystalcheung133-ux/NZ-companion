@@ -2821,7 +2821,7 @@ body.documents-page .doc-viewer{display:none!important;position:fixed!important;
 body.documents-page .doc-viewer.show{display:grid!important}
 body.documents-page .doc-viewer-head{position:relative!important;z-index:2!important;display:grid!important;grid-template-columns:42px minmax(0,1fr) 42px!important;align-items:center!important;gap:8px!important;min-height:58px!important;padding:8px 12px!important;background:rgba(255,255,255,.96)!important;border-bottom:1px solid var(--line)!important}
 body.documents-page .doc-viewer-head h2{font-size:16px!important;line-height:1.25!important;margin:0!important;text-align:center!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
-body.documents-page .doc-viewer-close{grid-column:1!important;width:38px!important;height:38px!important;border:0!important;border-radius:999px!important;background:var(--soft,#eef1f2)!important}
+body.documents-page .doc-viewer-close{grid-column:3!important;justify-self:end!important;width:38px!important;height:38px!important;border:0!important;border-radius:999px!important;background:var(--soft,#eef1f2)!important}
 body.documents-page .doc-viewer-body{min-height:0!important;overflow:auto!important;padding:12px!important;-webkit-overflow-scrolling:touch!important}
 body.documents-page .doc-viewer-body img,body.documents-page .pdf-page{display:block!important;max-width:100%!important;height:auto!important;margin:0 auto 12px!important}
 @media(max-width:600px){body.documents-page .docs-sheet{width:100%!important;border-radius:26px 26px 0 0!important;max-height:84dvh!important}body.documents-page .docs-sheet h2{font-size:32px!important}}

@@ -10,10 +10,23 @@ function render(){
      <div class="doc-simple-copy"><h3>${esc(d.title)}</h3>${d.note?`<p>${esc(d.note)}</p>`:''}${d.uploadPending?`<small class="doc-sync-state">Not synced</small>`:''}</div>
      <button class="pin-btn" onclick="togglePin('${esc(d.id)}')" aria-label="${d.pinned?'Unpin':'Pin'}">${d.pinned?'📌':'📍'}</button>
    </div>
-   <div class="doc-actions"><button class="pill" onclick="openDocumentViewer('${esc(d.id)}')">Open</button>${d.uploadPending?`<button class="pill" onclick="repairDocument('${esc(d.id)}')">Choose file to sync</button>`:''}${d.seeded?'':`<button class="pill danger" onclick="deleteDoc('${esc(d.id)}')">Delete</button>`}</div>
+   <div class="doc-actions"><button class="pill" onclick="openDocumentViewer('${esc(d.id)}')">Open</button><button class="pill" onclick="openEditDocument('${esc(d.id)}')">Edit</button>${d.uploadPending?`<button class="pill" onclick="repairDocument('${esc(d.id)}')">Choose file to sync</button>`:''}${d.seeded?'':`<button class="pill danger" onclick="deleteDoc('${esc(d.id)}')">Delete</button>`}</div>
  </article>`;
  box.innerHTML=list.map(card).join('')||'<div class="empty-state">No documents yet.</div>';
 }
+
+
+root.openEditDocument=id=>{
+ const d=root.TRIP_DOCUMENTS.read().find(x=>x.id===id);if(!d)return;
+ $('editDocId').value=d.id;$('editDocTitle').value=d.title||'';$('editDocCategory').value=d.category||'Other';$('editDocPin').checked=!!d.pinned;
+ $('editDocModal').classList.add('show');$('editDocModal').setAttribute('aria-hidden','false');
+};
+root.closeEditDocument=()=>{$('editDocModal').classList.remove('show');$('editDocModal').setAttribute('aria-hidden','true')};
+root.saveDocumentEdit=()=>{
+ const id=$('editDocId').value;if(!id)return;
+ root.TRIP_DOCUMENTS.update(id,{title:$('editDocTitle').value.trim()||'Document',category:$('editDocCategory').value,pinned:$('editDocPin').checked});
+ root.closeEditDocument();render();
+};
 
 root.repairDocument=id=>{
  const doc=root.TRIP_DOCUMENTS.read().find(d=>d.id===id);if(!doc)return;
