@@ -17,9 +17,9 @@
     'depositPaid','depositAmount','depositCurrency','paymentStatus','totalAmount','cashbackAmount','netTotalAUD','price','paymentLabel','balanceDue','payAtPickup',
     'usefulLinks','notes','cancellation','website','bookingUrl','email','phone'
   ]);
-  const MASTER_PROTECTED_FIELDS=new Set([
-    'depositPaid','depositAmount','depositCurrency','paymentStatus','totalAmount','cashbackAmount','netTotalAUD','price','paymentLabel','balanceDue','payAtPickup','usefulLinks'
-  ]);
+  // Only deploy-added useful links are protected when importing a stale whole-booking snapshot.
+  // Payment fields are Studio-owned editable state and must round-trip exactly.
+  const MASTER_PROTECTED_FIELDS=new Set(['usefulLinks']);
 
   function sanitizeLegacyOverride(id,record){
     const out=clone(record)||{};
@@ -30,7 +30,7 @@
         const raw=String(out[field]??'').trim();
         const numeric=(raw.match(/\d[\d,]*(?:\.\d+)?/)||[])[0];
         const normalized=numeric?numeric.replace(/,/g,''):'';
-        if(/^AUD\b/i.test(raw)||legacyAmounts.has(normalized))delete out[field];
+        if(legacyAmounts.has(normalized))delete out[field];
       });
     }
     const base=DEPLOY_MASTER&&DEPLOY_MASTER[id];
@@ -60,14 +60,8 @@
     return out;
   }
   function enforceDeployInvariants(base,resolved){
-    const out=Object.assign({},clone(resolved));
-    if(base&&base.id==='car-rental'){
-      ['totalAmount','depositPaid','depositAmount','depositCurrency','paymentStatus','balanceDue','payAtPickup','netTotalAUD','price','paymentLabel'].forEach(function(field){
-        if(Object.prototype.hasOwnProperty.call(base,field))out[field]=clone(base[field]);
-        else delete out[field];
-      });
-    }
-    return out;
+    // No booking payment field is deploy-locked: Studio edits are authoritative.
+    return Object.assign({},clone(resolved));
   }
   function mergeOverride(base,override){
     if(!override||typeof override!=='object')return enforceDeployInvariants(base,clone(base));

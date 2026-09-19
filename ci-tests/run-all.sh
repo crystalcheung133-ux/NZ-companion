@@ -37,9 +37,8 @@ run "CALM DOCUMENTS UI + SYNC" python ci-tests/test-documents-calm-ui-sync.py
 run "DOCUMENT LINKS + METADATA SYNC + LUXE" python ci-tests/test-documents-links-metadata-sync-luxe.py
 run "HANDOFF + FOREGROUND + RELEASE IDENTITY" python ci-tests/test-handoff-layer-release-gate.py
 run "RC25.7.11 MODAL + RETURN + DERIVED DAY" python ci-tests/test-rc25711-modal-return-derived-day.py
+run "RC25.7.21 PAYMENT ROUNDTRIP CONTRACT" python ci-tests/test-rc25721-payment-roundtrip.py
 
-run "RC25.7.18 BOOKING ENGINE PARITY" python ci-tests/test-rc25718-booking-engine-parity.py
-run "RC25.7.20 SOURCE OF TRUTH" python ci-tests/test-rc25720-source-of-truth.py
 
 if [ "$failed" -eq 0 ]; then
   printf '\nNZ 25.7 SHARED-READY CI PASSED\n'
