@@ -2749,3 +2749,21 @@ body.global-docs-open{overflow:hidden!important;overscroll-behavior:none!importa
   }
 }
 /* Documents owns its full-screen chrome and is intentionally excluded. */
+
+/* RC25.6.5 — Documents is a first-class destination page. */
+.documents-page-shell{padding-bottom:calc(118px + env(safe-area-inset-bottom,0px))!important}
+.documents-hero .documents-count{margin:14px 0 0;font-weight:850;color:var(--muted,#607080)}
+.documents-library{display:grid;gap:18px}
+.document-category{margin:0 0 22px}
+.document-category-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 2px 10px}
+.document-category-head h2{margin:0;font-size:1.18rem}
+.document-category-head span{min-width:30px;height:30px;display:grid;place-items:center;border-radius:999px;background:rgba(8,127,156,.10);font-weight:850}
+.document-category-list{display:grid;gap:12px}
+.document-category-list .doc-card{margin:0}
+.documents-page .docs-modal{z-index:8000!important}
+.documents-page .doc-viewer{z-index:8100!important}
+.global-docs-modal{display:none!important}
+@media(max-width:600px){
+ .documents-page-shell{padding-bottom:calc(118px + env(safe-area-inset-bottom,0px))!important}
+ .documents-page .docs-sheet{height:94dvh;max-height:94dvh}
+}
