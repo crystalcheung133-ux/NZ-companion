@@ -2829,3 +2829,12 @@ body.documents-page .doc-viewer-body img,body.documents-page .pdf-page{display:b
 body.documents-page .doc-viewer-sheet{display:grid!important;grid-template-rows:auto minmax(0,1fr)!important;min-height:0!important;height:100%!important;width:100%!important;background:#f7f8f7!important;border-radius:0!important;overflow:hidden!important}
 body.documents-page .doc-viewer-head strong{font-size:16px!important;line-height:1.25!important;text-align:center!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
 body.documents-page .docs-form{display:grid!important;gap:0!important}
+
+/* RC25.7.4 — Documents use Expenses Transaction History card language */
+.documents-library{display:grid!important;gap:12px!important}
+.document-history-card{margin:0!important}
+.document-history-title{display:flex;align-items:flex-start;gap:7px}
+.document-history-title strong{font-size:16px;line-height:1.35}
+.document-pin{margin-left:auto}
+.document-file-name{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.document-entry-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}

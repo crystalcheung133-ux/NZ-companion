@@ -7,7 +7,7 @@ for token in ('bookingAttachmentFile','bookingAttachmentsHTML','savePendingBooki
 # Upload is Companion sheet, one-column form, no linking UX.
 assert 'TRIP DOCUMENTS' in h and 'class="docs-form"' in h and 'class="doc-pin-row"' in h
 assert 'Link to' not in h
-assert 'doc-card-simple' in j and 'document-category' not in j
+assert 'expense-card document-history-card' in j and 'document-category' not in j
 assert 'View booking →' not in j
 # Viewer owns the full viewport and its own header/body.
 assert 'grid-template-rows:auto minmax(0,1fr)' in css and '.doc-viewer-sheet' in css

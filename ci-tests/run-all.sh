@@ -55,3 +55,6 @@ python ci-tests/test-documents-runtime-clean.py
 
 echo "== DOCUMENT EDIT + VIEWER CLOSE =="
 python ci-tests/test-documents-edit-viewer-contract.py
+
+echo "== DOCUMENT EXPENSE CARD + BROWSER HARNESS =="
+python ci-tests/test-documents-expense-card-browser-harness.py

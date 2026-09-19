@@ -6,5 +6,5 @@ assert 'openEditDocument' in j and 'saveDocumentEdit' in j and 'Save Changes' in
 assert 'id="editDocModal"' in h
 assert 'doc-viewer-head"><span aria-hidden="true"></span><strong id="docViewerTitle"' in h
 assert 'grid-column:3!important;justify-self:end!important' in c
-assert 'name="Open",exact=True' in b and 'Edit action missing' in b and 'viewer Close is not on the right' in b
+assert 'openDocumentViewer' in b and 'Edit action missing' in b and 'viewer Close is not on the right' in b
 print('DOCUMENT EDIT + VIEWER RIGHT-CLOSE CONTRACT: PASS')

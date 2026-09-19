@@ -4,17 +4,20 @@ function renderTargets(){const s=$('docLink');if(s)s.innerHTML='<option value="t
 function render(){
  const list=root.TRIP_DOCUMENTS.read(),box=$('documentsList');
  $('docCount').textContent=`${list.length} ${list.length===1?'document':'documents'}`;
- const card=d=>`<article class="doc-card doc-card-simple">
-   <div class="doc-simple-main">
-     <span class="doc-icon">${d.mimeType?.startsWith('image/')?'🖼️':d.mimeType?.includes('pdf')?'📄':'📎'}</span>
-     <div class="doc-simple-copy"><h3>${esc(d.title)}</h3>${d.note?`<p>${esc(d.note)}</p>`:''}${d.uploadPending?`<small class="doc-sync-state">Not synced</small>`:''}</div>
-     <button class="pin-btn" onclick="togglePin('${esc(d.id)}')" aria-label="${d.pinned?'Unpin':'Pin'}">${d.pinned?'📌':'📍'}</button>
+ const card=d=>`<article class="expense-card document-history-card">
+   <div class="document-history-title"><span aria-hidden="true">${d.mimeType?.startsWith('image/')?'🖼️':d.mimeType?.includes('pdf')?'📄':'📎'}</span><strong>${esc(d.title)}</strong>${d.pinned?'<span class="document-pin" title="Pinned">📌</span>':''}</div>
+   <p class="timestamp">${esc(d.category||'Other')}${d.uploadPending?' · Not synced':''}</p>
+   ${d.note?`<p>${esc(d.note)}</p>`:''}
+   ${d.fileName?`<p class="document-file-name">${esc(d.fileName)}</p>`:''}
+   <div class="entry-actions document-entry-actions">
+     <button class="mini-btn" onclick="openDocumentViewer('${esc(d.id)}')">📄 Open</button>
+     <button class="mini-btn" onclick="openEditDocument('${esc(d.id)}')">✏️ Edit</button>
+     ${d.uploadPending?`<button class="mini-btn" onclick="repairDocument('${esc(d.id)}')">☁️ Sync file</button>`:''}
+     ${d.seeded?'':`<button class="mini-btn" onclick="deleteDoc('${esc(d.id)}')">🗑 Delete</button>`}
    </div>
-   <div class="doc-actions"><button class="pill" onclick="openDocumentViewer('${esc(d.id)}')">Open</button><button class="pill" onclick="openEditDocument('${esc(d.id)}')">Edit</button>${d.uploadPending?`<button class="pill" onclick="repairDocument('${esc(d.id)}')">Choose file to sync</button>`:''}${d.seeded?'':`<button class="pill danger" onclick="deleteDoc('${esc(d.id)}')">Delete</button>`}</div>
  </article>`;
  box.innerHTML=list.map(card).join('')||'<div class="empty-state">No documents yet.</div>';
 }
-
 
 root.openEditDocument=id=>{
  const d=root.TRIP_DOCUMENTS.read().find(x=>x.id===id);if(!d)return;
