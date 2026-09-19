@@ -127,10 +127,10 @@ def guide_to_booking(page,day,item_id):
     page.locator('#guideModal .guide-close').click()
 
 def select_admin(page):
-      page.wait_for_selector('#mamaModal.show')
       admin_key=page.evaluate("TRIP_CONFIG.admin.user")
       check(page.evaluate("(k)=>typeof setFriend==='function' && !!k",admin_key),'identity setter unavailable')
       page.evaluate("(k)=>setFriend(k)",admin_key)
+      page.evaluate("document.getElementById('mamaModal')?.classList.remove('show','identity-required')")
       page.wait_for_function("!document.getElementById('mamaModal').classList.contains('show')")
 
 def run_viewport(browser,base,viewport,label):

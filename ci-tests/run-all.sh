@@ -61,3 +61,6 @@ python ci-tests/test-documents-expense-card-browser-harness.py
 
 echo "== DOCUMENT LINKS + METADATA SYNC + LUXE =="
 python ci-tests/test-documents-links-metadata-sync-luxe.py
+
+echo "== DOCUMENT RETURN + HIDPI + EDGEWATER =="
+python ci-tests/test-documents-return-hidpi-edgewater.py

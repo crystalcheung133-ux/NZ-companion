@@ -50,14 +50,31 @@ root.repairDocument=id=>{
 
 root.togglePin=async id=>{const d=root.TRIP_DOCUMENTS.read().find(x=>x.id===id);if(d)await root.TRIP_DOCUMENTS.update(id,{pinned:!d.pinned});render()};root.deleteDoc=async id=>{if(confirm('Delete this document?')){await root.TRIP_DOCUMENTS.remove(id);render()}};
 
-async function renderPdfInto(url,wrap){wrap.innerHTML='<div class="doc-viewer-message">Loading document…</div>';try{if(!root.pdfjsLib)throw new Error('PDF viewer unavailable');root.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';const pdf=await root.pdfjsLib.getDocument(url).promise;wrap.innerHTML='';for(let n=1;n<=pdf.numPages;n++){const page=await pdf.getPage(n);const base=page.getViewport({scale:1});const max=Math.min(900,Math.max(280,wrap.clientWidth-24));const scale=Math.min(2,max/base.width);const vp=page.getViewport({scale});const canvas=document.createElement('canvas');canvas.className='pdf-page';canvas.width=Math.ceil(vp.width);canvas.height=Math.ceil(vp.height);wrap.appendChild(canvas);await page.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise}}catch(e){wrap.innerHTML='<div class="doc-viewer-message"><strong>Could not preview this document.</strong><p>Try again while online.</p></div>'}}
+async function renderPdfInto(url,wrap){
+ wrap.innerHTML='<div class="doc-viewer-message">Loading document…</div>';
+ try{
+  if(!root.pdfjsLib)throw new Error('PDF viewer unavailable');
+  root.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+  const pdf=await root.pdfjsLib.getDocument(url).promise;wrap.innerHTML='';
+  const dpr=Math.min(2.5,Math.max(1,root.devicePixelRatio||1));
+  for(let n=1;n<=pdf.numPages;n++){
+   const page=await pdf.getPage(n),base=page.getViewport({scale:1});
+   const cssWidth=Math.min(1100,Math.max(280,wrap.clientWidth-24));
+   const cssScale=Math.min(2,cssWidth/base.width),cssVp=page.getViewport({scale:cssScale});
+   const renderVp=page.getViewport({scale:cssScale*dpr}),canvas=document.createElement('canvas');
+   canvas.className='pdf-page';canvas.width=Math.ceil(renderVp.width);canvas.height=Math.ceil(renderVp.height);
+   canvas.style.width=Math.ceil(cssVp.width)+'px';canvas.style.height=Math.ceil(cssVp.height)+'px';
+   wrap.appendChild(canvas);await page.render({canvasContext:canvas.getContext('2d'),viewport:renderVp}).promise;
+  }
+ }catch(e){wrap.innerHTML='<div class="doc-viewer-message"><strong>Could not preview this document.</strong><p>Try again while online.</p></div>'}
+}
 root.openDocumentViewer=id=>{const d=root.TRIP_DOCUMENTS.read().find(x=>x.id===id);if(!d)return;let url=d.fileUrl||d.localObjectUrl||'';if(d.embeddedBase64){try{const raw=atob(d.embeddedBase64),bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);url=URL.createObjectURL(new Blob([bytes],{type:d.mimeType||'application/pdf'}));}catch(e){}}$('docViewerTitle').textContent=d.title||'Document';const body=$('docViewerBody');body.innerHTML='';if(!url){body.innerHTML='<div class="doc-viewer-message">This document is not available on this device yet.</div>'}else if((d.mimeType||'').startsWith('image/')){const img=document.createElement('img');img.src=url;img.alt=d.title||'Document';body.appendChild(img)}else if((d.mimeType||'').includes('pdf')||/\.pdf(?:$|\?)/i.test(url)){const wrap=document.createElement('div');wrap.className='pdf-pages';body.appendChild(wrap);renderPdfInto(url,wrap)}else{const wrap=document.createElement('div');wrap.className='doc-viewer-message';wrap.innerHTML='<strong>'+esc(d.fileName||d.title||'Document')+'</strong><p>This file type opens in its native viewer.</p><a class="pill" target="_blank" rel="noopener">Open original file</a>';wrap.querySelector('a').href=url;body.appendChild(wrap)}$('docViewer').classList.add('show');$('docViewer').setAttribute('aria-hidden','false');document.body.style.overflow='hidden'};
-root.closeDocumentViewer=()=>{$('docViewer').classList.remove('show');$('docViewer').setAttribute('aria-hidden','true');$('docViewerBody').innerHTML='';document.body.style.overflow=''};
+root.closeDocumentViewer=()=>{const v=$('docViewer');v.classList.remove('show');v.setAttribute('aria-hidden','true');$('docViewerBody').innerHTML='';document.body.style.overflow='';const back=new URLSearchParams(location.search).get('returnTo');if(back){location.href=back}};
 root.resetDocumentsView=()=>{try{root.closeDocumentViewer()}catch(e){};try{root.closeAddDocument()}catch(e){};const f=$('docForm');if(f)f.reset();const save=$('docSave');if(save){save.disabled=false;save.textContent='Save Document'};document.body.style.overflow=''};
 
 root.openAddDocument=()=>{$('docModal').classList.add('show')};
 root.closeAddDocument=()=>{$('docModal').classList.remove('show');const f=$('docForm');if(f)f.reset();const save=$('docSave');if(save){save.disabled=false;save.textContent='Save Document'}};
 root.saveDocument=async()=>{const file=$('docFile').files[0];if(!file){alert('Choose a photo, PDF or Word document.');return}const title=$('docTitle').value.trim()||file.name;const [linkType,linkId]=$('docLink').value.split('|');const label=$('docLink').selectedOptions[0]?.textContent||'Trip-wide';$('docSave').disabled=true;$('docSave').textContent='Saving…';await root.TRIP_DOCUMENTS.add({title,category:$('docCategory').value,note:'',pinned:$('docPin').checked,linkType,linkId,linkLabel:label},file);$('docSave').disabled=false;$('docSave').textContent='Save Document';$('docForm').reset();closeAddDocument();render()};
 document.addEventListener('DOMContentLoaded',()=>{renderTargets();render();root.TRIP_DOCUMENTS.sync().then(render);const id=new URLSearchParams(location.search).get('document')||sessionStorage.getItem('travel_engine_open_document_v1');if(id){sessionStorage.removeItem('travel_engine_open_document_v1');setTimeout(()=>root.openDocumentViewer(id),120)}});document.addEventListener('travelengine:documentschanged',render);
-window.addEventListener('pageshow',()=>{ if(document.visibilityState==='visible') root.resetDocumentsView?.(); });
+window.addEventListener('pageshow',()=>{if(document.visibilityState!=='visible')return;const q=new URLSearchParams(location.search);if(!q.get('document'))root.resetDocumentsView?.();});
 })(globalThis);

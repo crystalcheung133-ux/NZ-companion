@@ -209,7 +209,7 @@ function bookingDocumentLinksHTML(booking){
  if(!booking?.id||!window.TRIP_DOCUMENTS)return '';
  const docs=TRIP_DOCUMENTS.read().filter(d=>d.linkType==='booking'&&d.linkId===booking.id);
  if(!docs.length)return '';
- return `<div class="trip-action-row trip-action-row--booking-compact booking-document-links">${docs.map(d=>`<a class="pill trip-action-btn" href="documents.html?document=${encodeURIComponent(d.id)}">📎 ${escapeTripHTML(d.title||'Document')}</a>`).join('')}</div>`;
+ return `<div class="trip-action-row trip-action-row--booking-compact booking-document-links">${docs.map(d=>`<a class="pill trip-action-btn" href="documents.html?document=${encodeURIComponent(d.id)}&returnTo=${encodeURIComponent('trip.html?bookingId='+booking.id)}" >📎 ${escapeTripHTML(d.title||'Document')}</a>`).join('')}</div>`;
 }
 function bookingActionButtonsHTML(booking,place,options={}){
   const includeDay=options.includeDay!==false;
