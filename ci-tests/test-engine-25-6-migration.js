@@ -17,7 +17,7 @@ const cfg=fs.readFileSync('trip-config.js','utf8');
 
 assert(admin.includes('getTripStudioModal'),'25.6 dedicated Studio shell missing');
 assert(css.includes('#tripStudioModal{'),'25.6 Studio shell CSS missing');
-assert(cfg.includes('bookingMasterRevision: 1'),'booking master revision missing');
+assert(/bookingMasterRevision:\s*[1-9]\d*/.test(cfg),'booking master revision missing');
 assert(booking.includes('bookingMasterRevision'),'revision-aware Booking Authority missing');
 assert(moments.includes('MOMENT_PLANNED_ALLOWED_TYPES'),'Moments activity semantics missing');
 assert(guide.includes("window.GUIDE_MODAL_ORIGIN='timeline'"),'Timeline Guide origin tracking missing');

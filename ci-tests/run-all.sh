@@ -42,6 +42,9 @@ python ci-tests/test-rc25714-rental-attachment-studio-reentry.py
 echo "== RC25.7.15 SHARED BOOKING LINKS =="
 python ci-tests/test-rc25715-shared-booking-links.py
 
+echo "== RC25.7.16 PRODUCTION BOOKING ACTIONS =="
+python ci-tests/test-rc25716-production-booking-actions.py
+
 exit 1
 
 echo "== DOCUMENTS PAGE CONTRACT =="

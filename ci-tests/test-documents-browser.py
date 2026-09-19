@@ -39,9 +39,12 @@ def run(browser,base,v,label):
  p.locator('#docModal .docs-close').click();ck(not vis(p,'#docModal'),label+": Upload close failed")
  # Verify reverse attachment lookup uses canonical Rental Car booking id.
  first_doc=p.locator(".document-title-open").first;doc_id=first_doc.get_attribute("onclick").split("'")[1]
- p.evaluate("(id)=>{const d=TRIP_DOCUMENTS.read().find(x=>x.id===id);if(d){d.linkType='booking';d.linkId='car-rental';d.linkLabel='Rental Cars 247';localStorage.setItem(TRIP_CONFIG.storageNamespace+':documents:v1',JSON.stringify(TRIP_DOCUMENTS.read().map(x=>x.id===id?d:x)))}}",doc_id)
+ p.evaluate("(id)=>TRIP_DOCUMENTS.update(id,{linkType:'booking',linkId:'car-rental',linkLabel:'Rental Cars 247'})",doc_id)
  p.goto(base+"/index.html?bookingId=car-rental",wait_until="domcontentloaded");identity(p);p.wait_for_selector("#tripModal.show")
  ck(p.locator("#tripModalContent .booking-document-links a").count()>0,label+": Rental Car linked attachment missing")
+ txt=p.locator("#tripModalContent").inner_text()
+ ck("NZD 628.82" in txt and "NZD 13.95" in txt and "NZD 614.87" in txt,label+": Rental Car NZD pricing missing")
+
  p.goto(base+"/documents.html",wait_until="domcontentloaded");identity(p);p.wait_for_timeout(80)
  edit=p.locator("button[onclick^=\"openEditDocument\"]").first;ck(edit.count()>0,label+": Edit action missing");edit.click();ck(vis(p,'#editDocModal'),label+": Edit modal failed");p.get_by_role("button",name="Save Changes").click();ck(not vis(p,'#editDocModal'),label+": Edit modal did not close")
  op=p.locator(".document-title-open").first;ck(op.count()>0,label+": clickable document title missing");op.click();p.wait_for_timeout(150)

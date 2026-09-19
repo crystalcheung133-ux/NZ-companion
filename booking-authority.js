@@ -13,7 +13,8 @@
     'status','displayStatus','bookingName',
     'depositPaid','depositAmount','depositCurrency','paymentStatus',
     'reference','referenceLabel','bookingReference',
-    'totalAmount','cashbackAmount','netTotalAUD','price','paymentLabel'
+    'totalAmount','cashbackAmount','netTotalAUD','price','paymentLabel',
+    'balanceDue','payAtPickup','usefulLinks','notes','bookingUrl','email','phone'
   ]);
   function masterRevision(){return Number(root.TRIP_CONFIG&&root.TRIP_CONFIG.bookingMasterRevision||1);}
   function recordRevision(record){return Number(record&&((record._masterRevision!=null?record._masterRevision:record.masterRevision))||0);}

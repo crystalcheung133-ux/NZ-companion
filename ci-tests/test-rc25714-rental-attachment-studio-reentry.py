@@ -6,5 +6,5 @@ assert "canonicalBookingId(d.linkId)===bookingId" in tr
 assert "booking|'+canonical" in doc
 assert "page.locator('.friend-pill').click()" not in b
 assert 'window.setAdminMode(true)' in b
-assert "d.linkId='car-rental'" in db and "Rental Car linked attachment missing" in db
+assert "linkId:'car-rental'" in db and "Rental Car linked attachment missing" in db
 print('RC25.7.14 RENTAL ATTACHMENT + STUDIO REENTRY: PASS')
