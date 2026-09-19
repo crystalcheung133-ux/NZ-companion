@@ -59,7 +59,7 @@
   "release": "RC25.5.4",
   "label": "Calm Shared Experience",
   "engineVersion": "25.7.1",
-  "candidate": "RC25.5.8",
+  "candidate": "RC25.5.9",
   "features": [
     "Documents upload",
     "Documents pin",

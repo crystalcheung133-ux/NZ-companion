@@ -75,9 +75,11 @@
 body.home-bg main.dashboard.home-premium.home-v37{padding-top:84px!important;padding-bottom:132px!important}
 body.home-bg section.home-brand-card.v37-dashboard-home{margin-top:0!important;margin-bottom:0!important}
 @media(max-width:700px){body.home-bg main.dashboard.home-premium.home-v37{padding-top:72px!important;padding-bottom:118px!important}}
+.docs-upload-active .bottom-nav{display:none!important}
 </style><script>
+window.addEventListener('message',function(e){if(e.origin!==location.origin||!e.data||e.data.type!=='nz-doc-upload')return;document.body.classList.toggle('docs-upload-active',!!e.data.open);});
 function openHomeDocumentsModal(){const m=document.getElementById('homeDocsModal'),f=document.getElementById('homeDocsFrame');if(!m||!f)return;if(!f.src)f.src='documents.html?embedded=1';try{f.contentWindow?.resetDocumentsView?.()}catch(e){};m.classList.add('show');m.setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}
-function closeHomeDocumentsModal(){const m=document.getElementById('homeDocsModal'),f=document.getElementById('homeDocsFrame');if(!m)return;try{f?.contentWindow?.resetDocumentsView?.()}catch(e){};m.classList.remove('show');m.setAttribute('aria-hidden','true');document.body.style.overflow=''}
+function closeHomeDocumentsModal(){document.body.classList.remove('docs-upload-active');const m=document.getElementById('homeDocsModal'),f=document.getElementById('homeDocsFrame');if(!m)return;try{f?.contentWindow?.resetDocumentsView?.()}catch(e){};m.classList.remove('show');m.setAttribute('aria-hidden','true');document.body.style.overflow=''}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeHomeDocumentsModal()});
 </script></body></html>
 
