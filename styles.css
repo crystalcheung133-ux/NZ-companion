@@ -2726,3 +2726,26 @@ body.global-docs-open{overflow:hidden!important;overscroll-behavior:none!importa
  .global-docs-shell{height:100dvh!important;width:100%!important;border-radius:0!important}
  .global-docs-close{top:calc(10px + env(safe-area-inset-top,0px))!important;right:10px!important}
 }
+
+/* RC25.6.4 — canonical modal viewport begins below the sticky app header. */
+:root{--app-header-clearance:calc(68px + env(safe-area-inset-top,0px))}
+@media(max-width:760px){
+  .guide-modal.show,
+  .trip-modal.show,
+  .moments-modal.show,
+  .tools-modal.show,
+  .mama-modal.show{
+    top:var(--app-header-clearance)!important;
+    bottom:0!important;
+    height:auto!important;
+    padding-top:8px!important;
+  }
+  #guideModal.show .guide-sheet,
+  #tripModal.show .trip-sheet,
+  #momentsModal.show .moments-sheet,
+  #expenseModal.show .tools-sheet{
+    max-height:calc(100dvh - var(--app-header-clearance) - var(--app-nav-clearance,118px) - 12px)!important;
+    scroll-padding-top:8px!important;
+  }
+}
+/* Documents owns its full-screen chrome and is intentionally excluded. */
