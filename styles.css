@@ -2693,3 +2693,12 @@ body.admin-mode .studio-on-badge:not([hidden]){display:inline-flex!important;}
 .global-docs-shell iframe{width:100%;height:100%;border:0;background:#f4f1e9}.global-docs-close{position:absolute;right:14px;top:12px;z-index:9;width:50px;height:50px;border-radius:50%;border:1px solid rgba(0,0,0,.12);background:#fffaf2;font-size:32px;line-height:1;color:#2783df;box-shadow:0 5px 16px rgba(0,0,0,.10)}
 body.global-docs-open{overflow:hidden}
 @media(max-width:700px){.app-nav small,.docs-nav-trigger small{font-size:.64rem!important}.global-docs-shell{height:95dvh;border-radius:26px 26px 0 0}.global-docs-close{right:10px;top:9px}}
+
+/* RC25.6.1 mobile nav regression guard */
+.app-nav{position:fixed!important;left:50%!important;right:auto!important;top:auto!important;bottom:calc(10px + env(safe-area-inset-bottom,0px))!important;transform:translate3d(-50%,0,0)!important;-webkit-transform:translate3d(-50%,0,0)!important;z-index:6000!important;pointer-events:auto!important;width:min(500px,calc(100% - 22px))!important}
+body.global-docs-open>.app-nav{z-index:90!important;pointer-events:none!important}
+
+.global-docs-modal{padding-top:calc(8px + env(safe-area-inset-top,0px))!important}
+.global-docs-shell{height:calc(100dvh - 18px - env(safe-area-inset-top,0px))!important;max-height:none!important}
+.global-docs-close{position:absolute!important;top:14px!important;right:14px!important;z-index:100!important}
+@media(max-width:700px){.global-docs-shell{height:calc(100dvh - 12px - env(safe-area-inset-top,0px))!important}.global-docs-close{top:10px!important;right:10px!important}}
