@@ -38,6 +38,7 @@ run "DOCUMENT LINKS + METADATA SYNC + LUXE" python ci-tests/test-documents-links
 run "HANDOFF + FOREGROUND + RELEASE IDENTITY" python ci-tests/test-handoff-layer-release-gate.py
 run "RC25.7.11 MODAL + RETURN + DERIVED DAY" python ci-tests/test-rc25711-modal-return-derived-day.py
 run "RC25.7.21 PAYMENT ROUNDTRIP CONTRACT" python ci-tests/test-rc25721-payment-roundtrip.py
+run "RC25.7.24 AUDITED TIMELINE AUTHORITY" python ci-tests/test-rc25724-audited-timeline.py
 
 
 if [ "$failed" -eq 0 ]; then
@@ -45,7 +46,4 @@ if [ "$failed" -eq 0 ]; then
   exit 0
 fi
 printf '\nNZ 25.7 SHARED-READY CI FAILED\n' >&2
-echo "== RC25.7.23 AUTHORITY + IDENTITY SOURCE =="
-python ci-tests/test-rc25723-authority-identity.py
-
 exit 1

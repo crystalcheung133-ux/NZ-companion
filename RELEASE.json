@@ -1,8 +1,8 @@
 {
-  "engine_version": "25.7.0",
-  "artifact_version": "NZ Companion RC25.5.2 \u00b7 Travel Engine 25.7.0 Calm Shared Experience Candidate",
+  "engine_version": "25.7.1",
+  "artifact_version": "NZ Companion RC25.7.24 · Travel Engine 25.7.1 Audited Timeline Authority Candidate",
   "baseline_engine": "25.6.0",
-  "release_date": "2026-09-18",
+  "release_date": "2026-09-20",
   "release_type": "calm-shared-experience-candidate",
   "runtime_behavior_change": true,
   "capabilities_changed": [
@@ -27,15 +27,15 @@
     "parallel itinerary tracks",
     "booking appliesTo / partyIds subgroup assignment"
   ],
-  "migration_source": "NZ Companion RC25.3.9.3 \u00b7 Travel Engine 25.4.20.3 Production Freeze",
-  "release_status": "CANDIDATE \u2014 Booking attachment/useful-link authority correction",
+  "migration_source": "NZ Companion RC25.3.9.3 · Travel Engine 25.4.20.3 Production Freeze",
+  "release_status": "CANDIDATE — audited Timeline authority / drive-summary contract",
   "validation": {
-    "chromium_desktop_1280x800": "PASS",
-    "chromium_mobile_390x844": "PASS",
+    "chromium_desktop_1280x800": "PENDING GITHUB REAL-BROWSER GATE",
+    "chromium_mobile_390x844": "PENDING GITHUB REAL-BROWSER GATE",
     "studio_lifecycle": "PASS",
     "booking_expense_exact_card_deeplink": "PASS",
-    "console_application_errors": "PASS \u2014 zero JS page errors",
-    "cross_companion_studio_consistency": "PASS \u2014 same Engine-level Studio geometry/layout",
+    "console_application_errors": "PASS — zero JS page errors",
+    "cross_companion_studio_consistency": "PASS — same Engine-level Studio geometry/layout",
     "validator": "Independent Codex Chromium/Playwright validation of unchanged CI-gate candidates"
   },
   "final_compatibility_fix": {
@@ -55,7 +55,7 @@
   "release": "RC25.5.4",
   "label": "Calm Shared Experience",
   "engineVersion": "25.7.1",
-  "candidate": "RC25.7.23",
+  "candidate": "RC25.7.24",
   "features": [
     "Documents upload",
     "Documents pin",
@@ -63,5 +63,5 @@
     "Edgewater First Table voucher seed"
   ],
   "engine": "25.7.1",
-  "current_candidate_browser_validation": "LOCAL BLOCKED \u2014 sandbox administrator blocks localhost; GitHub Actions real-browser gate is authoritative"
+  "current_candidate_browser_validation": "LOCAL BLOCKED — sandbox administrator blocks localhost; GitHub Actions real-browser gate is authoritative"
 }

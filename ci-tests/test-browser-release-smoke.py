@@ -189,9 +189,11 @@ def run_viewport(browser,base,viewport,label):
               label+': phone-only Call action should not exist')
         page.locator('#tripModal .trip-close').click()
 
-        # Day summary must follow the SAME saved itinerary authority/order as the visible Timeline.
+        # Day summary must follow the SAME SAVED itinerary authority/order as the visible Timeline.
+        # This must be a real Studio save: markAdminDirty intentionally rejects writes outside Studio.
         page.goto(base+'/day.html?day=3',wait_until='domcontentloaded')
-        select_admin(page)
+        studio_login(page)
+        close_studio(page)
         page.evaluate("""()=>{
           const items=ITINERARY_AUTHORITY.resolveDayItems('3',ITINERARY_DATA['3'].items);
           const a=items.findIndex(x=>x.id==='ultimate-alpine-flight'),h=items.findIndex(x=>x.id==='hooker-valley');
@@ -200,10 +202,17 @@ def run_viewport(browser,base,viewport,label):
           markAdminDirty('itineraryDay3',{day:'3',items,masterRevision:ITINERARY_AUTHORITY.getMasterRevision()});
           saveAdminChanges();
         }""")
-        page.wait_for_function("()=>document.querySelector('[data-drive-summary=\"timeline-order\"]')?.textContent.includes('Hooker Valley Track')")
+        page.wait_for_function("""()=>{
+          const x=document.querySelector('[data-drive-summary="timeline-order"]')?.textContent||'';
+          return x.indexOf('Hooker Valley Track')>=0 && x.indexOf('Helicopter + Ski Plane Glacier Flight')>=0 &&
+                 x.indexOf('Hooker Valley Track')<x.indexOf('Helicopter + Ski Plane Glacier Flight');
+        }""")
         drive_text=page.locator('[data-drive-summary="timeline-order"]').inner_text()
         check(drive_text.index('Hooker Valley Track')<drive_text.index('Helicopter + Ski Plane Glacier Flight'),label+': Today drive summary ignored saved Timeline order')
+        saved_ids=page.evaluate("()=>ITINERARY_AUTHORITY.getDayOverrideItems('3').map(x=>x.id)")
+        check(saved_ids.index('hooker-valley')<saved_ids.index('ultimate-alpine-flight'),label+': Studio save did not persist Timeline order')
         page.evaluate("()=>ITINERARY_AUTHORITY.clearDayOverride('3')")
+        page.evaluate("window.exitTripStudioMode && window.exitTripStudioMode()")
 
         # Fixture data contains an openList and a rest item: semantics must remain distinguishable at runtime.
         types=page.evaluate("Object.values(ITINERARY_DATA).flatMap(d=>d.items||[]).map(x=>x.type)")

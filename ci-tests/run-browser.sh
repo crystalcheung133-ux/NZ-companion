@@ -1,6 +1,6 @@
 #!/bin/sh
 set -eu
-echo "== BROWSER RELEASE SMOKE · RC25.7.22 DRIVE-SUMMARY + IDENTITY =="
+echo "== BROWSER RELEASE SMOKE · RC25.7.24 AUDITED TIMELINE AUTHORITY =="
 python - <<'PY'
 try:
     import playwright
