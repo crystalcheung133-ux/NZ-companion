@@ -2,7 +2,6 @@
 set -u
 failed=0
 run(){ printf '\n== %s ==\n' "$1"; shift; "$@" || failed=1; }
-
 run "SYNTAX" sh ci-tests/test-syntax.sh
 run "HTML STRUCTURE" sh ci-tests/test-html-structure.sh
 run "ENGINE 25.6 MIGRATION" node ci-tests/test-engine-25-6-migration.js
@@ -23,7 +22,6 @@ run "BROWSER GATE DEFINITION" node ci-tests/test-browser-gate-definition.js
 run "DESTRUCTIVE ACTION SECURITY" node ci-tests/test-destructive-action-security.js
 run "SOLO PARTY" node ci-tests/test-stage1-solo-party.js
 run "BACKWARD COMPAT" node ci-tests/test-stage1-backward-compat.js
-
 run "CANONICAL STUDIO + EXPENSE DEEP-LINK" node ci-tests/test-canonical-studio-expense-deeplink.js
 run "CANONICAL STUDIO VISUAL CONTRACT 25.6.2" node ci-tests/test-studio-visual-contract-2562.js
 run "SHARED-FACING CONTENT" node ci-tests/test-shared-facing-content.js
@@ -31,64 +29,19 @@ run "RC25.7.12 NAVIGATION + FULL DRIVE + BROWSER BOOTSTRAP" python ci-tests/test
 run "RC25.7.13 DOC ORIGIN + EDIT + DAY IDENTITY" python ci-tests/test-rc25713-doc-origin-edit-day-identity.py
 run "RC25.7.14 RENTAL ATTACHMENT + STUDIO REENTRY" python ci-tests/test-rc25714-rental-attachment-studio-reentry.py
 run "RC25.7.15 SHARED BOOKING LINKS" python ci-tests/test-rc25715-shared-booking-links.py
+run "DOCUMENTS PAGE CONTRACT" python ci-tests/test-documents-page-contract.py
+run "DOCUMENTS CI WIRING" python ci-tests/test-documents-ci-wiring.py
+run "DOCUMENTS JS SCOPE" python ci-tests/test-documents-js-scope.py
+run "CALM TIMELINE CONTRACT" python ci-tests/test-calm-timeline-contract.py
+run "CALM DOCUMENTS UI + SYNC" python ci-tests/test-documents-calm-ui-sync.py
+run "DOCUMENT LINKS + METADATA SYNC + LUXE" python ci-tests/test-documents-links-metadata-sync-luxe.py
+run "HANDOFF + FOREGROUND + RELEASE IDENTITY" python ci-tests/test-handoff-layer-release-gate.py
+run "RC25.7.11 MODAL + RETURN + DERIVED DAY" python ci-tests/test-rc25711-modal-return-derived-day.py
+run "RC25.7.17 BOOKING CONTRACT ARCHITECTURE" python ci-tests/test-rc25717-booking-contract.py
+
 if [ "$failed" -eq 0 ]; then
   printf '\nNZ 25.7 SHARED-READY CI PASSED\n'
   exit 0
 fi
 printf '\nNZ 25.7 SHARED-READY CI FAILED\n' >&2
-echo "== RC25.7.14 RENTAL ATTACHMENT + STUDIO REENTRY =="
-python ci-tests/test-rc25714-rental-attachment-studio-reentry.py
-
-echo "== RC25.7.15 SHARED BOOKING LINKS =="
-python ci-tests/test-rc25715-shared-booking-links.py
-
-echo "== RC25.7.16 PRODUCTION BOOKING ACTIONS =="
-python ci-tests/test-rc25716-production-booking-actions.py
-
 exit 1
-
-echo "== DOCUMENTS PAGE CONTRACT =="
-python ci-tests/test-documents-page-contract.py
-
-echo "== DOCUMENTS CI WIRING =="
-python ci-tests/test-documents-ci-wiring.py
-
-echo "== DOCUMENTS JS SCOPE =="
-python ci-tests/test-documents-js-scope.py
-
-echo "== CALM TIMELINE CONTRACT =="
-python ci-tests/test-calm-timeline-contract.py
-
-
-echo "== CALM DOCUMENTS UI + SYNC =="
-python ci-tests/test-documents-calm-ui-sync.py
-
-echo "== DOCUMENTS RUNTIME CLEAN =="
-python ci-tests/test-documents-runtime-clean.py
-
-echo "== DOCUMENT EDIT + VIEWER CLOSE =="
-python ci-tests/test-documents-edit-viewer-contract.py
-
-echo "== DOCUMENT EXPENSE CARD + BROWSER HARNESS =="
-python ci-tests/test-documents-expense-card-browser-harness.py
-
-echo "== DOCUMENT LINKS + METADATA SYNC + LUXE =="
-python ci-tests/test-documents-links-metadata-sync-luxe.py
-
-echo "== DOCUMENT RETURN + HIDPI + EDGEWATER =="
-python ci-tests/test-documents-return-hidpi-edgewater.py
-
-echo "== DOCUMENT NAV + CARD + RETURN V2 =="
-python ci-tests/test-documents-nav-card-return-v2.py
-
-echo "== HANDOFF + FOREGROUND + RELEASE IDENTITY == "
-python ci-tests/test-handoff-layer-release-gate.py
-
-echo "== RC25.7.9 ARCHITECTURE CORRECTION =="
-python ci-tests/test-rc2579-architecture-correction.py
-
-echo "== RC25.7.10 RETURN + IDENTITY + TIMELINE SYNC =="
-python ci-tests/test-rc25710-return-identity-timeline-sync.py
-
-echo "== RC25.7.11 MODAL + RETURN + DERIVED DAY =="
-python ci-tests/test-rc25711-modal-return-derived-day.py

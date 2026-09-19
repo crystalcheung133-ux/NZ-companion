@@ -10,35 +10,42 @@
   function master(){try{return typeof BOOKINGS_DATA!=='undefined'?BOOKINGS_DATA:(root.BOOKINGS_DATA||{});}catch(error){return root.BOOKINGS_DATA||{};}}
   const DEPLOY_MASTER=clone(master()||{});
   const EDITABLE_STATE_FIELDS=Object.freeze([
-    'status','displayStatus','bookingName',
-    'depositPaid','depositAmount','depositCurrency','paymentStatus',
-    'reference','referenceLabel','bookingReference',
-    'totalAmount','cashbackAmount','netTotalAUD','price','paymentLabel',
-    'balanceDue','payAtPickup','usefulLinks','notes','bookingUrl','email','phone'
+    'status','displayStatus','title','date','time','dayId','bookingName',
+    'stayDates','roomType','checkIn','checkOut','address','checkInInstructions',
+    'tourType','guests','adults','children','originalTotal','discount','pickupNote','pickupAddress','dropOff','lunchStatus',
+    'bookingWay','platform','bookingViaOther','reference','referenceLabel','bookingReference',
+    'depositPaid','depositAmount','depositCurrency','paymentStatus','totalAmount','cashbackAmount','netTotalAUD','price','paymentLabel','balanceDue','payAtPickup',
+    'usefulLinks','notes','cancellation','website','bookingUrl','email','phone'
+  ]);
+  const MASTER_PROTECTED_FIELDS=new Set([
+    'depositPaid','depositAmount','depositCurrency','paymentStatus','totalAmount','cashbackAmount','netTotalAUD','price','paymentLabel','balanceDue','payAtPickup','usefulLinks'
   ]);
   function masterRevision(){return Number(root.TRIP_CONFIG&&root.TRIP_CONFIG.bookingMasterRevision||1);}
   function recordRevision(record){return Number(record&&((record._masterRevision!=null?record._masterRevision:record.masterRevision))||0);}
   function stamp(record){const out=clone(record)||{};out._masterRevision=masterRevision();return out;}
   function meaningful(value){
+    if(Array.isArray(value))return value.length>0;
     return !(value===undefined||value===null||value===''||value===false);
+  }
+  function editableProjection(record){
+    const out={};if(!record||typeof record!=='object')return out;
+    EDITABLE_STATE_FIELDS.forEach(function(field){if(Object.prototype.hasOwnProperty.call(record,field))out[field]=clone(record[field]);});
+    return out;
   }
   function mergeStaleState(base,override){
     const out=Object.assign({},clone(base));
     if(!override||typeof override!=='object')return out;
-    ['status','displayStatus'].forEach(function(field){
-      if(Object.prototype.hasOwnProperty.call(override,field))out[field]=clone(override[field]);
-    });
-    ['bookingName','reference','referenceLabel','bookingReference',
-     'depositPaid','depositAmount','depositCurrency','paymentStatus',
-     'totalAmount','cashbackAmount','netTotalAUD','price','paymentLabel'].forEach(function(field){
-      if(!meaningful(base&&base[field])&&Object.prototype.hasOwnProperty.call(override,field))out[field]=clone(override[field]);
+    EDITABLE_STATE_FIELDS.forEach(function(field){
+      if(!Object.prototype.hasOwnProperty.call(override,field))return;
+      if(MASTER_PROTECTED_FIELDS.has(field)&&meaningful(base&&base[field]))return;
+      out[field]=clone(override[field]);
     });
     return out;
   }
   function mergeOverride(base,override){
     if(!override||typeof override!=='object')return clone(base);
-    if(recordRevision(override)===masterRevision())return Object.assign({},clone(base),clone(override));
-    return mergeStaleState(base,override);
+    if(recordRevision(override)!==masterRevision())return mergeStaleState(base,override);
+    return Object.assign({},clone(base),editableProjection(override));
   }
   function read(){
     const raw=store()?store().readJSON(KEY,null):null;
@@ -80,13 +87,14 @@
     const source=target||master();
     const base=canonicalBase(id,source);
     if(!id||!base||!record||typeof record!=='object')return {ok:false,reason:'invalid-booking'};
-    const current=resolvedSource(source)[id]||base;
-    const complete=stamp(Object.assign({},current,clone(record),{id:id}));
     const state=read();
-    state.overrides[id]=complete;
+    const prior=(recordRevision(state.overrides[id])===masterRevision())?editableProjection(state.overrides[id]):{};
+    const override=stamp(Object.assign({},prior,editableProjection(record)));
+    state.overrides[id]=override;
     state.deletedIds=(state.deletedIds||[]).filter(function(item){return item!==id;});
     state.updatedAt=new Date().toISOString();
     if(!write(state))return {ok:false,reason:'storage-failed'};
+    const complete=Object.assign({},mergeOverride(base,override),{id:id});
     if(source&&source[id])try{source[id]=clone(complete);}catch(error){}
     if(!opts.silent&&typeof document!=='undefined')document.dispatchEvent(new CustomEvent('travelengine:bookingchange',{detail:{bookingId:id,booking:clone(complete),local:true}}));
     return {ok:true,booking:clone(complete),updatedAt:state.updatedAt};

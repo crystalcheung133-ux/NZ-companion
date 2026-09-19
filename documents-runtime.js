@@ -58,4 +58,10 @@ async function remove(id){
  return true;
 }
 root.TRIP_DOCUMENTS=Object.freeze({read,add,sync,repair,update,remove});
+function backgroundSync(){Promise.resolve(sync()).catch(()=>{});}
+if(typeof document!=='undefined'){
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',backgroundSync,{once:true});
+ else setTimeout(backgroundSync,0);
+ document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')backgroundSync()});
+}
 })(globalThis);

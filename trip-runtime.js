@@ -231,21 +231,6 @@ function bookingStudioActionHTML(booking){
 function bookingSharedFooterHTML(booking){
   return bookingUsefulLinksHTML(booking)+bookingDocumentLinksHTML(booking)+bookingStudioActionHTML(booking);
 }
-function ensureBookingSharedActions(bookingId){
-  const booking=getBookingById(bookingId);const content=document.getElementById('tripModalContent');
-  if(!booking||!content)return;
-  content.querySelectorAll('.booking-shared-actions-universal').forEach(n=>n.remove());
-  const html=bookingSharedFooterHTML(booking);
-  if(!html)return;
-  const host=content.querySelector('.stay-booking,.accommodation-detail-card,.generic-booking-detail,.activity-booking-detail')||content.querySelector('.trip-onepage');
-  if(!host)return;
-  const wrap=document.createElement('div');wrap.className='booking-shared-actions-universal';wrap.innerHTML=html;host.appendChild(wrap);
-}
-function finalizeBookingPopup(bookingId){
-  ensureBookingSharedActions(bookingId);
-  const sheet=document.querySelector('#tripModal .trip-sheet');if(sheet)sheet.scrollTop=0;
-}
-
 function bookingActionButtonsHTML(booking,place,options={}){
   const includeDay=options.includeDay!==false;
   const whatsappContact=String(booking&&booking.whatsapp||'').trim();
@@ -308,7 +293,7 @@ function openAccommodationDetail(bookingId,bookingOverride,showSaved){
   if(!booking){ content.innerHTML='<p class="kicker">Trip</p><h2>Booking unavailable</h2><p>Please close and reopen Trip Booking.</p>'; modal.classList.add('show'); return; }
   content.innerHTML=`<div class="trip-onepage trip-onepage-stay accommodation-onepage-detail"><button class="accommodation-back" type="button" onclick="openAccommodationList()">‹ All accommodation</button><p class="kicker">Trip · Accommodation</p><h2>${escapeTripHTML(booking?booking.title:'Accommodation')}</h2>${showSaved?'<p class="timestamp booking-save-success" role="status">Saved ✓</p>':''}${buildAccommodationDetailHTML(booking)}<p class="timestamp trip-build-summary">${tripSyncSummary()}</p></div>`;
   modal.classList.add('show');
-  finalizeBookingPopup(bookingId);
+  const sheet=document.querySelector('#tripModal .trip-sheet');if(sheet)sheet.scrollTop=0;
 }
 
 
@@ -348,7 +333,7 @@ function openActivityBookingDetail(bookingId,bookingOverride,showSaved){
   const booking=bookingOverride||getBookingById(bookingId);
   const content=document.getElementById('tripModalContent');const modal=document.getElementById('tripModal');if(!content||!modal)return;
   content.innerHTML=`<div class="trip-onepage accommodation-onepage-detail"><button class="accommodation-back" type="button" onclick="openTripCard('activities')">‹ All activities</button><p class="kicker">Trip · Activities</p><h2>${escapeTripHTML(booking?booking.title:'Activity Booking')}</h2>${showSaved?'<p class="timestamp booking-save-success" role="status">Saved ✓</p>':''}${buildActivityBookingDetailHTML(booking)}<p class="timestamp trip-build-summary">${tripSyncSummary()}</p></div>`;
-  modal.classList.add('show');finalizeBookingPopup(bookingId);
+  modal.classList.add('show');const sheet=document.querySelector('#tripModal .trip-sheet');if(sheet)sheet.scrollTop=0;
 }
 
 
@@ -399,7 +384,7 @@ function openGenericBookingDetail(bookingId,bookingOverride,showSaved){
   closeMiniMenus();
   const content=document.getElementById('tripModalContent');const modal=document.getElementById('tripModal');if(!content||!modal)return;
   content.innerHTML=`<div class="trip-onepage accommodation-onepage-detail"><button class="accommodation-back" type="button" onclick="openBookingCategoryCard('${escapeTripHTML(bookingCategoryLabel(booking))}')">‹ All ${escapeTripHTML(bookingCategoryLabel(booking).toLowerCase())}</button><p class="kicker">Trip · ${escapeTripHTML(bookingCategoryLabel(booking))}</p><h2>${escapeTripHTML(booking.title||'Booking')}</h2>${showSaved?'<p class="timestamp booking-save-success" role="status">Saved ✓</p>':''}${buildGenericBookingDetailHTML(booking)}<p class="timestamp trip-build-summary">${tripSyncSummary()}</p></div>`;
-  modal.classList.add('show');finalizeBookingPopup(bookingId);
+  modal.classList.add('show');const sheet=document.querySelector('#tripModal .trip-sheet');if(sheet)sheet.scrollTop=0;
 }
 
 
@@ -723,7 +708,6 @@ function openTripCard(key) {
   const body=key==='emergency'?compactEmergencyHTML(t.body):(key==='stay'?buildAccommodationListHTML():(key==='activities'?buildActivityBookingListHTML():(key==='transport'?buildTransportBookingListHTML():(key==='vehicle'?buildRentalCarHTML():t.body))));
   content.innerHTML = `<div class="trip-onepage trip-onepage-${key}"><p class="kicker">Trip</p><h2>${t.title}</h2>${body}${tripHubNavigationHTML(key)}<p class="timestamp trip-build-summary">${tripSyncSummary()}</p></div>`;
   modal.classList.add('show');
-  if(key==='vehicle'){const car=getBookingsByType('rentalCar')[0];if(car)finalizeBookingPopup(car.id);}
   const sheet=document.querySelector('#tripModal .trip-sheet');
   if(sheet){ sheet.scrollTop=0; if(typeof window.applyNearFitModal==='function') window.applyNearFitModal(sheet,'trip-near-fit'); }
   if (key === 'checklist') setTimeout(loadChecklist, 0);
