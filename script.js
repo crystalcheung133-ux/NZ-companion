@@ -42,10 +42,12 @@ document.addEventListener('DOMContentLoaded',()=>{
     else if(file==='day.html'||file==='itinerary.html')target='days';
     else if(file==='moments.html'||file==='memory.html')target='moments';
     else if(file==='expenses.html')target='expenses';
+    else if(file==='documents.html')target='docs';
     var el=null;
     if(target==='trip')el=nav.querySelector('.trip-trigger');
     else if(target==='guide')el=nav.querySelector('.guide-trigger');
     else if(target==='days')el=nav.querySelector('.days-trigger');
+    else if(target==='docs')el=nav.querySelector('.docs-nav-trigger');
     else if(target==='moments')el=nav.querySelector('a[href*="moments.html"]');
     else if(target==='expenses')el=nav.querySelector('a[href*="expenses.html"]');
     nav.querySelectorAll('.is-active').forEach(function(node){node.classList.remove('is-active');node.removeAttribute('aria-current');});
@@ -68,4 +70,3 @@ function applyNearFitModal(sheet,className){
 }
 window.applyNearFitModal=applyNearFitModal;
 
-(function(){window.openGlobalDocuments=function(){var m=document.getElementById('globalDocsModal'),f=document.getElementById('globalDocsFrame');if(!m||!f)return;if(!f.getAttribute('src')){f.onload=function(){try{f.contentWindow.scrollTo(0,0);f.contentWindow.resetDocumentsView?.()}catch(e){}};f.src='documents.html?overlay=1&v=rc25-6-3'}else{try{f.contentWindow?.scrollTo(0,0);f.contentWindow?.resetDocumentsView?.()}catch(e){}}m.classList.add('show');m.setAttribute('aria-hidden','false');document.body.classList.add('global-docs-open')};window.closeGlobalDocuments=function(){var m=document.getElementById('globalDocsModal'),f=document.getElementById('globalDocsFrame');if(!m)return;try{f?.contentWindow?.resetDocumentsView?.()}catch(e){}m.classList.remove('show');m.setAttribute('aria-hidden','true');document.body.classList.remove('global-docs-open')};document.addEventListener('click',function(e){var m=document.getElementById('globalDocsModal');if(m&&e.target===m)closeGlobalDocuments()});window.addEventListener('message',function(e){if(e.origin!==location.origin||!e.data)return;if(e.data.type==='nz-doc-upload'){var c=document.querySelector('.global-docs-close');if(c)c.style.display=e.data.open?'none':''}})})();

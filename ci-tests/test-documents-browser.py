@@ -15,6 +15,13 @@ def ck(x,m):
  if not x: raise AssertionError(m)
 def vis(p,s):
  return p.locator(s).evaluate("el=>{const x=getComputedStyle(el),r=el.getBoundingClientRect();return x.display!='none'&&x.visibility!='hidden'&&r.width>0&&r.height>0}")
+
+def check_docs_first_click(browser,base,path,label):
+ c=browser.new_context(viewport={"width":390,"height":844});p=c.new_page()
+ p.goto(base+"/"+path,wait_until="domcontentloaded");p.evaluate("document.getElementById('ccmvSplash')?.remove()")
+ a=p.locator('.app-nav .docs-nav-trigger');ck(a.count()==1,label+": Docs nav missing");ck(a.get_attribute("href")=="documents.html",label+": Docs href wrong")
+ a.click();p.wait_for_url("**/documents.html");ck(p.url.endswith("/documents.html"),label+": first Docs click did not open Documents");c.close()
+
 def run(browser,base,v,label):
  c=browser.new_context(viewport=v);p=c.new_page();errs=[];p.on("pageerror",lambda e:errs.append(str(e)))
  p.goto(base+"/documents.html",wait_until="domcontentloaded");p.evaluate("document.getElementById('ccmvSplash')?.remove()");p.wait_for_timeout(150)
@@ -25,7 +32,7 @@ def run(browser,base,v,label):
  save=p.locator('#docSave');r=save.bounding_box();ck(r and r["y"]<v["height"] and r["y"]+r["height"]>0,label+": Save out of viewport")
  p.locator('#docModal .docs-close').click();ck(not vis(p,'#docModal'),label+": Upload close failed")
  edit=p.locator("button[onclick^=\"openEditDocument\"]").first;ck(edit.count()>0,label+": Edit action missing");edit.click();ck(vis(p,'#editDocModal'),label+": Edit modal failed");p.get_by_role("button",name="Save Changes").click();ck(not vis(p,'#editDocModal'),label+": Edit modal did not close")
- op=p.locator("button[onclick^=\"openDocumentViewer\"]").first;ck(op.count()>0,label+": Open action missing");op.click();p.wait_for_timeout(150)
+ op=p.locator(".document-title-open").first;ck(op.count()>0,label+": clickable document title missing");op.click();p.wait_for_timeout(150)
  ck(vis(p,'#docViewer'),label+": viewer failed");ck(p.locator('#docViewerTitle').inner_text().strip(),label+": blank viewer title")
  head=p.locator('#docViewer .doc-viewer-head').bounding_box();close=p.locator('#docViewer .doc-viewer-close').bounding_box();ck(head and close and close["x"]>head["x"]+head["width"]/2,label+": viewer Close is not on the right")
  p.locator('#docViewer .doc-viewer-close').click();ck(not vis(p,'#docViewer'),label+": viewer close failed")
@@ -39,6 +46,7 @@ with server() as base:
    except Exception as e:
     print(f"DOCUMENTS BROWSER GATE {engine.upper()}: BLOCKED — {str(e).splitlines()[0]}");continue
    available+=1
+   for path,label in [('trip.html','Trip'),('day.html?day=3','Day'),('moments.html','Moments'),('expenses.html','Expenses')]:check_docs_first_click(b,base,path,label)
    for v in ({"width":390,"height":844},{"width":430,"height":932}):run(b,base,v,f"{engine} {v['width']}x{v['height']}")
    b.close();print(f"DOCUMENTS BROWSER GATE {engine.upper()}: PASS")
 

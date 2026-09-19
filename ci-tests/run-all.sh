@@ -64,3 +64,6 @@ python ci-tests/test-documents-links-metadata-sync-luxe.py
 
 echo "== DOCUMENT RETURN + HIDPI + EDGEWATER =="
 python ci-tests/test-documents-return-hidpi-edgewater.py
+
+echo "== DOCUMENT NAV + CARD + RETURN V2 =="
+python ci-tests/test-documents-nav-card-return-v2.py

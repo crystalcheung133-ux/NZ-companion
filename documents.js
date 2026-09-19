@@ -10,21 +10,25 @@ function documentTargets(){
 }
 function fillLinkSelect(sel,value){if(!sel)return;sel.innerHTML=documentTargets().map(x=>`<option value="${esc(x.value)}">${esc(x.label)}</option>`).join('');sel.value=value||'trip|';if(sel.selectedIndex<0)sel.value='trip|'}
 function renderTargets(){fillLinkSelect($('docLink'),'trip|')}
-function routeForDocument(d){if(d.linkType==='booking'&&d.linkId)return `trip.html?bookingId=${encodeURIComponent(d.linkId)}`;if(d.linkType==='timeline'&&d.linkId){const [day,item]=String(d.linkId).split('::');return `day.html?day=${encodeURIComponent(day)}#${encodeURIComponent(item||'')}`}return ''}
+function routeForDocument(d){
+ const back=`documents.html?document=${encodeURIComponent(d.id)}`;
+ if(d.linkType==='booking'&&d.linkId)return `trip.html?bookingId=${encodeURIComponent(d.linkId)}&returnTo=${encodeURIComponent(back)}`;
+ if(d.linkType==='timeline'&&d.linkId){const [day,item]=String(d.linkId).split('::');return `day.html?day=${encodeURIComponent(day)}&returnTo=${encodeURIComponent(back)}#${encodeURIComponent(item||'')}`}
+ return ''
+}
 function render(){
  const list=root.TRIP_DOCUMENTS.read(),box=$('documentsList');
  $('docCount').textContent=`${list.length} ${list.length===1?'document':'documents'}`;
  const card=d=>`<article class="expense-card document-history-card">
-   <div class="document-history-title"><span aria-hidden="true">${d.mimeType?.startsWith('image/')?'🖼️':d.mimeType?.includes('pdf')?'📄':'📎'}</span><strong>${esc(d.title)}</strong>${d.pinned?'<span class="document-pin" title="Pinned">📌</span>':''}</div>
+   <div class="document-history-title"><span aria-hidden="true">${d.mimeType?.startsWith('image/')?'🖼️':d.mimeType?.includes('pdf')?'📄':'📎'}</span><button class="document-title-open" type="button" onclick="openDocumentViewer('${esc(d.id)}')" aria-label="Open ${esc(d.title)}">${esc(d.title)}</button>${d.pinned?'<span class="document-pin" title="Pinned">📌</span>':''}</div>
    <p class="timestamp">${esc(d.category||'Other')}${d.uploadPending?' · Not synced':''}</p>
    ${d.note?`<p>${esc(d.note)}</p>`:''}
    ${d.fileName?`<p class="document-file-name">${esc(d.fileName)}</p>`:''}
    ${d.linkType&&d.linkType!=='trip'&&d.linkLabel?`<p class="document-link-row">🔗 <a href="${esc(routeForDocument(d))}">${esc(d.linkLabel)}</a></p>`:''}
    <div class="entry-actions document-entry-actions">
-     <button class="mini-btn" onclick="openDocumentViewer('${esc(d.id)}')">📄 Open</button>
      <button class="mini-btn" onclick="openEditDocument('${esc(d.id)}')">✏️ Edit</button>
      ${d.uploadPending?`<button class="mini-btn" onclick="repairDocument('${esc(d.id)}')">☁️ Sync file</button>`:''}
-     ${d.seeded?'':`<button class="mini-btn" onclick="deleteDoc('${esc(d.id)}')">🗑 Delete</button>`}
+     <button class="mini-btn" onclick="deleteDoc('${esc(d.id)}')">🗑 Delete</button>
    </div>
  </article>`;
  box.innerHTML=list.map(card).join('')||'<div class="empty-state">No documents yet.</div>';

@@ -51,8 +51,7 @@ async function update(id,patch){
  return next;
 }
 async function remove(id){
- const list=read(),d=list.find(x=>x.id===id);if(d?.seeded)return false;
- const now=new Date().toISOString(),tombstone={id,deleted:true,createdAt:d?.createdAt||now,updatedAt:now};
+ const list=read(),d=list.find(x=>x.id===id);const now=new Date().toISOString(),tombstone={id,deleted:true,createdAt:d?.createdAt||now,updatedAt:now};
  write(list.filter(x=>x.id!==id));
  if(configured()&&navigator.onLine)try{await cloudWrite(tombstone)}catch(e){}
  return true;

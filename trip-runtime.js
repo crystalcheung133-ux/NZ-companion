@@ -685,6 +685,8 @@ function openTripCard(key) {
 
 function closeTripModal() {
   if(isBookingEditActive() && !confirmDiscardBookingEdit()) return false;
+  const deepReturn=new URLSearchParams(window.location.search).get('returnTo');
+  if(deepReturn){ window.location.href=deepReturn; return true; }
   clearBookingEditSession();
   const modal = document.getElementById('tripModal');
   if (modal) modal.classList.remove('show');
