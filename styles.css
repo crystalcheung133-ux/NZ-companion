@@ -2767,3 +2767,53 @@ body.global-docs-open{overflow:hidden!important;overscroll-behavior:none!importa
  .documents-page-shell{padding-bottom:calc(118px + env(safe-area-inset-bottom,0px))!important}
  .documents-page .docs-sheet{height:94dvh;max-height:94dvh}
 }
+
+/* RC25.6.6 — Documents page functional contract. */
+body.documents-page .docs-modal{display:none!important;position:fixed!important;inset:0!important;z-index:8000!important;background:rgba(0,0,0,.42)!important;align-items:flex-end!important;justify-content:center!important}
+body.documents-page .docs-modal.show{display:flex!important}
+body.documents-page .docs-sheet{display:block!important;width:min(100%,700px)!important;max-height:90dvh!important;overflow:auto!important;background:#fff!important;border-radius:26px 26px 0 0!important;padding:22px 22px calc(22px + env(safe-area-inset-bottom,0px))!important;box-sizing:border-box!important}
+body.documents-page .doc-viewer{display:none!important;position:fixed!important;inset:0!important;z-index:8100!important}
+body.documents-page .doc-viewer.show{display:grid!important}
+body.documents-page .global-docs-modal{display:none!important}
+@media(max-width:600px){
+ body.documents-page .docs-sheet{height:94dvh!important;max-height:94dvh!important;width:100%!important}
+}
+
+/* RC25.6.9 — Calm Timeline: first layer answers only when / where / what. */
+.timeline{gap:12px!important}
+.timeline-item{padding:16px 16px!important;grid-template-columns:68px minmax(0,1fr)!important}
+.timeline-item:before{width:4px!important}
+.timeline-main h3{margin:0 0 5px!important;padding:0!important;border-bottom:0!important;font-size:19px!important;line-height:1.25!important}
+.timeline-title-row{gap:8px!important;align-items:center!important}
+.timeline-context{margin:0!important;font-size:14px!important;line-height:1.45!important;color:var(--muted)!important;display:-webkit-box!important;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.timeline-booking-status,.timeline-worth{font-size:10px!important;line-height:1!important;padding:5px 7px!important;white-space:nowrap}
+.timeline-more{margin-top:7px;font-size:13px;color:var(--muted)}
+.timeline-more summary{cursor:pointer;color:var(--nz-primary);font-weight:800;list-style:none}
+.timeline-more summary::-webkit-details-marker{display:none}
+.timeline-more summary:after{content:"  ›"}
+.timeline-more[open] summary:after{content:" ⌄"}
+.timeline-more-body{padding:8px 0 0}
+.timeline-more-body p{font-size:14px!important;line-height:1.5!important;margin:0 0 5px!important}
+.timeline-more-route{padding:8px 10px;border-radius:12px;background:#FFF5E8}
+.timeline-actions{display:flex!important;flex-wrap:wrap!important;gap:7px!important;margin-top:9px!important;padding-top:0!important;border-top:0!important}
+.timeline-actions .timeline-action,.timeline-actions button,.timeline-actions a{width:auto!important;min-width:0!important;min-height:34px!important;height:34px!important;padding:6px 10px!important;border-radius:999px!important;font-size:12px!important;line-height:1!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important}
+.timeline-reference-thumb{margin-top:8px!important}
+@media(max-width:760px){
+ .timeline-item{grid-template-columns:54px minmax(0,1fr)!important;padding:14px 12px!important}
+ .timeline-time{font-size:14px!important}
+ .timeline-main h3{font-size:17px!important}
+ .timeline-context{font-size:13.5px!important;-webkit-line-clamp:2}
+ .timeline-actions,.timeline-actions.timeline-actions--multi{display:flex!important;flex-wrap:wrap!important;gap:6px!important}
+ .timeline-actions .timeline-action{width:auto!important;min-height:32px!important;height:32px!important;padding:5px 9px!important;font-size:11.5px!important;grid-column:auto!important}
+ .timeline-actions .timeline-action--directory{grid-column:auto!important}
+}
+
+/* RC25.7.0 — Booking ↔ Documents v2 */
+.booking-attachments{grid-column:1/-1;margin:14px 0;padding:14px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.58)}
+.booking-attachments-head,.booking-attachment-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.booking-attachment-list{display:grid;gap:8px;margin:10px 0}
+.booking-attachment-row{padding:9px 10px;border-radius:12px;background:#fff}
+.booking-attachment-row>span:last-child{display:flex;gap:6px}
+.booking-attach-picker{display:inline-flex;align-items:center;cursor:pointer;font-weight:800;color:var(--nz-primary);padding:9px 12px;border-radius:999px;background:#fff}
+.booking-attach-picker input{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px}
+.doc-actions{flex-wrap:wrap}

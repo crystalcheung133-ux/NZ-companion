@@ -33,3 +33,18 @@ if [ "$failed" -eq 0 ]; then
 fi
 printf '\nNZ 25.7 SHARED-READY CI FAILED\n' >&2
 exit 1
+
+echo "== DOCUMENTS PAGE CONTRACT =="
+python ci-tests/test-documents-page-contract.py
+
+echo "== DOCUMENTS CI WIRING =="
+python ci-tests/test-documents-ci-wiring.py
+
+echo "== DOCUMENTS JS SCOPE =="
+python ci-tests/test-documents-js-scope.py
+
+echo "== CALM TIMELINE CONTRACT =="
+python ci-tests/test-calm-timeline-contract.py
+
+echo "== BOOKING DOCUMENTS V2 =="
+python ci-tests/test-booking-documents-v2.py

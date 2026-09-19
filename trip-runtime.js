@@ -445,12 +445,45 @@ function bookingEditFields(booking){
   );
   return common.join('');
 }
+
+function bookingAttachmentDocs(bookingId){
+  return window.TRIP_DOCUMENTS&&TRIP_DOCUMENTS.byBooking?TRIP_DOCUMENTS.byBooking(bookingId):[];
+}
+function bookingAttachmentsHTML(bookingId){
+  const docs=bookingAttachmentDocs(bookingId);
+  return `<section class="booking-attachments"><div class="booking-attachments-head"><strong>📎 Attachments</strong><span>${docs.length?docs.length+' saved':''}</span></div>
+    <div class="booking-attachment-list">${docs.map(d=>`<div class="booking-attachment-row"><span>📄 ${escapeTripHTML(d.title||d.fileName||'Document')}</span><span><button class="pill" type="button" onclick="openBookingAttachment('${escapeTripHTML(d.id)}')">Open</button><button class="pill danger" type="button" onclick="removeBookingAttachment('${escapeTripHTML(d.id)}','${escapeTripHTML(bookingId)}')">Remove</button></span></div>`).join('')||'<p class="timestamp">No attachments yet.</p>'}</div>
+    <label class="booking-attach-picker"><span>＋ Attach document</span><input id="bookingAttachmentFile" name="bookingAttachmentFile" type="file" accept="image/*,.pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"></label>
+    <p class="timestamp">The attachment is saved when you Save Booking and will also appear in Documents.</p>
+  </section>`;
+}
+window.openBookingAttachment=function(id){
+  sessionStorage.setItem('travel_engine_open_document_v1',id);location.href='documents.html?document='+encodeURIComponent(id);
+};
+window.removeBookingAttachment=function(id,bookingId){
+  if(!window.TRIP_DOCUMENTS||!confirm('Remove this attachment from the booking and Documents?'))return;
+  TRIP_DOCUMENTS.remove(id);openBookingEdit(bookingId);
+};
+async function savePendingBookingAttachment(form,booking){
+  const input=form&&form.querySelector('#bookingAttachmentFile'),file=input&&input.files&&input.files[0];
+  if(!file||!window.TRIP_DOCUMENTS)return null;
+  return TRIP_DOCUMENTS.add({
+    title:file.name||booking.title+' attachment',
+    category:'Bookings & vouchers',
+    note:'',
+    pinned:false,
+    linkType:'booking',
+    linkId:booking.id,
+    linkLabel:booking.title
+  },file);
+}
+
 function openBookingEdit(bookingId){
   if(!(window.BOOKING_PERMISSIONS&&BOOKING_PERMISSIONS.canEdit()))return;
   const booking=getBookingById(bookingId);if(!booking)return;
   const content=document.getElementById('tripModalContent');const modal=document.getElementById('tripModal');if(!content||!modal)return;
   activeBookingDetail={type:booking.type,id:bookingId};
-  content.innerHTML=`<div class="trip-onepage booking-edit-onepage"><button class="accommodation-back" type="button" onclick="requestBookingEditClose('${escapeTripHTML(bookingId)}')">‹ Booking details</button><p class="kicker">Trip Studio · Booking</p><h2>Edit ${escapeTripHTML(booking.title)}</h2><form id="bookingEditForm" class="booking-edit-form" novalidate onsubmit="return saveBookingEdit(event,'${escapeTripHTML(bookingId)}')"><div class="booking-edit-grid">${bookingEditFields(booking)}</div><div class="booking-edit-actions"><button class="pill" type="button" onclick="requestBookingEditClose('${escapeTripHTML(bookingId)}')">Cancel</button><button class="pill booking-delete-btn" type="button" onclick="deleteBookingRecord('${escapeTripHTML(bookingId)}')">Delete Booking</button><button class="pill booking-edit-save" type="submit">Save Booking</button></div><p class="timestamp">Pending and not booked are the same state. Remove bookings that are cancelled and no longer needed.</p></form></div>`;
+  content.innerHTML=`<div class="trip-onepage booking-edit-onepage"><button class="accommodation-back" type="button" onclick="requestBookingEditClose('${escapeTripHTML(bookingId)}')">‹ Booking details</button><p class="kicker">Trip Studio · Booking</p><h2>Edit ${escapeTripHTML(booking.title)}</h2><form id="bookingEditForm" class="booking-edit-form" novalidate onsubmit="return saveBookingEdit(event,'${escapeTripHTML(bookingId)}')"><div class="booking-edit-grid">${bookingEditFields(booking)}</div>${bookingAttachmentsHTML(bookingId)}<div class="booking-edit-actions"><button class="pill" type="button" onclick="requestBookingEditClose('${escapeTripHTML(bookingId)}')">Cancel</button><button class="pill booking-delete-btn" type="button" onclick="deleteBookingRecord('${escapeTripHTML(bookingId)}')">Delete Booking</button><button class="pill booking-edit-save" type="submit">Save Booking</button></div><p class="timestamp">Pending and not booked are the same state. Remove bookings that are cancelled and no longer needed.</p></form></div>`;
   modal.classList.add('show');
   const form=document.getElementById('bookingEditForm');
   bookingEditSession={bookingId:bookingId,initialSnapshot:bookingEditFormSnapshot(form)};
@@ -530,7 +563,7 @@ async function saveBookingEdit(event,bookingId){
   if(saveButton&&saveButton.disabled)return false;
   BOOKING_SAVE_IN_FLIGHT.add(bookingId);
   const formData=new FormData(form);const next=Object.assign({},current);
-  formData.forEach(function(value,key){next[key]=String(value).trim();});
+  formData.forEach(function(value,key){if(value instanceof File)return;next[key]=String(value).trim();});
   {const rawStatus=String(next.status||'pending').toLowerCase();next.status=rawStatus==='confirmed'?'confirmed':(rawStatus==='planned'?'planned':'pending');}
   const viaChoice=next.bookingVia||'';
   const viaOther=next.bookingViaOther||'';
@@ -562,6 +595,8 @@ async function saveBookingEdit(event,bookingId){
     alert('Could not finish saving the booking. Please try again.');
     return false;
   }
+  try{await savePendingBookingAttachment(form,outcome.booking||next);}
+  catch(attachmentError){console.error('Booking attachment save failed',attachmentError);alert('Booking saved, but the attachment could not be saved. Please try attaching it again.');}
   clearBookingEditSession();
   if(saveButton)saveButton.textContent=outcome.degraded?'Saved · sync pending':'Saved ✓';
   try{document.dispatchEvent(new CustomEvent('travelengine:bookingchange',{detail:{bookingId:bookingId,booking:outcome.booking,syncPending:outcome.degraded}}));}

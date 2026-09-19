@@ -13,5 +13,6 @@ async function add(meta,file){const now=new Date().toISOString(),doc={id:uuid(),
 async function sync(){if(!configured()||!navigator.onLine)return read();try{await root.SUPABASE.getSession();const c=root.SUPABASE.getClient();const q=await c.from(table).select('payload').eq('trip_id',cfg.tripId);if(q.error)throw q.error;const local=read(), map=new Map(local.map(x=>[x.id,x]));(q.data||[]).forEach(r=>{const d=r.payload;if(d?.id&&!d.seeded)map.set(d.id,d)});const out=[...map.values()];write(out);return out}catch(e){return read()}}
 function update(id,patch){const list=read(),i=list.findIndex(x=>x.id===id);if(i<0)return;list[i]=Object.assign({},list[i],patch,{updatedAt:new Date().toISOString()});write(list);if(configured()&&navigator.onLine&&!list[i].seeded){root.SUPABASE.getSession().then(()=>root.SUPABASE.getClient().from(table).upsert({id:list[i].id,trip_id:cfg.tripId,payload:list[i],created_at:list[i].createdAt,updated_at:list[i].updatedAt},{onConflict:'id'})).catch(()=>{})}}
 function remove(id){const d=read().find(x=>x.id===id);if(d?.seeded)return false;write(read().filter(x=>x.id!==id));if(configured()&&navigator.onLine)root.SUPABASE.getSession().then(()=>root.SUPABASE.getClient().from(table).delete().eq('id',id).eq('trip_id',cfg.tripId)).catch(()=>{});return true}
-root.TRIP_DOCUMENTS=Object.freeze({read,add,sync,update,remove});
+function byBooking(bookingId){return read().filter(d=>d.linkType==='booking'&&d.linkId===bookingId)}
+root.TRIP_DOCUMENTS=Object.freeze({read,add,sync,update,remove,byBooking});
 })(globalThis);
