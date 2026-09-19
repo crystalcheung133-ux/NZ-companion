@@ -127,11 +127,11 @@ def guide_to_booking(page,day,item_id):
     page.locator('#guideModal .guide-close').click()
 
 def select_admin(page):
+      page.wait_for_function("typeof window.setFriend==='function' && !!window.TRIP_CONFIG?.admin?.user")
       admin_key=page.evaluate("TRIP_CONFIG.admin.user")
-      check(page.evaluate("(k)=>typeof setFriend==='function' && !!k",admin_key),'identity setter unavailable')
-      page.evaluate("(k)=>setFriend(k)",admin_key)
-      page.evaluate("document.getElementById('mamaModal')?.classList.remove('show','identity-required')")
-      page.wait_for_function("!document.getElementById('mamaModal').classList.contains('show')")
+      page.evaluate("(k)=>window.setFriend(k)",admin_key)
+      page.wait_for_function("()=>{const m=document.getElementById('mamaModal');return !m||(!m.classList.contains('show')&&!m.classList.contains('identity-required'))}")
+      check(page.evaluate("()=>{const m=document.getElementById('mamaModal');return !m||getComputedStyle(m).pointerEvents==='none'||!m.classList.contains('show')}"),'identity overlay still intercepts pointer events')
 
 def run_viewport(browser,base,viewport,label):
       context=browser.new_context(viewport=viewport)
@@ -175,6 +175,7 @@ def run_viewport(browser,base,viewport,label):
 
         # Generic Booking legal surface on fixture.
         page.goto(base+'/trip.html',wait_until='domcontentloaded')
+        select_admin(page)
         page.evaluate("openAccommodationDetail('peppers-booking')")
         page.wait_for_selector('#tripModal.show')
         check(top_owner(page,'#tripModal .trip-sheet'),label+': Booking sheet is not foreground owner')

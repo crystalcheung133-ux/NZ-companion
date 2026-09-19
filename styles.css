@@ -2899,3 +2899,22 @@ html.handoff-ready body{visibility:visible}
  .trip-modal{padding:8px 10px var(--companion-bottom-clearance)!important}
  .trip-modal .trip-sheet{max-height:calc(100dvh - var(--companion-header-clearance) - var(--companion-bottom-clearance) - 8px)!important}
 }
+
+/* RC25.7.10 — popup is physically bounded between header and bottom nav. */
+:root{--companion-header-clearance:92px;--companion-bottom-clearance:128px}
+.trip-modal{
+  top:var(--companion-header-clearance)!important;
+  bottom:var(--companion-bottom-clearance)!important;
+  height:auto!important;
+  padding:10px 18px!important;
+}
+.trip-modal .trip-sheet{
+  height:auto!important;
+  max-height:100%!important;
+  margin:0 auto!important;
+  overflow-y:auto!important;
+}
+@media(max-width:760px){
+ :root{--companion-header-clearance:76px;--companion-bottom-clearance:112px}
+ .trip-modal{padding:8px 10px!important}
+}

@@ -85,7 +85,8 @@
     if(/Invalid Trip Studio credential/i.test(message))return 'Supabase rejected the Trip Studio credential.';
     return message;
   }
-  async function publish(){
+  async function publish(options){
+    options=options||{};
     if(state.busy)return false;
     if(!root.isAdminMode||!root.isAdminMode()){
       alert('Open Trip Studio before publishing.');return false;
@@ -103,8 +104,10 @@
     if(!credential){
       alert('Trip Studio session has expired. Close and reopen Trip Studio.');return false;
     }
-    const confirmed=root.confirm('Publish the latest saved trip now?\n\nEvery Companion will receive the new version when it next connects.');
-    if(!confirmed)return false;
+    if(!options.silent){
+      const confirmed=root.confirm('Publish the latest saved trip now?\n\nEvery Companion will receive the new version when it next connects.');
+      if(!confirmed)return false;
+    }
 
     state.busy=true;updateButton('Creating a new immutable cloud version…');
     try{
@@ -132,13 +135,13 @@
         await root.TRIP_SYNC.fetchLatestPublished({reloadOnChange:false});
       }
       document.dispatchEvent(new CustomEvent('travelengine:publicationpublished',{detail:{version:version}}));
-      alert('Trip published successfully.\n\nCloud version v'+version+' is now live.');
+      if(!options.silent)alert('Trip published successfully.\n\nCloud version v'+version+' is now live.');
       return true;
     }catch(error){
       console.error('One-click publication failed',error);
       const message=readableError(error);
       updateButton('Publish failed. No new version was created.');
-      alert('Could not publish the trip.\n\n'+message);
+      if(!options.silent)alert('Could not publish the trip.\n\n'+message);
       return false;
     }finally{
       state.busy=false;
@@ -158,6 +161,14 @@
     const button=document.getElementById('preparePublicationButton');
     if(button)button.hidden=!(root.isAdminMode&&root.isAdminMode());
   }
+
+
+  document.addEventListener('travelengine:adminsave',function(event){
+    const changes=event.detail&&event.detail.draft&&event.detail.draft.changes||{};
+    const hasTimeline=Object.keys(changes).some(function(key){return key.indexOf('itineraryDay')===0;});
+    if(!hasTimeline||navigator.onLine===false)return;
+    setTimeout(function(){publish({silent:true,reason:'timeline-save'});},0);
+  });
 
   root.TRIP_PUBLICATION=Object.freeze({buildPayload:buildPayload,validatePayload:payloadIntegrity,publish:publish,prepare:publish,getLastPublishedVersion:function(){return state.lastPublishedVersion;}});
   root.publishLatestTrip=publish;

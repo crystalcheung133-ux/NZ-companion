@@ -1,3 +1,4 @@
+window.TRIP_MODAL_RETURN_TARGET=window.TRIP_MODAL_RETURN_TARGET||null;
 /* Travel Engine v1.0 — Stage 7M modular runtime. */
 const PRODUCTION_TRIP=GenerationSelectionAdapter.view('trip');
 const PRODUCTION_BOOKINGS=GenerationSelectionAdapter.view('bookings');
@@ -596,8 +597,10 @@ document.addEventListener('travelengine:adminmodechange',function(){
 });
 document.addEventListener('DOMContentLoaded',reopenSavedBooking);
 function openDeepLinkedBooking(){
-  const bookingId=new URLSearchParams(window.location.search).get('bookingId');
+  const params=new URLSearchParams(window.location.search);
+  const bookingId=params.get('bookingId');
   if(!bookingId)return;
+  window.TRIP_MODAL_RETURN_TARGET=params.get('returnTo')||null;
   const booking=getBookingById(bookingId);
   if(!booking){document.documentElement.classList.add('handoff-ready');document.documentElement.classList.remove('handoff-prepaint');return;}
   setTimeout(function(){
@@ -689,8 +692,8 @@ function openTripCard(key) {
 
 function closeTripModal() {
   if(isBookingEditActive() && !confirmDiscardBookingEdit()) return false;
-  const deepReturn=new URLSearchParams(window.location.search).get('returnTo');
-  if(deepReturn){ window.location.href=deepReturn; return true; }
+  const deepReturn=window.TRIP_MODAL_RETURN_TARGET||new URLSearchParams(window.location.search).get('returnTo');
+  if(deepReturn){ window.TRIP_MODAL_RETURN_TARGET=null; window.location.href=deepReturn; return true; }
   clearBookingEditSession();
   const modal = document.getElementById('tripModal');
   if (modal) modal.classList.remove('show');
