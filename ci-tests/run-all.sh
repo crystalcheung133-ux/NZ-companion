@@ -29,6 +29,8 @@ run "CANONICAL STUDIO VISUAL CONTRACT 25.6.2" node ci-tests/test-studio-visual-c
 run "SHARED-FACING CONTENT" node ci-tests/test-shared-facing-content.js
 run "RC25.7.12 NAVIGATION + FULL DRIVE + BROWSER BOOTSTRAP" python ci-tests/test-rc25712-navigation-drive-browser-bootstrap.py
 run "RC25.7.13 DOC ORIGIN + EDIT + DAY IDENTITY" python ci-tests/test-rc25713-doc-origin-edit-day-identity.py
+run "RC25.7.14 RENTAL ATTACHMENT + STUDIO REENTRY" python ci-tests/test-rc25714-rental-attachment-studio-reentry.py
+run "RC25.7.15 SHARED BOOKING LINKS" python ci-tests/test-rc25715-shared-booking-links.py
 if [ "$failed" -eq 0 ]; then
   printf '\nNZ 25.7 SHARED-READY CI PASSED\n'
   exit 0
@@ -36,6 +38,9 @@ fi
 printf '\nNZ 25.7 SHARED-READY CI FAILED\n' >&2
 echo "== RC25.7.14 RENTAL ATTACHMENT + STUDIO REENTRY =="
 python ci-tests/test-rc25714-rental-attachment-studio-reentry.py
+
+echo "== RC25.7.15 SHARED BOOKING LINKS =="
+python ci-tests/test-rc25715-shared-booking-links.py
 
 exit 1
 

@@ -150,7 +150,7 @@ def run_viewport(browser,base,viewport,label):
         close_studio(page)
         assert_studio_closed_clean(page,label+' first Close')
 
-        page.evaluate("()=>window.setAdminMode(true)")
+        page.evaluate("()=>window.openTripStudioPanel()")
         page.wait_for_selector('#tripStudioModal.show')
         check(not page.locator('#mamaModal').evaluate("el=>el.classList.contains('show')"),
               label+': Studio re-entry incorrectly opened traveller selector')
@@ -161,7 +161,7 @@ def run_viewport(browser,base,viewport,label):
         page.evaluate("document.getElementById('ccmvSplash')?.remove()")
         select_admin(page)
         assert_studio_closed_clean(page,label+' reload')
-        page.evaluate("()=>window.setAdminMode(true)")
+        page.evaluate("()=>window.openTripStudioPanel()")
         page.wait_for_selector('#tripStudioModal.show')
         check(not page.locator('#mamaModal').evaluate("el=>el.classList.contains('show')"),
               label+': reload Studio re-entry incorrectly opened traveller selector')

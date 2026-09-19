@@ -2460,7 +2460,8 @@ const BOOKINGS_DATA={
     "chargeDate": "17 Sep 2026",
     "totalAmount": "AUD 4,683.99",
     "netTotalAUD": "AUD 4,683.99",
-    "approximateNet": false
+    "approximateNet": false,
+    "usefulLinks": [{"label":"Airbnb Guidebook","url":"https://www.airbnb.com.au/s/guidebooks?refinement_paths%5B%5D=%2Fguidebooks%2F1804375&s=67&unique_share_id=94b4ba26-e210-4145-8a33-71c9ff700d7e","icon":"📖"}]
   },
   "car-rental": {
     "id": "car-rental",
@@ -2473,7 +2474,7 @@ const BOOKINGS_DATA={
     "dayId": "day1",
     "guests": 4,
     "reference": "IM50036714",
-    "paymentStatus": "AUD 11.61 deposit paid · AUD 513.05 due at pickup",
+    "paymentStatus": "NZD 13.95 deposit paid · NZD 614.87 due at pickup",
     "notes": "Mitsubishi ASX or similar · Booking 72600|087471A8AD6EE7A|87471 · pickup Christchurch · return Queenstown 1 Oct 17:00",
     "provider": "Rental Cars 247",
     "vehicle": "Mitsubishi ASX or Similar",
@@ -2492,14 +2493,15 @@ const BOOKINGS_DATA={
     "returnDepotAddress": "2/13 Red Oaks Drive, Frankton, Queenstown",
     "returnNavigationDestination": "https://maps.google.com/?q=2%2F13+Red+Oaks+Drive+Frankton+Queenstown",
     "shuttleCollectionAddress": "264 Russley Road, Avonhead, Christchurch",
-    "price": "AUD 524.66 total",
+    "price": "NZD 628.82 total",
     "paymentLabel": "DEPOSIT PAID",
-    "totalAmount": "AUD 524.66",
-    "depositPaid": "AUD 11.61",
-    "balanceDue": "AUD 513.05",
-    "payAtPickup": "AUD 513.05",
-    "netTotalAUD": "AUD 524.66",
-    "approximateNet": false
+    "totalAmount": "NZD 628.82",
+    "depositPaid": "NZD 13.95",
+    "balanceDue": "NZD 614.87",
+    "payAtPickup": "NZD 614.87",
+    "netTotalAUD": "NZD 628.82",
+    "approximateNet": false,
+    "bond": "NZD 1,500 pre-authorisation at rental counter"
   },
   "lakefront-booking": {
     "id": "lakefront-booking",

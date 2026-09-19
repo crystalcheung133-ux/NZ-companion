@@ -220,6 +220,17 @@ function bookingDocumentLinksHTML(booking){
  if(!docs.length)return '';
  return `<div class="trip-action-row trip-action-row--booking-compact booking-document-links">${docs.map(d=>`<a class="pill trip-action-btn" href="documents.html?document=${encodeURIComponent(d.id)}&returnTo=${encodeURIComponent('index.html?bookingId='+booking.id)}" >📎 ${escapeTripHTML(d.title||'Document')}</a>`).join('')}</div>`;
 }
+function bookingUsefulLinksHTML(booking){
+  const links=Array.isArray(booking&&booking.usefulLinks)?booking.usefulLinks:[];
+  if(!links.length)return '';
+  return `<div class="trip-action-row trip-action-row--booking-compact booking-useful-links">${links.filter(x=>x&&x.url).map(x=>`<a class="pill trip-action-btn trip-action-btn--useful" href="${escapeTripHTML(x.url)}" target="_blank" rel="noopener">${escapeTripHTML(x.icon||'🔗')} ${escapeTripHTML(x.label||'Useful link')}</a>`).join('')}</div>`;
+}
+function bookingStudioActionHTML(booking){
+  return bookingEditButtonHTML(booking)?`<div class="trip-action-row trip-action-row--booking-compact booking-studio-actions">${bookingEditButtonHTML(booking)}</div>`:'';
+}
+function bookingSharedFooterHTML(booking){
+  return bookingUsefulLinksHTML(booking)+bookingDocumentLinksHTML(booking)+bookingStudioActionHTML(booking);
+}
 function bookingActionButtonsHTML(booking,place,options={}){
   const includeDay=options.includeDay!==false;
   const whatsappContact=String(booking&&booking.whatsapp||'').trim();
@@ -231,7 +242,7 @@ function bookingActionButtonsHTML(booking,place,options={}){
     whatsapp?`<a class="pill trip-action-btn trip-action-btn--whatsapp" href="${escapeTripHTML(whatsapp)}" target="_blank" rel="noopener">WhatsApp</a>`:'',
     booking&&booking.email?`<a class="pill trip-action-btn trip-action-btn--email" href="mailto:${escapeTripHTML(booking.email)}">Email</a>`:''
   ].filter(Boolean);
-  return (buttons.length?`<div class="trip-action-row trip-action-row--booking-compact">${buttons.join('')}</div>`:'')+bookingDocumentLinksHTML(booking);
+  return (buttons.length?`<div class="trip-action-row trip-action-row--booking-compact">${buttons.join('')}</div>`:'')+bookingSharedFooterHTML(booking);
 }
 function bookingContactSectionsHTML(booking,place){
   const phone=(booking&&booking.phone)||(place&&place.phone)||'';
@@ -442,6 +453,8 @@ function bookingEditFields(booking){
     bookingField('Other booking method / platform','bookingViaOther',via==='Other'?rawVia:'',{wide:true}),
     bookingField('Payment / deposit status','paymentStatus',booking.paymentStatus),bookingField('Total / balance','price',booking.price),
     bookingField('Website / booking link','website',booking.website,{wide:true,inputmode:'url'}),
+    bookingField('Useful link label','usefulLinkLabel',(Array.isArray(booking.usefulLinks)&&booking.usefulLinks[0]&&booking.usefulLinks[0].label)||'',{wide:true}),
+    bookingField('Useful link URL','usefulLinkUrl',(Array.isArray(booking.usefulLinks)&&booking.usefulLinks[0]&&booking.usefulLinks[0].url)||'',{wide:true,inputmode:'url'}),
     bookingField('Phone','phone',booking.phone),bookingField('Email','email',booking.email,{type:'email'}),
     bookingField('Notes / cancellation / important information','importantInfo',bookingImportantInfo(booking),{type:'textarea'})
   ];
@@ -553,6 +566,7 @@ async function saveBookingEdit(event,bookingId){
   const viaValue=viaChoice==='Other'?viaOther:viaChoice;
   next.bookingWay=viaValue;next.platform=viaValue;next.bookingViaOther=viaChoice==='Other'?viaOther:'';
   delete next.bookingVia;
+  {const label=String(next.usefulLinkLabel||'').trim(),url=String(next.usefulLinkUrl||'').trim();if(url)next.usefulLinks=[{label:label||'Useful link',url:url,icon:label.toLowerCase().includes('guide')?'📖':'🔗'}];else next.usefulLinks=[];delete next.usefulLinkLabel;delete next.usefulLinkUrl;}
   if(Object.prototype.hasOwnProperty.call(next,'importantInfo')){next.notes=next.importantInfo;next.cancellation='';delete next.importantInfo;}
   ['nights','guests','adults','children'].forEach(function(key){if(Object.prototype.hasOwnProperty.call(next,key)){const value=Number(next[key]);next[key]=Number.isFinite(value)?value:0;}});
   if(next.dayId&&!/^day\d+$/.test(next.dayId))next.dayId='day'+String(next.dayId).replace(/\D/g,'');
@@ -634,7 +648,7 @@ function buildRentalCarHTML(){
   const depots=`<div class="fact-grid rental-depot-grid"><div class="fact rental-depot-card"><strong>Pickup depot</strong>${escapeTripHTML(booking.pickupDepotAddress||booking.pickupAddress||'')}<div class="trip-action-row rental-depot-actions"><a class="pill" href="${escapeTripHTML(booking.pickupNavigationDestination||accommodationMapURL(booking.pickupDepotAddress||booking.pickupAddress||''))}" target="_blank" rel="noopener">Navigate to pickup</a></div></div><div class="fact rental-depot-card"><strong>Return depot</strong>${escapeTripHTML(booking.returnDepotAddress||booking.returnAddress||'')}<div class="trip-action-row rental-depot-actions"><a class="pill" href="${escapeTripHTML(booking.returnNavigationDestination||accommodationMapURL(booking.returnDepotAddress||booking.returnAddress||''))}" target="_blank" rel="noopener">Navigate to return</a></div></div></div>`;
   const instructions=Array.isArray(booking.pickupInstructions)?booking.pickupInstructions.filter(Boolean):[];
   const pickup=instructions.length?`<h3>Pickup instructions</h3><ol>${instructions.map(line=>`<li>${escapeTripHTML(line)}</li>`).join('')}</ol>${booking.shuttleCollectionAddress?`<p class="timestamp">Shuttle collection point: ${escapeTripHTML(booking.shuttleCollectionAddress)}</p>`:''}`:'';
-  return `<article class="fact stay-booking accommodation-detail-card rental-booking-detail"><div class="accommodation-facts">${facts}</div>${accommodationPaymentHTML(booking)}${depots}${pickup}</article>`;
+  return `<article class="fact stay-booking accommodation-detail-card rental-booking-detail"><div class="accommodation-facts">${facts}</div>${accommodationPaymentHTML(booking)}${depots}${pickup}${bookingSharedFooterHTML(booking)}${bookingExpenseActionHTML(booking)}</article>`;
 }
 function activityDetailNavigationHTML(bookingId){
   const bookings=getActivityBookings();
