@@ -2918,3 +2918,28 @@ html.handoff-ready body{visibility:visible}
  :root{--companion-header-clearance:76px;--companion-bottom-clearance:112px}
  .trip-modal{padding:8px 10px!important}
 }
+
+/* RC25.7.11 — modal owns the whole viewport above all application chrome. */
+.trip-modal,.guide-modal,.moments-modal{
+  position:fixed!important;
+  inset:0!important;
+  width:100vw!important;
+  height:100dvh!important;
+  padding:max(14px,env(safe-area-inset-top,0px)) 14px max(14px,env(safe-area-inset-bottom,0px))!important;
+  box-sizing:border-box!important;
+  z-index:30000!important;
+  overflow:hidden!important;
+  align-items:center!important;
+  justify-items:center!important;
+}
+.trip-modal.show,.guide-modal.show,.moments-modal.show{display:grid!important}
+.trip-modal .trip-sheet,.guide-modal .guide-sheet,.moments-modal .moments-sheet{
+  width:min(950px,100%)!important;
+  max-height:calc(100dvh - max(28px,env(safe-area-inset-top,0px) + env(safe-area-inset-bottom,0px)))!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain!important;
+  margin:0 auto!important;
+  box-sizing:border-box!important;
+}
+.trip-close,.guide-close,.moments-close{position:sticky!important;top:0!important;z-index:4!important}
+.app-nav,.site-nav{z-index:1000}

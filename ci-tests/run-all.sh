@@ -76,3 +76,6 @@ python ci-tests/test-rc2579-architecture-correction.py
 
 echo "== RC25.7.10 RETURN + IDENTITY + TIMELINE SYNC =="
 python ci-tests/test-rc25710-return-identity-timeline-sync.py
+
+echo "== RC25.7.11 MODAL + RETURN + DERIVED DAY =="
+python ci-tests/test-rc25711-modal-return-derived-day.py

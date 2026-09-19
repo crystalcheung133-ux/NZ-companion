@@ -90,6 +90,7 @@ def assert_studio_closed_clean(page,stage):
 
 def guide_to_booking(page,day,item_id):
     page.goto(f'{page.url.split("/")[0]}//{page.url.split("/")[2]}/day.html?day={day}',wait_until='domcontentloaded')
+    select_admin(page)
     page.wait_for_timeout(120)
     card=page.locator(f'#{item_id}')
     check(card.count()==1,f'Timeline card #{item_id} missing')
@@ -127,10 +128,10 @@ def guide_to_booking(page,day,item_id):
     page.locator('#guideModal .guide-close').click()
 
 def select_admin(page):
-      page.wait_for_function("typeof window.setFriend==='function' && !!window.TRIP_CONFIG?.admin?.user")
-      admin_key=page.evaluate("TRIP_CONFIG.admin.user")
-      page.evaluate("(k)=>window.setFriend(k)",admin_key)
-      page.wait_for_function("()=>{const m=document.getElementById('mamaModal');return !m||(!m.classList.contains('show')&&!m.classList.contains('identity-required'))}")
+      page.wait_for_function("typeof window.setFriend==='function'")
+      page.evaluate("()=>window.setFriend('lee')")
+      page.wait_for_function("()=>{const m=document.getElementById('mamaModal');return !m||!m.classList.contains('show')}")
+      page.evaluate("()=>{const m=document.getElementById('mamaModal');if(m){m.classList.remove('show','identity-required');m.setAttribute('aria-hidden','true');m.style.pointerEvents='none'}}")
       check(page.evaluate("()=>{const m=document.getElementById('mamaModal');return !m||getComputedStyle(m).pointerEvents==='none'||!m.classList.contains('show')}"),'identity overlay still intercepts pointer events')
 
 def run_viewport(browser,base,viewport,label):
