@@ -2943,3 +2943,6 @@ html.handoff-ready body{visibility:visible}
 }
 .trip-close,.guide-close,.moments-close{position:sticky!important;top:0!important;z-index:4!important}
 .app-nav,.site-nav{z-index:1000}
+
+/* RC25.7.13 — day identity is context, not another summary card. */
+.timeline-day-identity{max-width:1180px;margin:8px auto 10px;padding:0 4px;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);font-size:13px}

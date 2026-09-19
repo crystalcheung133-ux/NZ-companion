@@ -10,9 +10,9 @@ function documentTargets(){
 }
 function fillLinkSelect(sel,value){if(!sel)return;sel.innerHTML=documentTargets().map(x=>`<option value="${esc(x.value)}">${esc(x.label)}</option>`).join('');sel.value=value||'trip|';if(sel.selectedIndex<0)sel.value='trip|'}
 function renderTargets(){fillLinkSelect($('docLink'),'trip|')}
-function routeForDocument(d){
- const back=`documents.html?document=${encodeURIComponent(d.id)}`;
- if(d.linkType==='booking'&&d.linkId){try{sessionStorage.setItem('travel_engine_return_document_v1',d.id)}catch(e){}return `index.html?bookingId=${encodeURIComponent(d.linkId)}&returnTo=${encodeURIComponent(back)}`;}
+function routeForDocument(d,origin='page'){
+ const back=origin==='viewer'?`documents.html?document=${encodeURIComponent(d.id)}`:'documents.html';
+ if(d.linkType==='booking'&&d.linkId)return `index.html?bookingId=${encodeURIComponent(d.linkId)}&returnTo=${encodeURIComponent(back)}`;
  if(d.linkType==='timeline'&&d.linkId){const [day,item]=String(d.linkId).split('::');return `day.html?day=${encodeURIComponent(day)}&returnTo=${encodeURIComponent(back)}#${encodeURIComponent(item||'')}`}
  return ''
 }
@@ -23,8 +23,7 @@ function render(){
    <div class="document-history-title"><span aria-hidden="true">${d.mimeType?.startsWith('image/')?'🖼️':d.mimeType?.includes('pdf')?'📄':'📎'}</span><button class="document-title-open" type="button" onclick="openDocumentViewer('${esc(d.id)}')" aria-label="Open ${esc(d.title)}">${esc(d.title)}</button>${d.pinned?'<span class="document-pin" title="Pinned">📌</span>':''}</div>
    <p class="timestamp">${esc(d.category||'Other')}${d.uploadPending?' · Not synced':''}</p>
    ${d.note?`<p>${esc(d.note)}</p>`:''}
-   ${d.fileName?`<p class="document-file-name">${esc(d.fileName)}</p>`:''}
-   ${d.linkType&&d.linkType!=='trip'&&d.linkLabel?`<p class="document-link-row">🔗 <a href="${esc(routeForDocument(d))}">${esc(d.linkLabel)}</a></p>`:''}
+      ${d.linkType&&d.linkType!=='trip'&&d.linkLabel?`<p class="document-link-row">🔗 <a href="${esc(routeForDocument(d,'page'))}">${esc(d.linkLabel)}</a></p>`:''}
    <div class="entry-actions document-entry-actions">
      <button class="mini-btn" onclick="openEditDocument('${esc(d.id)}')">✏️ Edit</button>
      ${d.uploadPending?`<button class="mini-btn" onclick="repairDocument('${esc(d.id)}')">☁️ Sync file</button>`:''}
@@ -40,9 +39,13 @@ root.openEditDocument=id=>{
  $('editDocModal').classList.add('show');$('editDocModal').setAttribute('aria-hidden','false');
 };
 root.closeEditDocument=()=>{$('editDocModal').classList.remove('show');$('editDocModal').setAttribute('aria-hidden','true')};
-root.saveDocumentEdit=async()=>{
- const id=$('editDocId').value;if(!id)return;const sel=$('editDocLink'),parts=sel.value.split('|'),linkType=parts[0]||'trip',linkId=parts.slice(1).join('|'),linkLabel=sel.selectedOptions[0]?.textContent?.replace(/^(Booking|Timeline) · /,'')||'Trip-wide';
- await root.TRIP_DOCUMENTS.update(id,{title:$('editDocTitle').value.trim()||'Document',category:$('editDocCategory').value,pinned:$('editDocPin').checked,linkType,linkId,linkLabel});root.closeEditDocument();render();
+root.saveDocumentEdit=()=>{
+ const id=$('editDocId').value;if(!id)return false;const sel=$('editDocLink'),parts=sel.value.split('|'),linkType=parts[0]||'trip',linkId=parts.slice(1).join('|'),linkLabel=sel.selectedOptions[0]?.textContent?.replace(/^(Booking|Timeline) · /,'')||'Trip-wide';
+ const patch={title:$('editDocTitle').value.trim()||'Document',category:$('editDocCategory').value,pinned:$('editDocPin').checked,linkType,linkId,linkLabel};
+ root.closeEditDocument();
+ const pending=root.TRIP_DOCUMENTS.update(id,patch);render();
+ Promise.resolve(pending).then(render).catch(e=>console.error('Document metadata sync pending',e));
+ return true;
 };
 
 root.repairDocument=id=>{
@@ -73,7 +76,7 @@ async function renderPdfInto(url,wrap){
  }catch(e){wrap.innerHTML='<div class="doc-viewer-message"><strong>Could not preview this document.</strong><p>Try again while online.</p></div>'}
 }
 root.openDocumentViewer=id=>{const d=root.TRIP_DOCUMENTS.read().find(x=>x.id===id);if(!d)return;let url=d.fileUrl||d.localObjectUrl||'';if(d.embeddedBase64){try{const raw=atob(d.embeddedBase64),bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);url=URL.createObjectURL(new Blob([bytes],{type:d.mimeType||'application/pdf'}));}catch(e){}}$('docViewerTitle').textContent=d.title||'Document';const body=$('docViewerBody');body.innerHTML='';
-if(d.linkType&&d.linkType!=='trip'&&d.linkLabel){const link=document.createElement('a');link.className='pill doc-viewer-linked-entity';link.href=routeForDocument(d);link.textContent='🔗 '+d.linkLabel;body.appendChild(link)}
+if(d.linkType&&d.linkType!=='trip'&&d.linkLabel){const link=document.createElement('a');link.className='pill doc-viewer-linked-entity';link.href=routeForDocument(d,'viewer');link.textContent='🔗 '+d.linkLabel;body.appendChild(link)}
 if(!url){body.innerHTML='<div class="doc-viewer-message">This document is not available on this device yet.</div>'}else if((d.mimeType||'').startsWith('image/')){const img=document.createElement('img');img.src=url;img.alt=d.title||'Document';body.appendChild(img)}else if((d.mimeType||'').includes('pdf')||/\.pdf(?:$|\?)/i.test(url)){const wrap=document.createElement('div');wrap.className='pdf-pages';body.appendChild(wrap);renderPdfInto(url,wrap)}else{const wrap=document.createElement('div');wrap.className='doc-viewer-message';wrap.innerHTML='<strong>'+esc(d.fileName||d.title||'Document')+'</strong><p>This file type opens in its native viewer.</p><a class="pill" target="_blank" rel="noopener">Open original file</a>';wrap.querySelector('a').href=url;body.appendChild(wrap)}$('docViewer').classList.add('show');$('docViewer').setAttribute('aria-hidden','false');document.body.style.overflow='hidden'};
 root.closeDocumentViewer=()=>{const back=new URLSearchParams(location.search).get('returnTo');if(back){location.href=back;return true}const v=$('docViewer');v.classList.remove('show');v.setAttribute('aria-hidden','true');$('docViewerBody').innerHTML='';document.body.style.overflow='';return true};
 root.resetDocumentsView=()=>{try{root.closeDocumentViewer()}catch(e){};try{root.closeAddDocument()}catch(e){};const f=$('docForm');if(f)f.reset();const save=$('docSave');if(save){save.disabled=false;save.textContent='Save Document'};document.body.style.overflow=''};

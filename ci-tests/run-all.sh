@@ -27,6 +27,8 @@ run "BACKWARD COMPAT" node ci-tests/test-stage1-backward-compat.js
 run "CANONICAL STUDIO + EXPENSE DEEP-LINK" node ci-tests/test-canonical-studio-expense-deeplink.js
 run "CANONICAL STUDIO VISUAL CONTRACT 25.6.2" node ci-tests/test-studio-visual-contract-2562.js
 run "SHARED-FACING CONTENT" node ci-tests/test-shared-facing-content.js
+run "RC25.7.12 NAVIGATION + FULL DRIVE + BROWSER BOOTSTRAP" python ci-tests/test-rc25712-navigation-drive-browser-bootstrap.py
+run "RC25.7.13 DOC ORIGIN + EDIT + DAY IDENTITY" python ci-tests/test-rc25713-doc-origin-edit-day-identity.py
 if [ "$failed" -eq 0 ]; then
   printf '\nNZ 25.7 SHARED-READY CI PASSED\n'
   exit 0
@@ -79,6 +81,3 @@ python ci-tests/test-rc25710-return-identity-timeline-sync.py
 
 echo "== RC25.7.11 MODAL + RETURN + DERIVED DAY =="
 python ci-tests/test-rc25711-modal-return-derived-day.py
-
-echo "== RC25.7.12 NAVIGATION + FULL DRIVE + BROWSER BOOTSTRAP =="
-python ci-tests/test-rc25712-navigation-drive-browser-bootstrap.py
