@@ -1,7 +1,7 @@
 {
   "name": "New Zealand Companion",
   "short_name": "NZ Companion",
-  "start_url": "./index.html?coldLaunch=1&app=rc25-7-22",
+  "start_url": "./index.html?coldLaunch=1&app=rc25-7-23",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f4eadb",

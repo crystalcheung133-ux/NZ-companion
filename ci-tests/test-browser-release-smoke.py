@@ -131,19 +131,7 @@ def select_admin(page):
 
 def run_viewport(browser,base,viewport,label):
       context=browser.new_context(viewport=viewport)
-      context.add_init_script("""()=>{
-        localStorage.setItem('nz_friend','lee');
-        const settle=()=>{
-          const m=document.getElementById('mamaModal');
-          if(!m)return;
-          m.classList.remove('show','identity-required');
-          m.setAttribute('aria-hidden','true');
-          m.style.pointerEvents='none';
-          document.documentElement.removeAttribute('data-identity-selection-required');
-          document.body&&document.body.classList.remove('identity-selection-required');
-        };
-        addEventListener('DOMContentLoaded',()=>{settle();new MutationObserver(settle).observe(document.documentElement,{subtree:true,attributes:true,attributeFilter:['class']});});
-      }""")
+      context.add_init_script("localStorage.setItem('nz_friend','lee')")
       page=context.new_page()
       errors=[]
       console_errors=[]
@@ -155,6 +143,8 @@ def run_viewport(browser,base,viewport,label):
         page.goto(base+'/index.html',wait_until='domcontentloaded')
         page.evaluate("document.getElementById('ccmvSplash')?.remove()")
         select_admin(page)
+        page.wait_for_timeout(350)
+        check(not page.locator('#mamaModal').evaluate("el=>el.classList.contains('show')"),label+': identity overlay reopened after valid stored identity')
 
         # Studio lifecycle: PIN -> foreground -> Close -> User Selector direct re-entry -> reload re-entry.
         studio_login(page)
@@ -198,6 +188,22 @@ def run_viewport(browser,base,viewport,label):
         check(page.locator('#tripModalContent .trip-action-btn--call').count()==0,
               label+': phone-only Call action should not exist')
         page.locator('#tripModal .trip-close').click()
+
+        # Day summary must follow the SAME saved itinerary authority/order as the visible Timeline.
+        page.goto(base+'/day.html?day=3',wait_until='domcontentloaded')
+        select_admin(page)
+        page.evaluate("""()=>{
+          const items=ITINERARY_AUTHORITY.resolveDayItems('3',ITINERARY_DATA['3'].items);
+          const a=items.findIndex(x=>x.id==='ultimate-alpine-flight'),h=items.findIndex(x=>x.id==='hooker-valley');
+          if(a<0||h<0)throw new Error('Day 3 drive fixtures missing');
+          const [hook]=items.splice(h,1); const flight=items.findIndex(x=>x.id==='ultimate-alpine-flight'); items.splice(flight,0,hook);
+          markAdminDirty('itineraryDay3',{day:'3',items,masterRevision:ITINERARY_AUTHORITY.getMasterRevision()});
+          saveAdminChanges();
+        }""")
+        page.wait_for_function("()=>document.querySelector('[data-drive-summary=\"timeline-order\"]')?.textContent.includes('Hooker Valley Track')")
+        drive_text=page.locator('[data-drive-summary="timeline-order"]').inner_text()
+        check(drive_text.index('Hooker Valley Track')<drive_text.index('Helicopter + Ski Plane Glacier Flight'),label+': Today drive summary ignored saved Timeline order')
+        page.evaluate("()=>ITINERARY_AUTHORITY.clearDayOverride('3')")
 
         # Fixture data contains an openList and a rest item: semantics must remain distinguishable at runtime.
         types=page.evaluate("Object.values(ITINERARY_DATA).flatMap(d=>d.items||[]).map(x=>x.type)")

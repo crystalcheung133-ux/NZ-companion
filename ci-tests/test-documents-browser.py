@@ -25,7 +25,7 @@ def vis(p,s):
 
 def new_context(browser,viewport):
  c=browser.new_context(viewport=viewport)
- c.add_init_script("""()=>{localStorage.setItem('nz_friend','lee');addEventListener('DOMContentLoaded',()=>{const settle=()=>{const m=document.getElementById('mamaModal');if(m){m.classList.remove('show','identity-required');m.setAttribute('aria-hidden','true');m.style.pointerEvents='none'}document.documentElement.removeAttribute('data-identity-selection-required');document.body&&document.body.classList.remove('identity-selection-required')};settle();new MutationObserver(settle).observe(document.documentElement,{subtree:true,attributes:true,attributeFilter:['class']});});}""")
+ c.add_init_script("localStorage.setItem('nz_friend','lee')")
  return c
 
 def check_docs_first_click(browser,base,path,label):

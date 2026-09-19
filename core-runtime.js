@@ -198,10 +198,17 @@ function friendIdentityHTML(key,compact=false){
 window.friendIdentityHTML=friendIdentityHTML;
 function updateFriendLabels(){const key=getFriend();document.querySelectorAll('[data-friend-label]').forEach(e=>{e.innerHTML=friendIdentityHTML(key,true);e.dataset.family=key;});}
 function renderFriendChoices(){const list=document.querySelector('#mamaModal .friend-choice-list');if(!list)return;const current=getStoredFriend();list.innerHTML=selectableFriendKeys().map(key=>`<button type="button" class="family-choice${key===current?' active':''}" data-family="${key}" onclick="setFriend('${key}')">${friendIdentityHTML(key)}</button>`).join('');}
-function openFriendModal(){if(hasSingleSelectableFriend()){const only=selectableFriendKeys()[0];if(only&&!getStoredFriend())setFriend(only);return;}renderFriendChoices();const modal=$('mamaModal');if(!modal)return;const closeBtn=modal.querySelector('.mama-close');if(identitySelectionRequired){modal.classList.add('identity-required');if(closeBtn){closeBtn.hidden=true;closeBtn.style.display='none';closeBtn.setAttribute('aria-hidden','true');}}else if(closeBtn){closeBtn.hidden=false;closeBtn.style.display='';closeBtn.removeAttribute('aria-hidden');}modal.classList.add('show');}
+function openFriendModal(){if(getStoredFriend()&&identitySelectionRequired){identitySelectionRequired=false;document.documentElement.removeAttribute('data-identity-selection-required');document.body?.classList.remove('identity-selection-required');}if(hasSingleSelectableFriend()){const only=selectableFriendKeys()[0];if(only&&!getStoredFriend())setFriend(only);return;}renderFriendChoices();const modal=$('mamaModal');if(!modal)return;const closeBtn=modal.querySelector('.mama-close');if(identitySelectionRequired){modal.classList.add('identity-required');if(closeBtn){closeBtn.hidden=true;closeBtn.style.display='none';closeBtn.setAttribute('aria-hidden','true');}}else if(closeBtn){closeBtn.hidden=false;closeBtn.style.display='';closeBtn.removeAttribute('aria-hidden');}modal.classList.add('show');}
 function closeFriendModal(){if(identitySelectionRequired&&!getStoredFriend())return;const modal=$('mamaModal');if(modal)modal.classList.remove('show','identity-required');}
 function ensureFriendIdentity(){
-  if(getStoredFriend())return false;
+  if(getStoredFriend()){
+    identitySelectionRequired=false;
+    document.documentElement.removeAttribute('data-identity-selection-required');
+    document.body?.classList.remove('identity-selection-required');
+    const existing=document.getElementById('mamaModal');
+    if(existing){existing.classList.remove('show','identity-required');existing.setAttribute('aria-hidden','true');existing.style.pointerEvents='';}
+    return false;
+  }
   const selectable=selectableFriendKeys();
   if(selectable.length===1){
     setFriend(selectable[0]);
