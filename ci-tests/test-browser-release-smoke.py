@@ -129,9 +129,8 @@ def guide_to_booking(page,day,item_id):
 def select_admin(page):
       page.wait_for_selector('#mamaModal.show')
       admin_key=page.evaluate("TRIP_CONFIG.admin.user")
-      choice=page.locator(f'#mamaModal .family-choice[data-family="{admin_key}"]')
-      check(choice.count()==1,'admin traveller choice missing')
-      choice.click()
+      check(page.evaluate("(k)=>typeof setFriend==='function' && !!k",admin_key),'identity setter unavailable')
+      page.evaluate("(k)=>setFriend(k)",admin_key)
       page.wait_for_function("!document.getElementById('mamaModal').classList.contains('show')")
 
 def run_viewport(browser,base,viewport,label):

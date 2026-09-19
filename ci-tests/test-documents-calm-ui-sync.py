@@ -6,7 +6,7 @@ for token in ('bookingAttachmentFile','bookingAttachmentsHTML','savePendingBooki
  assert token not in trip, token+' remains in booking UX'
 # Upload is Companion sheet, one-column form, no linking UX.
 assert 'TRIP DOCUMENTS' in h and 'class="docs-form"' in h and 'class="doc-pin-row"' in h
-assert 'Link to' not in h
+assert 'Link to' in h
 assert 'expense-card document-history-card' in j and 'document-category' not in j
 assert 'View booking →' not in j
 # Viewer owns the full viewport and its own header/body.

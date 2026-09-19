@@ -205,6 +205,12 @@ function bookingExpenseActionHTML(booking){
   if(!hasPayment)return '';
   return `<div class="trip-action-row trip-action-row--booking-compact booking-expense-buttons booking-expense-buttons--compact"><button class="pill trip-action-btn trip-action-btn--expense" type="button" onclick="openBookingExpense('${escapeTripHTML(booking.id)}')">Add payment to Expenses</button></div>`;
 }
+function bookingDocumentLinksHTML(booking){
+ if(!booking?.id||!window.TRIP_DOCUMENTS)return '';
+ const docs=TRIP_DOCUMENTS.read().filter(d=>d.linkType==='booking'&&d.linkId===booking.id);
+ if(!docs.length)return '';
+ return `<div class="trip-action-row trip-action-row--booking-compact booking-document-links">${docs.map(d=>`<a class="pill trip-action-btn" href="documents.html?document=${encodeURIComponent(d.id)}">📎 ${escapeTripHTML(d.title||'Document')}</a>`).join('')}</div>`;
+}
 function bookingActionButtonsHTML(booking,place,options={}){
   const includeDay=options.includeDay!==false;
   const whatsappContact=String(booking&&booking.whatsapp||'').trim();
@@ -216,7 +222,7 @@ function bookingActionButtonsHTML(booking,place,options={}){
     whatsapp?`<a class="pill trip-action-btn trip-action-btn--whatsapp" href="${escapeTripHTML(whatsapp)}" target="_blank" rel="noopener">WhatsApp</a>`:'',
     booking&&booking.email?`<a class="pill trip-action-btn trip-action-btn--email" href="mailto:${escapeTripHTML(booking.email)}">Email</a>`:''
   ].filter(Boolean);
-  return buttons.length?`<div class="trip-action-row trip-action-row--booking-compact">${buttons.join('')}</div>`:'';
+  return (buttons.length?`<div class="trip-action-row trip-action-row--booking-compact">${buttons.join('')}</div>`:'')+bookingDocumentLinksHTML(booking);
 }
 function bookingContactSectionsHTML(booking,place){
   const phone=(booking&&booking.phone)||(place&&place.phone)||'';
@@ -444,38 +450,6 @@ function bookingEditFields(booking){
     bookingField('Drop-off','dropOff',booking.dropOff,{type:'textarea'}),bookingField('Lunch','lunchStatus',booking.lunchStatus,{type:'textarea'})
   );
   return common.join('');
-}
-
-function bookingAttachmentDocs(bookingId){
-  return window.TRIP_DOCUMENTS&&TRIP_DOCUMENTS.byBooking?TRIP_DOCUMENTS.byBooking(bookingId):[];
-}
-function bookingAttachmentsHTML(bookingId){
-  const docs=bookingAttachmentDocs(bookingId);
-  return `<section class="booking-attachments"><div class="booking-attachments-head"><strong>📎 Attachments</strong><span>${docs.length?docs.length+' saved':''}</span></div>
-    <div class="booking-attachment-list">${docs.map(d=>`<div class="booking-attachment-row"><span>📄 ${escapeTripHTML(d.title||d.fileName||'Document')}</span><span><button class="pill" type="button" onclick="openBookingAttachment('${escapeTripHTML(d.id)}')">Open</button><button class="pill danger" type="button" onclick="removeBookingAttachment('${escapeTripHTML(d.id)}','${escapeTripHTML(bookingId)}')">Remove</button></span></div>`).join('')||'<p class="timestamp">No attachments yet.</p>'}</div>
-    <label class="booking-attach-picker"><span>＋ Attach document</span><input id="bookingAttachmentFile" name="bookingAttachmentFile" type="file" accept="image/*,.pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"></label>
-    <p class="timestamp">The attachment is saved when you Save Booking and will also appear in Documents.</p>
-  </section>`;
-}
-window.openBookingAttachment=function(id){
-  sessionStorage.setItem('travel_engine_open_document_v1',id);location.href='documents.html?document='+encodeURIComponent(id);
-};
-window.removeBookingAttachment=function(id,bookingId){
-  if(!window.TRIP_DOCUMENTS||!confirm('Remove this attachment from the booking and Documents?'))return;
-  TRIP_DOCUMENTS.remove(id);openBookingEdit(bookingId);
-};
-async function savePendingBookingAttachment(form,booking){
-  const input=form&&form.querySelector('#bookingAttachmentFile'),file=input&&input.files&&input.files[0];
-  if(!file||!window.TRIP_DOCUMENTS)return null;
-  return TRIP_DOCUMENTS.add({
-    title:file.name||booking.title+' attachment',
-    category:'Bookings & vouchers',
-    note:'',
-    pinned:false,
-    linkType:'booking',
-    linkId:booking.id,
-    linkLabel:booking.title
-  },file);
 }
 
 function openBookingEdit(bookingId){

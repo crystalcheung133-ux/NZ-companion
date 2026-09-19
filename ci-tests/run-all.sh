@@ -58,3 +58,6 @@ python ci-tests/test-documents-edit-viewer-contract.py
 
 echo "== DOCUMENT EXPENSE CARD + BROWSER HARNESS =="
 python ci-tests/test-documents-expense-card-browser-harness.py
+
+echo "== DOCUMENT LINKS + METADATA SYNC + LUXE =="
+python ci-tests/test-documents-links-metadata-sync-luxe.py

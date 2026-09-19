@@ -8,7 +8,14 @@ function uuid(){return root.crypto?.randomUUID?root.crypto.randomUUID():'doc-'+D
 function read(){let x=[];try{x=store?.readJSON?store.readJSON(KEY,[]):JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){};if(!Array.isArray(x))x=[];x=x.map(d=>{if(!d.seeded&&!d.fileUrl&&!d.filePath)return Object.assign({},d,{uploadPending:true,legacyLocalOnly:true});return d});const ids=new Set(x.map(d=>d.id));seed.forEach(d=>{if(!ids.has(d.id))x.push(d)});return x.sort((a,b)=>(!!b.pinned-!!a.pinned)||String(b.updatedAt).localeCompare(String(a.updatedAt)))}
 function write(x){if(store?.writeJSON)store.writeJSON(KEY,x);else localStorage.setItem(KEY,JSON.stringify(x));document.dispatchEvent(new CustomEvent('travelengine:documentschanged'))}
 function configured(){return !!(cfg.enabled&&cfg.url&&cfg.anonKey&&root.SUPABASE?.isConfigured?.())}
-async function cloudUpload(doc,file){if(!configured()||!navigator.onLine)return doc;await root.SUPABASE.getSession();const c=root.SUPABASE.getClient();const safe=(file.name||'document').replace(/[^a-zA-Z0-9._-]+/g,'-');const path=`${cfg.tripId}/${doc.id}/${safe}`;const up=await c.storage.from(bucket).upload(path,file,{upsert:true,contentType:file.type||'application/octet-stream'});if(up.error)throw up.error;const pub=c.storage.from(bucket).getPublicUrl(path).data?.publicUrl;doc.fileUrl=pub||doc.fileUrl;doc.filePath=path;const row={id:doc.id,trip_id:cfg.tripId,payload:doc,created_at:doc.createdAt,updated_at:doc.updatedAt};const q=await c.from(table).upsert(row,{onConflict:'id'});if(q.error)throw q.error;return doc}
+async function cloudWrite(doc){
+ if(!configured()||!navigator.onLine)return doc;
+ await root.SUPABASE.getSession();const c=root.SUPABASE.getClient();
+ const payload=Object.assign({},doc);delete payload.embeddedBase64;delete payload.localObjectUrl;delete payload.pendingBase64;
+ const row={id:doc.id,trip_id:cfg.tripId,payload,created_at:doc.createdAt,updated_at:doc.updatedAt};
+ const q=await c.from(table).upsert(row,{onConflict:'id'});if(q.error)throw q.error;return doc;
+}
+async function cloudUpload(doc,file){if(!configured()||!navigator.onLine)return doc;await root.SUPABASE.getSession();const c=root.SUPABASE.getClient();const safe=(file.name||'document').replace(/[^a-zA-Z0-9._-]+/g,'-');const path=`${cfg.tripId}/${doc.id}/${safe}`;const up=await c.storage.from(bucket).upload(path,file,{upsert:true,contentType:file.type||'application/octet-stream'});if(up.error)throw up.error;const pub=c.storage.from(bucket).getPublicUrl(path).data?.publicUrl;doc.fileUrl=pub||doc.fileUrl;doc.filePath=path;await cloudWrite(doc);return doc}
 
 function fileToBase64(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result||'').split(',')[1]||'');r.onerror=()=>reject(r.error||new Error('file-read-failed'));r.readAsDataURL(file)})}
 function base64ToFile(d){if(!d.pendingBase64)return null;const raw=atob(d.pendingBase64),bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);return new File([bytes],d.fileName||'document',{type:d.mimeType||'application/octet-stream'})}
@@ -23,8 +30,8 @@ async function retryPending(list){
  return list;
 }
 
-async function add(meta,file){const now=new Date().toISOString(),doc={id:uuid(),title:meta.title||file?.name||'Document',category:meta.category||'Other',note:meta.note||'',pinned:!!meta.pinned,linkType:'trip',linkId:'',linkLabel:'Trip-wide',fileName:file?.name||'',mimeType:file?.type||'',createdAt:now,updatedAt:now};if(file){doc.localObjectUrl=URL.createObjectURL(file);try{await cloudUpload(doc,file)}catch(e){doc.uploadPending=true;doc.uploadError=e.message||String(e);if(file.size<=2500000)try{doc.pendingBase64=await fileToBase64(file)}catch(_){} }}const list=read().filter(x=>x.id!==doc.id);list.push(doc);write(list);return doc}
-async function sync(){let local=read();if(!configured()||!navigator.onLine)return local;try{local=await retryPending(local);await root.SUPABASE.getSession();const c=root.SUPABASE.getClient();const q=await c.from(table).select('payload').eq('trip_id',cfg.tripId);if(q.error)throw q.error;const map=new Map(local.map(x=>[x.id,x]));(q.data||[]).forEach(r=>{const d=r.payload;if(!d?.id||d.seeded)return;const l=map.get(d.id);if(!l||String(d.updatedAt||'')>=String(l.updatedAt||'')||!l.uploadPending)map.set(d.id,d)});const out=[...map.values()];write(out);return out}catch(e){return read()}}
+async function add(meta,file){const now=new Date().toISOString(),doc={id:uuid(),title:meta.title||file?.name||'Document',category:meta.category||'Other',note:meta.note||'',pinned:!!meta.pinned,linkType:meta.linkType||'trip',linkId:meta.linkId||'',linkLabel:meta.linkLabel||'Trip-wide',fileName:file?.name||'',mimeType:file?.type||'',createdAt:now,updatedAt:now};if(file){doc.localObjectUrl=URL.createObjectURL(file);try{await cloudUpload(doc,file)}catch(e){doc.uploadPending=true;doc.uploadError=e.message||String(e);if(file.size<=2500000)try{doc.pendingBase64=await fileToBase64(file)}catch(_){} }}const list=read().filter(x=>x.id!==doc.id);list.push(doc);write(list);return doc}
+async function sync(){let local=read();if(!configured()||!navigator.onLine)return local;try{local=await retryPending(local);await root.SUPABASE.getSession();const c=root.SUPABASE.getClient();const q=await c.from(table).select('payload').eq('trip_id',cfg.tripId);if(q.error)throw q.error;const map=new Map(local.map(x=>[x.id,x]));(q.data||[]).forEach(r=>{const d=r.payload;if(!d?.id)return;const l=map.get(d.id);if(d.deleted){if(!l||String(d.updatedAt||'')>=String(l.updatedAt||''))map.delete(d.id);return}if(!l||String(d.updatedAt||'')>=String(l.updatedAt||''))map.set(d.id,Object.assign({},l||{},d))});const out=[...map.values()].filter(d=>!d.deleted);write(out);return out}catch(e){return read()}}
 
 async function repair(id,file){
  const list=read(),i=list.findIndex(x=>x.id===id);if(i<0)throw new Error('document-not-found');
@@ -34,7 +41,21 @@ async function repair(id,file){
  list[i]=d;write(list);return d;
 }
 
-function update(id,patch){const list=read(),i=list.findIndex(x=>x.id===id);if(i<0)return;list[i]=Object.assign({},list[i],patch,{updatedAt:new Date().toISOString()});write(list);if(configured()&&navigator.onLine&&!list[i].seeded){root.SUPABASE.getSession().then(()=>root.SUPABASE.getClient().from(table).upsert({id:list[i].id,trip_id:cfg.tripId,payload:list[i],created_at:list[i].createdAt,updated_at:list[i].updatedAt},{onConflict:'id'})).catch(()=>{})}}
-function remove(id){const d=read().find(x=>x.id===id);if(d?.seeded)return false;write(read().filter(x=>x.id!==id));if(configured()&&navigator.onLine)root.SUPABASE.getSession().then(()=>root.SUPABASE.getClient().from(table).delete().eq('id',id).eq('trip_id',cfg.tripId)).catch(()=>{});return true}
+async function update(id,patch){
+ const list=read(),i=list.findIndex(x=>x.id===id);if(i<0)return null;
+ const before=list[i],next=Object.assign({},before,patch,{updatedAt:new Date().toISOString()});list[i]=next;write(list);
+ if(configured()&&navigator.onLine){
+  try{await cloudWrite(next);delete next.metaSyncPending;write(list)}
+  catch(e){next.metaSyncPending=true;next.metaSyncError=e.message||String(e);write(list)}
+ }
+ return next;
+}
+async function remove(id){
+ const list=read(),d=list.find(x=>x.id===id);if(d?.seeded)return false;
+ const now=new Date().toISOString(),tombstone={id,deleted:true,createdAt:d?.createdAt||now,updatedAt:now};
+ write(list.filter(x=>x.id!==id));
+ if(configured()&&navigator.onLine)try{await cloudWrite(tombstone)}catch(e){}
+ return true;
+}
 root.TRIP_DOCUMENTS=Object.freeze({read,add,sync,repair,update,remove});
 })(globalThis);
