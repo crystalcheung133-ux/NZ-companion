@@ -2702,3 +2702,15 @@ body.global-docs-open>.app-nav{z-index:90!important;pointer-events:none!importan
 .global-docs-shell{height:calc(100dvh - 18px - env(safe-area-inset-top,0px))!important;max-height:none!important}
 .global-docs-close{position:absolute!important;top:14px!important;right:14px!important;z-index:100!important}
 @media(max-width:700px){.global-docs-shell{height:calc(100dvh - 12px - env(safe-area-inset-top,0px))!important}.global-docs-close{top:10px!important;right:10px!important}}
+
+/* RC25.6.2 — iOS standalone must use the same mobile home contract as Safari browser mode. */
+@media (display-mode:standalone) and (max-width:720px), (max-width:720px) {
+  html:has(body.home-bg),body.home-bg{height:auto!important;min-height:100dvh!important;overflow-x:hidden!important;overflow-y:auto!important}
+  body.home-bg main.dashboard.home-premium.home-v37,
+  body.home-bg main.dashboard.home-v37{height:auto!important;max-height:none!important;min-height:0!important;overflow:visible!important;align-items:flex-start!important;justify-content:flex-start!important;padding:8px 10px calc(104px + env(safe-area-inset-bottom,0px))!important}
+  body.home-bg section.home-brand-card.v37-dashboard-home{transform:none!important;margin:0 auto!important}
+  .app-nav{position:fixed!important;left:50%!important;right:auto!important;top:auto!important;bottom:0!important;transform:translate3d(-50%,0,0)!important;-webkit-transform:translate3d(-50%,0,0)!important;z-index:6000!important}
+  .app-nav::after{content:"";position:absolute;z-index:-1;left:-1px;right:-1px;top:calc(100% - 18px);height:calc(30px + env(safe-area-inset-bottom,0px));background:linear-gradient(180deg,rgba(39,34,29,.98),rgba(39,34,29,1))}
+  .global-docs-modal{position:fixed!important;inset:0!important;align-items:flex-end!important;padding-top:calc(8px + env(safe-area-inset-top,0px))!important}
+  .global-docs-shell{height:calc(100dvh - 12px - env(safe-area-inset-top,0px))!important;max-height:none!important}
+}
