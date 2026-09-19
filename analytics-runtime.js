@@ -35,7 +35,7 @@
     const file=(root.location?.pathname||'').split('/').pop()||'index.html';
     const map={
       'index.html':'Home','itinerary.html':'Days','day.html':'Days','guide.html':'Guide',
-      'place.html':'Guide','trip.html':'Booking','expenses.html':'Expenses','moments.html':'Moments','memory.html':'Moments'
+      'place.html':'Guide','trip.html':'Booking','expenses.html':'Expenses','moments.html':'Moments','memory.html':'Moments','documents.html':'Documents'
     };
     return {file,pageType:map[file]||'Other'};
   }

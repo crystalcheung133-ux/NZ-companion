@@ -11,6 +11,7 @@
       place: 'place.html',
       moments: 'moments.html',
       expenses: 'expenses.html',
+      documents: 'documents.html',
       memory: 'memory.html',
       offline: 'offline.html'
     }),
@@ -38,6 +39,7 @@
       'place.html',
       'moments.html',
       'expenses.html',
+      'documents.html',
       'memory.html'
     ])
   });
