@@ -76,8 +76,8 @@ body.home-bg main.dashboard.home-premium.home-v37{padding-top:84px!important;pad
 body.home-bg section.home-brand-card.v37-dashboard-home{margin-top:0!important;margin-bottom:0!important}
 @media(max-width:700px){body.home-bg main.dashboard.home-premium.home-v37{padding-top:72px!important;padding-bottom:118px!important}}
 </style><script>
-function openHomeDocumentsModal(){const m=document.getElementById('homeDocsModal'),f=document.getElementById('homeDocsFrame');if(!m||!f)return;if(!f.src)f.src='documents.html?embedded=1';m.classList.add('show');m.setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}
-function closeHomeDocumentsModal(){const m=document.getElementById('homeDocsModal');if(!m)return;m.classList.remove('show');m.setAttribute('aria-hidden','true');document.body.style.overflow=''}
+function openHomeDocumentsModal(){const m=document.getElementById('homeDocsModal'),f=document.getElementById('homeDocsFrame');if(!m||!f)return;if(!f.src)f.src='documents.html?embedded=1';try{f.contentWindow?.resetDocumentsView?.()}catch(e){};m.classList.add('show');m.setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}
+function closeHomeDocumentsModal(){const m=document.getElementById('homeDocsModal'),f=document.getElementById('homeDocsFrame');if(!m)return;try{f?.contentWindow?.resetDocumentsView?.()}catch(e){};m.classList.remove('show');m.setAttribute('aria-hidden','true');document.body.style.overflow=''}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeHomeDocumentsModal()});
 </script></body></html>
 
