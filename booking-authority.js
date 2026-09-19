@@ -24,8 +24,13 @@
   function sanitizeLegacyOverride(id,record){
     const out=clone(record)||{};
     if(id==='car-rental'){
+      const legacyAmounts=new Set(['524.66','11.61','513.05']);
       ['totalAmount','depositPaid','depositAmount','balanceDue','netTotalAUD','price','payAtPickup','paymentLabel'].forEach(function(field){
-        if(/^AUD\b/i.test(String(out[field]||'').trim()))delete out[field];
+        if(!Object.prototype.hasOwnProperty.call(out,field))return;
+        const raw=String(out[field]??'').trim();
+        const numeric=(raw.match(/\d[\d,]*(?:\.\d+)?/)||[])[0];
+        const normalized=numeric?numeric.replace(/,/g,''):'';
+        if(/^AUD\b/i.test(raw)||legacyAmounts.has(normalized))delete out[field];
       });
     }
     const base=DEPLOY_MASTER&&DEPLOY_MASTER[id];
@@ -56,8 +61,9 @@
   }
   function mergeOverride(base,override){
     if(!override||typeof override!=='object')return clone(base);
-    if(recordRevision(override)!==masterRevision())return mergeStaleState(base,override);
-    return Object.assign({},clone(base),editableProjection(override));
+    const clean=sanitizeLegacyOverride(base&&base.id||'',override);
+    if(recordRevision(clean)!==masterRevision())return mergeStaleState(base,clean);
+    return Object.assign({},clone(base),editableProjection(clean));
   }
   function read(){
     const raw=store()?store().readJSON(KEY,null):null;

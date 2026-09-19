@@ -47,4 +47,7 @@ printf '\nNZ 25.7 SHARED-READY CI FAILED\n' >&2
 echo "== RC25.7.18 BOOKING ENGINE PARITY =="
 python ci-tests/test-rc25718-booking-engine-parity.py
 
+echo "== RC25.7.19 RENTAL NZD + EDITOR GATE =="
+python ci-tests/test-rc25719-rental-nzd-editor-gate.py
+
 exit 1
