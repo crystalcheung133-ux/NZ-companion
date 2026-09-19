@@ -70,3 +70,6 @@ python ci-tests/test-documents-nav-card-return-v2.py
 
 echo "== HANDOFF + FOREGROUND + RELEASE IDENTITY == "
 python ci-tests/test-handoff-layer-release-gate.py
+
+echo "== RC25.7.9 ARCHITECTURE CORRECTION =="
+python ci-tests/test-rc2579-architecture-correction.py

@@ -138,7 +138,11 @@ def run_viewport(browser,base,viewport,label):
       context.add_init_script("localStorage.setItem('nz_friend','lee')")
       page=context.new_page()
       errors=[]
+      console_errors=[]
+      request_failures=[]
       page.on('pageerror',lambda e: errors.append(str(e)))
+      page.on('console',lambda m: console_errors.append(m.text) if m.type=='error' else None)
+      page.on('requestfailed',lambda r: request_failures.append(r.url+' :: '+str(r.failure)))
       try:
         page.goto(base+'/index.html',wait_until='domcontentloaded')
         page.evaluate("document.getElementById('ccmvSplash')?.remove()")
@@ -190,6 +194,10 @@ def run_viewport(browser,base,viewport,label):
         types=page.evaluate("Object.values(ITINERARY_DATA).flatMap(d=>d.items||[]).map(x=>x.type)")
         check('experience' in types and 'rest' in types and 'transport' in types,label+': NZ activity/logistics semantics missing')
 
+        if errors:
+          print(label+' PAGEERROR DIAGNOSTIC: '+' | '.join(errors))
+          if console_errors: print(label+' CONSOLE ERROR DIAGNOSTIC: '+' | '.join(console_errors[-8:]))
+          if request_failures: print(label+' REQUESTFAILED DIAGNOSTIC: '+' | '.join(request_failures[-8:]))
         check(not errors,label+': Browser page errors: '+' | '.join(errors))
         print(f'BROWSER VIEWPORT {label}: PASS')
       finally:

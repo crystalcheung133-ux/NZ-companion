@@ -2864,3 +2864,38 @@ html.handoff-ready body{visibility:visible}
 .trip-modal.show,.guide-modal.show,.moments-modal.show{padding-top:max(18px,env(safe-area-inset-top,0px))!important}
 .trip-modal .trip-sheet,.guide-modal .guide-sheet{position:relative;z-index:1;max-height:calc(100dvh - 36px - env(safe-area-inset-top,0px));overflow:auto}
 .documents-page .doc-viewer{z-index:9200!important}
+
+/* RC25.7.9 — canonical header-aware modal viewport.
+   Geometry owns clearance; z-index only owns stacking. */
+:root{--companion-header-clearance:92px;--companion-bottom-clearance:104px}
+.trip-modal{
+  position:fixed!important;
+  top:var(--companion-header-clearance)!important;
+  right:0!important;
+  bottom:0!important;
+  left:0!important;
+  padding:12px 18px var(--companion-bottom-clearance)!important;
+  overflow:hidden!important;
+  display:none;
+  align-items:start!important;
+  justify-items:center!important;
+  z-index:9000!important;
+}
+.trip-modal.show{display:grid!important}
+.trip-modal .trip-sheet{
+  width:min(950px,100%)!important;
+  max-height:calc(100dvh - var(--companion-header-clearance) - var(--companion-bottom-clearance) - 12px)!important;
+  margin:0 auto!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  padding-top:68px!important;
+  box-sizing:border-box!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch;
+}
+.doc-viewer-linked-entity{display:inline-flex!important;margin:0 0 12px!important;text-decoration:underline;text-underline-offset:2px}
+@media(max-width:760px){
+ :root{--companion-header-clearance:76px;--companion-bottom-clearance:96px}
+ .trip-modal{padding:8px 10px var(--companion-bottom-clearance)!important}
+ .trip-modal .trip-sheet{max-height:calc(100dvh - var(--companion-header-clearance) - var(--companion-bottom-clearance) - 8px)!important}
+}
