@@ -37,14 +37,15 @@ def run(browser,base,v,label):
  p.get_by_role("button",name="＋ Upload document").click();ck(vis(p,'#docModal'),label+": Upload failed")
  save=p.locator('#docSave');r=save.bounding_box();ck(r and r["y"]<v["height"] and r["y"]+r["height"]>0,label+": Save out of viewport")
  p.locator('#docModal .docs-close').click();ck(not vis(p,'#docModal'),label+": Upload close failed")
- # Verify reverse attachment lookup uses canonical Rental Car booking id.
- first_doc=p.locator(".document-title-open").first;doc_id=first_doc.get_attribute("onclick").split("'")[1]
- p.evaluate("(id)=>TRIP_DOCUMENTS.update(id,{linkType:'booking',linkId:'car-rental',linkLabel:'Rental Cars 247'})",doc_id)
+ # Verify reverse attachment lookup without mutating production/cloud Documents.
+ # CI writes a context-local synthetic attachment directly to local storage; never call TRIP_DOCUMENTS.update() here.
+ p.evaluate("""()=>{const k='travel_engine_documents_v1';const list=STORAGE.local.readJSON(k,[]).filter(x=>x&&x.id!=='ci-rental-attachment');list.push({id:'ci-rental-attachment',title:'CI Rental Attachment',category:'Test',note:'browser gate only',fileName:'ci-rental.txt',mimeType:'text/plain',fileUrl:'data:text/plain,ci',pinned:false,linkType:'booking',linkId:'car-rental',linkLabel:'Rental Cars 247',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});STORAGE.local.writeJSON(k,list)}""")
  # Seed a stale pre-fix booking snapshot. The deploy master must win for corrected financials.
  p.evaluate("()=>STORAGE.local.writeJSON(BOOKING_AUTHORITY.key,{version:1,overrides:{'car-rental':{_masterRevision:2,totalAmount:'AUD 524.66',depositPaid:'AUD 11.61',balanceDue:'AUD 513.05',netTotalAUD:'AUD 524.66',price:'AUD 524.66 total'}},deletedIds:[],updatedAt:new Date().toISOString()})")
  p.goto(base+"/index.html?bookingId=car-rental",wait_until="domcontentloaded");identity(p);p.wait_for_selector("#tripModal.show")
  p.wait_for_function("()=>!!window.TRIP_DOCUMENTS && !!window.BOOKING_PERMISSIONS")
- ck(p.locator("#tripModalContent .booking-document-links a").count()>0,label+": Rental Car linked attachment missing")
+ links=p.locator("#tripModalContent .booking-document-links a")
+ ck(links.filter(has_text="CI Rental Attachment").count()==1,label+": synthetic Rental Car linked attachment missing")
  # Booking edit is an Engine Studio capability: unlock Studio, enable it, rerender the live booking, then exercise the button.
  p.evaluate("()=>{sessionStorage.setItem('travel_engine_admin_unlocked_v1','1');setAdminMode(true);returnToBookingDetail('car-rental')}")
  ck(p.locator("#tripModalContent .booking-edit-btn").count()==1,label+": Rental Car must have exactly one Edit Booking in Studio")

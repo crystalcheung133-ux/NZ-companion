@@ -59,11 +59,21 @@
     });
     return out;
   }
+  function enforceDeployInvariants(base,resolved){
+    const out=Object.assign({},clone(resolved));
+    if(base&&base.id==='car-rental'){
+      ['totalAmount','depositPaid','depositAmount','depositCurrency','paymentStatus','balanceDue','payAtPickup','netTotalAUD','price','paymentLabel'].forEach(function(field){
+        if(Object.prototype.hasOwnProperty.call(base,field))out[field]=clone(base[field]);
+        else delete out[field];
+      });
+    }
+    return out;
+  }
   function mergeOverride(base,override){
-    if(!override||typeof override!=='object')return clone(base);
+    if(!override||typeof override!=='object')return enforceDeployInvariants(base,clone(base));
     const clean=sanitizeLegacyOverride(base&&base.id||'',override);
-    if(recordRevision(clean)!==masterRevision())return mergeStaleState(base,clean);
-    return Object.assign({},clone(base),editableProjection(clean));
+    const merged=recordRevision(clean)!==masterRevision()?mergeStaleState(base,clean):Object.assign({},clone(base),editableProjection(clean));
+    return enforceDeployInvariants(base,merged);
   }
   function read(){
     const raw=store()?store().readJSON(KEY,null):null;
