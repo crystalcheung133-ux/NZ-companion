@@ -1,5 +1,5 @@
 importScripts('./theme-config.js', './asset-config.js', './locale-config.js', './formatter.js', './navigation-config.js', './trip-config.js', './storage-config.js');
-const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-nz25-7-1-documents-v1-1`;
+const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-nz25-7-1-documents-v1-2`;
 const CRITICAL_EXTENSIONS = /\.(?:css|js)$/i;
 const ASSETS = [
   './',
@@ -186,7 +186,10 @@ self.addEventListener('fetch', event => {
   if (url.origin !== self.location.origin) return;
 
   const acceptsHtml = event.request.headers.get('accept')?.includes('text/html');
-  if (event.request.mode === 'navigate' || acceptsHtml) {
+  const documentAsset = /\.(?:pdf|docx?|xlsx?|pptx?|jpe?g|png|gif|webp|heic)(?:$|\?)/i.test(url.pathname);
+  if (documentAsset) {
+    event.respondWith(networkFirst(event.request));
+  } else if (event.request.mode === 'navigate' || acceptsHtml) {
     event.respondWith(navigationResponse(event.request));
   } else if (CRITICAL_EXTENSIONS.test(url.pathname)) {
     event.respondWith(networkFirst(event.request));
