@@ -52,14 +52,9 @@ def nav_visible(page):
       return s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)>0&&r.width>0&&r.height>0;
     }""")
 
-def open_selector(page):
-    page.locator('.friend-pill').click()
-    page.wait_for_selector('#mamaModal.show')
-    page.wait_for_selector('#tripStudioSelectorToggle')
-
 def studio_login(page):
-    open_selector(page)
-    page.locator('#tripStudioSelectorToggle').click()
+    select_admin(page)
+    page.evaluate("()=>window.setAdminMode(true)")
     page.wait_for_selector('#adminPinModal:not([hidden])')
     pin=page.evaluate("TRIP_CONFIG.admin.pin")
     page.locator('#adminPinInput').fill(str(pin))
@@ -175,7 +170,7 @@ def run_viewport(browser,base,viewport,label):
         page.evaluate("window.exitTripStudioMode && window.exitTripStudioMode()")
 
         # Generic Booking legal surface on fixture.
-        page.goto(base+'/trip.html',wait_until='domcontentloaded')
+        page.goto(base+'/index.html',wait_until='domcontentloaded')
         select_admin(page)
         page.evaluate("openAccommodationDetail('peppers-booking')")
         page.wait_for_selector('#tripModal.show')

@@ -79,3 +79,6 @@ python ci-tests/test-rc25710-return-identity-timeline-sync.py
 
 echo "== RC25.7.11 MODAL + RETURN + DERIVED DAY =="
 python ci-tests/test-rc25711-modal-return-derived-day.py
+
+echo "== RC25.7.12 NAVIGATION + FULL DRIVE + BROWSER BOOTSTRAP =="
+python ci-tests/test-rc25712-navigation-drive-browser-bootstrap.py

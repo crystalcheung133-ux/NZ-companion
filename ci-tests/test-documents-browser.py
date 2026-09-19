@@ -13,18 +13,24 @@ def server():
  finally:s.shutdown();s.server_close();os.chdir(old)
 def ck(x,m):
  if not x: raise AssertionError(m)
+
+def identity(p):
+ p.wait_for_function("typeof window.setFriend==='function'")
+ p.evaluate("()=>window.setFriend('lee')")
+ p.wait_for_function("()=>{const m=document.getElementById('mamaModal');return !m||!m.classList.contains('show')}")
+
 def vis(p,s):
  return p.locator(s).evaluate("el=>{const x=getComputedStyle(el),r=el.getBoundingClientRect();return x.display!='none'&&x.visibility!='hidden'&&r.width>0&&r.height>0}")
 
 def check_docs_first_click(browser,base,path,label):
  c=browser.new_context(viewport={"width":390,"height":844});p=c.new_page()
- p.goto(base+"/"+path,wait_until="domcontentloaded");p.evaluate("document.getElementById('ccmvSplash')?.remove()")
+ p.goto(base+"/"+path,wait_until="domcontentloaded");identity(p);p.evaluate("document.getElementById('ccmvSplash')?.remove()")
  a=p.locator('.app-nav .docs-nav-trigger');ck(a.count()==1,label+": Docs nav missing");ck(a.get_attribute("href")=="documents.html",label+": Docs href wrong")
  a.click();p.wait_for_url("**/documents.html");ck(p.url.endswith("/documents.html"),label+": first Docs click did not open Documents");c.close()
 
 def run(browser,base,v,label):
  c=browser.new_context(viewport=v);p=c.new_page();errs=[];p.on("pageerror",lambda e:errs.append(str(e)))
- p.goto(base+"/documents.html",wait_until="domcontentloaded");p.evaluate("document.getElementById('ccmvSplash')?.remove()");p.wait_for_timeout(150)
+ p.goto(base+"/documents.html",wait_until="domcontentloaded");identity(p);p.evaluate("document.getElementById('ccmvSplash')?.remove()");p.wait_for_timeout(150)
  a=p.locator('.app-nav a.docs-nav-trigger');ck(a.count()==1,label+": direct Docs link missing");ck(a.get_attribute("href")=="documents.html",label+": wrong href")
  ck(not errs,label+": JS error on Documents load: "+" | ".join(errs));ck(vis(p,'.documents-hero'),label+": hero hidden");ck(vis(p,'.app-nav'),label+": nav hidden")
  ck(not vis(p,'#docModal'),label+": Add form visible initially");ck(not vis(p,'#docViewer'),label+": viewer visible initially");ck(p.locator('#globalDocsModal').count()==0,label+": legacy overlay exists")

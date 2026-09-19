@@ -4,7 +4,8 @@ const runner=fs.readFileSync('ci-tests/run-browser.sh','utf8');
 for(const token of [
  'studio_login(page)',
  "page.reload(wait_until='domcontentloaded')",
- '#tripStudioSelectorToggle',
+ 'page.evaluate("()=>window.setAdminMode(true)")',
+ '#adminPinModal:not([hidden])',
  '#tripStudioModal.show',
  'assert_studio_closed_clean',
  'top_owner',

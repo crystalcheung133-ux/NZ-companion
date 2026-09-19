@@ -12,7 +12,7 @@ function fillLinkSelect(sel,value){if(!sel)return;sel.innerHTML=documentTargets(
 function renderTargets(){fillLinkSelect($('docLink'),'trip|')}
 function routeForDocument(d){
  const back=`documents.html?document=${encodeURIComponent(d.id)}`;
- if(d.linkType==='booking'&&d.linkId){try{sessionStorage.setItem('travel_engine_return_document_v1',d.id)}catch(e){}return `trip.html?bookingId=${encodeURIComponent(d.linkId)}&returnTo=${encodeURIComponent(back)}`;}
+ if(d.linkType==='booking'&&d.linkId){try{sessionStorage.setItem('travel_engine_return_document_v1',d.id)}catch(e){}return `index.html?bookingId=${encodeURIComponent(d.linkId)}&returnTo=${encodeURIComponent(back)}`;}
  if(d.linkType==='timeline'&&d.linkId){const [day,item]=String(d.linkId).split('::');return `day.html?day=${encodeURIComponent(day)}&returnTo=${encodeURIComponent(back)}#${encodeURIComponent(item||'')}`}
  return ''
 }
