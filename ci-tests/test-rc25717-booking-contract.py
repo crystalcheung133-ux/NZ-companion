@@ -9,7 +9,7 @@ assert "${bookingSharedFooterHTML(booking)}${bookingExpenseActionHTML(booking)}"
 assert 'function backgroundSync()' in dr and "visibilitychange" in dr
 assert 'editableProjection' in ba and 'MASTER_PROTECTED_FIELDS' in ba
 assert 'Object.assign({},clone(base),clone(override))' not in ba
-assert 'bookingMasterRevision: 3' in cfg
+assert 'bookingMasterRevision: 4' in cfg
 assert 'Airbnb Guidebook' in data
 for v in ('NZD 628.82','NZD 13.95','NZD 614.87'): assert v in data
 print('RC25.7.17 BOOKING CONTRACT ARCHITECTURE: PASS')

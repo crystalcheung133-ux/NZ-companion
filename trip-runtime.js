@@ -418,10 +418,9 @@ window.requestBookingEditClose=requestBookingEditClose;
 
 
 function bookingEditButtonHTML(booking){
-  const studioOn=document.body.classList.contains('admin-mode');
-  const canEdit=window.BOOKING_PERMISSIONS&&BOOKING_PERMISSIONS.canEdit();
-  return booking&&(canEdit||studioOn)
-    ?`<button class="pill trip-action-btn booking-edit-btn" type="button" onclick="openBookingEdit('${escapeTripHTML(booking.id)}')">✏️ Edit Booking</button>`:'';
+  const studioActive=!!(window.isAdminMode&&window.isAdminMode());
+  return booking&&studioActive&&window.BOOKING_PERMISSIONS&&BOOKING_PERMISSIONS.canEdit()
+    ?`<button class="pill trip-action-btn booking-edit-btn trip-action-btn--edit" type="button" onclick="openBookingEdit('${escapeTripHTML(booking.id)}')">${escapeTripHTML(BOOKING_PERMISSIONS.editLabel())}</button>`:'';
 }
 function bookingField(label,name,value,options){
   const opts=options||{};

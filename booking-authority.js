@@ -20,6 +20,18 @@
   const MASTER_PROTECTED_FIELDS=new Set([
     'depositPaid','depositAmount','depositCurrency','paymentStatus','totalAmount','cashbackAmount','netTotalAUD','price','paymentLabel','balanceDue','payAtPickup','usefulLinks'
   ]);
+
+  function sanitizeLegacyOverride(id,record){
+    const out=clone(record)||{};
+    if(id==='car-rental'){
+      ['totalAmount','depositPaid','depositAmount','balanceDue','netTotalAUD','price','payAtPickup','paymentLabel'].forEach(function(field){
+        if(/^AUD\b/i.test(String(out[field]||'').trim()))delete out[field];
+      });
+    }
+    const base=DEPLOY_MASTER&&DEPLOY_MASTER[id];
+    if(base&&Array.isArray(base.usefulLinks)&&base.usefulLinks.length&&Array.isArray(out.usefulLinks)&&out.usefulLinks.length===0)delete out.usefulLinks;
+    return out;
+  }
   function masterRevision(){return Number(root.TRIP_CONFIG&&root.TRIP_CONFIG.bookingMasterRevision||1);}
   function recordRevision(record){return Number(record&&((record._masterRevision!=null?record._masterRevision:record.masterRevision))||0);}
   function stamp(record){const out=clone(record)||{};out._masterRevision=masterRevision();return out;}
@@ -50,7 +62,11 @@
   function read(){
     const raw=store()?store().readJSON(KEY,null):null;
     if(!raw||Number(raw.version)!==1||!raw.overrides||typeof raw.overrides!=='object')return {version:1,overrides:{},deletedIds:[],updatedAt:null};
-    return {version:1,overrides:clone(raw.overrides),deletedIds:Array.isArray(raw.deletedIds)?raw.deletedIds.slice():[],updatedAt:raw.updatedAt||null};
+    const cleaned={};let changed=false;
+    Object.keys(raw.overrides).forEach(function(id){const before=clone(raw.overrides[id]);const after=sanitizeLegacyOverride(id,before);cleaned[id]=after;if(JSON.stringify(before)!==JSON.stringify(after))changed=true;});
+    const state={version:1,overrides:cleaned,deletedIds:Array.isArray(raw.deletedIds)?raw.deletedIds.slice():[],updatedAt:raw.updatedAt||null};
+    if(changed)write(state);
+    return state;
   }
   function write(state){return !!(store()&&store().writeJSON(KEY,state));}
   function canonicalBase(id,source){return clone((DEPLOY_MASTER&&DEPLOY_MASTER[id])||(source&&source[id])||null);}

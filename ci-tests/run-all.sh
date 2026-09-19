@@ -44,4 +44,7 @@ if [ "$failed" -eq 0 ]; then
   exit 0
 fi
 printf '\nNZ 25.7 SHARED-READY CI FAILED\n' >&2
+echo "== RC25.7.18 BOOKING ENGINE PARITY =="
+python ci-tests/test-rc25718-booking-engine-parity.py
+
 exit 1

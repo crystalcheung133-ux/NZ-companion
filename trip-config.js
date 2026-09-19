@@ -101,7 +101,8 @@
     splashSlogan: 'ADVENTURE AWAITS',
     splashDestination: 'NEW ZEALAND 2026',
     storageNamespace: 'nz-family-2026',
-    bookingMasterRevision: 3,
+    bookingManagement:Object.freeze({mode:'admin',sync:Object.freeze({enabled:false})}),
+    bookingMasterRevision: 4,
     version:'RC25.5.1-25.7.0',
     buildLabel:'NZ Companion RC25.5.1 · Travel Engine 25.7.0 Shared-Ready Integrity Candidate',
     theme: root.THEME_CONFIG.colors
