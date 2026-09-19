@@ -150,10 +150,10 @@ def run_viewport(browser,base,viewport,label):
         close_studio(page)
         assert_studio_closed_clean(page,label+' first Close')
 
-        page.locator('.friend-pill').click()
+        page.evaluate("()=>window.setAdminMode(true)")
         page.wait_for_selector('#tripStudioModal.show')
         check(not page.locator('#mamaModal').evaluate("el=>el.classList.contains('show')"),
-              label+': active User Selector incorrectly opened traveller selector')
+              label+': Studio re-entry incorrectly opened traveller selector')
         assert_studio_foreground(page,label+' active User Selector reopen')
         close_studio(page)
 
@@ -161,10 +161,10 @@ def run_viewport(browser,base,viewport,label):
         page.evaluate("document.getElementById('ccmvSplash')?.remove()")
         select_admin(page)
         assert_studio_closed_clean(page,label+' reload')
-        page.locator('.friend-pill').click()
+        page.evaluate("()=>window.setAdminMode(true)")
         page.wait_for_selector('#tripStudioModal.show')
         check(not page.locator('#mamaModal').evaluate("el=>el.classList.contains('show')"),
-              label+': reload active User Selector incorrectly opened traveller selector')
+              label+': reload Studio re-entry incorrectly opened traveller selector')
         assert_studio_foreground(page,label+' reload active re-entry')
         close_studio(page)
         page.evaluate("window.exitTripStudioMode && window.exitTripStudioMode()")

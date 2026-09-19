@@ -34,6 +34,9 @@ if [ "$failed" -eq 0 ]; then
   exit 0
 fi
 printf '\nNZ 25.7 SHARED-READY CI FAILED\n' >&2
+echo "== RC25.7.14 RENTAL ATTACHMENT + STUDIO REENTRY =="
+python ci-tests/test-rc25714-rental-attachment-studio-reentry.py
+
 exit 1
 
 echo "== DOCUMENTS PAGE CONTRACT =="

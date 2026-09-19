@@ -3,7 +3,7 @@ const $=id=>document.getElementById(id);function esc(s){return String(s||'').rep
 function documentTargets(){
  const out=[{value:'trip|',label:'Trip-wide'}],seen=new Set(['trip|']);
  const bookings=root.BOOKING_AUTHORITY?.all?.(root.PRODUCTION_BOOKINGS?.byId)||Object.values(root.PRODUCTION_BOOKINGS?.byId||{});
- bookings.forEach(b=>{if(!b?.id)return;const v='booking|'+b.id;if(!seen.has(v)){seen.add(v);out.push({value:v,label:'Booking · '+(b.title||b.id)})}});
+ bookings.forEach(b=>{const canonical=String(b&&b.id||'').trim();if(!canonical)return;const v='booking|'+canonical;if(!seen.has(v)){seen.add(v);out.push({value:v,label:'Booking · '+(b.title||canonical)})}});
  const days=root.ITINERARY_DATA||root.TRAVEL_DATASETS?.ITINERARY_DATA||{};
  Object.entries(days).forEach(([day,d])=>(d?.items||[]).forEach(it=>{if(!it?.id)return;const v='timeline|'+day+'::'+it.id;if(!seen.has(v)){seen.add(v);out.push({value:v,label:'Timeline · '+(it.title||it.id)})}}));
  return out;
