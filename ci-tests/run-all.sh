@@ -39,6 +39,8 @@ run "HANDOFF + FOREGROUND + RELEASE IDENTITY" python ci-tests/test-handoff-layer
 run "RC25.7.11 MODAL + RETURN + DERIVED DAY" python ci-tests/test-rc25711-modal-return-derived-day.py
 run "RC25.7.21 PAYMENT ROUNDTRIP CONTRACT" python ci-tests/test-rc25721-payment-roundtrip.py
 
+run "RC25.7.22 DRIVE SUMMARY + BROWSER IDENTITY" python ci-tests/test-rc25722-drive-summary-browser-identity.py
+
 
 if [ "$failed" -eq 0 ]; then
   printf '\nNZ 25.7 SHARED-READY CI PASSED\n'

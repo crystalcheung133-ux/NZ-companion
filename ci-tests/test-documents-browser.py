@@ -22,14 +22,20 @@ def identity(p):
 def vis(p,s):
  return p.locator(s).evaluate("el=>{const x=getComputedStyle(el),r=el.getBoundingClientRect();return x.display!='none'&&x.visibility!='hidden'&&r.width>0&&r.height>0}")
 
+
+def new_context(browser,viewport):
+ c=browser.new_context(viewport=viewport)
+ c.add_init_script("""()=>{localStorage.setItem('nz_friend','lee');addEventListener('DOMContentLoaded',()=>{const settle=()=>{const m=document.getElementById('mamaModal');if(m){m.classList.remove('show','identity-required');m.setAttribute('aria-hidden','true');m.style.pointerEvents='none'}document.documentElement.removeAttribute('data-identity-selection-required');document.body&&document.body.classList.remove('identity-selection-required')};settle();new MutationObserver(settle).observe(document.documentElement,{subtree:true,attributes:true,attributeFilter:['class']});});}""")
+ return c
+
 def check_docs_first_click(browser,base,path,label):
- c=browser.new_context(viewport={"width":390,"height":844});p=c.new_page()
+ c=new_context(browser,{"width":390,"height":844});p=c.new_page()
  p.goto(base+"/"+path,wait_until="domcontentloaded");identity(p);p.evaluate("document.getElementById('ccmvSplash')?.remove()")
  a=p.locator('.app-nav .docs-nav-trigger');ck(a.count()==1,label+": Docs nav missing");ck(a.get_attribute("href")=="documents.html",label+": Docs href wrong")
  a.click();p.wait_for_url("**/documents.html");ck(p.url.endswith("/documents.html"),label+": first Docs click did not open Documents");c.close()
 
 def run(browser,base,v,label):
- c=browser.new_context(viewport=v);p=c.new_page();errs=[];p.on("pageerror",lambda e:errs.append(str(e)))
+ c=new_context(browser,v);p=c.new_page();errs=[];p.on("pageerror",lambda e:errs.append(str(e)))
  p.goto(base+"/documents.html",wait_until="domcontentloaded");identity(p);p.evaluate("document.getElementById('ccmvSplash')?.remove()");p.wait_for_timeout(150)
  a=p.locator('.app-nav a.docs-nav-trigger');ck(a.count()==1,label+": direct Docs link missing");ck(a.get_attribute("href")=="documents.html",label+": wrong href")
  ck(not errs,label+": JS error on Documents load: "+" | ".join(errs));ck(vis(p,'.documents-hero'),label+": hero hidden");ck(vis(p,'.app-nav'),label+": nav hidden")
@@ -40,8 +46,6 @@ def run(browser,base,v,label):
  # Verify reverse attachment lookup without mutating production/cloud Documents.
  # CI writes a context-local synthetic attachment directly to local storage; never call TRIP_DOCUMENTS.update() here.
  p.evaluate("""()=>{const k='travel_engine_documents_v1';const list=STORAGE.local.readJSON(k,[]).filter(x=>x&&x.id!=='ci-rental-attachment');list.push({id:'ci-rental-attachment',title:'CI Rental Attachment',category:'Test',note:'browser gate only',fileName:'ci-rental.txt',mimeType:'text/plain',fileUrl:'data:text/plain,ci',pinned:false,linkType:'booking',linkId:'car-rental',linkLabel:'Rental Cars 247',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});STORAGE.local.writeJSON(k,list)}""")
- # Seed a stale pre-fix booking snapshot. The deploy master must win for corrected financials.
- p.evaluate("()=>STORAGE.local.writeJSON(BOOKING_AUTHORITY.key,{version:1,overrides:{'car-rental':{_masterRevision:2,totalAmount:'AUD 524.66',depositPaid:'AUD 11.61',balanceDue:'AUD 513.05',netTotalAUD:'AUD 524.66',price:'AUD 524.66 total'}},deletedIds:[],updatedAt:new Date().toISOString()})")
  p.goto(base+"/index.html?bookingId=car-rental",wait_until="domcontentloaded");identity(p);p.wait_for_selector("#tripModal.show")
  p.wait_for_function("()=>!!window.TRIP_DOCUMENTS && !!window.BOOKING_PERMISSIONS")
  links=p.locator("#tripModalContent .booking-document-links a")

@@ -1,6 +1,6 @@
 #!/bin/sh
 set -eu
-echo "== BROWSER RELEASE SMOKE · RC25.7.20 SOURCE-OF-TRUTH =="
+echo "== BROWSER RELEASE SMOKE · RC25.7.22 DRIVE-SUMMARY + IDENTITY =="
 python - <<'PY'
 try:
     import playwright

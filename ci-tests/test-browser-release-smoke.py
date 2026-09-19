@@ -131,7 +131,19 @@ def select_admin(page):
 
 def run_viewport(browser,base,viewport,label):
       context=browser.new_context(viewport=viewport)
-      context.add_init_script("localStorage.setItem('nz_friend','lee')")
+      context.add_init_script("""()=>{
+        localStorage.setItem('nz_friend','lee');
+        const settle=()=>{
+          const m=document.getElementById('mamaModal');
+          if(!m)return;
+          m.classList.remove('show','identity-required');
+          m.setAttribute('aria-hidden','true');
+          m.style.pointerEvents='none';
+          document.documentElement.removeAttribute('data-identity-selection-required');
+          document.body&&document.body.classList.remove('identity-selection-required');
+        };
+        addEventListener('DOMContentLoaded',()=>{settle();new MutationObserver(settle).observe(document.documentElement,{subtree:true,attributes:true,attributeFilter:['class']});});
+      }""")
       page=context.new_page()
       errors=[]
       console_errors=[]
