@@ -67,3 +67,5 @@ function applyNearFitModal(sheet,className){
   });
 }
 window.applyNearFitModal=applyNearFitModal;
+
+(function(){window.openGlobalDocuments=function(){var m=document.getElementById('globalDocsModal'),f=document.getElementById('globalDocsFrame');if(!m||!f)return;if(!f.getAttribute('src'))f.src='documents.html?overlay=1';try{f.contentWindow?.resetDocumentsView?.()}catch(e){}m.classList.add('show');m.setAttribute('aria-hidden','false');document.body.classList.add('global-docs-open')};window.closeGlobalDocuments=function(){var m=document.getElementById('globalDocsModal'),f=document.getElementById('globalDocsFrame');if(!m)return;try{f?.contentWindow?.resetDocumentsView?.()}catch(e){}m.classList.remove('show');m.setAttribute('aria-hidden','true');document.body.classList.remove('global-docs-open')};document.addEventListener('click',function(e){var m=document.getElementById('globalDocsModal');if(m&&e.target===m)closeGlobalDocuments()});window.addEventListener('message',function(e){if(e.origin!==location.origin||!e.data)return;if(e.data.type==='nz-doc-upload'){var c=document.querySelector('.global-docs-close');if(c)c.style.display=e.data.open?'none':''}})})();

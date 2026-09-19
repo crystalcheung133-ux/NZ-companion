@@ -2684,3 +2684,12 @@ body.admin-mode .studio-on-badge:not([hidden]){display:inline-flex!important;}
   #tripStudioModal .trip-studio-modal-inner{width:min(96vw,430px)!important;}
   #tripStudioModal .trip-studio{max-width:430px!important;}
 }
+
+.app-nav{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+.docs-nav-trigger{appearance:none;border:0;background:transparent;color:inherit;font:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:0;padding:8px 2px;cursor:pointer}
+.docs-nav-trigger span{font-size:1.1rem;line-height:1}.docs-nav-trigger small{font-size:.68rem;font-weight:800;white-space:nowrap}
+.global-docs-modal{position:fixed;inset:0;z-index:10050;display:none;align-items:flex-end;justify-content:center;background:rgba(24,35,34,.38);backdrop-filter:blur(5px)}
+.global-docs-modal.show{display:flex}.global-docs-shell{position:relative;width:min(100%,820px);height:min(94dvh,980px);background:#f4f1e9;border-radius:30px 30px 0 0;overflow:hidden;box-shadow:0 -18px 50px rgba(0,0,0,.18)}
+.global-docs-shell iframe{width:100%;height:100%;border:0;background:#f4f1e9}.global-docs-close{position:absolute;right:14px;top:12px;z-index:9;width:50px;height:50px;border-radius:50%;border:1px solid rgba(0,0,0,.12);background:#fffaf2;font-size:32px;line-height:1;color:#2783df;box-shadow:0 5px 16px rgba(0,0,0,.10)}
+body.global-docs-open{overflow:hidden}
+@media(max-width:700px){.app-nav small,.docs-nav-trigger small{font-size:.64rem!important}.global-docs-shell{height:95dvh;border-radius:26px 26px 0 0}.global-docs-close{right:10px;top:9px}}
