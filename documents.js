@@ -7,13 +7,21 @@ function render(){
  const card=d=>`<article class="doc-card doc-card-simple">
    <div class="doc-simple-main">
      <span class="doc-icon">${d.mimeType?.startsWith('image/')?'🖼️':d.mimeType?.includes('pdf')?'📄':'📎'}</span>
-     <div class="doc-simple-copy"><h3>${esc(d.title)}</h3>${d.note?`<p>${esc(d.note)}</p>`:''}${d.uploadPending?`<small>Waiting to sync</small>`:''}</div>
+     <div class="doc-simple-copy"><h3>${esc(d.title)}</h3>${d.note?`<p>${esc(d.note)}</p>`:''}${d.uploadPending?`<small class="doc-sync-state">Not synced</small>`:''}</div>
      <button class="pin-btn" onclick="togglePin('${esc(d.id)}')" aria-label="${d.pinned?'Unpin':'Pin'}">${d.pinned?'📌':'📍'}</button>
    </div>
-   <div class="doc-actions"><button class="pill" onclick="openDocumentViewer('${esc(d.id)}')">Open</button>${d.seeded?'':`<button class="pill danger" onclick="deleteDoc('${esc(d.id)}')">Delete</button>`}</div>
+   <div class="doc-actions"><button class="pill" onclick="openDocumentViewer('${esc(d.id)}')">Open</button>${d.uploadPending?`<button class="pill" onclick="repairDocument('${esc(d.id)}')">Choose file to sync</button>`:''}${d.seeded?'':`<button class="pill danger" onclick="deleteDoc('${esc(d.id)}')">Delete</button>`}</div>
  </article>`;
  box.innerHTML=list.map(card).join('')||'<div class="empty-state">No documents yet.</div>';
 }
+
+root.repairDocument=id=>{
+ const doc=root.TRIP_DOCUMENTS.read().find(d=>d.id===id);if(!doc)return;
+ const input=document.createElement('input');input.type='file';input.accept='image/*,.pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+ input.onchange=async()=>{const file=input.files&&input.files[0];if(!file)return;try{await root.TRIP_DOCUMENTS.repair(id,file);render();await root.TRIP_DOCUMENTS.sync();render()}catch(e){alert('Could not sync this document yet. Please try again when online.')}};
+ input.click();
+};
+
 root.togglePin=id=>{const d=root.TRIP_DOCUMENTS.read().find(x=>x.id===id);if(d)root.TRIP_DOCUMENTS.update(id,{pinned:!d.pinned});render()};root.deleteDoc=id=>{if(confirm('Delete this document?')){root.TRIP_DOCUMENTS.remove(id);render()}};
 
 async function renderPdfInto(url,wrap){wrap.innerHTML='<div class="doc-viewer-message">Loading document…</div>';try{if(!root.pdfjsLib)throw new Error('PDF viewer unavailable');root.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';const pdf=await root.pdfjsLib.getDocument(url).promise;wrap.innerHTML='';for(let n=1;n<=pdf.numPages;n++){const page=await pdf.getPage(n);const base=page.getViewport({scale:1});const max=Math.min(900,Math.max(280,wrap.clientWidth-24));const scale=Math.min(2,max/base.width);const vp=page.getViewport({scale});const canvas=document.createElement('canvas');canvas.className='pdf-page';canvas.width=Math.ceil(vp.width);canvas.height=Math.ceil(vp.height);wrap.appendChild(canvas);await page.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise}}catch(e){wrap.innerHTML='<div class="doc-viewer-message"><strong>Could not preview this document.</strong><p>Try again while online.</p></div>'}}

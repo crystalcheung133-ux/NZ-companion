@@ -49,3 +49,6 @@ python ci-tests/test-calm-timeline-contract.py
 
 echo "== CALM DOCUMENTS UI + SYNC =="
 python ci-tests/test-documents-calm-ui-sync.py
+
+echo "== DOCUMENTS RUNTIME CLEAN =="
+python ci-tests/test-documents-runtime-clean.py
