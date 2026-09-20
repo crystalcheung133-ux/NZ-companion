@@ -48,9 +48,12 @@ run "RC25.7.31 BOOKING CROSS-DEVICE PUSH" node ci-tests/test-rc25731-booking-syn
 run "RC25.7.32 BROWSER CLOUD ISOLATION" python ci-tests/test-rc25732-browser-isolation.py
 
 
+run "RC25.7.34 LIVE FX SAVE" node ci-tests/test-rc25734-live-fx-save.js
+
 if [ "$failed" -eq 0 ]; then
   printf '\nNZ 25.7 SHARED-READY CI PASSED\n'
   exit 0
 fi
 printf '\nNZ 25.7 SHARED-READY CI FAILED\n' >&2
 exit 1
+

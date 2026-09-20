@@ -208,13 +208,19 @@ let editingExpenseIndex=null;
       helper.textContent=total?'Live conversion unavailable':'';
     }
   }
-  async function getExpenseRateRecord(){
-    if(expenseRateRecord&&Number(expenseRateRecord.rate)>0) return expenseRateRecord;
+  async function getExpenseRateRecord(forceLive=false){
     const cached=MONEY.readCachedRate();
-    if(cached&&Number(cached.rate)>0) expenseRateRecord=cached;
-    if(!navigator.onLine) return expenseRateRecord;
+    const current=expenseRateRecord&&Number(expenseRateRecord.rate)>0?expenseRateRecord:null;
+    const fallback=current||(cached&&Number(cached.rate)>0?cached:null);
+    if(!navigator.onLine){ expenseRateRecord=fallback; return fallback; }
+    // Saving a new foreign-currency expense must try a live rate first.
+    // For UI previews / edits, a fresh in-memory or cached rate may be reused.
+    if(!forceLive){
+      if(current&&MONEY.isCacheFresh(current)) return current;
+      if(cached&&Number(cached.rate)>0&&MONEY.isCacheFresh(cached)){ expenseRateRecord=cached; return cached; }
+    }
     if(!expenseRatePromise){
-      expenseRatePromise=MONEY.fetchLatestRate().then(record=>{expenseRateRecord=record;MONEY.saveCachedRate(record);return record;}).catch(()=>expenseRateRecord).finally(()=>{expenseRatePromise=null;});
+      expenseRatePromise=MONEY.fetchLatestRate().then(record=>{expenseRateRecord=record;MONEY.saveCachedRate(record);return record;}).catch(()=>{expenseRateRecord=fallback;return fallback;}).finally(()=>{expenseRatePromise=null;});
     }
     return expenseRatePromise;
   }
@@ -610,7 +616,7 @@ let editingExpenseIndex=null;
     const homeCurrency=MONEY.getHomeCurrency();
     let fxRecord=null,fxRate=1,homeTotal=total;
     if(currency!==homeCurrency){
-      fxRecord=await getExpenseRateRecord();
+      fxRecord=await getExpenseRateRecord(operation==='create');
       fxRate=Number(fxRecord?.rate);
       if(!(fxRate>0)) return alert(`Exchange rate unavailable. Connect to the internet once, then save this ${currency} expense again.`);
       homeTotal=MONEY.convert(total,fxRate,currency,homeCurrency);

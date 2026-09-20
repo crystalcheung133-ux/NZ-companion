@@ -1,6 +1,6 @@
 New Zealand Companion Production File Manifest
 Generated: 2026-09-20
-Base: NZ Companion RC25.7.27
+Base: NZ Companion RC25.7.34 · Engine 25.7.1 · Live FX Save Fix
 Reference trip: New Zealand
 
 Production root files:

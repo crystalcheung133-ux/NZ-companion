@@ -1,1 +1,1 @@
-NZ Companion RC25.7.28 · Engine 25.7.1 · Cross-Device Data Sync
+NZ Companion RC25.7.34 · Engine 25.7.1 · Live FX Save Fix
