@@ -25,7 +25,7 @@ def vis(p,s):
 
 def new_context(browser,viewport):
  c=browser.new_context(viewport=viewport)
- c.add_init_script("localStorage.setItem('nz_friend','lee')")
+ c.add_init_script("window.TRAVEL_ENGINE_SUPABASE={enabled:false};localStorage.setItem('nz_friend','lee')")
  return c
 
 def check_docs_first_click(browser,base,path,label):

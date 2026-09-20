@@ -19,7 +19,7 @@
   const legacyTripIdFallback='nz-family-2026';
   const config=Object.freeze({
     provider:'supabase',
-    enabled:runtimeOverride.enabled===true||project.enabled===true,
+    enabled:(typeof runtimeOverride.enabled==='boolean')?runtimeOverride.enabled:project.enabled===true,
     url:String(runtimeOverride.url||project.url||''),
     anonKey:String(runtimeOverride.anonKey||runtimeOverride.publishableKey||project.publishableKey||''),
     get tripId(){ return (root.TRIP_CONFIG&&root.TRIP_CONFIG.storageNamespace)||legacyTripIdFallback; },
