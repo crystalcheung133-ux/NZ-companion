@@ -144,11 +144,18 @@
     if(!opts.silent&&typeof document!=='undefined')document.dispatchEvent(new CustomEvent('travelengine:bookingchange',{detail:{bookingId:id,deleted:true,local:true}}));
     return {ok:true,id:id,updatedAt:state.updatedAt};
   }
+  function replaceState(next,target){
+    if(!next||Number(next.version)!==1||!next.overrides||typeof next.overrides!=='object')return {ok:false,reason:'invalid-state'};
+    const state={version:1,overrides:clone(next.overrides)||{},deletedIds:Array.isArray(next.deletedIds)?next.deletedIds.slice():[],updatedAt:next.updatedAt||null};
+    if(!write(state))return {ok:false,reason:'storage-failed'};
+    apply(target||master());
+    return {ok:true,state:clone(state)};
+  }
   function clear(){return !!(store()&&store().remove(KEY));}
   function deployMaster(id){return id?clone(DEPLOY_MASTER[id]||null):clone(DEPLOY_MASTER);}
   root.BOOKING_AUTHORITY=Object.freeze({
     key:KEY,read:read,apply:apply,all:all,get:get,byType:byType,byPlace:byPlace,byDay:byDay,
-    save:save,remove:remove,clear:clear,deployMaster:deployMaster,
+    save:save,remove:remove,replaceState:replaceState,clear:clear,deployMaster:deployMaster,
     masterRevision:masterRevision,editableStateFields:EDITABLE_STATE_FIELDS
   });
   apply(master());

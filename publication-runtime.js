@@ -174,23 +174,10 @@
   }
 
 
-  document.addEventListener('travelengine:adminsave',function(event){
-    const changes=event.detail&&event.detail.draft&&event.detail.draft.changes||{};
-    const hasTimeline=Object.keys(changes).some(function(key){return key.indexOf('itineraryDay')===0;});
-    if(!hasTimeline||navigator.onLine===false)return;
-    setTimeout(function(){publish({silent:true,reason:'timeline-save'});},0);
-  });
 
-  /* Booking edits are source facts just like saved Timeline edits. BOOKING_AUTHORITY
-     commits locally first; this listener publishes the resolved Booking dataset in
-     the background so another Companion can receive it through the existing Trip
-     publication channel. Only the authority's local mutation event is observed,
-     avoiding the second UI notification emitted after the editor closes. */
-  document.addEventListener('travelengine:bookingchange',function(event){
-    const detail=event.detail||{};
-    if(detail.local!==true||navigator.onLine===false)return;
-    setTimeout(function(){publish({silent:true,reason:'booking-save'});},0);
-  });
+  /* Publication is deliberately manual. Timeline edits remain Studio drafts until
+     Publish Latest Trip is pressed. Booking edits use booking-sync-runtime.js and
+     never trigger a whole-trip publication. */
 
   root.TRIP_PUBLICATION=Object.freeze({buildPayload:buildPayload,validatePayload:payloadIntegrity,publish:publish,prepare:publish,getLastPublishedVersion:function(){return state.lastPublishedVersion;}});
   root.publishLatestTrip=publish;

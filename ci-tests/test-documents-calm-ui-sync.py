@@ -12,5 +12,5 @@ assert 'View booking →' not in j
 # Viewer owns the full viewport and its own header/body.
 assert 'grid-template-rows:auto minmax(0,1fr)' in css and '.doc-viewer-sheet' in css
 # Pending upload has durable retry material and sync retries before cloud merge.
-assert 'pendingBase64' in rt and 'retryPending(local)' in rt and 'base64ToFile' in rt
+assert 'pendingBase64' in rt and 'retryPending(active)' in rt and 'base64ToFile' in rt
 print('CALM DOCUMENTS UI + CROSS-DEVICE SYNC CONTRACT: PASS')

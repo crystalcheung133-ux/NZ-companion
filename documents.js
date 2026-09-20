@@ -9,7 +9,7 @@ function documentTargets(){
  return out;
 }
 function fillLinkSelect(sel,value){if(!sel)return;sel.innerHTML=documentTargets().map(x=>`<option value="${esc(x.value)}">${esc(x.label)}</option>`).join('');sel.value=value||'trip|';if(sel.selectedIndex<0)sel.value='trip|'}
-function renderTargets(){fillLinkSelect($('docLink'),'trip|')}
+function renderTargets(){fillLinkSelect($('docLink'),'trip|');if($('docLink'))$('docLink').disabled=!root.TRIP_DOCUMENTS.canLink()}
 function routeForDocument(d,origin='page'){
  const back=origin==='viewer'?`documents.html?document=${encodeURIComponent(d.id)}`:'documents.html';
  if(d.linkType==='booking'&&d.linkId)return `index.html?bookingId=${encodeURIComponent(d.linkId)}&returnTo=${encodeURIComponent(back)}`;
@@ -19,29 +19,29 @@ function routeForDocument(d,origin='page'){
 function render(){
  const list=root.TRIP_DOCUMENTS.read(),box=$('documentsList');
  $('docCount').textContent=`${list.length} ${list.length===1?'document':'documents'}`;
- const card=d=>`<article class="expense-card document-history-card">
+ const card=d=>{const can=root.TRIP_DOCUMENTS.canManage(d),studio=root.TRIP_DOCUMENTS.canLink();return `<article class="expense-card document-history-card">
    <div class="document-history-title"><span aria-hidden="true">${d.mimeType?.startsWith('image/')?'🖼️':d.mimeType?.includes('pdf')?'📄':'📎'}</span><button class="document-title-open" type="button" onclick="openDocumentViewer('${esc(d.id)}')" aria-label="Open ${esc(d.title)}">${esc(d.title)}</button>${d.pinned?'<span class="document-pin" title="Pinned">📌</span>':''}</div>
    <p class="timestamp">${esc(d.category||'Other')}${d.uploadPending?' · Not synced':''}</p>
    ${d.note?`<p>${esc(d.note)}</p>`:''}
       ${d.linkType&&d.linkType!=='trip'&&d.linkLabel?`<p class="document-link-row">🔗 <a href="${esc(routeForDocument(d,'page'))}">${esc(d.linkLabel)}</a></p>`:''}
    <div class="entry-actions document-entry-actions">
-     <button class="mini-btn" onclick="openEditDocument('${esc(d.id)}')">✏️ Edit</button>
-     ${d.uploadPending?`<button class="mini-btn" onclick="repairDocument('${esc(d.id)}')">☁️ Sync file</button>`:''}
-     <button class="mini-btn" onclick="deleteDoc('${esc(d.id)}')">🗑 Delete</button>
+     ${can?`<button class="mini-btn" onclick="openEditDocument('${esc(d.id)}')">✏️ Edit</button>`:''}
+     ${can&&d.uploadPending?`<button class="mini-btn" onclick="repairDocument('${esc(d.id)}')">☁️ Sync file</button>`:''}
+     ${can?`<button class="mini-btn" onclick="deleteDoc('${esc(d.id)}')">🗑 Delete</button>`:''}
    </div>
- </article>`;
+ </article>`};
  box.innerHTML=list.map(card).join('')||'<div class="empty-state">No documents yet.</div>';
 }
 
 root.openEditDocument=id=>{
- const d=root.TRIP_DOCUMENTS.read().find(x=>x.id===id);if(!d)return;
- $('editDocId').value=d.id;$('editDocTitle').value=d.title||'';$('editDocCategory').value=d.category||'Other';$('editDocPin').checked=!!d.pinned;fillLinkSelect($('editDocLink'),(d.linkType||'trip')+'|'+(d.linkId||''));
+ const d=root.TRIP_DOCUMENTS.read().find(x=>x.id===id);if(!d||!root.TRIP_DOCUMENTS.canManage(d))return;
+ $('editDocId').value=d.id;$('editDocTitle').value=d.title||'';$('editDocCategory').value=d.category||'Other';$('editDocPin').checked=!!d.pinned;fillLinkSelect($('editDocLink'),(d.linkType||'trip')+'|'+(d.linkId||''));$('editDocLink').disabled=!root.TRIP_DOCUMENTS.canLink();
  $('editDocModal').classList.add('show');$('editDocModal').setAttribute('aria-hidden','false');
 };
 root.closeEditDocument=()=>{$('editDocModal').classList.remove('show');$('editDocModal').setAttribute('aria-hidden','true')};
 root.saveDocumentEdit=()=>{
  const id=$('editDocId').value;if(!id)return false;const sel=$('editDocLink'),parts=sel.value.split('|'),linkType=parts[0]||'trip',linkId=parts.slice(1).join('|'),linkLabel=sel.selectedOptions[0]?.textContent?.replace(/^(Booking|Timeline) · /,'')||'Trip-wide';
- const patch={title:$('editDocTitle').value.trim()||'Document',category:$('editDocCategory').value,pinned:$('editDocPin').checked,linkType,linkId,linkLabel};
+ const patch={title:$('editDocTitle').value.trim()||'Document',category:$('editDocCategory').value,pinned:$('editDocPin').checked};if(root.TRIP_DOCUMENTS.canLink())Object.assign(patch,{linkType,linkId,linkLabel});
  root.closeEditDocument();
  const pending=root.TRIP_DOCUMENTS.update(id,patch);render();
  Promise.resolve(pending).then(render).catch(e=>console.error('Document metadata sync pending',e));
@@ -83,7 +83,7 @@ root.resetDocumentsView=()=>{try{root.closeDocumentViewer()}catch(e){};try{root.
 
 root.openAddDocument=()=>{$('docModal').classList.add('show')};
 root.closeAddDocument=()=>{$('docModal').classList.remove('show');const f=$('docForm');if(f)f.reset();const save=$('docSave');if(save){save.disabled=false;save.textContent='Save Document'}};
-root.saveDocument=async()=>{const file=$('docFile').files[0];if(!file){alert('Choose a photo, PDF or Word document.');return}const title=$('docTitle').value.trim()||file.name;const [linkType,linkId]=$('docLink').value.split('|');const label=$('docLink').selectedOptions[0]?.textContent||'Trip-wide';$('docSave').disabled=true;$('docSave').textContent='Saving…';await root.TRIP_DOCUMENTS.add({title,category:$('docCategory').value,note:'',pinned:$('docPin').checked,linkType,linkId,linkLabel:label},file);$('docSave').disabled=false;$('docSave').textContent='Save Document';$('docForm').reset();closeAddDocument();render()};
+root.saveDocument=async()=>{const file=$('docFile').files[0];if(!file){alert('Choose a photo, PDF or Word document.');return}const title=$('docTitle').value.trim()||file.name;const [chosenType,chosenId]=$('docLink').value.split('|');const linkType=root.TRIP_DOCUMENTS.canLink()?chosenType:'trip',linkId=root.TRIP_DOCUMENTS.canLink()?chosenId:'';const label=root.TRIP_DOCUMENTS.canLink()?($('docLink').selectedOptions[0]?.textContent||'Trip-wide'):'Trip-wide';$('docSave').disabled=true;$('docSave').textContent='Saving…';await root.TRIP_DOCUMENTS.add({title,category:$('docCategory').value,note:'',pinned:$('docPin').checked,linkType,linkId,linkLabel:label},file);$('docSave').disabled=false;$('docSave').textContent='Save Document';$('docForm').reset();closeAddDocument();render()};
 document.addEventListener('DOMContentLoaded',()=>{renderTargets();render();root.TRIP_DOCUMENTS.sync().then(render);const id=new URLSearchParams(location.search).get('document')||sessionStorage.getItem('travel_engine_return_document_v1')||sessionStorage.getItem('travel_engine_open_document_v1');if(id){sessionStorage.removeItem('travel_engine_open_document_v1');sessionStorage.removeItem('travel_engine_return_document_v1');setTimeout(async()=>{await root.openDocumentViewer(id);document.documentElement.classList.add('handoff-ready');document.documentElement.classList.remove('handoff-prepaint')},0)}else{document.documentElement.classList.add('handoff-ready');document.documentElement.classList.remove('handoff-prepaint')}});document.addEventListener('travelengine:documentschanged',render);
 window.addEventListener('pageshow',()=>{if(document.visibilityState!=='visible')return;const q=new URLSearchParams(location.search);if(!q.get('document'))root.resetDocumentsView?.();});
 })(globalThis);

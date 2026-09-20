@@ -10,5 +10,5 @@ for context in ['Booking → User Selector','Guide → User Selector','Moments �
     assert context in browser, f'Browser gate missing {context}'
 assert "top_owner(page,'#mamaModal .guide-sheet')" in browser, 'Browser gate must hit-test selector foreground ownership'
 assert "origin popup did not regain foreground after selector close" in browser, 'Browser gate must verify return to origin'
-assert '"release": "RC25.7.27"' in release and '"candidate": "RC25.7.27"' in release, 'Release metadata is inconsistent'
+assert '"release": "RC25.7.28"' in release and '"candidate": "RC25.7.28"' in release, 'Release metadata is inconsistent'
 print('RC25.7.27 CONTRACT: PASS — Booking/Guide/Moments/Expense selector stack is explicitly guarded')

@@ -246,9 +246,10 @@ function bookingActionButtonsHTML(booking,place,options={}){
 }
 function bookingContactSectionsHTML(booking,place){
   const phone=(booking&&booking.phone)||(place&&place.phone)||'';
+  const officePhone=(booking&&booking.officePhone)||'';
   const email=(booking&&booking.email)||(place&&place.email)||'';
   const website=(booking&&booking.website)||(place&&place.website)||'';
-  const contact=[phone,email].filter(Boolean).join('\n');
+  const contact=[phone,officePhone&&officePhone!==phone?`Office · ${officePhone}`:'',email].filter(Boolean).join('\n');
   const websiteHTML=website?`<a href="${escapeTripHTML(website)}" target="_blank" rel="noopener">${escapeTripHTML(website)}</a>`:'';
   return bookingSectionHTML('Booking contact',contact)+bookingSectionHTML('Website',websiteHTML,{html:true});
 }
@@ -275,7 +276,9 @@ function buildAccommodationDetailHTML(booking){
   const sections=[
     accommodationPaymentHTML(booking),
     bookingSectionHTML('Important',operationalNotes),
-    bookingSectionHTML('Address',address)
+    bookingSectionHTML('Arrival instructions',booking.checkInInstructions||''),
+    bookingSectionHTML('Address',address),
+    bookingContactSectionsHTML(booking,place)
   ].join('');
   return `<article class="fact stay-booking accommodation-detail-card accommodation-detail-card--compact"><div class="accommodation-detail-head"><div><span>${escapeTripHTML(booking.stayDates||booking.date||'')}</span></div>${nightsLabel?`<span class="accommodation-night-badge">${escapeTripHTML(nightsLabel)}</span>`:''}</div><div class="accommodation-facts">${facts}</div>${sections}${bookingActionButtonsHTML(booking,place,{includeDay:false})}${bookingExpenseActionHTML(booking)}${accommodationDetailNavigationHTML(booking.id)}</article>`;
 }
@@ -322,8 +325,8 @@ function buildActivityBookingDetailHTML(booking){
   ]);
   const pickup=[booking.pickupNote||booking.pickupAddress||'',booking.dropOff||''].filter(Boolean).join('\n');
   const sections=[
-    accommodationPaymentHTML(booking),activityFamilyBreakdownHTML(booking),bookingSectionHTML('Pickup & drop-off',pickup),bookingSectionHTML('Lunch',booking.lunchStatus||''),
-    bookingSectionHTML('Cancellation',booking.cancellation||''),bookingSectionHTML('Notes',booking.notes||'')
+    accommodationPaymentHTML(booking),activityFamilyBreakdownHTML(booking),bookingSectionHTML('Original total',booking.originalTotal||''),bookingSectionHTML('Discount',booking.discount||''),bookingSectionHTML('Pickup & drop-off',pickup),bookingSectionHTML('Lunch',booking.lunchStatus||''),
+    bookingSectionHTML('Cancellation',booking.cancellation||''),bookingSectionHTML('Notes',booking.notes||''),bookingContactSectionsHTML(booking,place)
   ].join('');
   return `<article class="fact stay-booking accommodation-detail-card activity-booking-detail"><div class="accommodation-detail-head"><div><strong>${escapeTripHTML(booking.title)}</strong><span>${escapeTripHTML(booking.date||'')}</span></div><span class="accommodation-night-badge activity-confirmed-badge">${escapeTripHTML(bookingStatusText(booking))}</span></div><div class="accommodation-facts">${facts}</div>${sections}${bookingActionButtonsHTML(booking,place)}${bookingExpenseActionHTML(booking)}${activityDetailNavigationHTML(booking.id)}</article>`;
 }
@@ -374,7 +377,8 @@ function buildGenericBookingDetailHTML(booking){
     payment,
     bookingSectionHTML('Address',bookingAddress(booking,place)),
     bookingSectionHTML('Notes',booking.notes||''),
-    bookingSectionHTML('Cancellation',booking.cancellation||'')
+    bookingSectionHTML('Cancellation',booking.cancellation||''),
+    bookingContactSectionsHTML(booking,place)
   ].join('');
   return `<article class="fact stay-booking accommodation-detail-card generic-booking-detail"><div class="accommodation-detail-head"><div><strong>${escapeTripHTML(booking.title)}</strong><span>${escapeTripHTML(booking.date||'')}</span></div><span class="accommodation-night-badge">${escapeTripHTML(bookingStatusText(booking))}</span></div><div class="accommodation-facts">${facts}</div>${sections}${bookingActionButtonsHTML(booking,place)}${bookingExpenseActionHTML(booking)}${genericBookingDetailNavigationHTML(booking)}</article>`;
 }
@@ -649,7 +653,7 @@ function buildRentalCarHTML(){
   const depots=`<div class="fact-grid rental-depot-grid"><div class="fact rental-depot-card"><strong>Pickup depot</strong>${escapeTripHTML(booking.pickupDepotAddress||booking.pickupAddress||'')}<div class="trip-action-row rental-depot-actions"><a class="pill" href="${escapeTripHTML(booking.pickupNavigationDestination||accommodationMapURL(booking.pickupDepotAddress||booking.pickupAddress||''))}" target="_blank" rel="noopener">Navigate to pickup</a></div></div><div class="fact rental-depot-card"><strong>Return depot</strong>${escapeTripHTML(booking.returnDepotAddress||booking.returnAddress||'')}<div class="trip-action-row rental-depot-actions"><a class="pill" href="${escapeTripHTML(booking.returnNavigationDestination||accommodationMapURL(booking.returnDepotAddress||booking.returnAddress||''))}" target="_blank" rel="noopener">Navigate to return</a></div></div></div>`;
   const instructions=Array.isArray(booking.pickupInstructions)?booking.pickupInstructions.filter(Boolean):[];
   const pickup=instructions.length?`<h3>Pickup instructions</h3><ol>${instructions.map(line=>`<li>${escapeTripHTML(line)}</li>`).join('')}</ol>${booking.shuttleCollectionAddress?`<p class="timestamp">Shuttle collection point: ${escapeTripHTML(booking.shuttleCollectionAddress)}</p>`:''}`:'';
-  return `<article class="fact stay-booking accommodation-detail-card rental-booking-detail"><div class="accommodation-facts">${facts}</div>${accommodationPaymentHTML(booking)}${depots}${pickup}${bookingSharedFooterHTML(booking)}${bookingExpenseActionHTML(booking)}</article>`;
+  return `<article class="fact stay-booking accommodation-detail-card rental-booking-detail"><div class="accommodation-facts">${facts}</div>${accommodationPaymentHTML(booking)}${depots}${pickup}${bookingContactSectionsHTML(booking,null)}${bookingSharedFooterHTML(booking)}${bookingExpenseActionHTML(booking)}</article>`;
 }
 function activityDetailNavigationHTML(bookingId){
   const bookings=getActivityBookings();

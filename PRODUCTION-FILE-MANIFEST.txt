@@ -73,3 +73,5 @@ Production root files:
 - trip-runtime.js
 - trip.html
 - vercel.json
+- booking-sync-runtime.js
+- SUPABASE_BOOKINGS_V1.sql

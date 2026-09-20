@@ -1,6 +1,6 @@
 {
   "engine_version": "25.7.1",
-  "artifact_version": "NZ Companion RC25.7.27 · Travel Engine 25.7.1 Selector Foreground Correction Candidate",
+  "artifact_version": "NZ Companion RC25.7.28 · Travel Engine 25.7.1 Cross-Device Data Sync Candidate",
   "baseline_engine": "25.6.0",
   "release_date": "2026-09-20",
   "release_type": "calm-shared-experience-candidate",
@@ -12,11 +12,13 @@
     "Moments explicit activity semantics",
     "Guide/Booking return-to-origin semantics",
     "Generation Selection Adapter aligned to Engine 25.6.0",
-    "Booking Authority edits included in immutable Trip publication snapshots",
-    "Booking local mutations auto-publish silently while Studio is active",
     "Published Booking data can hydrate as the live Booking Authority base",
     "Today’s Drive no longer renders the independently-authored stale driving note",
-    "User Selector now owns foreground when invoked from an already-open popup while preserving the originating modal"
+    "User Selector now owns foreground when invoked from an already-open popup while preserving the originating modal",
+    "Booking Authority syncs directly across devices without whole-trip publication",
+    "Timeline publication is deliberate/manual so route and derived itinerary changes can be reviewed together",
+    "Documents use 30-second visible polling plus startup/foreground/online sync",
+    "Document uploader may edit/delete own uploads; Studio may edit/delete all and exclusively controls Booking/Timeline links"
   ],
   "ci_entrypoint": "sh ci-tests/run-all.sh",
   "rollback_baseline": "25.4.16",
@@ -33,7 +35,7 @@
     "booking appliesTo / partyIds subgroup assignment"
   ],
   "migration_source": "NZ Companion RC25.3.9.3 · Travel Engine 25.4.20.3 Production Freeze",
-  "release_status": "CANDIDATE — audited nested-selector foreground contract on RC25.7.25",
+  "release_status": "CANDIDATE — cross-device Booking/Documents sync contract implemented; portable CI passed",
   "validation": {
     "chromium_desktop_1280x800": "PENDING GITHUB REAL-BROWSER GATE",
     "chromium_mobile_390x844": "PENDING GITHUB REAL-BROWSER GATE",
@@ -41,7 +43,10 @@
     "booking_expense_exact_card_deeplink": "PASS",
     "console_application_errors": "PASS — zero JS page errors",
     "cross_companion_studio_consistency": "PASS — same Engine-level Studio geometry/layout",
-    "validator": "Independent Codex Chromium/Playwright validation of unchanged CI-gate candidates"
+    "validator": "Independent Codex Chromium/Playwright validation of unchanged CI-gate candidates",
+    "cross_device_sync_static_contract": "PASS",
+    "supabase_booking_table": "PASS — trip_bookings created with RLS and authenticated read/insert/update policies",
+    "live_two_device_browser": "PENDING DEPLOYMENT / REAL-DEVICE CHECK"
   },
   "final_compatibility_fix": {
     "classification": "browser-only CSS scoping defect in legacy NZ modal visibility hotfix",
@@ -55,12 +60,17 @@
     "Make Booking Authority persist editable deltas instead of complete booking snapshots",
     "Protect corrected deploy-master financials and newly shipped useful links from stale booking snapshots",
     "Background-sync Documents metadata on shell load and foreground resume",
-    "Clean the portable CI runner so active tests actually execute before the final result"
+    "Clean the portable CI runner so active tests actually execute before the final result",
+    "Add single-writer booking-sync-runtime with startup, foreground, online and 30-second visible sync",
+    "Remove automatic Booking and Timeline publication triggers; Publish Latest Trip is now the deliberate release boundary",
+    "Add document ownerKey permissions and Studio-only contextual link management",
+    "Fix offline document tombstones and pending metadata so they retry on later sync",
+    "Align Documents polling contract with Expenses and Moments"
   ],
-  "release": "RC25.7.27",
+  "release": "RC25.7.28",
   "label": "Calm Shared Experience",
   "engineVersion": "25.7.1",
-  "candidate": "RC25.7.27",
+  "candidate": "RC25.7.28",
   "features": [
     "Documents upload",
     "Documents pin",

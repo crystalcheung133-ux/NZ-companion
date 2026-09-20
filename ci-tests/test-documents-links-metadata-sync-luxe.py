@@ -9,7 +9,7 @@ assert "meta.linkType||'trip'" in rt and "meta.linkId||''" in rt
 assert "String(d.updatedAt||'')>=String(l.updatedAt||'')" in rt
 assert "||!l.uploadPending" not in rt
 assert "async function update(id,patch)" in rt and "await cloudWrite(next)" in rt
-assert "deleted:true" in rt and "if(d.deleted)" in rt
+assert "deleted:true" in rt and "d?.deleted||d?.metaSyncPending" in rt
 assert "grid-template-columns:repeat(3,minmax(0,1fr))" in css
 assert '"time": "8:00 AM"' in data
 assert '"pickupAddress": "225 Milford Road, Te Anau 9600, New Zealand"' in data
