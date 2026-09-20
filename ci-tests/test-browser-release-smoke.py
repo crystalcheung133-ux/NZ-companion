@@ -145,7 +145,7 @@ def select_admin(page):
 
 def run_viewport(browser,base,viewport,label):
       context=browser.new_context(viewport=viewport)
-      context.add_init_script("localStorage.setItem('nz_friend','lee')")
+      context.add_init_script("window.TRAVEL_ENGINE_SUPABASE={enabled:false};localStorage.setItem('nz_friend','lee')")
       page=context.new_page()
       errors=[]
       console_errors=[]
