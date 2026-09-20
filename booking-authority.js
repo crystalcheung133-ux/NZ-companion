@@ -23,6 +23,9 @@
 
   function sanitizeLegacyOverride(id,record){
     const out=clone(record)||{};
+    if(id==='southwark-booking' && /Southwark Hotel/i.test(String(out.title||''))){
+      ['title','date','time','bookingName','stayDates','roomType','checkIn','checkOut','address','guests','platform','reference','referenceLabel','paymentStatus','totalAmount','cashbackAmount','netTotalAUD','price','paymentLabel','balanceDue','notes','cancellation'].forEach(function(field){delete out[field];});
+    }
     if(id==='car-rental'){
       const legacyAmounts=new Set(['524.66','11.61','513.05']);
       ['totalAmount','depositPaid','depositAmount','balanceDue','netTotalAUD','price','payAtPickup','paymentLabel'].forEach(function(field){

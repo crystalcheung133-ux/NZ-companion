@@ -1,4 +1,4 @@
-// data.js — New Zealand Companion RC25.2.5 · Day 3 breakfast options
+// data.js — New Zealand Companion RC25.7.35 · Christchurch Novotel booking + breakfast timeline
 // Generated from the frozen Travel Engine without UI redesign.
 
 /* Trip identity is owned exclusively by TRIP_CONFIG. */
@@ -117,12 +117,12 @@ const PLACES={
     "address": "96 Oxford Terrace, Christchurch Central City, Christchurch 8011, New Zealand",
     "desc": "Indoor food stalls; choose dinner on arrival.",
     "signature": [
-      "WALK · 14 min from Southwark",
+      "WALK · Short walk from Novotel Cathedral Square",
       "ORDER · Choose from the open stalls",
       "TIME · Aim for before 7:00 PM"
     ],
     "worth": [
-      "Walk from Southwark; leave the car parked."
+      "Walk from Novotel; leave the car parked."
     ],
     "categoryLabel": "🍽 Dining",
     "price": "$–$",
@@ -159,23 +159,23 @@ const PLACES={
     "title": "C1 Espresso",
     "emoji": "☕",
     "cat": "DINING",
-    "sub": "Fun Christchurch breakfast stop",
+    "sub": "Optional Christchurch coffee / breakfast stop",
     "hours": "Mon–Fri 7:00 AM–9:00 PM · Sat–Sun 7:00 AM–5:00 PM",
     "maps": "https://maps.google.com/?q=C1+Espresso+Christchurch",
     "address": "185 High Street, Christchurch Central City, Christchurch 8011, New Zealand",
-    "desc": "Breakfast before the central-Christchurch activity sequence.",
+    "desc": "Optional coffee or breakfast stop in central Christchurch; hotel breakfast is already included at Novotel.",
     "signature": [
-      "WALK · 6 min from Southwark",
+      "OPTIONAL · Hotel breakfast is already included",
       "ORDER · Coffee, breakfast or tube-delivered fries",
       "NEXT · Quake City or CBD Discovery Walk"
     ],
     "worth": [
-      "Walk from Southwark; collect the vehicle after returning to the hotel."
+      "Use only if you want an extra coffee or C1 visit after hotel breakfast."
     ],
     "categoryLabel": "☕ Dining",
     "price": "$–$",
     "transport": "Walk",
-    "audit": "Optional breakfast",
+    "audit": "Optional coffee / extra breakfast",
     "status": "optional"
   },
   "fairlie-bakehouse": {
@@ -1722,29 +1722,29 @@ const PLACES={
     "addressAudit": "OFFICIAL / VERIFIED"
   },
   "southwark": {
-    "title": "Southwark Hotel & Apartments",
+    "title": "Novotel Christchurch Cathedral Square",
     "emoji": "🏨",
     "cat": "STAY",
-    "sub": "Confirmed · 22–23 Sep",
-    "hours": "2:00 PM → 10:00 AM",
-    "maps": "https://www.google.com/maps/search/?api=1&query=Southwark+Hotel+%26+Apartments%2C+25+Southwark+Street%2C+Christchurch+8011",
-    "address": "25 Southwark Street, Christchurch Central City, Christchurch 8011, New Zealand",
-    "desc": "Walk to Riverside Market and C1, explore central Christchurch without parking, then collect the car for Tekapo.",
+    "sub": "Confirmed · 22–23 Sep · breakfast included",
+    "hours": "2:00 PM → 11:00 AM",
+    "maps": "https://www.google.com/maps/search/?api=1&query=Novotel+Christchurch+Cathedral+Square%2C+52+Cathedral+Square%2C+Christchurch",
+    "address": "52 Cathedral Square, Christchurch Central City, Christchurch 8011, New Zealand",
+    "desc": "Central Christchurch stay with breakfast included before the Lake Tekapo drive.",
     "signature": [
-      "STAY · 2:00 PM → 10:00 AM",
-      "PARKING · Confirmed · NZD 15 · pay at hotel",
-      "NEARBY · C1 · 6 min walk",
-      "NEARBY · Riverside · 14 min walk",
-      "NEARBY · PAK’nSAVE Moorhouse · ~5 min drive"
+      "STAY · 2:00 PM → 11:00 AM",
+      "ROOM · Superior Room with 2 Double Beds · 4 guests · 30 m²",
+      "BREAKFAST · Included",
+      "PARKING · NZD 28",
+      "LOCATION · Cathedral Square · central Christchurch"
     ],
     "worth": [
-      "Buy road-trip food before Lake Tekapo."
+      "Have breakfast at the hotel before the morning Christchurch activity and Lake Tekapo drive."
     ],
     "categoryLabel": "🏨 Stay",
     "transport": "Walk / self-drive",
-    "audit": "SUPPLIED TRIP DETAILS",
+    "audit": "SUPPLIED BOOKING · ACCOR",
     "status": "confirmed",
-    "addressAudit": "OFFICIAL ADDRESS / SUPPLIED TRIP DETAILS"
+    "addressAudit": "OFFICIAL ADDRESS / SUPPLIED BOOKING"
   },
   "paknsave-moorhouse": {
     "title": "PAK’nSAVE Moorhouse",
@@ -2712,7 +2712,7 @@ const BOOKINGS_DATA={
   "southwark-booking": {
     "id": "southwark-booking",
     "type": "accommodation",
-    "title": "Southwark Hotel & Apartments",
+    "title": "Novotel Christchurch Cathedral Square",
     "status": "confirmed",
     "displayStatus": "CONFIRMED",
     "guideDayLabel": "Day 1",
@@ -2725,25 +2725,25 @@ const BOOKINGS_DATA={
     "stayDates": "22–23 Sep 2026",
     "nights": 1,
     "checkIn": "2:00 PM",
-    "checkOut": "10:00 AM",
-    "address": "25 Southwark Street, Christchurch Central City, Christchurch 8011, New Zealand",
-    "roomType": "Business Double or Twin Room",
-    "bookingName": "Crystal Cheung",
-    "reference": "73514451853261",
-    "referenceLabel": "Expedia itinerary",
-    "platform": "Expedia",
-    "purchaseDate": "5 Aug 2026",
-    "paymentStatus": "Paid · Mastercard 0636",
-    "roomPrice": "AUD 177.80",
-    "taxes": "AUD 26.67",
-    "price": "AUD 204.47",
-    "cashback": "AUD 28.98",
-    "parking": "Confirmed · NZD 15 · pay at hotel",
-    "notes": "",
-    "paymentLabel": "PAID",
-    "totalAmount": "AUD 204.47",
-    "cashbackAmount": "\u2212AUD 28.98",
-    "netTotalAUD": "AUD 175.49",
+    "checkOut": "11:00 AM",
+    "address": "52 Cathedral Square, Christchurch Central City, Christchurch 8011, New Zealand",
+    "roomType": "Superior Room with 2 Double Beds · 4 guests · 30 m²",
+    "bookingName": "Ms Crystal Cheung",
+    "guests": "2 adults and 2 children",
+    "reference": "QRGBFBCS",
+    "referenceLabel": "Reservation number",
+    "platform": "ALL / Accor",
+    "paymentStatus": "Remaining to pay at hotel",
+    "roomPrice": "NZD 411.40",
+    "price": "NZD 411.40 · AUD 331.88 shown by Accor",
+    "parking": "NZD 28",
+    "breakfast": "Included · Bed and breakfast",
+    "cancellation": "No cancellation charge prior to 18:00 local time, up to 1 day prior to arrival; beyond that time, the first night will be charged.",
+    "notes": "Breakfast included · Amex offer AUD 380 − 80 may require additional eligible hotel spend",
+    "paymentLabel": "PAY AT HOTEL",
+    "totalAmount": "NZD 411.40",
+    "balanceDue": "NZD 411.40",
+    "netTotalAUD": "AUD 331.88",
     "approximateNet": false
   }
 };
@@ -2795,17 +2795,17 @@ const ITINERARY_DATA={
       "🌙 Easy evening"
     ],
     "drive": {
-      "route": "Christchurch Airport → Rental Cars 247 → Southwark Hotel & Apartments",
+      "route": "Christchurch Airport → Rental Cars 247 → Novotel Christchurch Cathedral Square",
       "distance": "≈ 15 km",
       "drivingTime": "≈ 20–25 min after vehicle collection",
       "road": "Airport / city roads",
       "stops": [
         "Rental Cars 247",
-        "Southwark Hotel & Apartments"
+        "Novotel Christchurch Cathedral Square"
       ],
-      "note": "The driving route ends at Southwark. Riverside Market is on foot.",
+      "note": "The driving route ends at Novotel Christchurch Cathedral Square. Riverside Market is on foot.",
       "contingency": "Skip the CBD dinner only if the flight, baggage collection or car pickup runs significantly late.",
-      "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=Christchurch+Airport%2C+Christchurch%2C+New+Zealand&destination=Southwark+Hotel+%26+Apartments%2C+25+Southwark+Street%2C+Christchurch+8011&travelmode=driving&waypoints=Rental+Cars+247%2C+264+Russley+Road%2C+Christchurch%2C+New+Zealand"
+      "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=Christchurch+Airport%2C+Christchurch%2C+New+Zealand&destination=Novotel+Christchurch+Cathedral+Square%2C+52+Cathedral+Square%2C+Christchurch&travelmode=driving&waypoints=Rental+Cars+247%2C+264+Russley+Road%2C+Christchurch%2C+New+Zealand"
     },
     "items": [
       {
@@ -2830,7 +2830,7 @@ const ITINERARY_DATA={
           "Rental Cars 247",
           "Mitsubishi ASX or similar"
         ],
-        "route": "From here: Southwark Hotel & Apartments · drive to central Christchurch.",
+        "route": "From here: Novotel Christchurch Cathedral Square · drive to Cathedral Square.",
         "map": "https://maps.google.com/?q=Rental+Cars+247+264+Russley+Road+Avonhead+Christchurch",
         "type": "transport",
         "dayId": "day1",
@@ -2840,13 +2840,14 @@ const ITINERARY_DATA={
       {
         "id": "southwark",
         "time": "Check-in",
-        "title": "🏨 Check in · Southwark Hotel & Apartments",
+        "title": "🏨 Check in · Novotel Christchurch Cathedral Square",
         "details": [
-          "2:00 PM → 10:00 AM",
-          "Parking · NZD 15 · pre-book"
+          "2:00 PM → 11:00 AM",
+          "Superior Room with 2 Double Beds · breakfast included",
+          "Parking · NZD 28"
         ],
-        "route": "From here: leave the car at Southwark · walk 14 min to Riverside Market.",
-        "map": "https://www.google.com/maps/search/?api=1&query=Southwark+Hotel+%26+Apartments%2C+25+Southwark+Street%2C+Christchurch+8011",
+        "route": "From here: leave the car at Novotel · walk to Riverside Market.",
+        "map": "https://www.google.com/maps/search/?api=1&query=Novotel+Christchurch+Cathedral+Square%2C+52+Cathedral+Square%2C+Christchurch",
         "type": "rest",
         "dayId": "day1",
         "placeId": "southwark",
@@ -2859,8 +2860,8 @@ const ITINERARY_DATA={
         "details": [
           "Dinner from the open stalls."
         ],
-        "route": "From here: walk 14 min back to Southwark.",
-        "map": "https://www.google.com/maps/dir/?api=1&origin=Southwark+Hotel+%26+Apartments%2C+25+Southwark+Street%2C+Christchurch&destination=Riverside+Market%2C+96+Oxford+Terrace%2C+Christchurch&travelmode=walking",
+        "route": "From here: walk back to Novotel Christchurch Cathedral Square.",
+        "map": "https://www.google.com/maps/dir/?api=1&origin=Novotel+Christchurch+Cathedral+Square%2C+52+Cathedral+Square%2C+Christchurch&destination=Riverside+Market%2C+96+Oxford+Terrace%2C+Christchurch&travelmode=walking",
         "type": "meal",
         "dayId": "day1",
         "placeId": "riverside",
@@ -2879,7 +2880,7 @@ const ITINERARY_DATA={
       "🌌 Flexible stargazing"
     ],
     "drive": {
-      "route": "Southwark → PAK’nSAVE Moorhouse → Fairlie → Peppers → Lake Tekapo Village → dinner → optional stargazing",
+      "route": "Novotel Christchurch Cathedral Square → PAK’nSAVE Moorhouse → Fairlie → Peppers → Lake Tekapo Village → dinner → optional stargazing",
       "distance": "≈ 235–250 km total",
       "drivingTime": "≈ 3 hr 20–40 min total",
       "road": "Christchurch city roads / SH1 / SH79 / SH8",
@@ -2892,24 +2893,25 @@ const ITINERARY_DATA={
         "Kohan or Mackenzies dinner",
         "Mt John Observatory / Stargazing Tour (optional)"
       ],
-      "note": "Walk to C1 and the central-city activity first. Driving starts after returning to Southwark and collecting the vehicle.",
+      "note": "Breakfast is included at Novotel. Do the central-city activity, return to the hotel by check-out, then start the drive.",
       "contingency": "Better Batter and stargazing are flexible; enjoy them only if they suit the afternoon.",
-      "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=Southwark+Hotel+%26+Apartments%2C+25+Southwark+Street%2C+Christchurch&destination=University+of+Canterbury+Mt+John+Observatory%2C+Mount+John+Summit%2C+Lake+Tekapo%2C+New+Zealand&travelmode=driving&waypoints=PAK%27nSAVE+Moorhouse%2C+297+Moorhouse+Avenue%2C+Christchurch%7CFairlie+Bakehouse%2C+74+Main+Street%2C+Fairlie%7CPeppers+Bluewater+Resort%2C+State+Highway+8%2C+Lake+Tekapo%7CThe+Better+Batter+NZ%2C+Lakeside+Drive%2C+Lake+Tekapo%7CChurch+of+the+Good+Shepherd%2C+Lake+Tekapo%7CKohan+Japanese+Restaurant%2C+6+Rapuwai+Lane%2C+Lake+Tekapo"
+      "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=Novotel+Christchurch+Cathedral+Square%2C+52+Cathedral+Square%2C+Christchurch&destination=University+of+Canterbury+Mt+John+Observatory%2C+Mount+John+Summit%2C+Lake+Tekapo%2C+New+Zealand&travelmode=driving&waypoints=PAK%27nSAVE+Moorhouse%2C+297+Moorhouse+Avenue%2C+Christchurch%7CFairlie+Bakehouse%2C+74+Main+Street%2C+Fairlie%7CPeppers+Bluewater+Resort%2C+State+Highway+8%2C+Lake+Tekapo%7CThe+Better+Batter+NZ%2C+Lakeside+Drive%2C+Lake+Tekapo%7CChurch+of+the+Good+Shepherd%2C+Lake+Tekapo%7CKohan+Japanese+Restaurant%2C+6+Rapuwai+Lane%2C+Lake+Tekapo"
     },
     "items": [
       {
         "id": "breakfast-chc",
         "time": "Morning",
-        "title": "☕ Breakfast · C1 Espresso",
+        "title": "☕ Breakfast · Novotel Christchurch Cathedral Square",
         "details": [
-          "Walk 6 min from Southwark for breakfast."
+          "Breakfast included with the room for 2 adults and 2 children.",
+          "Check-out is 11:00 AM."
         ],
-        "route": "From here: walk to Quake City or follow the CBD Discovery Walk.",
-        "map": "https://www.google.com/maps/dir/?api=1&origin=Southwark+Hotel+%26+Apartments%2C+25+Southwark+Street%2C+Christchurch&destination=C1+Espresso%2C+185+High+Street%2C+Christchurch&travelmode=walking",
+        "route": "From here: walk to Quake City or follow the CBD Discovery Walk, then return to Novotel for check-out.",
+        "map": "https://www.google.com/maps/search/?api=1&query=Novotel+Christchurch+Cathedral+Square%2C+52+Cathedral+Square%2C+Christchurch",
         "type": "meal",
         "dayId": "day2",
-        "placeId": "c1-espresso",
-        "bookingId": null
+        "placeId": "southwark",
+        "bookingId": "southwark-booking"
       },
       {
         "id": "quake-city",
@@ -2919,7 +2921,7 @@ const ITINERARY_DATA={
           "Primary morning activity · allow about 45–60 minutes.",
           "Alternative: choose the Christchurch CBD Discovery Walk instead if you prefer shopping and city exploration."
         ],
-        "route": "From here: complete the chosen central-Christchurch sequence, then walk back to Southwark.",
+        "route": "From here: complete the chosen central-Christchurch sequence, then walk back to Novotel for check-out.",
         "map": "https://maps.google.com/?q=Quake%20City",
         "type": "experience",
         "dayId": "day2",
@@ -2934,13 +2936,13 @@ const ITINERARY_DATA={
       {
         "id": "return-southwark",
         "time": "Late morning",
-        "title": "🏨 Return to Southwark · check out / collect vehicle",
+        "title": "🏨 Return to Novotel · check out / collect vehicle",
         "details": [
-          "Walk back after the central-Christchurch activity.",
+          "Walk back to Novotel after the central-Christchurch activity.",
           "Check out and collect the vehicle."
         ],
         "route": "From here: PAK’nSAVE Moorhouse · ~5 min drive.",
-        "map": "https://www.google.com/maps/search/?api=1&query=Southwark+Hotel+%26+Apartments%2C+25+Southwark+Street%2C+Christchurch+8011",
+        "map": "https://www.google.com/maps/search/?api=1&query=Novotel+Christchurch+Cathedral+Square%2C+52+Cathedral+Square%2C+Christchurch",
         "type": "transport",
         "dayId": "day2",
         "placeId": "southwark",
