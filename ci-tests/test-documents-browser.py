@@ -63,6 +63,8 @@ def run(browser,base,v,label):
  p.wait_for_timeout(260)
  saved=p.locator("#tripModalContent").inner_text()
  ck('NZD 700.00' in saved and 'NZD 20.00' in saved and 'NZD 680.00' in saved,label+": Studio payment edit did not round-trip to renderer")
+ payload_total=p.evaluate("()=>TRIP_PUBLICATION.buildPayload().data.bookingsData['car-rental'].totalAmount")
+ ck(payload_total=='NZD 700.00',label+": published Booking payload ignored Studio authority")
  # Restore canonical trip values through the same editor path so the test proves both directions.
  p.locator("#tripModalContent .booking-edit-btn").click();p.wait_for_selector("#bookingEditForm",state="visible")
  p.locator('#bookingEditForm [name="totalAmount"]').fill('NZD 628.82');p.locator('#bookingEditForm [name="depositPaid"]').fill('NZD 13.95');p.locator('#bookingEditForm [name="balanceDue"]').fill('NZD 614.87');p.locator('#bookingEditForm [name="netTotalAUD"]').fill('NZD 628.82')

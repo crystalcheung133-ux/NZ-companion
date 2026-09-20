@@ -79,7 +79,13 @@
     return state;
   }
   function write(state){return !!(store()&&store().writeJSON(KEY,state));}
-  function canonicalBase(id,source){return clone((DEPLOY_MASTER&&DEPLOY_MASTER[id])||(source&&source[id])||null);}
+  function canonicalBase(id,source){
+    /* The live source may have been hydrated from a newer published Trip snapshot.
+       Prefer it over the deploy-time copy so Booking edits published by another
+       Companion can become the base on this device. Local overrides still layer
+       on top and therefore survive ordinary app/version deploys on this device. */
+    return clone((source&&source[id])||(DEPLOY_MASTER&&DEPLOY_MASTER[id])||null);
+  }
   function resolvedSource(target){
     const source=target||master();
     const output={};

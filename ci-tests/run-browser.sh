@@ -1,6 +1,6 @@
 #!/bin/sh
 set -eu
-echo "== BROWSER RELEASE SMOKE · RC25.7.24 AUDITED TIMELINE AUTHORITY =="
+echo "== BROWSER RELEASE SMOKE · RC25.7.25 EDITABLE SOURCE CONTRACT =="
 python - <<'PY'
 try:
     import playwright

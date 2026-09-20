@@ -52,6 +52,20 @@ def nav_visible(page):
       return s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)>0&&r.width>0&&r.height>0;
     }""")
 
+def assert_nested_selector(page,origin_sel,sheet_sel,stage):
+    check(page.locator(origin_sel).evaluate("el=>el.classList.contains('show')"),f'{stage}: origin popup is not open')
+    page.evaluate("()=>window.openFriendModal()")
+    page.wait_for_selector('#mamaModal.show')
+    check(page.locator(origin_sel).evaluate("el=>el.classList.contains('show')"),f'{stage}: opening User Selector destroyed origin popup')
+    oz=page.locator(origin_sel).evaluate("el=>Number(getComputedStyle(el).zIndex)||0")
+    sz=page.locator('#mamaModal').evaluate("el=>Number(getComputedStyle(el).zIndex)||0")
+    check(sz>oz,f'{stage}: User Selector z-index {sz} is not above origin {oz}')
+    check(top_owner(page,'#mamaModal .guide-sheet'),f'{stage}: User Selector is not foreground hit-test owner')
+    page.evaluate("()=>window.closeFriendModal()")
+    page.wait_for_function("!document.getElementById('mamaModal').classList.contains('show')")
+    check(page.locator(origin_sel).evaluate("el=>el.classList.contains('show')"),f'{stage}: closing User Selector did not restore origin popup')
+    check(top_owner(page,sheet_sel),f'{stage}: origin popup did not regain foreground after selector close')
+
 def studio_login(page):
     select_admin(page)
     page.evaluate("()=>window.setAdminMode(true)")
@@ -145,6 +159,7 @@ def run_viewport(browser,base,viewport,label):
         select_admin(page)
         page.wait_for_timeout(350)
         check(not page.locator('#mamaModal').evaluate("el=>el.classList.contains('show')"),label+': identity overlay reopened after valid stored identity')
+        check(page.evaluate("()=>typeof TRIP_PUBLICATION==='object' && TRIP_PUBLICATION.buildPayload().data.bookingsData!=null"),label+': publication payload has no Booking dataset')
 
         # Studio lifecycle: PIN -> foreground -> Close -> User Selector direct re-entry -> reload re-entry.
         studio_login(page)
@@ -187,7 +202,28 @@ def run_viewport(browser,base,viewport,label):
           check(forbidden not in detail,label+': Booking rendered forbidden UI: '+forbidden)
         check(page.locator('#tripModalContent .trip-action-btn--call').count()==0,
               label+': phone-only Call action should not exist')
+
+        # Shared nested-selector contract: each production popup must remain underneath
+        # the User Selector, then regain foreground after the selector closes.
+        assert_nested_selector(page,'#tripModal','#tripModal .trip-sheet',label+' Booking → User Selector')
         page.locator('#tripModal .trip-close').click()
+
+        page.goto(base+'/day.html?day=3',wait_until='domcontentloaded')
+        select_admin(page)
+        page.locator('#alpine-salmon .timeline-action--guide').click()
+        page.wait_for_selector('#guideModal.show')
+        assert_nested_selector(page,'#guideModal','#guideModal .guide-sheet',label+' Guide → User Selector')
+        page.locator('#guideModal .guide-close').click()
+
+        page.evaluate("()=>window.openMomentsModal('general')")
+        page.wait_for_selector('#momentsModal.show')
+        assert_nested_selector(page,'#momentsModal','#momentsModal .moments-sheet',label+' Moments → User Selector')
+        page.locator('#momentsModal .moments-close').click()
+
+        page.evaluate("()=>window.openExpenseModal()")
+        page.wait_for_selector('#expenseModal.show')
+        assert_nested_selector(page,'#expenseModal','#expenseModal .tools-sheet',label+' Expense → User Selector')
+        page.locator('#expenseModal .tools-close').click()
 
         # Day summary must follow the SAME SAVED itinerary authority/order as the visible Timeline.
         # This must be a real Studio save: markAdminDirty intentionally rejects writes outside Studio.

@@ -25,6 +25,17 @@
     });
     return itinerary;
   }
+  function mergedBookings(){
+    const source=datasets();
+    const bookings=clone(source.BOOKINGS_DATA||{});
+    const authority=root.BOOKING_AUTHORITY;
+    if(authority&&typeof authority.all==='function'){
+      const resolved={};
+      authority.all(bookings).forEach(function(booking){if(booking&&booking.id)resolved[booking.id]=booking;});
+      return resolved;
+    }
+    return bookings;
+  }
   function buildPayload(){
     const source=datasets();
     const authority=root.ITINERARY_AUTHORITY;
@@ -36,7 +47,7 @@
         guideOrder:clone(source.GUIDE_ORDER||[]),
         dayLinks:clone(source.DAY_LINKS||{}),
         friends:clone(source.FRIENDS||{}),
-        bookingsData:clone(source.BOOKINGS_DATA||{}),
+        bookingsData:mergedBookings(),
         tripData:clone(source.TRIP_DATA||{}),
         tripOrder:clone(source.TRIP_ORDER||[]),
         itineraryData:mergedItinerary()
@@ -168,6 +179,17 @@
     const hasTimeline=Object.keys(changes).some(function(key){return key.indexOf('itineraryDay')===0;});
     if(!hasTimeline||navigator.onLine===false)return;
     setTimeout(function(){publish({silent:true,reason:'timeline-save'});},0);
+  });
+
+  /* Booking edits are source facts just like saved Timeline edits. BOOKING_AUTHORITY
+     commits locally first; this listener publishes the resolved Booking dataset in
+     the background so another Companion can receive it through the existing Trip
+     publication channel. Only the authority's local mutation event is observed,
+     avoiding the second UI notification emitted after the editor closes. */
+  document.addEventListener('travelengine:bookingchange',function(event){
+    const detail=event.detail||{};
+    if(detail.local!==true||navigator.onLine===false)return;
+    setTimeout(function(){publish({silent:true,reason:'booking-save'});},0);
   });
 
   root.TRIP_PUBLICATION=Object.freeze({buildPayload:buildPayload,validatePayload:payloadIntegrity,publish:publish,prepare:publish,getLastPublishedVersion:function(){return state.lastPublishedVersion;}});

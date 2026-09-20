@@ -39,6 +39,8 @@ run "HANDOFF + FOREGROUND + RELEASE IDENTITY" python ci-tests/test-handoff-layer
 run "RC25.7.11 MODAL + RETURN + DERIVED DAY" python ci-tests/test-rc25711-modal-return-derived-day.py
 run "RC25.7.21 PAYMENT ROUNDTRIP CONTRACT" python ci-tests/test-rc25721-payment-roundtrip.py
 run "RC25.7.24 AUDITED TIMELINE AUTHORITY" python ci-tests/test-rc25724-audited-timeline.py
+run "RC25.7.25 EDITABLE SOURCE CONTRACT" python ci-tests/test-rc25725-editable-source-contract.py
+run "RC25.7.27 SELECTOR FOREGROUND CORRECTION" python ci-tests/test-rc25727-selector-foreground.py
 
 
 if [ "$failed" -eq 0 ]; then

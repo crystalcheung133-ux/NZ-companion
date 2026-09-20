@@ -2946,3 +2946,16 @@ html.handoff-ready body{visibility:visible}
 
 /* RC25.7.13 — day identity is context, not another summary card. */
 .timeline-day-identity{max-width:1180px;margin:8px auto 10px;padding:0 4px;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);font-size:13px}
+
+/* RC25.7.27 — selector foreground contract correction.
+   Traveller/User Selector is a nested decision surface: when invoked from an
+   already-open Booking, Guide, Moments or Expense card it must own the
+   foreground without destroying the originating modal. Trip Studio remains
+   the highest creator workspace once selected. */
+#momentsModal.show{
+  z-index:5006!important;
+}
+#mamaModal.show{
+  z-index:7700!important;
+  isolation:isolate!important;
+}

@@ -1,17 +1,19 @@
-Saigon Companion Production File Manifest
-Generated: 2026-09-18
-Base: NZ Companion RC25.5.4
-Reference trip: Vietnam
+New Zealand Companion Production File Manifest
+Generated: 2026-09-20
+Base: NZ Companion RC25.7.27
+Reference trip: New Zealand
 
 Production root files:
 
 - .vercelignore
 - RELEASE.json
+- VERSION.txt
 - admin.js
 - analytics-runtime.js
 - app-runtime.js
 - asset-config.js
 - booking-authority.js
+- booking-permissions.js
 - complete-runtime.js
 - core-runtime.js
 - currency-runtime.js

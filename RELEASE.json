@@ -1,6 +1,6 @@
 {
   "engine_version": "25.7.1",
-  "artifact_version": "NZ Companion RC25.7.24 · Travel Engine 25.7.1 Audited Timeline Authority Candidate",
+  "artifact_version": "NZ Companion RC25.7.27 · Travel Engine 25.7.1 Selector Foreground Correction Candidate",
   "baseline_engine": "25.6.0",
   "release_date": "2026-09-20",
   "release_type": "calm-shared-experience-candidate",
@@ -11,7 +11,12 @@
     "Compact Booking legal-surface allow-list",
     "Moments explicit activity semantics",
     "Guide/Booking return-to-origin semantics",
-    "Generation Selection Adapter aligned to Engine 25.6.0"
+    "Generation Selection Adapter aligned to Engine 25.6.0",
+    "Booking Authority edits included in immutable Trip publication snapshots",
+    "Booking local mutations auto-publish silently while Studio is active",
+    "Published Booking data can hydrate as the live Booking Authority base",
+    "Today’s Drive no longer renders the independently-authored stale driving note",
+    "User Selector now owns foreground when invoked from an already-open popup while preserving the originating modal"
   ],
   "ci_entrypoint": "sh ci-tests/run-all.sh",
   "rollback_baseline": "25.4.16",
@@ -28,7 +33,7 @@
     "booking appliesTo / partyIds subgroup assignment"
   ],
   "migration_source": "NZ Companion RC25.3.9.3 · Travel Engine 25.4.20.3 Production Freeze",
-  "release_status": "CANDIDATE — audited Timeline authority / drive-summary contract",
+  "release_status": "CANDIDATE — audited nested-selector foreground contract on RC25.7.25",
   "validation": {
     "chromium_desktop_1280x800": "PENDING GITHUB REAL-BROWSER GATE",
     "chromium_mobile_390x844": "PENDING GITHUB REAL-BROWSER GATE",
@@ -52,10 +57,10 @@
     "Background-sync Documents metadata on shell load and foreground resume",
     "Clean the portable CI runner so active tests actually execute before the final result"
   ],
-  "release": "RC25.5.4",
+  "release": "RC25.7.27",
   "label": "Calm Shared Experience",
   "engineVersion": "25.7.1",
-  "candidate": "RC25.7.24",
+  "candidate": "RC25.7.27",
   "features": [
     "Documents upload",
     "Documents pin",
@@ -63,5 +68,5 @@
     "Edgewater First Table voucher seed"
   ],
   "engine": "25.7.1",
-  "current_candidate_browser_validation": "LOCAL BLOCKED — sandbox administrator blocks localhost; GitHub Actions real-browser gate is authoritative"
+  "current_candidate_browser_validation": "PENDING GITHUB REAL-BROWSER GATE"
 }

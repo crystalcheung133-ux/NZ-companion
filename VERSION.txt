@@ -1,3 +1,1 @@
-NZ Companion RC25.5.4
-Travel Engine 25.7.1
-Trip Documents v1.1 · Upload · Pin · Link routing fix
+NZ Companion RC25.7.27 · Travel Engine 25.7.1 Selector Foreground Candidate
