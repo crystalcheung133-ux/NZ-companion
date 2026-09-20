@@ -1,6 +1,6 @@
 {
   "engine_version": "25.7.1",
-  "artifact_version": "NZ Companion RC25.7.30 · Travel Engine 25.7.1 Booking Save Sync API Fix Candidate",
+  "artifact_version": "NZ Companion RC25.7.31 · Travel Engine 25.7.1 Booking Cross-Device Push Fix Candidate",
   "baseline_engine": "25.6.0",
   "release_date": "2026-09-20",
   "release_type": "calm-shared-experience-candidate",
@@ -68,10 +68,10 @@
     "Align Documents polling contract with Expenses and Moments",
     "Fix Booking Studio save failure caused by trip-runtime calling BOOKING_SYNC.enabled()/push() methods missing from booking-sync-runtime; make delete local-first with best-effort cross-device sync."
   ],
-  "release": "RC25.7.30",
+  "release": "RC25.7.31",
   "label": "Calm Shared Experience",
   "engineVersion": "25.7.1",
-  "candidate": "RC25.7.30",
+  "candidate": "RC25.7.31",
   "features": [
     "Documents upload",
     "Documents pin",

@@ -14,7 +14,7 @@
     const q=await client().from(table).select('payload,updated_at').eq('trip_id',cfg.tripId).eq('id',ROW_ID).maybeSingle();
     if(q.error)throw q.error; return q.data||null;
   }
-  async function push(local){
+  async function pushRemote(local){
     await session();
     const row={id:ROW_ID,trip_id:cfg.tripId,payload:local,updated_at:local.updatedAt||new Date().toISOString()};
     const q=await client().from(table).upsert(row,{onConflict:'id'}); if(q.error)throw q.error;
@@ -28,7 +28,7 @@
         const local=root.BOOKING_AUTHORITY.read();
         if(options.forcePush===true&&local.updatedAt){
           // Studio is the sole writer: the just-saved local mutation is authoritative.
-          await push(local);
+          await pushRemote(local);
         }else{
           const remoteRow=await pull(); const remote=remoteRow?.payload;
           const lt=iso(local.updatedAt), rt=iso(remote?.updatedAt||remoteRow?.updated_at);
@@ -36,7 +36,7 @@
             root.BOOKING_AUTHORITY.replaceState(remote);
             document.dispatchEvent(new CustomEvent('travelengine:bookingchange',{detail:{remote:true,local:false,sync:true}}));
           }else if(local.updatedAt&&(!remote||lt>rt)){
-            await push(local);
+            await pushRemote(local);
           }
         }
         state.lastSyncAt=new Date().toISOString();state.status='synced';
