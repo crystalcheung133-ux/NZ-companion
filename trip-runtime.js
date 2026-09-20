@@ -515,14 +515,13 @@ async function deleteBookingRecord(bookingId){
   if(!window.confirm('Delete this booking from the current trip?'))return false;
   const liveTarget=typeof PRODUCTION_BOOKINGS!=='undefined'&&PRODUCTION_BOOKINGS&&PRODUCTION_BOOKINGS.byId?PRODUCTION_BOOKINGS.byId:null;
   try{
-    if(window.BOOKING_SYNC&&BOOKING_SYNC.enabled()){
-      const remote=await BOOKING_SYNC.remove(booking);
-      if(!remote||!remote.ok)throw new Error('remote-delete-failed');
-    }
     const result=BOOKING_AUTHORITY.remove(bookingId,liveTarget);
     if(!result||!result.ok)throw new Error((result&&result.reason)||'delete-failed');
+    if(window.BOOKING_SYNC&&BOOKING_SYNC.enabled()){
+      Promise.resolve(BOOKING_SYNC.push()).catch(function(syncError){console.error('Booking delete: remote sync pending',syncError);});
+    }
     clearBookingEditSession();activeBookingDetail=null;closeTripModal();renderTripMenuFromConfig();return true;
-  }catch(error){console.error('Booking delete failed',error);alert('Could not delete this booking. Please check your connection and try again.');return false;}
+  }catch(error){console.error('Booking delete failed',error);alert('Could not delete this booking. Please try again.');return false;}
 }
 window.deleteBookingRecord=deleteBookingRecord;
 /* commitBookingSave — generic Engine local-first save orchestration.

@@ -43,6 +43,7 @@ run "RC25.7.25 EDITABLE SOURCE CONTRACT" python ci-tests/test-rc25725-editable-s
 run "RC25.7.27 SELECTOR FOREGROUND CORRECTION" python ci-tests/test-rc25727-selector-foreground.py
 run "RC25.7.28 CROSS-DEVICE SYNC CONTRACT" python ci-tests/test-rc25728-cross-device-sync.py
 run "RC25.7.29 BOOKING CARD DETAIL PARITY" node ci-tests/test-booking-card-detail-parity.js
+run "RC25.7.30 BOOKING SAVE SYNC API" python ci-tests/test-rc25730-booking-sync-api-contract.py
 
 
 if [ "$failed" -eq 0 ]; then

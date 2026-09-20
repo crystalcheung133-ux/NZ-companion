@@ -52,5 +52,10 @@
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')queueSync(100);});
   setInterval(()=>{if(document.visibilityState==='visible')syncNow();},30000);
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>queueSync(0),{once:true});else queueSync(0);
-  root.BOOKING_SYNC=Object.freeze({syncNow,queueSync,getState:()=>Object.freeze({...state,timer:undefined,inFlight:undefined})});
+  function enabled(){return configured();}
+  async function push(){
+    if(state.inFlight)await state.inFlight;
+    return syncNow({forcePush:true});
+  }
+  root.BOOKING_SYNC=Object.freeze({enabled,syncNow,push,queueSync,getState:()=>Object.freeze({...state,timer:undefined,inFlight:undefined})});
 })(globalThis);

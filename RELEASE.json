@@ -1,6 +1,6 @@
 {
   "engine_version": "25.7.1",
-  "artifact_version": "NZ Companion RC25.7.28 · Travel Engine 25.7.1 Cross-Device Data Sync Candidate",
+  "artifact_version": "NZ Companion RC25.7.30 · Travel Engine 25.7.1 Booking Save Sync API Fix Candidate",
   "baseline_engine": "25.6.0",
   "release_date": "2026-09-20",
   "release_type": "calm-shared-experience-candidate",
@@ -35,7 +35,7 @@
     "booking appliesTo / partyIds subgroup assignment"
   ],
   "migration_source": "NZ Companion RC25.3.9.3 · Travel Engine 25.4.20.3 Production Freeze",
-  "release_status": "CANDIDATE — cross-device Booking/Documents sync contract implemented; portable CI passed",
+  "release_status": "CANDIDATE — booking save/delete sync API mismatch fixed; portable CI passed",
   "validation": {
     "chromium_desktop_1280x800": "PENDING GITHUB REAL-BROWSER GATE",
     "chromium_mobile_390x844": "PENDING GITHUB REAL-BROWSER GATE",
@@ -65,12 +65,13 @@
     "Remove automatic Booking and Timeline publication triggers; Publish Latest Trip is now the deliberate release boundary",
     "Add document ownerKey permissions and Studio-only contextual link management",
     "Fix offline document tombstones and pending metadata so they retry on later sync",
-    "Align Documents polling contract with Expenses and Moments"
+    "Align Documents polling contract with Expenses and Moments",
+    "Fix Booking Studio save failure caused by trip-runtime calling BOOKING_SYNC.enabled()/push() methods missing from booking-sync-runtime; make delete local-first with best-effort cross-device sync."
   ],
-  "release": "RC25.7.28",
+  "release": "RC25.7.30",
   "label": "Calm Shared Experience",
   "engineVersion": "25.7.1",
-  "candidate": "RC25.7.28",
+  "candidate": "RC25.7.30",
   "features": [
     "Documents upload",
     "Documents pin",
