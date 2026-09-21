@@ -445,40 +445,65 @@ function bookingViaValue(booking){
 function bookingImportantInfo(booking){
   return [booking.cancellation||'',booking.notes||''].filter(Boolean).join('\n');
 }
+function bookingFamilyBreakdownEditValue(booking){
+  const rows=Array.isArray(booking&&booking.familyBreakdown)?booking.familyBreakdown:[];
+  return rows.map(function(row){return [row.label||'',row.composition||'',row.total||''].join(' | ');}).join('\n');
+}
 function bookingEditFields(booking){
   const via=bookingViaValue(booking);
   const rawVia=String(booking.bookingViaOther||booking.bookingWay||booking.platform||'').trim();
+  const place=bookingPlace(booking);
   const common=[
     bookingField('Status','status',normalizedBookingStatus(booking),{type:'select',choices:['pending','confirmed']}),
     bookingField('Date','date',booking.date),
     bookingField('Booking title','title',booking.title,{wide:true}),
-    bookingField('Booked under','bookingName',booking.bookingName),bookingField('Booking reference','reference',booking.reference),
+    bookingField('Related day','dayId',booking.dayId),bookingField('Time','time',booking.time),
+    bookingField('Booked under','bookingName',booking.bookingName),bookingField('Booking reference','reference',booking.reference||booking.bookingNumber),
     bookingField('Booked via','bookingVia',via,{type:'select',choices:['','Official website','Trip.com','Booking.com','Agoda','Expedia','Klook','KKday','Airbnb','Luxury Escapes','WhatsApp','Email','Phone','Walk-in','Other']}),
     bookingField('Other booking method / platform','bookingViaOther',via==='Other'?rawVia:'',{wide:true}),
-    bookingField('Payment / deposit status','paymentStatus',booking.paymentStatus),
-    ...(booking.type==='rentalCar'?[bookingField('Total','totalAmount',booking.totalAmount),bookingField('Deposit paid','depositPaid',booking.depositPaid),bookingField('Balance due','balanceDue',booking.balanceDue),bookingField('Net cost','netTotalAUD',booking.netTotalAUD)]:[bookingField('Total / balance','price',booking.price)]),
-    bookingField('Website / booking link','website',booking.website,{wide:true,inputmode:'url'}),
+    bookingField('Booking method note','bookingMethod',booking.bookingMethod,{wide:true}),
+    bookingField('Payment status / label','paymentStatus',booking.paymentLabel||booking.paymentStatus),
+    bookingField('Charge date','chargeDate',booking.chargeDate),
+    bookingField('Total','totalAmount',booking.totalAmount||booking.price),
+    bookingField('Deposit amount','depositAmount',booking.depositAmount),bookingField('Deposit currency','depositCurrency',booking.depositCurrency),
+    bookingField('Deposit AUD','depositAUD',booking.depositAUD),bookingField('Deposit paid','depositPaid',bookingHumanValue(booking.depositPaid,'')),
+    bookingField('Balance due','balanceDue',booking.balanceDue||booking.payAtPickup),
+    bookingField('Discount label','discountLabel',booking.discountLabel),bookingField('Discount amount','discountAmount',booking.discountAmount),
+    bookingField('Cashback','cashbackAmount',booking.cashbackAmount||booking.cashback),bookingField('Net cost','netTotalAUD',booking.netTotalAUD||booking.netPrice),
+    bookingField('FX note','fxNote',booking.fxNote,{wide:true}),
+    bookingField('Address','address',bookingAddress(booking,place),{type:'textarea'}),
+    bookingField('Website','website',booking.website||(place&&place.website)||'',{wide:true,inputmode:'url'}),
+    bookingField('Phone','phone',booking.phone||(place&&place.phone)||''),bookingField('Office phone','officePhone',booking.officePhone),
+    bookingField('Email','email',booking.email||(place&&place.email)||'',{type:'email'}),bookingField('WhatsApp','whatsapp',booking.whatsapp),
+    bookingField('Cancellation','cancellation',booking.cancellation,{type:'textarea'}),bookingField('Notes','notes',booking.notes,{type:'textarea'}),
     bookingField('Useful link label','usefulLinkLabel',(Array.isArray(booking.usefulLinks)&&booking.usefulLinks[0]&&booking.usefulLinks[0].label)||'',{wide:true}),
-    bookingField('Useful link URL','usefulLinkUrl',(Array.isArray(booking.usefulLinks)&&booking.usefulLinks[0]&&booking.usefulLinks[0].url)||'',{wide:true,inputmode:'url'}),
-    bookingField('Phone','phone',booking.phone),bookingField('Email','email',booking.email,{type:'email'}),
-    bookingField('Notes / cancellation / important information','importantInfo',bookingImportantInfo(booking),{type:'textarea'})
+    bookingField('Useful link URL','usefulLinkUrl',(Array.isArray(booking.usefulLinks)&&booking.usefulLinks[0]&&booking.usefulLinks[0].url)||'',{wide:true,inputmode:'url'})
   ];
   if(booking.type==='accommodation')common.splice(3,0,
-    bookingField('Stay dates','stayDates',booking.stayDates,{wide:true}),
-    bookingField('Room','roomType',booking.roomType,{wide:true}),
+    bookingField('Stay dates','stayDates',booking.stayDates,{wide:true}),bookingField('Nights','nights',booking.nights,{type:'number',inputmode:'numeric'}),
+    bookingField('Room','roomType',booking.roomType,{wide:true}),bookingField('Guests / room occupancy','guestSummary',booking.guestSummary,{wide:true}),
     bookingField('Check-in','checkIn',booking.checkIn),bookingField('Check-out','checkOut',booking.checkOut),
-    bookingField('Address','address',booking.address,{type:'textarea'}),bookingField('Arrival instructions','checkInInstructions',booking.checkInInstructions,{type:'textarea'})
+    bookingField('Parking','parking',booking.parking,{wide:true}),bookingField('Arrival instructions','checkInInstructions',booking.checkInInstructions,{type:'textarea'})
   );
   if(booking.type==='activity')common.splice(3,0,
-    bookingField('Time','time',booking.time),bookingField('Related day','dayId',booking.dayId),bookingField('Tour type','tourType',booking.tourType,{wide:true}),
-    bookingField('Guests','guests',booking.guests,{type:'number',inputmode:'numeric'}),bookingField('Adults','adults',booking.adults,{type:'number',inputmode:'numeric'}),
-    bookingField('Children','children',booking.children,{type:'number',inputmode:'numeric'}),bookingField('Original total','originalTotal',booking.originalTotal),
-    bookingField('Discount','discount',booking.discount),bookingField('Pickup / meeting point','pickupNote',booking.pickupNote||booking.pickupAddress,{type:'textarea'}),
-    bookingField('Drop-off','dropOff',booking.dropOff,{type:'textarea'}),bookingField('Lunch','lunchStatus',booking.lunchStatus,{type:'textarea'})
+    bookingField('Tour type','tourType',booking.tourType,{wide:true}),bookingField('Guests','guests',booking.guests,{type:'number',inputmode:'numeric'}),
+    bookingField('Adults','adults',booking.adults,{type:'number',inputmode:'numeric'}),bookingField('Children','children',booking.children,{type:'number',inputmode:'numeric'}),
+    bookingField('Adult price','adultPrice',booking.adultPrice),bookingField('Child price','childPrice',booking.childPrice),
+    bookingField('Family price breakdown · one row per line: label | composition | total','familyBreakdownText',bookingFamilyBreakdownEditValue(booking),{type:'textarea'}),
+    bookingField('Original total','originalTotal',booking.originalTotal),bookingField('Discount','discount',booking.discount),
+    bookingField('Pickup / meeting point','pickupNote',booking.pickupNote||booking.pickupAddress,{type:'textarea'}),bookingField('Drop-off','dropOff',booking.dropOff,{type:'textarea'}),
+    bookingField('Lunch','lunchStatus',booking.lunchStatus,{type:'textarea'})
+  );
+  if(booking.type==='rentalCar')common.splice(3,0,
+    bookingField('Vehicle','vehicle',booking.vehicle,{wide:true}),bookingField('Provider','provider',booking.provider),
+    bookingField('Pickup date / time','pickupDateTime',booking.pickupDateTime,{wide:true}),bookingField('Return date / time','returnDateTime',booking.returnDateTime,{wide:true}),
+    bookingField('Pickup depot address','pickupDepotAddress',booking.pickupDepotAddress||booking.pickupAddress,{type:'textarea'}),bookingField('Return depot address','returnDepotAddress',booking.returnDepotAddress||booking.returnAddress,{type:'textarea'}),
+    bookingField('Pickup navigation URL','pickupNavigationDestination',booking.pickupNavigationDestination,{wide:true,inputmode:'url'}),bookingField('Return navigation URL','returnNavigationDestination',booking.returnNavigationDestination,{wide:true,inputmode:'url'}),
+    bookingField('Pickup instructions · one per line','pickupInstructionsText',Array.isArray(booking.pickupInstructions)?booking.pickupInstructions.join('\n'):'',{type:'textarea'}),
+    bookingField('Shuttle collection point','shuttleCollectionAddress',booking.shuttleCollectionAddress,{type:'textarea'})
   );
   return common.join('');
 }
-
 function openBookingEdit(bookingId){
   if(!(window.BOOKING_PERMISSIONS&&BOOKING_PERMISSIONS.canEdit()))return;
   const booking=getBookingById(bookingId);if(!booking)return;
@@ -571,7 +596,9 @@ async function saveBookingEdit(event,bookingId){
   next.bookingWay=viaValue;next.platform=viaValue;next.bookingViaOther=viaChoice==='Other'?viaOther:'';
   delete next.bookingVia;
   {const label=String(next.usefulLinkLabel||'').trim(),url=String(next.usefulLinkUrl||'').trim();if(url)next.usefulLinks=[{label:label||'Useful link',url:url,icon:label.toLowerCase().includes('guide')?'📖':'🔗'}];else next.usefulLinks=[];delete next.usefulLinkLabel;delete next.usefulLinkUrl;}
-  if(Object.prototype.hasOwnProperty.call(next,'importantInfo')){next.notes=next.importantInfo;next.cancellation='';delete next.importantInfo;}
+  if(Object.prototype.hasOwnProperty.call(next,'familyBreakdownText')){next.familyBreakdown=String(next.familyBreakdownText||'').split(/\n+/).map(function(line){const parts=line.split('|').map(x=>x.trim());return {label:parts[0]||'',composition:parts[1]||'',total:parts[2]||''};}).filter(row=>row.label||row.composition||row.total);delete next.familyBreakdownText;}
+  if(Object.prototype.hasOwnProperty.call(next,'pickupInstructionsText')){next.pickupInstructions=String(next.pickupInstructionsText||'').split(/\n+/).map(x=>x.trim()).filter(Boolean);delete next.pickupInstructionsText;}
+  if(Object.prototype.hasOwnProperty.call(next,'depositPaid')){const raw=String(next.depositPaid||'').trim().toLowerCase();if(raw==='true'||raw==='paid')next.depositPaid=true;else if(raw==='false'||raw==='')next.depositPaid=raw===''?'':false;}
   ['nights','guests','adults','children'].forEach(function(key){if(Object.prototype.hasOwnProperty.call(next,key)){const value=Number(next[key]);next[key]=Number.isFinite(value)?value:0;}});
   if(next.dayId&&!/^day\d+$/.test(next.dayId))next.dayId='day'+String(next.dayId).replace(/\D/g,'');
   next.updatedBy=(window.getFriend&&window.getFriend())||'admin';next.updatedAt=new Date().toISOString();

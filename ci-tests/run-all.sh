@@ -49,6 +49,7 @@ run "RC25.7.32 BROWSER CLOUD ISOLATION" python ci-tests/test-rc25732-browser-iso
 
 
 run "RC25.7.34 LIVE FX SAVE" node ci-tests/test-rc25734-live-fx-save.js
+run "RC25.7.36 BOOKING DISPLAY/EDIT FIELD PARITY" node ci-tests/test-rc25736-booking-display-edit-parity.js
 
 if [ "$failed" -eq 0 ]; then
   printf '\nNZ 25.7 SHARED-READY CI PASSED\n'

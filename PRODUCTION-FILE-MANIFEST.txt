@@ -1,6 +1,6 @@
 New Zealand Companion Production File Manifest
 Generated: 2026-09-20
-Base: NZ Companion RC25.7.35 · Engine 25.7.1 · Christchurch Novotel Booking + Timeline Update
+Base: NZ Companion RC25.7.36 · Engine 25.7.1 · Christchurch Novotel Booking + Timeline Update
 Reference trip: New Zealand
 
 Production root files:

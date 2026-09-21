@@ -1,6 +1,6 @@
 {
   "engine_version": "25.7.1",
-  "artifact_version": "NZ Companion RC25.7.35 · Travel Engine 25.7.1 Christchurch Novotel Booking + Timeline Update",
+  "artifact_version": "NZ Companion RC25.7.36 · Travel Engine 25.7.1 Booking Display/Edit Field Parity Audit",
   "baseline_engine": "25.6.0",
   "release_date": "2026-09-21",
   "release_type": "calm-shared-experience-candidate",
@@ -69,10 +69,10 @@
     "Fix Booking Studio save failure caused by trip-runtime calling BOOKING_SYNC.enabled()/push() methods missing from booking-sync-runtime; make delete local-first with best-effort cross-device sync.",
     "Replace Christchurch first-night Southwark booking with Novotel Christchurch Cathedral Square and update Day 1/Day 2 Timeline, including hotel breakfast and 11:00 AM check-out."
   ],
-  "release": "RC25.7.35",
+  "release": "RC25.7.36",
   "label": "Calm Shared Experience",
   "engineVersion": "25.7.1",
-  "candidate": "RC25.7.35",
+  "candidate": "RC25.7.36",
   "features": [
     "Documents upload",
     "Documents pin",
