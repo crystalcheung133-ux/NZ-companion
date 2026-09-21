@@ -978,11 +978,11 @@ const PLACES={
     "hours": "Daily 12:00 PM–9:30 PM",
     "maps": "https://www.google.com/maps/search/?api=1&query=Saigon+Kingdom%2C+88+Beach+Street%2C+Queenstown+9300",
     "address": "88 Beach Street, Queenstown 9300, New Zealand",
-    "desc": "A Vietnamese restaurant in the Frankton area serving familiar noodle soups, rice dishes and other Vietnamese comfort food — practical before the airport or while shopping nearby.",
+    "desc": "A Vietnamese restaurant on Beach Street in central Queenstown serving familiar noodle soups, rice dishes and other Vietnamese comfort food — a practical lunch before heading out to Frankton for refuelling, rental-car return and the airport.",
     "signature": [
       "FOOD · Vietnamese noodle soups, rice dishes and classics",
       "GOOD FOR · Quick casual lunch",
-      "ROUTE FIT · Frankton / airport side of Queenstown"
+      "ROUTE FIT · Central Queenstown · before heading to Frankton / airport"
     ],
     "worth": [],
     "categoryLabel": "🍽 Dining",
@@ -3395,7 +3395,7 @@ const ITINERARY_DATA={
         "title": "🥧 Lunch · Fergbaker",
         "details": [
           "Primary: Fergbaker for a quick Queenstown meal.",
-          "Alternative: Saigon Kingdom Viet in Frankton."
+          "Alternative: Saigon Kingdom Viet on Beach Street in central Queenstown."
         ],
         "route": "From here: Sudima Queenstown Five Mile.",
         "map": "https://maps.google.com/?q=Fergbaker+Queenstown",
@@ -4154,9 +4154,9 @@ const ITINERARY_DATA={
         "time": "Afternoon",
         "title": "🍽️ Lunch · Saigon Kingdom Viet",
         "details": [
-          "A Vietnamese restaurant in the Frankton area serving familiar noodle soups, rice dishes and other Vietnamese comfort food — practical before the airport or while shopping nearby."
+          "A Vietnamese restaurant on Beach Street in central Queenstown serving familiar noodle soups, rice dishes and other Vietnamese comfort food — a practical lunch before heading out to Frankton for refuelling, rental-car return and the airport."
         ],
-        "route": "From here: Rental Cars 247 return depot · ≈ 5–10 min drive.",
+        "route": "From here: head toward Frankton for final refuel, then Rental Cars 247 return depot.",
         "map": "https://maps.google.com/?q=Saigon%20Kingdom%20Viet",
         "type": "meal",
         "dayId": "day10",

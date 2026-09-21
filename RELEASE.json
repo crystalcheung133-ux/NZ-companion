@@ -1,8 +1,8 @@
 {
   "engine_version": "25.7.1",
-  "artifact_version": "NZ Companion RC25.7.41 · Travel Engine 25.7.1 Guide Display/Edit Parity",
+  "artifact_version": "NZ Companion RC25.7.42 · Travel Engine 25.7.1 Content Consistency Hotfix",
   "baseline_engine": "25.6.0",
-  "release_date": "2026-09-21",
+  "release_date": "2026-09-22",
   "release_type": "calm-shared-experience-candidate",
   "runtime_behavior_change": true,
   "capabilities_changed": [
@@ -35,7 +35,7 @@
     "booking appliesTo / partyIds subgroup assignment"
   ],
   "migration_source": "NZ Companion RC25.3.9.3 · Travel Engine 25.4.20.3 Production Freeze",
-  "release_status": "CANDIDATE — Guide renderer/editor ownership parity; portable CI pending",
+  "release_status": "CANDIDATE — content consistency hotfix; runtime architecture unchanged",
   "validation": {
     "chromium_desktop_1280x800": "PENDING GITHUB REAL-BROWSER GATE",
     "chromium_mobile_390x844": "PENDING GITHUB REAL-BROWSER GATE",
@@ -78,12 +78,13 @@
     "Add compact Guide Studio editor; Booking and Guide write the same shared Place facts.",
     "Timeline Navigate resolves linked Place at render time instead of retaining a third place-address authority.",
     "Make Documents real-browser gate deterministic by stubbing configured FX providers inside the test context only.",
-    "Make Guide display match Guide Studio ownership: render only shared Place facts, Description and Useful info; remove legacy Booking/stay/highlight snapshots from Guide body; expose Website action and meaningful Hours only outside Stay places."
+    "Make Guide display match Guide Studio ownership: render only shared Place facts, Description and Useful info; remove legacy Booking/stay/highlight snapshots from Guide body; expose Website action and meaningful Hours only outside Stay places.",
+    "Correct Saigon Kingdom Viet location/route wording from Frankton to 88 Beach Street in central Queenstown across Guide and Timeline, while preserving the Day 10 flow toward Frankton for refuel, rental return and airport."
   ],
-  "release": "RC25.7.41",
+  "release": "RC25.7.42",
   "label": "Calm Shared Experience",
   "engineVersion": "25.7.1",
-  "candidate": "RC25.7.41",
+  "candidate": "RC25.7.42",
   "features": [
     "Documents upload",
     "Documents pin",
