@@ -15,7 +15,13 @@
     'tourType','guests','adults','children','originalTotal','discount','pickupNote','pickupAddress','dropOff','lunchStatus',
     'bookingWay','platform','bookingViaOther','reference','referenceLabel','bookingReference',
     'depositPaid','depositAmount','depositCurrency','paymentStatus','totalAmount','cashbackAmount','netTotalAUD','price','paymentLabel','balanceDue','payAtPickup',
-    'usefulLinks','notes','cancellation','website','bookingUrl','email','phone'
+    'usefulLinks','notes','cancellation','website','bookingUrl','email','phone',
+    // RC25.7.37: every Studio field that can surface in Booking detail must survive
+    // local projection, remote state replacement and later reconciliation.
+    'parking','nights','guestSummary','chargeDate','depositAUD','discountLabel','discountAmount','fxNote',
+    'officePhone','whatsapp','bookingMethod','adultPrice','childPrice','familyBreakdown',
+    'vehicle','provider','pickupDateTime','returnDateTime','pickupDepotAddress','returnDepotAddress',
+    'pickupNavigationDestination','returnNavigationDestination','pickupInstructions','shuttleCollectionAddress'
   ]);
   // Only deploy-added useful links are protected when importing a stale whole-booking snapshot.
   // Payment fields are Studio-owned editable state and must round-trip exactly.

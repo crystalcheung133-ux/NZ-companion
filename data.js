@@ -1,4 +1,4 @@
-// data.js — New Zealand Companion RC25.7.36 · Christchurch Novotel booking + breakfast timeline
+// data.js — New Zealand Companion RC25.7.37 · Christchurch Novotel booking + breakfast timeline
 // Generated from the frozen Travel Engine without UI redesign.
 
 /* Trip identity is owned exclusively by TRIP_CONFIG. */
@@ -2736,7 +2736,7 @@ const BOOKINGS_DATA={
     "paymentStatus": "Remaining to pay at hotel",
     "roomPrice": "NZD 411.40",
     "price": "NZD 411.40 · AUD 331.88 shown by Accor",
-    "parking": "NZD 28",
+    "parking": "Valet Parking NZD35",
     "breakfast": "Included · Bed and breakfast",
     "cancellation": "No cancellation charge prior to 18:00 local time, up to 1 day prior to arrival; beyond that time, the first night will be charged.",
     "notes": "Breakfast included · Amex offer AUD 380 − 80 may require additional eligible hotel spend",
