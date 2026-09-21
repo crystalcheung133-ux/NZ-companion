@@ -1,19 +1,19 @@
-New Zealand Companion Production File Manifest
-Generated: 2026-09-20
-Base: NZ Companion RC25.7.37 · Engine 25.7.1 · Christchurch Novotel Booking + Timeline Update
-Reference trip: New Zealand
+Saigon Companion Production File Manifest
+Generated: 2026-09-21
+Base: NZ Companion RC25.7.38 · Engine 25.7.1 · Simplified Booking + Shared Place Contract
+Reference trip: Vietnam
 
 Production root files:
 
 - .vercelignore
 - RELEASE.json
-- VERSION.txt
 - admin.js
 - analytics-runtime.js
 - app-runtime.js
 - asset-config.js
 - booking-authority.js
 - booking-permissions.js
+- booking-sync-runtime.js
 - complete-runtime.js
 - core-runtime.js
 - currency-runtime.js
@@ -73,5 +73,3 @@ Production root files:
 - trip-runtime.js
 - trip.html
 - vercel.json
-- booking-sync-runtime.js
-- SUPABASE_BOOKINGS_V1.sql

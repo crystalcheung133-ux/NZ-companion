@@ -1,6 +1,6 @@
 {
   "engine_version": "25.7.1",
-  "artifact_version": "NZ Companion RC25.7.37 · Travel Engine 25.7.1 Booking Round-Trip Persistence Contract",
+  "artifact_version": "NZ Companion RC25.7.38 · Travel Engine 25.7.1 Simplified Booking + Shared Place Contract",
   "baseline_engine": "25.6.0",
   "release_date": "2026-09-21",
   "release_type": "calm-shared-experience-candidate",
@@ -69,12 +69,14 @@
     "Fix Booking Studio save failure caused by trip-runtime calling BOOKING_SYNC.enabled()/push() methods missing from booking-sync-runtime; make delete local-first with best-effort cross-device sync.",
     "Replace Christchurch first-night Southwark booking with Novotel Christchurch Cathedral Square and update Day 1/Day 2 Timeline, including hotel breakfast and 11:00 AM check-out.",
     "Expand Booking Authority editable projection to persist every Booking Studio field rendered in booking details, including parking, contact, activity pricing and rental-car operational fields.",
-    "Add a round-trip persistence CI contract covering Save → local reload → remote state replacement → reload for all newly exposed Booking Studio fields."
+    "Add a round-trip persistence CI contract covering Save → local reload → remote state replacement → reload for all newly exposed Booking Studio fields.",
+    "Simplify Booking Studio by consolidating parking, arrival/check-in instructions, booking-method notes and FX notes into Notes / important information while retaining structured Address, Phone and Website fields.",
+    "Resolve Guide Address, Phone and Website from the linked Booking place facts so Booking edits immediately surface in Guide without duplicate place data."
   ],
-  "release": "RC25.7.37",
+  "release": "RC25.7.38",
   "label": "Calm Shared Experience",
   "engineVersion": "25.7.1",
-  "candidate": "RC25.7.37",
+  "candidate": "RC25.7.38",
   "features": [
     "Documents upload",
     "Documents pin",

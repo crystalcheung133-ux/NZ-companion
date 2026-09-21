@@ -1,4 +1,4 @@
-// data.js — New Zealand Companion RC25.7.37 · Christchurch Novotel booking + breakfast timeline
+// data.js — New Zealand Companion RC25.7.38 · Simplified Booking + shared Place facts
 // Generated from the frozen Travel Engine without UI redesign.
 
 /* Trip identity is owned exclusively by TRIP_CONFIG. */

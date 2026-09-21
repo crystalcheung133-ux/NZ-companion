@@ -51,6 +51,7 @@ run "RC25.7.32 BROWSER CLOUD ISOLATION" python ci-tests/test-rc25732-browser-iso
 run "RC25.7.34 LIVE FX SAVE" node ci-tests/test-rc25734-live-fx-save.js
 run "RC25.7.36 BOOKING DISPLAY/EDIT FIELD PARITY" node ci-tests/test-rc25736-booking-display-edit-parity.js
 run "RC25.7.37 BOOKING ROUND-TRIP PERSISTENCE" node ci-tests/test-rc25737-booking-roundtrip-persistence.js
+run "RC25.7.38 SIMPLIFIED BOOKING + SHARED PLACE" node ci-tests/test-rc25738-simplified-booking-place-contract.js
 
 if [ "$failed" -eq 0 ]; then
   printf '\nNZ 25.7 SHARED-READY CI PASSED\n'

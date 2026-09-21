@@ -1,1 +1,1 @@
-NZ Companion RC25.7.37 · Engine 25.7.1 · Booking Round-Trip Persistence Contract
+NZ Companion RC25.7.38 · Engine 25.7.1 · Simplified Booking + Shared Place Contract
