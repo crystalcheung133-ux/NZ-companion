@@ -7,7 +7,7 @@ must(trip.includes("Notes / important information"),'simplified Notes field miss
 must(trip.includes("bookingField('Address','address'"),'Booking Address editor missing');
 must(trip.includes("bookingField('Website','website'"),'Booking Website editor missing');
 must(trip.includes("bookingField('Phone','phone'"),'Booking Phone editor missing');
-must(trip.includes("['parking','checkInInstructions','bookingMethod','fxNote']"),'legacy consolidation clear contract missing');
+must(trip.includes("['parking','checkInInstructions','bookingMethod','fxNote','cancellation']"),'legacy consolidation clear contract missing');
 must(guide.includes('function guideResolvedPlace(key)'),'Guide shared-place resolver missing');
 ['address','phone','website'].forEach(f=>must(guide.includes("['address','phone','website']"),'shared place field overlay missing'));
 must(guide.includes('BOOKING_AUTHORITY.byPlace(key)'),'Guide does not resolve linked Booking place facts');

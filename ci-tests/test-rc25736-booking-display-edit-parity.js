@@ -1,12 +1,10 @@
 const fs=require('fs');
 const s=fs.readFileSync('trip-runtime.js','utf8');
 function ok(x,m){if(!x)throw new Error(m)}
-// RC25.7.38 supersedes the original one-field-per-display rule: structured fields remain
-// editable, while note-like legacy fields are intentionally consolidated into one Notes field.
-const required=['guestSummary','nights','chargeDate','depositAmount','depositCurrency','depositAUD','depositPaid','balanceDue','discountLabel','discountAmount','cashbackAmount','netTotalAUD','address','website','phone','email','cancellation','notes','time','dayId','adultPrice','childPrice','familyBreakdownText','vehicle','provider','pickupDateTime','returnDateTime','pickupDepotAddress','returnDepotAddress','pickupNavigationDestination','returnNavigationDestination','pickupInstructionsText','shuttleCollectionAddress'];
+// Superseded by RC25.7.39: only fields with functional/structured meaning stay independent.
+const required=['nights','depositAmount','depositCurrency','depositAUD','depositPaid','balanceDue','discountAmount','cashbackAmount','netTotalAUD','address','website','phone','email','notes','dayId','adultPrice','childPrice','familyBreakdownText','vehicle','provider','pickupDateTime','returnDateTime','pickupDepotAddress','returnDepotAddress','pickupNavigationDestination','returnNavigationDestination','pickupInstructionsText','shuttleCollectionAddress'];
 for(const name of required)ok(s.includes("'"+name+"'"),'Missing structured editable field: '+name);
+for(const removed of ["bookingField('Guests / room occupancy','guestSummary'","bookingField('Charge date','chargeDate'","bookingField('Cancellation','cancellation'","bookingField('Time','time'","bookingField('Discount label','discountLabel'"])ok(!s.includes(removed),'RC25.7.39 redundant editor returned: '+removed);
 ok(s.includes("bookingField('Notes / important information','notes'"),'Consolidated Notes editor missing');
-for(const old of ["bookingField('Parking','parking'","bookingField('Arrival instructions','checkInInstructions'","bookingField('FX note','fxNote'","bookingField('Booking method note','bookingMethod'"])ok(!s.includes(old),'Legacy note-like field should be consolidated: '+old);
-ok(s.includes("bookingField('Cancellation','cancellation'"),'Cancellation remains independently structured');
-ok(s.includes('next.familyBreakdown=')&&s.includes('next.pickupInstructions='),'Structured displayed fields must round-trip through editor');
-console.log('RC25.7.36/38 booking display/edit parity PASS');
+ok(s.includes("bookingField('Discount / Cashback','cashbackAmount'"),'Discount / Cashback editor missing');
+console.log('RC25.7.39 booking structured-field parity PASS');

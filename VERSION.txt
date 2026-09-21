@@ -1,1 +1,1 @@
-NZ Companion RC25.7.38 · Engine 25.7.1 · Simplified Booking + Shared Place Contract
+NZ Companion RC25.7.39 · Engine 25.7.1 · Field Simplification + Ownership Audit

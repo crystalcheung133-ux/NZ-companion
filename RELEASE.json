@@ -1,6 +1,6 @@
 {
   "engine_version": "25.7.1",
-  "artifact_version": "NZ Companion RC25.7.38 · Travel Engine 25.7.1 Simplified Booking + Shared Place Contract",
+  "artifact_version": "NZ Companion RC25.7.39 · Travel Engine 25.7.1 Field Simplification + Ownership Audit",
   "baseline_engine": "25.6.0",
   "release_date": "2026-09-21",
   "release_type": "calm-shared-experience-candidate",
@@ -46,7 +46,8 @@
     "validator": "Independent Codex Chromium/Playwright validation of unchanged CI-gate candidates",
     "cross_device_sync_static_contract": "PASS",
     "supabase_booking_table": "PASS — trip_bookings created with RLS and authenticated read/insert/update policies",
-    "live_two_device_browser": "PENDING DEPLOYMENT / REAL-DEVICE CHECK"
+    "live_two_device_browser": "PENDING DEPLOYMENT / REAL-DEVICE CHECK",
+    "field_ownership_audit": "PASS — Booking simplification implemented; Guide/Timeline/Trip ownership boundaries documented without introducing duplicate authorities."
   },
   "final_compatibility_fix": {
     "classification": "browser-only CSS scoping defect in legacy NZ modal visibility hotfix",
@@ -71,12 +72,13 @@
     "Expand Booking Authority editable projection to persist every Booking Studio field rendered in booking details, including parking, contact, activity pricing and rental-car operational fields.",
     "Add a round-trip persistence CI contract covering Save → local reload → remote state replacement → reload for all newly exposed Booking Studio fields.",
     "Simplify Booking Studio by consolidating parking, arrival/check-in instructions, booking-method notes and FX notes into Notes / important information while retaining structured Address, Phone and Website fields.",
-    "Resolve Guide Address, Phone and Website from the linked Booking place facts so Booking edits immediately surface in Guide without duplicate place data."
+    "Resolve Guide Address, Phone and Website from the linked Booking place facts so Booking edits immediately surface in Guide without duplicate place data.",
+    "Audit Booking, Guide, Timeline and Trip ownership; remove redundant Booking Studio fields for guest occupancy, Booking time beside Related day, charge date, standalone cancellation and discount label; migrate cancellation into Notes and combine the cashback editor label as Discount / Cashback."
   ],
-  "release": "RC25.7.38",
+  "release": "RC25.7.39",
   "label": "Calm Shared Experience",
   "engineVersion": "25.7.1",
-  "candidate": "RC25.7.38",
+  "candidate": "RC25.7.39",
   "features": [
     "Documents upload",
     "Documents pin",
