@@ -1,6 +1,6 @@
 {
   "engine_version": "25.7.1",
-  "artifact_version": "NZ Companion RC25.7.40 \u00b7 Travel Engine 25.7.1 Shared Place + Guide/Timeline",
+  "artifact_version": "NZ Companion RC25.7.41 · Travel Engine 25.7.1 Guide Display/Edit Parity",
   "baseline_engine": "25.6.0",
   "release_date": "2026-09-21",
   "release_type": "calm-shared-experience-candidate",
@@ -13,7 +13,7 @@
     "Guide/Booking return-to-origin semantics",
     "Generation Selection Adapter aligned to Engine 25.6.0",
     "Published Booking data can hydrate as the live Booking Authority base",
-    "Today\u2019s Drive no longer renders the independently-authored stale driving note",
+    "Today’s Drive no longer renders the independently-authored stale driving note",
     "User Selector now owns foreground when invoked from an already-open popup while preserving the originating modal",
     "Booking Authority syncs directly across devices without whole-trip publication",
     "Timeline publication is deliberate/manual so route and derived itinerary changes can be reviewed together",
@@ -34,20 +34,20 @@
     "parallel itinerary tracks",
     "booking appliesTo / partyIds subgroup assignment"
   ],
-  "migration_source": "NZ Companion RC25.3.9.3 \u00b7 Travel Engine 25.4.20.3 Production Freeze",
-  "release_status": "CANDIDATE \u2014 shared Place authority + Guide/Timeline resolution; portable CI passed",
+  "migration_source": "NZ Companion RC25.3.9.3 · Travel Engine 25.4.20.3 Production Freeze",
+  "release_status": "CANDIDATE — Guide renderer/editor ownership parity; portable CI pending",
   "validation": {
     "chromium_desktop_1280x800": "PENDING GITHUB REAL-BROWSER GATE",
     "chromium_mobile_390x844": "PENDING GITHUB REAL-BROWSER GATE",
     "studio_lifecycle": "PASS",
     "booking_expense_exact_card_deeplink": "PASS",
-    "console_application_errors": "PASS \u2014 zero JS page errors",
-    "cross_companion_studio_consistency": "PASS \u2014 same Engine-level Studio geometry/layout",
+    "console_application_errors": "PASS — zero JS page errors",
+    "cross_companion_studio_consistency": "PASS — same Engine-level Studio geometry/layout",
     "validator": "Independent Codex Chromium/Playwright validation of unchanged CI-gate candidates",
     "cross_device_sync_static_contract": "PASS",
-    "supabase_booking_table": "PASS \u2014 trip_bookings created with RLS and authenticated read/insert/update policies",
+    "supabase_booking_table": "PASS — trip_bookings created with RLS and authenticated read/insert/update policies",
     "live_two_device_browser": "PENDING DEPLOYMENT / REAL-DEVICE CHECK",
-    "field_ownership_audit": "PASS \u2014 Booking reservation facts, Guide descriptive content, Timeline schedule, and shared Place facts have distinct owners."
+    "field_ownership_audit": "PASS — Booking reservation facts, Guide descriptive content, Timeline schedule, and shared Place facts have distinct owners."
   },
   "final_compatibility_fix": {
     "classification": "browser-only CSS scoping defect in legacy NZ modal visibility hotfix",
@@ -70,19 +70,20 @@
     "Fix Booking Studio save failure caused by trip-runtime calling BOOKING_SYNC.enabled()/push() methods missing from booking-sync-runtime; make delete local-first with best-effort cross-device sync.",
     "Replace Christchurch first-night Southwark booking with Novotel Christchurch Cathedral Square and update Day 1/Day 2 Timeline, including hotel breakfast and 11:00 AM check-out.",
     "Expand Booking Authority editable projection to persist every Booking Studio field rendered in booking details, including parking, contact, activity pricing and rental-car operational fields.",
-    "Add a round-trip persistence CI contract covering Save \u2192 local reload \u2192 remote state replacement \u2192 reload for all newly exposed Booking Studio fields.",
+    "Add a round-trip persistence CI contract covering Save → local reload → remote state replacement → reload for all newly exposed Booking Studio fields.",
     "Simplify Booking Studio by consolidating parking, arrival/check-in instructions, booking-method notes and FX notes into Notes / important information while retaining structured Address, Phone and Website fields.",
     "Resolve Guide Address, Phone and Website from the linked Booking place facts so Booking edits immediately surface in Guide without duplicate place data.",
     "Audit Booking, Guide, Timeline and Trip ownership; remove redundant Booking Studio fields for guest occupancy, Booking time beside Related day, charge date, standalone cancellation and discount label; migrate cancellation into Notes and combine the cashback editor label as Discount / Cashback.",
     "Add shared Place Authority for Address, Phone, Website, Hours, Description, Useful info and navigation overrides.",
     "Add compact Guide Studio editor; Booking and Guide write the same shared Place facts.",
     "Timeline Navigate resolves linked Place at render time instead of retaining a third place-address authority.",
-    "Make Documents real-browser gate deterministic by stubbing configured FX providers inside the test context only."
+    "Make Documents real-browser gate deterministic by stubbing configured FX providers inside the test context only.",
+    "Make Guide display match Guide Studio ownership: render only shared Place facts, Description and Useful info; remove legacy Booking/stay/highlight snapshots from Guide body; expose Website action and meaningful Hours only outside Stay places."
   ],
-  "release": "RC25.7.40",
+  "release": "RC25.7.41",
   "label": "Calm Shared Experience",
   "engineVersion": "25.7.1",
-  "candidate": "RC25.7.40",
+  "candidate": "RC25.7.41",
   "features": [
     "Documents upload",
     "Documents pin",

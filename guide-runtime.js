@@ -215,10 +215,9 @@ function guideStayStatusHTML(item){
 function guideListRow(item){
  // Guide is experiential content. Booking operations remain in Trip · Accommodation.
  const action=`openGuideModal('${item.key}')`;
- const status=item.cat==='STAY'?guideStayStatusHTML(item):guideStatusHTML(Object.assign({key:item.key},PRODUCTION_GUIDE.places[item.key]||{}));
- const booking=(item.cat==='STAY'&&window.BOOKING_AUTHORITY)?BOOKING_AUTHORITY.byPlace(item.key):null;
- const subtitle=booking?[booking.stayDates||'',booking.nights?`${booking.nights} night${Number(booking.nights)===1?'':'s'}`:''].filter(Boolean).join(' · '):(item.sub||'');
- return `<button onclick="${action}"><span><span class="guide-list-title">${item.emoji} ${item.title}</span><span class="guide-list-sub">${subtitle}</span></span><span class="guide-list-meta">${status}<span class="guide-list-chevron">›</span></span></button>`;
+ const resolved=guideResolvedPlace(item.key);
+ const subtitle=guideEditableDescription(resolved);
+ return `<button onclick="${action}"><span><span class="guide-list-title">${resolved.emoji||item.emoji||''} ${resolved.title||item.title||''}</span>${subtitle?`<span class="guide-list-sub">${subtitle}</span>`:''}</span><span class="guide-list-meta"><span class="guide-list-chevron">›</span></span></button>`;
 }
 function groupedGuideRows(cat,list){
  const semantic=guideSemanticCategory(cat);
@@ -279,14 +278,21 @@ function usefulGoodToKnow(items){
  const generic=[/currently planned/i,/recommended only/i,/optional rather than essential/i,/keep .* flexible/i,/validation build/i];
  return (items||[]).filter(x=>x&&generic.every(rule=>!rule.test(x)));
 }
+function guideEditableUsefulInfo(g){
+ const explicit=Array.isArray(g.usefulInfo)?g.usefulInfo.map(x=>String(x||'').trim()).filter(Boolean):[];
+ if(explicit.length||Object.prototype.hasOwnProperty.call(g,'usefulInfo'))return explicit;
+ // Legacy Guide copy is migrated at read time into the single editable Useful info surface.
+ // Booking-owned stay facts (room, guests, check-in/out, parking, offers) are deliberately excluded.
+ return uniqueGuideItems([...(Array.isArray(g.highlights)?g.highlights:[]),...(Array.isArray(g.tips)?g.tips:[]),...(Array.isArray(g.worth)?g.worth:[]),...(Array.isArray(g.signature)?g.signature:[])])
+  .filter(x=>!/^WHY (GO|WE PICKED THIS|STOP|WE CHOSE IT|STAY)\s*[·:]/i.test(String(x)))
+  .filter(x=>!(g.cat==='STAY'&&/(check[- ]?in|check[- ]?out|room|guest|parking|breakfast included|cashback|discount|offer|reception|late arrival|NZD\s*\d|AUD\s*\d)/i.test(String(x))))
+  .map(cleanGuideLine);
+}
+function guideEditableDescription(g){return String(g.description||g.desc||'').trim();}
 function guideCoreSections(g,key){
- const semantic=guideSemanticCategory(g.cat);
- const normalized=semantic===g.cat?g:Object.assign({},g,{cat:semantic});
- if(semantic==='STAY')return guideStaySections(Object.assign({key},normalized));
- if(semantic==='ACTIVITIES')return guideExperienceSections(normalized,key);
- if(semantic==='ATTRACTIONS')return guideAttractionSections(normalized);
- if(semantic==='SHOP')return guideShopSections(normalized);
- return compactGuideSections(normalized);
+ const description=guideEditableDescription(g);
+ const useful=guideEditableUsefulInfo(g);
+ return `${description?`<section class="guide-content-section guide-description"><h3>About</h3><p>${description}</p></section>`:''}${guideListSection('Useful info',useful,'guide-useful-info')}`;
 }
 
 function quickInfoInnerHTML(g,key){
@@ -300,32 +306,34 @@ function quickInfoInnerHTML(g,key){
  // This prevents Guide cards losing prices when place content is edited independently.
  const price=(bookingPrice&&!unknown.test(bookingPrice))?bookingPrice:placePrice;
  const showPrice=g.cat!=='STAY'&&g.cat!=='ACTIVITIES'&&price&&!unknown.test(price);
- const priceRow=showPrice?`<div class="quick-info-row"><span class="quick-info-icon">💰</span><span><span class="quick-info-label">Price</span><span class="quick-info-value">${price}</span></span></div>`:'';
+ const priceRow='';
  const hours=String(g.hours||'').trim();
- const hoursRow='';
+ const hoursRow=(g.cat!=='STAY'&&hours)?`<div class="quick-info-row"><span class="quick-info-icon">🕒</span><span><span class="quick-info-label">Hours</span><span class="quick-info-value">${hours}</span></span></div>`:'';
  const address=String(g.address||'').trim();
  const addressRow=address?`<div class="quick-info-row"><span class="quick-info-icon">📍</span><span><span class="quick-info-label">Address</span><span class="quick-info-value">${address}</span></span></div>`:'';
  const copyButton=address?`<button class="utility-button" type="button" onclick="copyGuideAddress('${key}')">📍 Copy Address</button>`:'';
  const navButton=g.maps?`<a class="map-button" href="${g.maps}" target="_blank" rel="noopener">🧭 Navigate</a>`:'';
- const roleBadge=g.itineraryRole?`<span class="itinerary-role-badge">${g.itineraryRole}</span>`:'';
+ const websiteButton=g.website?`<a class="utility-button" href="${g.website}" target="_blank" rel="noopener">🌐 Website</a>`:'';
+ const roleBadge='';
  const reminder=String(g.visitorReminder||'').trim();
- const reminderRow=(reminder&&g.cat!=='ACTIVITIES')?`<p class="visitor-reminder"><strong>Reminder:</strong> ${reminder}</p>`:'';
+ const reminderRow='';
  const linkedBooking=window.BOOKING_AUTHORITY?BOOKING_AUTHORITY.byPlace(key):null;
  const bookingStatus=linkedBooking?String(linkedBooking.displayStatus||linkedBooking.status||'').toUpperCase():'';
  const bookingRow='';
  const bookingButton=linkedBooking?`<button class="utility-button" type="button" onclick="openGuideLinkedBooking('${linkedBooking.id}')">🎟️ Booking</button>`:'';
  const parking=g.parking;
  const parkingHTML=parking?`<div class="recommended-parking"><div class="recommended-parking-head"><span>🚗</span><span><strong>Recommended Parking</strong><small>${parking.name||''}</small></span></div><div class="recommended-parking-grid"><p><span>📍</span><span>${parking.address||''}</span></p><p><span>🚶</span><span>${parking.walk||''}</span></p><p><span>💰</span><span>${parking.fee||''}</span></p></div>${parking.note?`<p class="recommended-parking-note">${parking.note}</p>`:''}${parking.maps?`<a class="map-button recommended-parking-nav" href="${parking.maps}" target="_blank" rel="noopener">🧭 Navigate to Parking</a>`:''}</div>`:'';
- const detailStatus=g.cat==='STAY'?guideStayStatusHTML(Object.assign({key},g)):guideStatusHTML(Object.assign({key},g));
+ const detailStatus='';
  const coreSections=guideCoreSections(g,key);
- return `<div class="quick-info-top"><span class="category-tag">${g.categoryLabel||g.cat||'Guide'}</span>${roleBadge}${detailStatus}</div><div class="quick-info-grid">${addressRow}${phoneRow}${hoursRow}${priceRow}${bookingRow}${visitDayHTML(key)}</div>${coreSections}${reminderRow}${parkingHTML}<div class="quick-info-actions">${navButton}${bookingButton}</div>`;
+ return `<div class="quick-info-top"><span class="category-tag">${g.categoryLabel||g.cat||'Guide'}</span>${roleBadge}${detailStatus}</div><div class="quick-info-grid">${addressRow}${phoneRow}${hoursRow}${priceRow}${bookingRow}${visitDayHTML(key)}</div>${coreSections}${reminderRow}<div class="quick-info-actions">${navButton}${websiteButton}${bookingButton}</div>`;
 }
 
 function guideStudioCanEdit(){return !!(window.isAdminMode&&window.isAdminMode()&&window.PLACE_AUTHORITY);}
 function guideStudioEditHTML(g,key){
  if(!guideStudioCanEdit())return '';
- const useful=Array.isArray(g.usefulInfo)?g.usefulInfo.join('\n'):String(g.usefulInfo||[...(Array.isArray(g.highlights)?g.highlights:[]),...(Array.isArray(g.tips)?g.tips:[]),...(Array.isArray(g.worth)?g.worth:[])].filter(Boolean).join('\n'));
- return `<details class="guide-studio-editor"><summary>Edit Guide / Place</summary><form onsubmit="return saveGuidePlaceEdit(event,'${key}')"><label>Place name<input name="title" value="${String(g.title||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;')}"></label><label>Address<textarea name="address" rows="2">${String(g.address||'')}</textarea></label><label>Phone<input name="phone" value="${String(g.phone||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;')}"></label><label>Website<input name="website" value="${String(g.website||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;')}"></label><label>Hours<input name="hours" value="${String(g.hours||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;')}"></label><label>Description<textarea name="description" rows="3">${String(g.description||g.desc||'')}</textarea></label><label>Useful info<textarea name="usefulInfo" rows="5">${useful}</textarea></label><div class="guide-studio-actions"><button class="pill" type="submit">Save Guide</button></div></form></details>`;
+ const useful=guideEditableUsefulInfo(g).join('\n');
+ const hoursField=guideSemanticCategory(g.cat)==='STAY'?'':`${g.cat==='STAY'?'':`<label>Hours<input name="hours" value="${String(g.hours||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;')}"></label>`}`;
+ return `<details class="guide-studio-editor"><summary>Edit Guide / Place</summary><form onsubmit="return saveGuidePlaceEdit(event,'${key}')"><label>Place name<input name="title" value="${String(g.title||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;')}"></label><label>Address<textarea name="address" rows="2">${String(g.address||'')}</textarea></label><label>Phone<input name="phone" value="${String(g.phone||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;')}"></label><label>Website<input name="website" value="${String(g.website||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;')}"></label>${hoursField}<label>Description<textarea name="description" rows="3">${guideEditableDescription(g)}</textarea></label><label>Useful info<textarea name="usefulInfo" rows="5">${useful}</textarea></label><div class="guide-studio-actions"><button class="pill" type="submit">Save Guide</button></div></form></details>`;
 }
 function saveGuidePlaceEdit(event,key){
  event.preventDefault();const f=event.currentTarget,d=new FormData(f),next={};d.forEach((v,k)=>next[k]=String(v).trim());next.usefulInfo=String(next.usefulInfo||'').split(/\n+/).map(x=>x.trim()).filter(Boolean);if(next.address)next.maps='https://maps.google.com/?q='+encodeURIComponent(next.address);const r=PLACE_AUTHORITY.save(key,next);if(!r.ok){alert('Could not save Guide.');return false;}const linked=window.BOOKING_AUTHORITY&&BOOKING_AUTHORITY.byPlace(key);if(linked){BOOKING_AUTHORITY.save(linked.id,Object.assign({},linked,{address:next.address,phone:next.phone,website:next.website}),typeof PRODUCTION_BOOKINGS!=='undefined'?PRODUCTION_BOOKINGS.byId:null);if(window.BOOKING_SYNC&&BOOKING_SYNC.enabled())Promise.resolve(BOOKING_SYNC.push()).catch(()=>{});}openGuideModal(key);return false;
@@ -503,7 +511,7 @@ function openGuideModal(key,options){
  const g=guideResolvedPlace(key);if(!g)return;
  const opts=options||{};
  const back=opts.fromAlternatives?guideAlternativeBackButton():'';
- $('guideModalContent').innerHTML=`<div class="guide-onepage">${back}<p class="kicker">Guide</p><h2>${g.emoji} ${g.title}</h2><p class="guide-onepage-sub"><strong>${g.sub||''}</strong></p>${quickInfoHTML(g,key)}${routeStopsHTML(g)}${guideNavButtons(key)}</div>`;
+ $('guideModalContent').innerHTML=`<div class="guide-onepage">${back}<p class="kicker">Guide</p><h2>${g.emoji} ${g.title}</h2>${quickInfoHTML(g,key)}${guideNavButtons(key)}</div>`;
  closeMiniMenus();
  $('guideModal').classList.add('show');
  const sheet=document.querySelector('#guideModal .guide-sheet');
@@ -536,9 +544,9 @@ function renderPlacePage(key){
   if(!g || !mount) return;
   mount.innerHTML = `
 <button class="place-detail-close" type="button" aria-label="Close place detail" onclick="closePlaceDetail()">×</button>
-<div class="page-hero"><p class="kicker">Guide</p><h1>${g.emoji} ${g.title}</h1><p class="lead">${g.sub||''}</p></div>
+<div class="page-hero"><p class="kicker">Guide</p><h1>${g.emoji} ${g.title}</h1></div>
 <section aria-label="Guide details" class="quick-info-card">${quickInfoInnerHTML(g,key)}</section>
-${routeStopsHTML(g)}${guideNavButtons(key,'page')}`;
+${guideNavButtons(key,'page')}`;
   document.title = `${g.title} · ${TRIP_CONFIG.tripName}`;
 }
 
@@ -551,9 +559,9 @@ function renderPlaceGroupPage(keys){
   const cards=clean.map((key,index)=>{
     const g=guideResolvedPlace(key);
     return `<article class="place-group-card" id="guide-${key}">
-      <div class="page-hero place-group-hero"><p class="kicker">Option ${index+1}</p><h1>${g.emoji} ${g.title}</h1><p class="lead">${g.sub||''}</p></div>
+      <div class="page-hero place-group-hero"><p class="kicker">Option ${index+1}</p><h1>${g.emoji} ${g.title}</h1></div>
             <section aria-label="Guide details" class="quick-info-card">${quickInfoInnerHTML(g,key)}</section>
-      ${routeStopsHTML(g)}
+      
     </article>`;
   }).join('');
   mount.innerHTML=`<button class="place-detail-close" type="button" aria-label="Close guide options" onclick="closePlaceDetail()">×</button><div class="page-hero"><p class="kicker">Guide</p><h1>Choose an option</h1><p class="lead">Compare the planned choices, then use Navigate inside the restaurant card you choose.</p></div>${cards}`;
