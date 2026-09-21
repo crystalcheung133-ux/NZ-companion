@@ -2959,3 +2959,5 @@ html.handoff-ready body{visibility:visible}
   z-index:7700!important;
   isolation:isolate!important;
 }
+/* RC25.7.40 shared Guide/Place Studio */
+.guide-studio-editor{margin:14px 0 0;border-top:1px solid var(--line,#ddd);padding-top:10px}.guide-studio-editor summary{font-weight:700;cursor:pointer}.guide-studio-editor form{display:grid;gap:10px;margin-top:10px}.guide-studio-editor label{display:grid;gap:5px;font-size:.82rem;font-weight:700}.guide-studio-editor input,.guide-studio-editor textarea{width:100%;box-sizing:border-box;font:inherit;padding:9px 10px;border:1px solid #d8d3c8;border-radius:10px;background:#fff}.guide-studio-actions{display:flex;justify-content:flex-end}

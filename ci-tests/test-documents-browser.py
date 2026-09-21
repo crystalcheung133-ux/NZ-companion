@@ -25,6 +25,9 @@ def vis(p,s):
 
 def new_context(browser,viewport):
  c=browser.new_context(viewport=viewport)
+ # Documents/Booking browser gate must be deterministic and must not depend on third-party FX CORS/network health.
+ c.route("https://api.frankfurter.dev/**",lambda route: route.fulfill(status=200,content_type="application/json",body='{"date":"2026-09-21","rates":{"AUD":0.90}}'))
+ c.route("https://latest.currency-api.pages.dev/**",lambda route: route.fulfill(status=200,content_type="application/json",body='{"date":"2026-09-21","nzd":{"aud":0.90}}'))
  c.add_init_script("window.TRAVEL_ENGINE_SUPABASE={enabled:false};localStorage.setItem('nz_friend','lee')")
  return c
 

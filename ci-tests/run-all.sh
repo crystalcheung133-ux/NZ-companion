@@ -53,6 +53,7 @@ run "RC25.7.36 BOOKING DISPLAY/EDIT FIELD PARITY" node ci-tests/test-rc25736-boo
 run "RC25.7.37 BOOKING ROUND-TRIP PERSISTENCE" node ci-tests/test-rc25737-booking-roundtrip-persistence.js
 run "RC25.7.38 SIMPLIFIED BOOKING + SHARED PLACE" node ci-tests/test-rc25738-simplified-booking-place-contract.js
 run "RC25.7.39 FIELD SIMPLIFICATION" node ci-tests/test-rc25739-field-simplification-contract.js
+run "RC25.7.40 SHARED PLACE + GUIDE/TIMELINE" node ci-tests/test-rc25740-shared-place.js
 
 if [ "$failed" -eq 0 ]; then
   printf '\nNZ 25.7 SHARED-READY CI PASSED\n'

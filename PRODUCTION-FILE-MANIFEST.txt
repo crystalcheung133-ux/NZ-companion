@@ -1,6 +1,6 @@
 Saigon Companion Production File Manifest
 Generated: 2026-09-21
-Base: NZ Companion RC25.7.39 · Engine 25.7.1 · Field Simplification + Ownership Audit
+Base: RC25.7.40
 Reference trip: Vietnam
 
 Production root files:
@@ -56,6 +56,7 @@ Production root files:
 - nz-adventure-mark.png
 - offline.html
 - party-render-runtime.js
+- place-authority.js
 - place.html
 - publication-runtime.js
 - pwa.js

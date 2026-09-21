@@ -8,7 +8,7 @@
    ============================================================================ */
 const PRODUCTION_GUIDE=GenerationSelectionAdapter.view('guide');
 function guideResolvedPlace(key){
-  const base=(PRODUCTION_GUIDE.places&&PRODUCTION_GUIDE.places[key])||{};
+  const base=(window.PLACE_AUTHORITY&&PLACE_AUTHORITY.get(key))||((PRODUCTION_GUIDE.places&&PRODUCTION_GUIDE.places[key])||{});
   const linked=window.BOOKING_AUTHORITY&&typeof BOOKING_AUTHORITY.byPlace==='function'?BOOKING_AUTHORITY.byPlace(key):null;
   if(!linked)return base;
   const shared={};
@@ -321,8 +321,18 @@ function quickInfoInnerHTML(g,key){
  return `<div class="quick-info-top"><span class="category-tag">${g.categoryLabel||g.cat||'Guide'}</span>${roleBadge}${detailStatus}</div><div class="quick-info-grid">${addressRow}${phoneRow}${hoursRow}${priceRow}${bookingRow}${visitDayHTML(key)}</div>${coreSections}${reminderRow}${parkingHTML}<div class="quick-info-actions">${navButton}${bookingButton}</div>`;
 }
 
+function guideStudioCanEdit(){return !!(window.isAdminMode&&window.isAdminMode()&&window.PLACE_AUTHORITY);}
+function guideStudioEditHTML(g,key){
+ if(!guideStudioCanEdit())return '';
+ const useful=Array.isArray(g.usefulInfo)?g.usefulInfo.join('\n'):String(g.usefulInfo||[...(Array.isArray(g.highlights)?g.highlights:[]),...(Array.isArray(g.tips)?g.tips:[]),...(Array.isArray(g.worth)?g.worth:[])].filter(Boolean).join('\n'));
+ return `<details class="guide-studio-editor"><summary>Edit Guide / Place</summary><form onsubmit="return saveGuidePlaceEdit(event,'${key}')"><label>Place name<input name="title" value="${String(g.title||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;')}"></label><label>Address<textarea name="address" rows="2">${String(g.address||'')}</textarea></label><label>Phone<input name="phone" value="${String(g.phone||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;')}"></label><label>Website<input name="website" value="${String(g.website||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;')}"></label><label>Hours<input name="hours" value="${String(g.hours||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;')}"></label><label>Description<textarea name="description" rows="3">${String(g.description||g.desc||'')}</textarea></label><label>Useful info<textarea name="usefulInfo" rows="5">${useful}</textarea></label><div class="guide-studio-actions"><button class="pill" type="submit">Save Guide</button></div></form></details>`;
+}
+function saveGuidePlaceEdit(event,key){
+ event.preventDefault();const f=event.currentTarget,d=new FormData(f),next={};d.forEach((v,k)=>next[k]=String(v).trim());next.usefulInfo=String(next.usefulInfo||'').split(/\n+/).map(x=>x.trim()).filter(Boolean);if(next.address)next.maps='https://maps.google.com/?q='+encodeURIComponent(next.address);const r=PLACE_AUTHORITY.save(key,next);if(!r.ok){alert('Could not save Guide.');return false;}const linked=window.BOOKING_AUTHORITY&&BOOKING_AUTHORITY.byPlace(key);if(linked){BOOKING_AUTHORITY.save(linked.id,Object.assign({},linked,{address:next.address,phone:next.phone,website:next.website}),typeof PRODUCTION_BOOKINGS!=='undefined'?PRODUCTION_BOOKINGS.byId:null);if(window.BOOKING_SYNC&&BOOKING_SYNC.enabled())Promise.resolve(BOOKING_SYNC.push()).catch(()=>{});}openGuideModal(key);return false;
+}
+window.saveGuidePlaceEdit=saveGuidePlaceEdit;
 function quickInfoHTML(g,key){
- return `<div class="quick-info-card">${quickInfoInnerHTML(g,key)}</div>`;
+ return `<div class="quick-info-card">${quickInfoInnerHTML(g,key)}${guideStudioEditHTML(g,key)}</div>`;
 }
 
 function guideCategoryForKey(key){return GUIDE_NAVIGATION.categoryFor(key);}
@@ -419,7 +429,8 @@ function compactGuideSections(g){
   ? `<section class="guide-content-section guide-trading-hours"><h3>Trading Hours</h3><p>${rawHours}</p></section>`
   : '';
  const goodToKnow=g.cat==='DINING'?criticalGuideItems(g):practical;
- return `${(why&&(whyRequired||g.cat!=='STAY'))?`<section class="guide-content-section guide-why-go"><h3>Why Go</h3><p>${why}</p></section>`:''}${guideListSection('Signature / Must Try',dishes,'guide-suggested-dishes')}${hours}${guideListSection('Booking',booking,'guide-booking-advice')}${guideListSection(g.cat==='DINING'?'Good to Know':'Practical Info',goodToKnow,'guide-practical-info')}`;
+ const useful=Array.isArray(g.usefulInfo)?g.usefulInfo:[];
+ return `${(why&&(whyRequired||g.cat!=='STAY'))?`<section class="guide-content-section guide-why-go"><h3>Why Go</h3><p>${why}</p></section>`:''}${guideListSection('Signature / Must Try',dishes,'guide-suggested-dishes')}${hours}${guideListSection('Booking',booking,'guide-booking-advice')}${guideListSection('Useful info',useful,'guide-useful-info')}${guideListSection(g.cat==='DINING'?'Good to Know':'Practical Info',goodToKnow.filter(x=>!useful.includes(x)),'guide-practical-info')}`;
 }
 
 

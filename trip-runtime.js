@@ -604,6 +604,7 @@ async function saveBookingEdit(event,bookingId){
   ['nights','guests','adults','children'].forEach(function(key){if(Object.prototype.hasOwnProperty.call(next,key)){const value=Number(next[key]);next[key]=Number.isFinite(value)?value:0;}});
   if(next.dayId&&!/^day\d+$/.test(next.dayId))next.dayId='day'+String(next.dayId).replace(/\D/g,'');
   next.updatedBy=(window.getFriend&&window.getFriend())||'admin';next.updatedAt=new Date().toISOString();
+  if(next.placeId&&window.PLACE_AUTHORITY){const shared={address:next.address||'',phone:next.phone||'',website:next.website||''};if(shared.address)shared.maps='https://maps.google.com/?q='+encodeURIComponent(shared.address);PLACE_AUTHORITY.save(next.placeId,shared);}
   const liveTarget=typeof PRODUCTION_BOOKINGS!=='undefined'&&PRODUCTION_BOOKINGS&&PRODUCTION_BOOKINGS.byId?PRODUCTION_BOOKINGS.byId:null;
   if(saveButton){saveButton.disabled=true;saveButton.textContent='Saving…';}
   let outcome;
