@@ -1,5 +1,5 @@
 importScripts('./theme-config.js', './asset-config.js', './locale-config.js', './formatter.js', './navigation-config.js', './trip-config.js', './storage-config.js');
-const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-nz25-7-1-documents-v1-46-content-consistency`;
+const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-nz25-7-1-documents-v1-47-navigation-timeout`;
 const CRITICAL_EXTENSIONS = /\.(?:css|js)$/i;
 const ASSETS = [
   './',
@@ -103,9 +103,19 @@ async function validateHtmlResponse(response) {
   }
 }
 
+async function fetchWithTimeout(request, options = {}, timeoutMs = 3500) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(request, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function fetchValidHtml(request) {
   try {
-    const response = await fetch(request, { cache: 'no-store', redirect: 'follow' });
+    const response = await fetchWithTimeout(request, { cache: 'no-store', redirect: 'follow' });
     return await validateHtmlResponse(response) ? response : null;
   } catch (error) {
     return null;
@@ -155,7 +165,7 @@ async function navigationResponse(request) {
 async function networkFirst(request) {
   const cache = await caches.open(CACHE_NAME);
   try {
-    const response = await fetch(request);
+    const response = await fetchWithTimeout(request);
     if (response && response.ok) cache.put(request, response.clone());
     return response;
   } catch (error) {
