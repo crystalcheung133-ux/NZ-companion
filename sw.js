@@ -1,5 +1,5 @@
 importScripts('./theme-config.js', './asset-config.js', './locale-config.js', './formatter.js', './navigation-config.js', './trip-config.js', './storage-config.js');
-const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-nz25-7-1-documents-v1-47-navigation-timeout`;
+const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-nz25-7-2-sw-own-route-fallback-fix`;
 const CRITICAL_EXTENSIONS = /\.(?:css|js)$/i;
 const ASSETS = [
   './',
@@ -142,6 +142,19 @@ async function navigationResponse(request) {
     await cache.put(request, direct.clone());
     return direct;
   }
+
+  /* RC-SW-FIX1: the requested page's own network fetch failed/timed out.
+     This app is a multi-page app (day.html, moments.html, expenses.html,
+     trip.html, etc. are each a distinct document with their own DOM root
+     and inline bootstrap script) — it is NOT a single-page app, so it is
+     never correct to silently substitute a different route's document for
+     the one the user actually asked for. Try THIS EXACT route's own cached
+     copy first (day.html/moments.html/expenses.html are all precached in
+     ASSETS at install time, so this is normally available even offline).
+     Only if there is truly no usable cache entry for this specific route
+     do we fall through to fetching/serving index.html as a last resort. */
+  const ownCached = await caches.match(request, { ignoreSearch: true });
+  if (await validateHtmlResponse(ownCached)) return ownCached;
 
   const indexRequest = new Request(new URL('./index.html', self.location.href), {
     method: 'GET',
