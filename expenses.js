@@ -612,6 +612,11 @@ let editingExpenseIndex=null;
     }
 
 
+    const arr=readExpenses();
+    const operationIndex=editingExpenseIndex;
+    const operation=operationIndex!==null?'update':'create';
+    const previousRecord=operationIndex!==null&&arr[operationIndex]?Object.assign({},arr[operationIndex]):null;
+
     const currency=expenseCurrency||MONEY.getTripCurrency().code;
     const homeCurrency=MONEY.getHomeCurrency();
     let fxRecord=null,fxRate=1,homeTotal=total;
@@ -623,11 +628,7 @@ let editingExpenseIndex=null;
       if(!(homeTotal>=0)) return alert('Could not convert this expense for settlement.');
     }
 
-    const arr=readExpenses();
     const now=new Date().toISOString();
-    const operationIndex=editingExpenseIndex;
-    const operation=operationIndex!==null?'update':'create';
-    const previousRecord=operationIndex!==null&&arr[operationIndex]?Object.assign({},arr[operationIndex]):null;
     const source=editingExpenseIndex!==null&&arr[editingExpenseIndex]
       ? {sourceType:arr[editingExpenseIndex].sourceType||null,sourceBookingId:arr[editingExpenseIndex].sourceBookingId||null,sourceBookingTitle:arr[editingExpenseIndex].sourceBookingTitle||null,sourceBookingType:arr[editingExpenseIndex].sourceBookingType||null}
       : (pendingExpenseSource||{});
