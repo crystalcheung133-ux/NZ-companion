@@ -3123,7 +3123,7 @@ const ITINERARY_DATA={
       },
       {
         "id": "pukaki-lookout",
-        "time": "Around 09:20",
+        "time": "13:30",
         "title": "📸 Lake Pukaki Lookout",
         "details": [
           "Allow about 15–20 minutes.",
@@ -3138,7 +3138,7 @@ const ITINERARY_DATA={
       },
       {
         "id": "alpine-salmon",
-        "time": "Around 09:45",
+        "time": "14:00",
         "title": "🐟 Mt Cook Alpine Salmon · light brunch",
         "details": [
           "Use this as a quick morning snack or light brunch rather than a full lunch.",
@@ -3169,7 +3169,7 @@ const ITINERARY_DATA={
       },
       {
         "id": "hooker-valley",
-        "time": "Around 13:35",
+        "time": "09:00",
         "title": "🥾 Hooker Valley Track · short walk",
         "details": [
           "After the scenic flight, drive to White Horse Hill and walk only to the first swing bridge and return.",

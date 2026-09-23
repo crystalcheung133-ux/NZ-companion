@@ -1,0 +1,8 @@
+
+/* Emergency live-trip READ-ONLY mode. No data mutation controls are exposed. */
+.timeline-admin-tools,.admin-add-activity,.admin-save-bar,.admin-mode-banner,#adminModeBanner,#adminModeControl,
+.admin-controls,.admin-only,.studio-control,.studio-panel,.booking-edit-btn,.guide-edit-btn,
+.document-upload,.documents-upload,.upload-document,.expense-sync-line,.moments-capture-choices,
+button[data-action="edit"],button[data-action="delete"],button[data-action="save"]{display:none!important}
+.readonly-notice{margin:16px 0;padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.9);border:1px solid rgba(18,50,74,.15);line-height:1.45}
+body::after{content:"READ ONLY";position:fixed;right:10px;bottom:10px;z-index:9998;font:800 10px/1 system-ui;letter-spacing:.12em;padding:7px 9px;border-radius:999px;background:rgba(18,50,74,.88);color:white;pointer-events:none}
