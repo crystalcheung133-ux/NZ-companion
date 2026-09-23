@@ -3070,21 +3070,21 @@ const ITINERARY_DATA={
       "🚙 Long drive"
     ],
     "drive": {
-      "route": "Peppers Bluewater → Lake Pukaki Lookout → Mt Cook Alpine Salmon → Aoraki / Mt Cook Airport → Hooker Valley Track → Lindis Pass → Edgewater",
+      "route": "Peppers Bluewater → Hooker Valley Track → Aoraki / Mt Cook Airport → Lake Pukaki Lookout → Mt Cook Alpine Salmon → Lindis Pass → Edgewater",
       "distance": "≈ 325 km",
       "drivingTime": "≈ 4 hr 35 min",
       "road": "SH8 / SH80 / SH8 / SH6",
       "stops": [
         "Breakfast at Peppers or optional Greedy Cow",
+        "Hooker Valley Track · short walk",
+        "Ultimate Alpine Experience",
         "Lake Pukaki Lookout",
         "Mt Cook Alpine Salmon",
-        "Ultimate Alpine Experience",
-        "Hooker Valley Track · first swing bridge",
         "Packed / simple lunch",
         "Lindis Pass",
         "Edgewater check-in"
       ],
-      "note": "Leave around 08:30. Drive directly from Mt Cook Alpine Salmon to Aoraki / Mt Cook Airport so the 11:55 check-in is protected; do the Hooker Valley short walk after the flight.",
+      "note": "Depart Lake Tekapo at 07:30. Hooker Valley short walk at 09:00, then protect the fixed 11:55 scenic-flight check-in. Lake Pukaki Lookout and Mt Cook Alpine Salmon follow after the flight before continuing to Wānaka.",
       "contingency": "Call INFLITE before leaving Lake Tekapo. If the flight is cancelled by weather, go directly to Hooker Valley and extend the walk to 60–90 minutes; keep the Wānaka arrival flexible.",
       "primaryMap": "https://www.google.com/maps/dir/?api=1&origin=Peppers+Bluewater+Resort%2C+Lake+Tekapo%2C+New+Zealand&destination=Edgewater%2C+54+Sargood+Drive%2C+Wanaka%2C+New+Zealand&travelmode=driving&waypoints=Lake+Pukaki+Lookout%2C+New+Zealand%7CMt+Cook+Alpine+Salmon%2C+Lake+Pukaki%7CMt+Cook+Glacier+Guiding%2C+Aoraki+Mt+Cook+Airport%7CWhite+Horse+Hill+Car+Park%2C+Hooker+Valley+Road%2C+New+Zealand%7CLindis+Pass+Viewpoint%2C+New+Zealand"
     },
@@ -3109,17 +3109,54 @@ const ITINERARY_DATA={
       },
       {
         "id": "leave-tekapo",
-        "time": "08:30",
+        "time": "07:30",
         "title": "🚙 Depart Lake Tekapo",
         "details": [
           "The 11:55 flight has a fixed check-in time; the morning can stay relaxed around that booking."
         ],
-        "route": "From here: Lake Pukaki Lookout · ≈ 45–50 min drive.",
+        "route": "From here: Hooker Valley Track · ≈ 1 hr 30 min drive.",
         "map": "https://maps.google.com/?q=Lake%20Tekapo",
         "type": "transport",
         "dayId": "day3",
         "placeId": "lake-tekapo",
         "bookingId": null
+      },
+      {
+        "id": "hooker-valley",
+        "time": "09:00",
+        "title": "🥾 Hooker Valley Track · short walk",
+        "details": [
+          "After the scenic flight, drive to White Horse Hill and walk only to the first swing bridge and return.",
+          "Allow about 40–50 minutes.",
+          "If the scenic flight is cancelled, move this walk into the late morning and extend it to 60–90 minutes according to weather and family energy."
+        ],
+        "route": "From here: Aoraki / Mt Cook Airport for the 11:55 scenic-flight check-in · allow ≈ 15–20 min drive.",
+        "map": "https://www.google.com/maps/search/?api=1&query=White+Horse+Hill+Car+Park%2C+Hooker+Valley+Road%2C+Aoraki%2FMount+Cook+National+Park%2C+New+Zealand",
+        "type": "experience",
+        "dayId": "day3",
+        "placeId": "hooker-valley",
+        "bookingId": null,
+        "guideIds": [
+          "hooker-valley",
+          "tasman-blue-lakes"
+        ],
+        "optionsLabel": "Weather alternative"
+      },
+      {
+        "id": "ultimate-alpine-flight",
+        "time": "11:55 check-in",
+        "title": "🚁 Helicopter + Ski Plane Glacier Flight",
+        "details": [
+          "45-minute scenic flight over Aoraki / Mt Cook and the Tasman Glacier with one alpine snow landing, weather permitting.",
+          "Call the operator before leaving Lake Tekapo to confirm flying conditions and minimum passenger numbers.",
+          "Wear warm layers, sunglasses and secure footwear; carry only small essentials."
+        ],
+        "route": "From here: Lake Pukaki Lookout after the flight.",
+        "map": "https://www.google.com/maps/search/?api=1&query=Mt+Cook+Glacier+Guiding%2C+Aoraki+Mt+Cook+Airport%2C+Unit+2%2C+State+Highway+80%2C+7999%2C+New+Zealand",
+        "type": "experience",
+        "dayId": "day3",
+        "placeId": "ultimate-alpine",
+        "bookingId": "ultimate-alpine-booking"
       },
       {
         "id": "pukaki-lookout",
@@ -3139,54 +3176,17 @@ const ITINERARY_DATA={
       {
         "id": "alpine-salmon",
         "time": "14:00",
-        "title": "🐟 Mt Cook Alpine Salmon · light brunch",
+        "title": "🐟 Mt Cook Alpine Salmon · late lunch / snack",
         "details": [
           "Use this as a quick morning snack or light brunch rather than a full lunch.",
           "Aim to leave by about 10:05 so the confirmed flight check-in remains comfortable."
         ],
-        "route": "From here: Mt Cook Glacier Guiding at Aoraki / Mt Cook Airport · allow ≈ 45–50 min; arrive well before 11:55.",
+        "route": "From here: continue toward Wānaka via Omarama / Lindis Pass.",
         "map": "https://maps.google.com/?q=Mt+Cook+Alpine+Salmon+Lake+Pukaki",
         "type": "meal",
         "dayId": "day3",
         "placeId": "mt-cook-salmon",
         "bookingId": null
-      },
-      {
-        "id": "ultimate-alpine-flight",
-        "time": "11:55 check-in",
-        "title": "🚁 Helicopter + Ski Plane Glacier Flight",
-        "details": [
-          "45-minute scenic flight over Aoraki / Mt Cook and the Tasman Glacier with one alpine snow landing, weather permitting.",
-          "Call the operator before leaving Lake Tekapo to confirm flying conditions and minimum passenger numbers.",
-          "Wear warm layers, sunglasses and secure footwear; carry only small essentials."
-        ],
-        "route": "From here: Hooker Valley Track at White Horse Hill car park · ≈ 15–20 min drive after the flight.",
-        "map": "https://www.google.com/maps/search/?api=1&query=Mt+Cook+Glacier+Guiding%2C+Aoraki+Mt+Cook+Airport%2C+Unit+2%2C+State+Highway+80%2C+7999%2C+New+Zealand",
-        "type": "experience",
-        "dayId": "day3",
-        "placeId": "ultimate-alpine",
-        "bookingId": "ultimate-alpine-booking"
-      },
-      {
-        "id": "hooker-valley",
-        "time": "09:00",
-        "title": "🥾 Hooker Valley Track · short walk",
-        "details": [
-          "After the scenic flight, drive to White Horse Hill and walk only to the first swing bridge and return.",
-          "Allow about 40–50 minutes.",
-          "If the scenic flight is cancelled, move this walk into the late morning and extend it to 60–90 minutes according to weather and family energy."
-        ],
-        "route": "From here: packed or simple lunch, then depart for Wānaka around 14:30–14:45.",
-        "map": "https://www.google.com/maps/search/?api=1&query=White+Horse+Hill+Car+Park%2C+Hooker+Valley+Road%2C+Aoraki%2FMount+Cook+National+Park%2C+New+Zealand",
-        "type": "experience",
-        "dayId": "day3",
-        "placeId": "hooker-valley",
-        "bookingId": null,
-        "guideIds": [
-          "hooker-valley",
-          "tasman-blue-lakes"
-        ],
-        "optionsLabel": "Weather alternative"
       },
       {
         "id": "mt-cook-simple-lunch",
