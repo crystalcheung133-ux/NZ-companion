@@ -74,3 +74,4 @@ Production root files:
 - trip-runtime.js
 - trip.html
 - vercel.json
+- field-trace.js
