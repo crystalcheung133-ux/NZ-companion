@@ -198,7 +198,7 @@
     if(pending) return pending;
     const saved=getDayOverrideItems(dayKey);
     if(saved) return saved;
-    return clone(masterItems||[]);
+    return normalizeItems(masterItems||[]);
   }
 
   /* Used by sync-runtime.js to decide whether a cached/fetched Supabase
