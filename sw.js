@@ -1,5 +1,5 @@
 importScripts('./theme-config.js', './asset-config.js', './locale-config.js', './formatter.js', './navigation-config.js', './trip-config.js', './storage-config.js');
-const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-nz25-7-42-field-recovery1`;
+const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-nz25-7-42-field-recovery2`;
 const CRITICAL_EXTENSIONS = /\.(?:css|js)$/i;
 const ASSETS = [
   './',
@@ -160,27 +160,48 @@ async function navigationResponse(request) {
   );
 }
 
+async function cachedAsset(request) {
+  let cached = await caches.match(request, { ignoreSearch: true });
+  if (cached) return cached;
+  const url = new URL(request.url);
+  return caches.match(url.pathname.split('/').pop() || '', { ignoreSearch: true });
+}
+function validCriticalAssetResponse(response, request) {
+  if (!response || !response.ok) return false;
+  const url = new URL(request.url);
+  const mime = String(response.headers.get('content-type') || '').toLowerCase();
+  if (/\.js$/i.test(url.pathname)) return mime.includes('javascript') || mime.includes('ecmascript');
+  if (/\.css$/i.test(url.pathname)) return mime.includes('text/css');
+  return true;
+}
+async function criticalAssetResponse(request) {
+  // The release cache is populated atomically during SW install. Prefer that
+  // coherent bundle so a page transition cannot mix a healthy HTML document
+  // with a transient 404/5xx/wrong-MIME runtime response from the network.
+  const cached = await cachedAsset(request);
+  if (cached) return cached;
+  try {
+    const response = await fetch(request, { cache: 'no-store' });
+    if (validCriticalAssetResponse(response, request)) {
+      const cache = await caches.open(CACHE_NAME);
+      await cache.put(request, response.clone());
+      return response;
+    }
+  } catch (error) {}
+  const url = new URL(request.url);
+  const isJs = /\.js$/i.test(url.pathname);
+  return new Response('', {status:503,headers:{'Content-Type':isJs?'application/javascript; charset=utf-8':'text/css; charset=utf-8'}});
+}
 async function networkFirst(request) {
   const cache = await caches.open(CACHE_NAME);
   try {
     const response = await fetch(request);
     if (response && response.ok) cache.put(request, response.clone());
-    return response;
-  } catch (error) {
-    let cached = await caches.match(request, { ignoreSearch: true });
-    if (!cached) {
-      const url = new URL(request.url);
-      cached = await caches.match(url.pathname.split('/').pop() || './index.html', { ignoreSearch: true });
-    }
-    if (cached) return cached;
-    // Scripts/styles must never receive an HTML offline document. Returning a
-    // typed 503 makes the failure explicit and prevents partial runtime boot.
-    const url = new URL(request.url);
-    const isJs = /\.js$/i.test(url.pathname);
-    const isCss = /\.css$/i.test(url.pathname);
-    if (isJs || isCss) return new Response('', {status:503,headers:{'Content-Type':isJs?'application/javascript; charset=utf-8':'text/css; charset=utf-8'}});
-    return caches.match('./offline.html');
-  }
+    if (response && response.ok) return response;
+  } catch (error) {}
+  const cached = await cachedAsset(request);
+  if (cached) return cached;
+  return caches.match('./offline.html');
 }
 
 async function cacheFirstMedia(request) {
@@ -209,7 +230,7 @@ self.addEventListener('fetch', event => {
   } else if (event.request.mode === 'navigate' || acceptsHtml) {
     event.respondWith(navigationResponse(event.request));
   } else if (CRITICAL_EXTENSIONS.test(url.pathname)) {
-    event.respondWith(networkFirst(event.request));
+    event.respondWith(criticalAssetResponse(event.request));
   } else {
     event.respondWith(cacheFirstMedia(event.request));
   }

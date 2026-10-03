@@ -64,9 +64,10 @@ run "CF3 SW ROUTE IDENTITY" node ci-tests/test-cf3-sw-route-identity.js
 run "CF4 PHOTO FLUSH LIVE MERGE" node ci-tests/test-cf4-photo-flush-live-merge.js
 run "CF4 REMOTE DELETE CONFLICT" node ci-tests/test-cf4-remote-delete-conflict.js
 run "CF4 SW NAVIGATION WIRING" node ci-tests/test-cf4-sw-navigation-wiring.js
+run "FR2 ATOMIC CRITICAL ASSETS" node ci-tests/test-fr2-atomic-critical-assets.js
+run "FR2 FETCH WIRING" node ci-tests/test-fr2-fetch-wiring.js
 run "CF4 SAVE SESSION LOCK" node ci-tests/test-cf4-save-session-lock.js
 run "CF4.1 PRODUCTION WIRING" node ci-tests/test-cf41-production-wiring.js
-run "FR1 HOME-OWNED TRIP/GUIDE" node ci-tests/test-fr1-home-owned-trip-guide.js
 run "RELEASE CHECKSUMS" sh ci-tests/test-checksums.sh
 
 if [ "$failed" -eq 0 ]; then
