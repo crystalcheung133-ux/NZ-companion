@@ -1,10 +1,10 @@
 {
   "engine_version": "25.7.1",
-  "artifact_version": "NZ Companion RC25.7.42-CF4.1 · Travel Engine 25.7.1 Test-Hardening Candidate",
+  "artifact_version": "NZ Companion RC25.7.42-FR1 · Travel Engine 25.7.1 Field Recovery Candidate",
   "baseline_engine": "25.6.0",
   "release_date": "2026-10-02",
-  "release_type": "test-hardening-candidate",
-  "runtime_behavior_change": false,
+  "release_type": "field-recovery-candidate",
+  "runtime_behavior_change": true,
   "capabilities_changed": [
     "Travel Engine 25.6.0 dedicated Studio shell and lifecycle",
     "Revision-aware Booking Authority with bookingMasterRevision",
@@ -35,7 +35,7 @@
     "booking appliesTo / partyIds subgroup assignment"
   ],
   "migration_source": "NZ Companion RC25.3.9.3 · Travel Engine 25.4.20.3 Production Freeze",
-  "release_status": "CANDIDATE — CF4 production runtime unchanged; CF4.1 adds wiring-level CI hardening before two-device soak",
+  "release_status": "CANDIDATE — field recovery after CF4.1 reproduced Trip/Guide failure from Moments/Expenses",
   "validation": {
     "chromium_desktop_1280x800": "PENDING GITHUB REAL-BROWSER GATE",
     "chromium_mobile_390x844": "PENDING GITHUB REAL-BROWSER GATE",
@@ -94,12 +94,15 @@
     "CF4: treat a newer remote tombstone updatedAt as an edit conflict so a stale editor cannot resurrect a remotely deleted Moment.",
     "CF4: scope pending Moment Save locks to editor sessions so stale async completion cannot unlock a newer editor.",
     "CF4: add production-executing regression tests for photo-flush live merge, remote-delete conflict and Service Worker navigation wiring, plus session-lock contract coverage.",
-    "CF4.1 tests-only: add comment-stripped production wiring gate for syncNow→flushPhotos, Save→hasRemoteNewer, SW navigationResponse→validated navigation, and session-scoped Save locking; production runtime files remain byte-identical to CF4."
+    "CF4.1 tests-only: add comment-stripped production wiring gate for syncNow→flushPhotos, Save→hasRemoteNewer, SW navigationResponse→validated navigation, and session-scoped Save locking; production runtime files remain byte-identical to CF4.",
+    "FR1: make Home the single owner of Trip and Guide menus; Trip/Guide taps from feature pages navigate to Home and reopen the requested menu instead of instantiating page-local copies.",
+    "FR1: align Trip menu and Previous/Next hub to the same canonical NZ order beginning Flights → Rental Car → Stay.",
+    "FR1: bump the Service Worker cache to field-recovery1 so previously affected clients receive the new navigation runtime."
   ],
-  "release": "RC25.7.42-CF4.1",
-  "label": "CF4.1 Test Hardening",
+  "release": "RC25.7.42-FR1",
+  "label": "FR1 Home-Owned Navigation Recovery",
   "engineVersion": "25.7.1",
-  "candidate": "RC25.7.42-CF4.1",
+  "candidate": "RC25.7.42-FR1",
   "features": [
     "Documents upload",
     "Documents pin",
@@ -107,5 +110,5 @@
     "Edgewater First Table voucher seed"
   ],
   "engine": "25.7.1",
-  "current_candidate_browser_validation": "BLOCKED IN SANDBOX — ERR_BLOCKED_BY_ADMINISTRATOR; requires external/real-device gate"
+  "current_candidate_browser_validation": "PENDING REAL-DEVICE FIELD RETEST"
 }

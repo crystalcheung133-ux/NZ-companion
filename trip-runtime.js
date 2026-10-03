@@ -702,6 +702,7 @@ function tripHubEntries(){
   const enabled=(name,fallback)=>Object.prototype.hasOwnProperty.call(modules,name)?modules[name]!==false:fallback;
   const entries=[];
   if(cards.flights)entries.push({id:'flights',action:"openTripCard('flights')"});
+  if(enabled('rentalCar',!!cards.vehicle)&&cards.vehicle)entries.push({id:'vehicle',action:"openTripCard('vehicle')"});
   if(enabled('stay',!!getAccommodationBookings().length)&&getAccommodationBookings().length)entries.push({id:'stay',action:"openTripCard('stay')"});
   if(getBookingsByCategory('restaurants').length)entries.push({id:'restaurants',action:"openBookingCategoryCard('Restaurants')"});
   if(getBookingsByCategory('spa').length)entries.push({id:'spa',action:"openBookingCategoryCard('Spa')"});
@@ -715,7 +716,6 @@ function tripHubEntries(){
   });
   if(!groupedModules.has('activities')&&enabled('activities',!!getActivityBookings().length)&&getActivityBookings().length)entries.push({id:'activities',action:"openTripCard('activities')"});
   if(!groupedModules.has('transport')&&enabled('transport',!!getTransportBookings().length)&&getTransportBookings().length)entries.push({id:'transport',action:"openTripCard('transport')"});
-  if(enabled('rentalCar',!!cards.vehicle)&&cards.vehicle)entries.push({id:'vehicle',action:"openTripCard('vehicle')"});
   return entries;
 }
 function tripHubNavigationHTML(currentId){
@@ -859,6 +859,7 @@ function renderTripMenuFromConfig(){
  const rows=[];
  const push=(action,icon,title,sub,href)=>rows.push(`<a href="${href||'#'}"${action?` onclick="${action};return false;"`:''}><span><span class="menu-title">${icon} ${title}</span>${sub?`<span class="menu-sub">${sub}</span>`:''}</span><span>›</span></a>`);
  if(cards.flights)push("openTripCard('flights')",'✈️','Flights','Flight details');
+ if(enabled('rentalCar',!!cards.vehicle)&&cards.vehicle)push("openTripCard('vehicle')",'🚙','Rental Car','Vehicle details');
  if(enabled('stay',!!getAccommodationBookings().length))push("openTripCard('stay')",'🏨','Stay','Accommodation');
  if(getBookingsByCategory('restaurants').length)push("openBookingCategoryCard('Restaurants')",'🍽️','Restaurants','Restaurant bookings');
  if(getBookingsByCategory('spa').length)push("openBookingCategoryCard('Spa')",'💆','Spa','Spa bookings');
@@ -872,7 +873,6 @@ function renderTripMenuFromConfig(){
  });
  if(!groupedModules.has('activities')&&enabled('activities',!!getActivityBookings().length))push("openTripCard('activities')",'🎟️','Activities','Activity bookings');
  if(!groupedModules.has('transport')&&enabled('transport',!!getTransportBookings().length))push("openTripCard('transport')",'🚐','Transport','Booked transport');
- if(enabled('rentalCar',!!cards.vehicle)&&cards.vehicle)push("openTripCard('vehicle')",'🚙','Rental Car','Vehicle details');
  host.innerHTML=rows.join('');
 }
 if(typeof document!=='undefined'){

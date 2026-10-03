@@ -141,11 +141,18 @@ function closeCrossModuleOverlays(target){
   if(target!=='guide' && guideModal?.classList.contains('show')) guideModal.classList.remove('show');
   return true;
 }
+function isHomeNavigationOwner(){return NAVIGATION&&NAVIGATION.isPage&&NAVIGATION.isPage('home');}
+function openHomeOwnedMenu(hash){
+  const target=NAVIGATION.build('home')+'#'+hash;
+  NAVIGATION.go(target);
+}
 function toggleTripMenu(){
+  if(!isHomeNavigationOwner()){openHomeOwnedMenu('open-trip');return;}
   if(!closeCrossModuleOverlays('trip'))return;
   toggleMenu('tripMenu',document.querySelector('.trip-trigger'));
 }
 function toggleGuideMenu(){
+  if(!isHomeNavigationOwner()){openHomeOwnedMenu('open-guide');return;}
   if(!closeCrossModuleOverlays('guide'))return;
   toggleMenu('guideMenu',document.querySelector('.guide-trigger'));
 }
