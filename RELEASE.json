@@ -1,6 +1,6 @@
 {
   "engine_version": "25.7.1",
-  "artifact_version": "NZ Companion RC25.7.42-FR2 · Travel Engine 25.7.1 Field Recovery Candidate",
+  "artifact_version": "NZ Companion RC25.7.42-FR2 \u00b7 Travel Engine 25.7.1 Field Recovery Candidate",
   "baseline_engine": "25.6.0",
   "release_date": "2026-10-02",
   "release_type": "field-recovery-candidate",
@@ -13,7 +13,7 @@
     "Guide/Booking return-to-origin semantics",
     "Generation Selection Adapter aligned to Engine 25.6.0",
     "Published Booking data can hydrate as the live Booking Authority base",
-    "Today’s Drive no longer renders the independently-authored stale driving note",
+    "Today\u2019s Drive no longer renders the independently-authored stale driving note",
     "User Selector now owns foreground when invoked from an already-open popup while preserving the originating modal",
     "Booking Authority syncs directly across devices without whole-trip publication",
     "Timeline publication is deliberate/manual so route and derived itinerary changes can be reviewed together",
@@ -34,20 +34,20 @@
     "parallel itinerary tracks",
     "booking appliesTo / partyIds subgroup assignment"
   ],
-  "migration_source": "NZ Companion RC25.3.9.3 · Travel Engine 25.4.20.3 Production Freeze",
-  "release_status": "CANDIDATE — atomic cached app-shell recovery for Trip/Days half-boot field failure; real-device verification required",
+  "migration_source": "NZ Companion RC25.3.9.3 \u00b7 Travel Engine 25.4.20.3 Production Freeze",
+  "release_status": "CANDIDATE \u2014 atomic cached app-shell recovery for Trip/Days half-boot field failure; real-device verification required",
   "validation": {
     "chromium_desktop_1280x800": "PENDING GITHUB REAL-BROWSER GATE",
     "chromium_mobile_390x844": "PENDING GITHUB REAL-BROWSER GATE",
     "studio_lifecycle": "PASS",
     "booking_expense_exact_card_deeplink": "PASS",
-    "console_application_errors": "PASS — zero JS page errors",
-    "cross_companion_studio_consistency": "PASS — same Engine-level Studio geometry/layout",
+    "console_application_errors": "PASS \u2014 zero JS page errors",
+    "cross_companion_studio_consistency": "PASS \u2014 same Engine-level Studio geometry/layout",
     "validator": "Independent Codex Chromium/Playwright validation of unchanged CI-gate candidates",
     "cross_device_sync_static_contract": "PASS",
-    "supabase_booking_table": "PASS — trip_bookings created with RLS and authenticated read/insert/update policies",
+    "supabase_booking_table": "PASS \u2014 trip_bookings created with RLS and authenticated read/insert/update policies",
     "live_two_device_browser": "PENDING DEPLOYMENT / REAL-DEVICE CHECK",
-    "field_ownership_audit": "PASS — Booking reservation facts, Guide descriptive content, Timeline schedule, and shared Place facts have distinct owners."
+    "field_ownership_audit": "PASS \u2014 Booking reservation facts, Guide descriptive content, Timeline schedule, and shared Place facts have distinct owners."
   },
   "final_compatibility_fix": {
     "classification": "browser-only CSS scoping defect in legacy NZ modal visibility hotfix",
@@ -70,7 +70,7 @@
     "Fix Booking Studio save failure caused by trip-runtime calling BOOKING_SYNC.enabled()/push() methods missing from booking-sync-runtime; make delete local-first with best-effort cross-device sync.",
     "Replace Christchurch first-night Southwark booking with Novotel Christchurch Cathedral Square and update Day 1/Day 2 Timeline, including hotel breakfast and 11:00 AM check-out.",
     "Expand Booking Authority editable projection to persist every Booking Studio field rendered in booking details, including parking, contact, activity pricing and rental-car operational fields.",
-    "Add a round-trip persistence CI contract covering Save → local reload → remote state replacement → reload for all newly exposed Booking Studio fields.",
+    "Add a round-trip persistence CI contract covering Save \u2192 local reload \u2192 remote state replacement \u2192 reload for all newly exposed Booking Studio fields.",
     "Simplify Booking Studio by consolidating parking, arrival/check-in instructions, booking-method notes and FX notes into Notes / important information while retaining structured Address, Phone and Website fields.",
     "Resolve Guide Address, Phone and Website from the linked Booking place facts so Booking edits immediately surface in Guide without duplicate place data.",
     "Audit Booking, Guide, Timeline and Trip ownership; remove redundant Booking Studio fields for guest occupancy, Booking time beside Related day, charge date, standalone cancellation and discount label; migrate cancellation into Notes and combine the cashback editor label as Discount / Cashback.",
@@ -94,7 +94,7 @@
     "CF4: treat a newer remote tombstone updatedAt as an edit conflict so a stale editor cannot resurrect a remotely deleted Moment.",
     "CF4: scope pending Moment Save locks to editor sessions so stale async completion cannot unlock a newer editor.",
     "CF4: add production-executing regression tests for photo-flush live merge, remote-delete conflict and Service Worker navigation wiring, plus session-lock contract coverage.",
-    "CF4.1 tests-only: add comment-stripped production wiring gate for syncNow→flushPhotos, Save→hasRemoteNewer, SW navigationResponse→validated navigation, and session-scoped Save locking; production runtime files remain byte-identical to CF4.",
+    "CF4.1 tests-only: add comment-stripped production wiring gate for syncNow\u2192flushPhotos, Save\u2192hasRemoteNewer, SW navigationResponse\u2192validated navigation, and session-scoped Save locking; production runtime files remain byte-identical to CF4.",
     "FR2: make precached release JS/CSS cache-first so cross-page navigation cannot mix a coherent HTML document with transient 404/5xx/wrong-MIME runtime responses.",
     "FR2: reject invalid critical JS/CSS network responses and return typed 503 only when neither the atomic release cache nor a valid network asset exists.",
     "FR2: retain corrected Trip menu order without FR1 non-Home forced Home redirect; Trip and Days use their local shared navigation shell.",
@@ -111,5 +111,6 @@
     "Edgewater First Table voucher seed"
   ],
   "engine": "25.7.1",
-  "current_candidate_browser_validation": "BLOCKED IN SANDBOX — ERR_BLOCKED_BY_ADMINISTRATOR; requires real-device verification"
+  "current_candidate_browser_validation": "BLOCKED IN SANDBOX \u2014 ERR_BLOCKED_BY_ADMINISTRATOR; requires real-device verification",
+  "version": "RC25.7.42-FIELD-DIAG1"
 }

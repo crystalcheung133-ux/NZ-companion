@@ -1,3 +1,35 @@
+/* FIELD-DIAG1 — runs before shared runtime migration so a failed boot can still report navigation state. */
+(function(root){
+  'use strict';
+  const KEY='nz_field_diag_v1';
+  function read(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}
+  function push(type,detail){
+    try{const a=read();a.push({time:new Date().toISOString(),page:(location.pathname.split('/').pop()||'index.html'),type,detail});while(a.length>30)a.shift();localStorage.setItem(KEY,JSON.stringify(a));}catch(e){}
+  }
+  function runtime(){try{return root.APP_RUNTIME&&root.APP_RUNTIME.getState?root.APP_RUNTIME.getState():null}catch(e){return null}}
+  function snap(target){
+    const ids={trip:'tripMenu',guide:'guideMenu',days:'daysMenu'};
+    const m=document.getElementById(ids[target]);
+    const r=runtime();
+    return {target,menuExists:!!m,menuClass:m?m.className:'',toggleTrip:typeof root.toggleTripMenu,toggleGuide:typeof root.toggleGuideMenu,toggleDays:typeof root.toggleDays,bodyClass:document.body?document.body.className:'',appReady:r&&r.ready,appValid:r&&r.valid,missing:r&&r.missing,errors:r&&r.errors};
+  }
+  function show(info){
+    let box=document.getElementById('nzFieldDiag');
+    if(!box){box=document.createElement('div');box.id='nzFieldDiag';box.style.cssText='position:fixed;z-index:2147483647;left:8px;right:8px;top:8px;max-height:42vh;overflow:auto;background:#fff3cd;color:#3b2f00;border:2px solid #b7791f;border-radius:12px;padding:10px;font:12px/1.35 monospace;white-space:pre-wrap;box-shadow:0 8px 30px rgba(0,0,0,.25)';document.body.appendChild(box);}
+    box.textContent='NZ FIELD DIAG — screenshot this\n'+JSON.stringify(info,null,2);
+  }
+  document.addEventListener('click',function(e){
+    const b=e.target&&e.target.closest?e.target.closest('.trip-trigger,.guide-trigger,.days-trigger'):null;if(!b)return;
+    const target=b.classList.contains('trip-trigger')?'trip':b.classList.contains('guide-trigger')?'guide':'days';
+    push('nav-click-before',snap(target));
+    setTimeout(function(){const info=snap(target);push('nav-click-after',info);const id={trip:'tripMenu',guide:'guideMenu',days:'daysMenu'}[target];const m=document.getElementById(id);if(!m||!m.classList.contains('show'))show(info);},150);
+  },true);
+  root.addEventListener('error',function(e){push('window-error',{message:String(e.message||e.error||'error'),source:e.filename||'',line:e.lineno||0});},true);
+  root.addEventListener('unhandledrejection',function(e){push('unhandled-rejection',{message:String(e.reason&&e.reason.message||e.reason||'rejection')});});
+  root.NZ_FIELD_DIAG={read,clear:function(){try{localStorage.removeItem(KEY)}catch(e){}}};
+  push('core-runtime-enter',{readyState:document.readyState});
+})(window);
+
 /* RC15.1 — Master itinerary authority migration.
    Saved Admin itinerary snapshots remain authoritative only while they belong
    to the same bundled master itinerary. A changed master clears itinerary-only
