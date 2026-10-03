@@ -55,6 +55,18 @@ run "RC25.7.38 SIMPLIFIED BOOKING + SHARED PLACE" node ci-tests/test-rc25738-sim
 run "RC25.7.39 FIELD SIMPLIFICATION" node ci-tests/test-rc25739-field-simplification-contract.js
 run "RC25.7.40 SHARED PLACE + GUIDE/TIMELINE" node ci-tests/test-rc25740-shared-place.js
 run "RC25.7.41 GUIDE DISPLAY/EDIT PARITY" node ci-tests/test-rc25741-guide-parity.js
+run "CRASH REGRESSION CONTRACT" python ci-tests/test-crash-regression-contract.py
+run "CF2 SYNC RECONCILE BEHAVIOUR" node ci-tests/test-cf2-sync-reconcile.js
+run "CF2 CRASH BEHAVIOUR CONTRACT" python ci-tests/test-crash-cf2-contract.py
+run "CF3 MOMENT SAVE BEHAVIOUR" node ci-tests/test-cf3-moment-save-behaviour.js
+run "CF3 PHOTO RETRY BEHAVIOUR" node ci-tests/test-cf3-photo-retry-behaviour.js
+run "CF3 SW ROUTE IDENTITY" node ci-tests/test-cf3-sw-route-identity.js
+run "CF4 PHOTO FLUSH LIVE MERGE" node ci-tests/test-cf4-photo-flush-live-merge.js
+run "CF4 REMOTE DELETE CONFLICT" node ci-tests/test-cf4-remote-delete-conflict.js
+run "CF4 SW NAVIGATION WIRING" node ci-tests/test-cf4-sw-navigation-wiring.js
+run "CF4 SAVE SESSION LOCK" node ci-tests/test-cf4-save-session-lock.js
+run "CF4.1 PRODUCTION WIRING" node ci-tests/test-cf41-production-wiring.js
+run "RELEASE CHECKSUMS" sh ci-tests/test-checksums.sh
 
 if [ "$failed" -eq 0 ]; then
   printf '\nNZ 25.7 SHARED-READY CI PASSED\n'

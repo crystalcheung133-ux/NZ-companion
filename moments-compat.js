@@ -1,6 +1,6 @@
 /* Travel Engine v1.0 — Stage 7M modular runtime. */
 let currentMomentKey='';
-function closeMomentsModal(){$('momentsModal').classList.remove('show')}
+function closeMomentsModal(){$('momentsModal').classList.remove('show');try{window.resetMomentsEditorState?.();}catch(e){}}
 function setStars(n){document.querySelectorAll('.star').forEach((el,i)=>el.classList.toggle('active',i<n));$('momentsRating').value=n;}
 
 /* Stage 4C-4: legacy one-per-place Moments functions were removed.

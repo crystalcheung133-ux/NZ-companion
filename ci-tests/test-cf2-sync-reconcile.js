@@ -1,0 +1,13 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert');
+const src=fs.readFileSync('moment-sync-runtime.js','utf8');
+const m=src.match(/  function reconcileCommit\(active,deleted,liveLocal\)\{[\s\S]*?\n  \}/);
+assert(m,'production reconcileCommit function missing');
+const ctx={}; vm.createContext(ctx); vm.runInContext(m[0].trim()+'; this.reconcileCommit=reconcileCommit;',ctx);
+const old={id:'x',createdAt:'2026-01-01T00:00:00Z',updatedAt:'2026-01-01T00:00:01Z',text:'old'};
+let r=ctx.reconcileCommit([old],[],[{...old,updatedAt:'2026-01-01T00:00:03Z',deletedAt:'2026-01-01T00:00:03Z'}]);
+assert.equal(r.active.length,0); assert.equal(r.deleted.length,1,'mid-sync delete must survive commit');
+r=ctx.reconcileCommit([old],[],[{...old,updatedAt:'2026-01-01T00:00:03Z',text:'edited'}]);
+assert.equal(r.active[0].text,'edited','mid-sync edit must survive commit');
+r=ctx.reconcileCommit([old],[],[old,{id:'new',createdAt:'2026-01-01T00:00:02Z',updatedAt:'2026-01-01T00:00:02Z',text:'new'}]);
+assert.equal(r.active.length,2); assert(r.active.some(x=>x.id==='new'),'mid-sync new save must survive commit');
+console.log('CF2 SYNC RECONCILE BEHAVIOUR: PASS');

@@ -18,7 +18,7 @@
   function readJSON(key,fallback){try{return storage?.readJSON?storage.readJSON(key,fallback):(JSON.parse(localStorage.getItem(key)||'null')??fallback);}catch(e){return fallback;}}
   function writeJSON(key,value){try{storage?.writeJSON?storage.writeJSON(key,value):localStorage.setItem(key,JSON.stringify(value));}catch(e){}}
   function iso(value){const d=new Date(value||0);return Number.isNaN(d.getTime())?new Date(0).toISOString():d.toISOString();}
-  function normalizeRecord(record){const next=Object.assign({},record||{});next.id=String(next.id||uuid());next.createdAt=iso(next.createdAt||new Date().toISOString());next.updatedAt=iso(next.updatedAt||next.editedAt||next.createdAt);return next;}
+  function normalizeRecord(record){const next=Object.assign({},record||{});next.id=String(next.id||uuid());next.createdAt=iso(next.createdAt||new Date().toISOString());next.updatedAt=iso(next.updatedAt||next.editedAt||next.createdAt);if(next.contentUpdatedAt)next.contentUpdatedAt=iso(next.contentUpdatedAt);return next;}
   function key(){return root.STORAGE_CONFIG?.keys?.momentsList||'moments_list';}
   function readLocal(){const list=readJSON(key(),[]);const normalized=(Array.isArray(list)?list:[]).map(normalizeRecord);if(JSON.stringify(list)!==JSON.stringify(normalized))writeJSON(key(),normalized);return normalized;}
   function writeLocal(list){writeJSON(key(),(Array.isArray(list)?list:[]).map(normalizeRecord));}
@@ -114,30 +114,48 @@
     if(!pending.length)return false;
     console.log(LOG,'Retrying pending moment photos',pending.length);
     let changed=false;
-    const list=readLocal();
     for(const p of pending){
       try{
         const result=await uploadPhoto(p.id,p.blob);
-        const idx=list.findIndex(x=>x.id===p.id);
+        // Upload may take seconds. Re-read the live collection after every await
+        // and patch only this Moment so concurrent edits/creates/deletes survive.
+        let live=readLocal();
+        const idx=live.findIndex(x=>x.id===p.id);
         if(idx>=0){
-          list[idx]=Object.assign({},list[idx],result,{photoPending:false,photoSyncError:null,updatedAt:new Date().toISOString(),editedAt:new Date().toISOString()});
+          const current=live[idx];
+          const photoNow=new Date().toISOString();
+          live[idx]=Object.assign({},current,result,{contentUpdatedAt:current.contentUpdatedAt||current.updatedAt||current.editedAt||current.createdAt,updatedAt:photoNow,photoPending:false,photoSyncError:null,photoSyncedAt:photoNow});
+          writeLocal(live);
           changed=true;
+          await deletePendingPhoto(p.id);
+        }else{
+          // The Moment was deleted while the upload was in flight. Do not
+          // resurrect it; discard only the orphaned pending photo.
+          await deletePendingPhoto(p.id);
         }
-        await deletePendingPhoto(p.id);
       }catch(error){
         const message=photoErrorMessage(error);
-        const idx=list.findIndex(x=>x.id===p.id);
-        if(idx>=0&&list[idx].photoSyncError!==message){
-          list[idx]=Object.assign({},list[idx],{photoPending:true,photoSyncError:message});
+        const live=readLocal();
+        const idx=live.findIndex(x=>x.id===p.id);
+        if(idx>=0&&live[idx].photoSyncError!==message){
+          live[idx]=Object.assign({},live[idx],{photoPending:true,photoSyncError:message});
+          writeLocal(live);
           changed=true;
         }
         console.error(LOG,'Pending moment photo retry failed',{id:p.id,message,error});
       }
     }
-    if(changed)writeLocal(list);
     return changed;
   }
 
+  function reconcileCommit(active,deleted,liveLocal){
+    const commitMap=new Map([...(active||[]),...(deleted||[])].map(x=>[x.id,x]));
+    (liveLocal||[]).forEach(live=>{const prior=commitMap.get(live.id);if(!prior||new Date(live.updatedAt||0).getTime()>new Date(prior.updatedAt||0).getTime())commitMap.set(live.id,live);});
+    const finalActive=[],finalDeleted=[];
+    commitMap.forEach(record=>{if(record?.deletedAt)finalDeleted.push(record);else if(record)finalActive.push(record);});
+    finalActive.sort((a,b)=>String(a.createdAt).localeCompare(String(b.createdAt)));
+    return{active:finalActive,deleted:finalDeleted};
+  }
   async function syncNow(){if(state.paused){emit('paused','Sync paused for trip reset');return snapshot();}if(!configured()||!navigator.onLine){emit('offline','Saved offline — will sync later');return snapshot();}if(state.inFlight)return state.inFlight;state.inFlight=(async()=>{emit('syncing','Syncing moments…');try{
     const generationCheck=await root.TRIP_GENERATION?.ensureCurrentGeneration?.();
     if(generationCheck?.stale){
@@ -154,7 +172,24 @@
       root.document?.dispatchEvent(new CustomEvent(EVENTS.changed,{detail:{count:finalActive.length}}));
       return snapshot();
     }
-    await flushPhotos();const remoteRows=await pull();const localActive=readLocal(),localDeleted=readTombstones();const localMap=new Map([...localActive,...localDeleted].map(x=>[x.id,x]));const remoteMap=new Map(remoteRows.map(r=>[r.id,fromRemote(r)]));const ids=new Set([...localMap.keys(),...remoteMap.keys()]);const active=[],deleted=[],toPush=[];ids.forEach(id=>{const l=localMap.get(id),r=remoteMap.get(id);let winner;if(!l)winner=r;else if(!r){winner=l;toPush.push(toRemote(l,!!l.deletedAt));}else{const lt=new Date(l.updatedAt||0).getTime(),rt=new Date(r.updatedAt||0).getTime();winner=lt>rt?l:r;if(lt>rt)toPush.push(toRemote(l,!!l.deletedAt));}if(winner?.deletedAt)deleted.push(winner);else if(winner)active.push(winner);});await push(toPush);active.sort((a,b)=>String(a.createdAt).localeCompare(String(b.createdAt)));writeLocal(active);writeTombstones(deleted);state.lastSyncAt=new Date().toISOString();writeJSON(META_KEY,{lastSyncAt:state.lastSyncAt});emit('synced','Synced across families');root.document?.dispatchEvent(new CustomEvent(EVENTS.changed,{detail:{count:active.length}}));return snapshot();}catch(error){console.error(LOG,'Moments sync failed',error?.message||error);emit('error',navigator.onLine?'Sync unavailable — saved on this device':'Saved offline — will sync later',error?.message||String(error));return snapshot();}finally{state.inFlight=null;}})();return state.inFlight;}
+    await flushPhotos();const remoteRows=await pull();const localActive=readLocal(),localDeleted=readTombstones();const localMap=new Map([...localActive,...localDeleted].map(x=>[x.id,x]));const remoteMap=new Map(remoteRows.map(r=>[r.id,fromRemote(r)]));const ids=new Set([...localMap.keys(),...remoteMap.keys()]);const active=[],deleted=[],toPush=[];ids.forEach(id=>{const l=localMap.get(id),r=remoteMap.get(id);let winner;if(!l)winner=r;else if(!r){winner=l;toPush.push(toRemote(l,!!l.deletedAt));}else{const lt=new Date(l.updatedAt||0).getTime(),rt=new Date(r.updatedAt||0).getTime();winner=lt>rt?l:r;if(lt>rt)toPush.push(toRemote(l,!!l.deletedAt));}if(winner?.deletedAt)deleted.push(winner);else if(winner)active.push(winner);});await push(toPush);
+      // Reconcile once more against the live local store. Saves/deletes can occur
+      // while the network push is awaiting; never let the pre-push snapshot
+      // overwrite those newer mutations when this sync commits.
+      const committed=reconcileCommit(active,deleted,[...readLocal(),...readTombstones()]);
+      const finalActive=committed.active,finalDeleted=committed.deleted;
+      writeLocal(finalActive);writeTombstones(finalDeleted);state.lastSyncAt=new Date().toISOString();writeJSON(META_KEY,{lastSyncAt:state.lastSyncAt});emit('synced','Synced across families');root.document?.dispatchEvent(new CustomEvent(EVENTS.changed,{detail:{count:finalActive.length}}));return snapshot();}catch(error){console.error(LOG,'Moments sync failed',error?.message||error);emit('error',navigator.onLine?'Sync unavailable — saved on this device':'Saved offline — will sync later',error?.message||String(error));return snapshot();}finally{state.inFlight=null;}})();return state.inFlight;}
+  async function hasRemoteNewer(id,baseUpdatedAt){
+    if(!configured()||!navigator.onLine||!id||!baseUpdatedAt)return false;
+    try{
+      const rows=await pull();
+      const row=rows.find(r=>String(r.id)===String(id));
+      if(!row)return false;
+      const remote=fromRemote(row);
+      const remoteVersion=remote.deletedAt ? remote.updatedAt : (remote.contentUpdatedAt||remote.updatedAt);
+      return new Date(remoteVersion||0).getTime()>new Date(baseUpdatedAt||0).getTime();
+    }catch(error){return false;}
+  }
   function queueSync(delay=350){if(state.paused)return;clearTimeout(state.timer);state.timer=setTimeout(syncNow,delay);}
   function pause(){state.paused=true;clearTimeout(state.timer);state.timer=null;emit('paused','Sync paused for trip reset');}
   async function clearPendingPhotos(){
@@ -216,5 +251,5 @@
     state.lastSyncAt=null;state.error=null;
   }
   function initialise(){readLocal();root.addEventListener?.('online',()=>queueSync(50));root.document?.addEventListener('visibilitychange',()=>{if(root.document.visibilityState==='visible')queueSync(100);});root.setInterval?.(()=>{if(root.document?.visibilityState==='visible')syncNow();},30000);}
-  root.MOMENT_SYNC=Object.freeze({EVENTS,getState:snapshot,normalizeRecord,readLocal,writeLocal,markDeleted,stagePhoto,syncNow,queueSync,pause,clearPendingPhotos,clearLocal,resetCloudPhotos,isConfigured:configured});initialise();
+  root.MOMENT_SYNC=Object.freeze({EVENTS,getState:snapshot,normalizeRecord,readLocal,writeLocal,markDeleted,stagePhoto,syncNow,queueSync,hasRemoteNewer,pause,clearPendingPhotos,clearLocal,resetCloudPhotos,isConfigured:configured});initialise();
 })(globalThis);

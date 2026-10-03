@@ -6,6 +6,9 @@
 /* v3.2 P0 workflow fixes: append Moments, latest-first Expenses, save-and-stay expense tool */
 (function(){
   let editingMomentId = null;
+  let editingMomentBaseUpdatedAt = null;
+  let momentEditorSession = 0;
+  const momentSavePendingSessions = new Set();
   let currentMomentPhoto = null;
   let currentMomentContext = null;
   let momentSelectorDay = '1';
@@ -13,6 +16,16 @@
   const prototypePhotoUrls = new Map();
   function readJson(key, fallback){try{return STORAGE.local.readJSON(key,fallback);}catch(e){return fallback;}}
   function writeJson(key, value){STORAGE.local.writeJSON(key,value);}
+  function momentContentVersion(entry){return String(entry?.contentUpdatedAt||entry?.updatedAt||entry?.editedAt||entry?.createdAt||'');}
+  function isMomentSaveSessionCurrent(sessionAtStart,editingIdAtStart){return sessionAtStart===momentEditorSession && editingMomentId===editingIdAtStart;}
+  function commitMomentEdit(liveArr,editingId,baseVersion,draft,now){
+    const arr=Array.isArray(liveArr)?liveArr.slice():[];
+    const existing=arr.find(e=>e.id===editingId);
+    if(!existing)return{ok:false,reason:'missing',arr};
+    if(baseVersion&&momentContentVersion(existing)!==String(baseVersion))return{ok:false,reason:'changed',arr};
+    const entry={...existing,...draft,id:editingId,createdAt:existing.createdAt||now,createdBy:existing.createdBy||draft.createdBy,editedAt:now,contentUpdatedAt:now,updatedAt:now};
+    return{ok:true,entry,arr:arr.map(e=>e.id===editingId?entry:e)};
+  }
   function currentMomentParty(){
     try{const ids=TRIP_CONFIG.participants?.identities||{};return (typeof getFriend==='function'?getFriend():STORAGE.local.get(STORAGE_CONFIG.keys.friend))||TRIP_CONFIG.participants?.defaultKey||Object.keys(ids)[0]||'unknown';}
     catch(e){return 'unknown';}
@@ -109,8 +122,13 @@
   function stabiliseAppNavAfterViewportChange(){
     const nav=document.querySelector('.app-nav');
     if(!nav) return;
+    // Mobile keyboards generate a burst of visualViewport resize/scroll events.
+    // Never force layout while the Moment editor is actively focused; one
+    // settled sync after focus leaves the editor is sufficient.
+    const modal=document.getElementById('momentsModal');
+    const active=document.activeElement;
+    if(modal?.classList.contains('show') && active && modal.contains(active) && /^(INPUT|TEXTAREA|SELECT)$/.test(active.tagName)) return;
     nav.classList.add('app-nav--layout-sync');
-    void nav.offsetHeight;
     requestAnimationFrame(()=>requestAnimationFrame(()=>nav.classList.remove('app-nav--layout-sync')));
   }
   let appNavSyncTimer=0;
@@ -120,6 +138,7 @@
   }
   window.addEventListener('focus',queueAppNavSync);
   window.addEventListener('pageshow',queueAppNavSync);
+  document.addEventListener('focusout',e=>{if(e.target?.closest?.('#momentsModal')) queueAppNavSync();});
   if(window.visualViewport){
     window.visualViewport.addEventListener('resize',queueAppNavSync);
     window.visualViewport.addEventListener('scroll',queueAppNavSync);
@@ -299,8 +318,15 @@
       }));
     });
   }
+  window.resetMomentsEditorState = function(){
+    editingMomentId=null; editingMomentBaseUpdatedAt=null; momentEditorSession++;
+    const text=document.getElementById('momentsText'); if(text) text.value='';
+    const save=document.querySelector('#momentsModal .moments-form .btn'); if(save){save.textContent='Save';save.disabled=false;save.removeAttribute('aria-busy');}
+  };
   window.openMomentsModal = function(key){
     editingMomentId = null;
+    editingMomentBaseUpdatedAt = null;
+    momentEditorSession++;
     momentEntryIsPlanned = false; /* Stage 5B-2B2: only openPlannedMomentCapture re-enables planned-entry mode, right after this call */
     currentMomentKey = key || 'general';
     currentMomentContext = resolveMomentContext(currentMomentKey);
@@ -320,57 +346,94 @@
     setStars(0);
     renderMoodButtons([]);
     const save=document.querySelector('#momentsModal .moments-form .btn');
-    if(save) save.textContent='Save';
+    if(save){save.textContent='Save';save.disabled=false;save.removeAttribute('aria-busy');}
     const modal=document.getElementById('momentsModal');
     if(modal) modal.classList.add('show');
     try{ if(typeof window.simplifyMomentsAuthor === 'function') window.simplifyMomentsAuthor(); }catch(e){}
   };
   window.saveMoments = async function(){
-    const key = currentMomentKey || 'general';
-    const g = PLACES[key] || PLACES.general || {title:'Moment'};
-    const textEl=document.getElementById('momentsText');
-    const ratingEl=document.getElementById('momentsRating');
-    const now=new Date().toISOString();
-    let arr=readJson(STORAGE_CONFIG.keys.momentsList,[]);
-    let entry={
-      id:editingMomentId || ('m_'+Date.now()+'_'+Math.random().toString(36).slice(2,7)),
-      itemKey:key,
-      itemTitle:currentMomentContext?.displayTitleSnapshot || g.title || 'Moment',
-      context:{...(currentMomentContext||resolveMomentContext(key))},
-      friendLabel:FRIENDS[getFriend()],
-      rating:Number(ratingEl?.value||0),
-      moods:(currentMood||[]).slice(),
-      text:textEl?.value||'',
-      photoPrototype:currentMomentPhoto ? {...currentMomentPhoto.meta, retained:false} : null,
-      createdAt:now,
-      updatedAt:now,
-      createdBy:(typeof getFriend==='function'?getFriend():(TRIP_CONFIG.participants?.defaultKey||Object.keys(TRIP_CONFIG.participants?.identities||{})[0]||'unknown')),
-      editedBy:(typeof getFriend==='function'?getFriend():(TRIP_CONFIG.participants?.defaultKey||Object.keys(TRIP_CONFIG.participants?.identities||{})[0]||'unknown'))
-    };
-    if(editingMomentId){
-      const existing=arr.find(e=>e.id===editingMomentId);
-      if(!currentMomentPhoto && existing?.photoPrototype) entry.photoPrototype=existing.photoPrototype;
-      arr=arr.map(e=> e.id===editingMomentId ? {...e,...entry,createdAt:e.createdAt||now,createdBy:e.createdBy||entry.createdBy,editedAt:now,updatedAt:now,editedBy:(typeof getFriend==='function'?getFriend():(TRIP_CONFIG.participants?.defaultKey||Object.keys(TRIP_CONFIG.participants?.identities||{})[0]||'unknown'))} : e);
-    }else{
-      arr.push(entry);
-    }
-    if(currentMomentPhoto?.url) prototypePhotoUrls.set(entry.id,currentMomentPhoto.url);
-    if(currentMomentPhoto?.blob && window.MOMENT_SYNC){
-      const photoState=await window.MOMENT_SYNC.stagePhoto(entry.id,currentMomentPhoto.blob);
-      entry={...entry,...(photoState||{}),updatedAt:new Date().toISOString()};
-      arr=arr.map(e=>e.id===entry.id?{...e,...entry}:e);
-    }
-    writeJson(STORAGE_CONFIG.keys.momentsList,arr);
-    window.MOMENT_SYNC?.queueSync();
-    STORAGE.local.writeJSON(STORAGE_CONFIG.keys.latestMomentPrefix+key,entry);
-    editingMomentId=null;
-    if(textEl) textEl.value='';
-    currentMomentPhoto=null;
-    renderMomentPhotoPreview();
-    setStars(0); renderMoodButtons([]);
+    if(momentSavePendingSessions.has(momentEditorSession)) return;
     const save=document.querySelector('#momentsModal .moments-form .btn');
-    if(save) save.textContent='Save';
-    closeMomentsModal(); renderMoments();
+    const sessionAtStart=momentEditorSession;
+    const editingIdAtStart=editingMomentId;
+    const baseAtStart=editingMomentBaseUpdatedAt;
+    momentSavePendingSessions.add(sessionAtStart);
+    if(save){save.disabled=true;save.setAttribute('aria-busy','true');}
+    try{
+      const key = currentMomentKey || 'general';
+      const g = PLACES[key] || PLACES.general || {title:'Moment'};
+      const textEl=document.getElementById('momentsText');
+      const ratingEl=document.getElementById('momentsRating');
+      const draft={
+        itemKey:key,
+        itemTitle:currentMomentContext?.displayTitleSnapshot || g.title || 'Moment',
+        context:{...(currentMomentContext||resolveMomentContext(key))},
+        friendLabel:FRIENDS[getFriend()],
+        rating:Number(ratingEl?.value||0),
+        moods:(currentMood||[]).slice(),
+        text:textEl?.value||'',
+        photoPrototype:currentMomentPhoto ? {...currentMomentPhoto.meta, retained:false} : null,
+        createdBy:(typeof getFriend==='function'?getFriend():(TRIP_CONFIG.participants?.defaultKey||Object.keys(TRIP_CONFIG.participants?.identities||{})[0]||'unknown')),
+        editedBy:(typeof getFriend==='function'?getFriend():(TRIP_CONFIG.participants?.defaultKey||Object.keys(TRIP_CONFIG.participants?.identities||{})[0]||'unknown'))
+      };
+      const photoAtStart=currentMomentPhoto;
+
+      if(editingIdAtStart && baseAtStart && window.MOMENT_SYNC?.hasRemoteNewer){
+        const remoteNewer=await window.MOMENT_SYNC.hasRemoteNewer(editingIdAtStart,baseAtStart);
+        // A late async result belongs only to the editor session that launched it.
+        // Closing or switching editors invalidates this save without touching the new editor.
+        if(!isMomentSaveSessionCurrent(sessionAtStart,editingIdAtStart)) return;
+        if(remoteNewer){
+          alert('This Moment was updated on another device while you were editing. Your draft is still here. Close and reopen the Moment to review the latest version before saving.');
+          window.MOMENT_SYNC?.queueSync(0);
+          return;
+        }
+      }
+
+      // Re-read after every await. Never commit a pre-network snapshot: sync or
+      // another local mutation may have changed the collection meanwhile.
+      let arr=readJson(STORAGE_CONFIG.keys.momentsList,[]);
+      const now=new Date().toISOString();
+      let entry;
+      if(editingIdAtStart){
+        const committed=commitMomentEdit(arr,editingIdAtStart,baseAtStart,draft,now);
+        if(!committed.ok){
+          alert(committed.reason==='missing'?'This Moment changed on another device. Close and reopen it before saving.':'This Moment was updated on another device while you were editing. Your draft is still here. Close and reopen the Moment to review the latest version before saving.');
+          return;
+        }
+        entry=committed.entry; arr=committed.arr;
+        const existing=arr.find(e=>e.id===editingIdAtStart);
+        if(!photoAtStart && existing?.photoPrototype) entry.photoPrototype=existing.photoPrototype;
+      }else{
+        entry={...draft,id:'m_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),createdAt:now,contentUpdatedAt:now,updatedAt:now};
+        arr.push(entry);
+      }
+
+      if(photoAtStart?.url) prototypePhotoUrls.set(entry.id,photoAtStart.url);
+      if(photoAtStart?.blob && window.MOMENT_SYNC){
+        const photoState=await window.MOMENT_SYNC.stagePhoto(entry.id,photoAtStart.blob);
+        if(!isMomentSaveSessionCurrent(sessionAtStart,editingIdAtStart)) return;
+        // Re-read again after photo upload/staging so an in-flight sync cannot be erased.
+        arr=readJson(STORAGE_CONFIG.keys.momentsList,[]);
+        const live=arr.find(e=>e.id===entry.id);
+        entry={...(live||entry),...entry,...(photoState||{}),updatedAt:new Date().toISOString()};
+        const idx=arr.findIndex(e=>e.id===entry.id);
+        if(idx>=0) arr[idx]=entry; else arr.push(entry);
+      }
+      writeJson(STORAGE_CONFIG.keys.momentsList,arr);
+      window.MOMENT_SYNC?.queueSync();
+      STORAGE.local.writeJSON(STORAGE_CONFIG.keys.latestMomentPrefix+key,entry);
+      editingMomentId=null; editingMomentBaseUpdatedAt=null; momentEditorSession++;
+      if(textEl) textEl.value='';
+      currentMomentPhoto=null;
+      renderMomentPhotoPreview();
+      setStars(0); renderMoodButtons([]);
+      closeMomentsModal(); renderMoments();
+    } finally {
+      momentSavePendingSessions.delete(sessionAtStart);
+      // A stale Save must never unlock or relabel a newer editor session.
+      if(sessionAtStart===momentEditorSession && save){save.disabled=false;save.removeAttribute('aria-busy');if(!editingMomentId)save.textContent='Save';}
+    }
   };
   window.editMoment = function(id){
     const arr=readJson(STORAGE_CONFIG.keys.momentsList,[]);
@@ -378,6 +441,8 @@
     if(!e) return;
     if(!canManageMoment(e)) return alert('Only the party that added this Moment, or Trip Studio, can edit it.');
     editingMomentId=id;
+    editingMomentBaseUpdatedAt=String(e.contentUpdatedAt||e.updatedAt||e.editedAt||e.createdAt||'');
+    momentEditorSession++;
     momentEntryIsPlanned = false; /* Stage 5B-2B2: editing an existing moment always keeps the full planned-activity picker */
     currentMomentKey=e.itemKey || 'general';
     currentMomentContext=e.context ? {...e.context} : resolveMomentContext(currentMomentKey);
@@ -401,7 +466,7 @@
     setStars(e.rating||0);
     renderMoodButtons(e.moods||[]);
     const save=document.querySelector('#momentsModal .moments-form .btn');
-    if(save) save.textContent='Save Changes';
+    if(save){save.textContent='Save Changes';save.disabled=false;save.removeAttribute('aria-busy');}
     const modal=document.getElementById('momentsModal');
     if(modal) modal.classList.add('show');
     try{ if(typeof window.simplifyMomentsAuthor === 'function') window.simplifyMomentsAuthor(); }catch(e){}
@@ -451,5 +516,5 @@
 
   /* Stage 4C-6: removed legacy v3.2 window.renderExpenses; canonical handler is later in this file. */
 
-  document.addEventListener('DOMContentLoaded',()=>{enhanceMomentPhotoInput();renderMoodButtons([]);renderMoments();renderExpenses();window.MOMENT_SYNC?.queueSync(150);document.addEventListener(window.MOMENT_SYNC?.EVENTS?.changed||'travelengine:momentsyncchanged',()=>renderMoments());});
+  document.addEventListener('DOMContentLoaded',()=>{enhanceMomentPhotoInput();renderMoodButtons([]);renderMoments();renderExpenses();window.MOMENT_SYNC?.queueSync(150);document.addEventListener(window.MOMENT_SYNC?.EVENTS?.changed||'travelengine:momentsyncchanged',()=>{ if(document.getElementById('momentsModal')?.classList.contains('show')) return; renderMoments(); });});
 })();

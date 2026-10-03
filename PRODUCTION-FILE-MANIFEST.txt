@@ -1,7 +1,7 @@
-NZ Companion Production File Manifest
-Generated: 2026-09-21
-Base: RC25.7.42
-Reference trip: New Zealand
+Saigon Companion Production File Manifest
+Generated: 2026-10-02
+Base: RC25.7.42-CF2
+Reference trip: Vietnam
 
 Production root files:
 

@@ -1,5 +1,5 @@
 importScripts('./theme-config.js', './asset-config.js', './locale-config.js', './formatter.js', './navigation-config.js', './trip-config.js', './storage-config.js');
-const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-nz25-7-2-sw-own-route-fallback-fix`;
+const CACHE_NAME = `travel-engine-${TRIP_CONFIG.storageNamespace}-${TRIP_CONFIG.version}-nz25-7-42-crashfix4`;
 const CRITICAL_EXTENSIONS = /\.(?:css|js)$/i;
 const ASSETS = [
   './',
@@ -47,6 +47,10 @@ const ASSETS = [
   './booking-authority.js',
   './booking-sync-runtime.js',
   './itinerary-authority.js',
+  './booking-permissions.js',
+  './expense-notification-runtime.js',
+  './generation-selection-adapter.js',
+  './place-authority.js',
   './place.html',
   './day.html',
   './offline.html',
@@ -89,49 +93,57 @@ self.addEventListener('activate', event => {
 });
 
 function looksLikeHtmlDocument(text) {
-  const sample = String(text || '').replace(/^\uFEFF/, '').trimStart().slice(0, 512).toLowerCase();
+  const sample = String(text || '').replace(/^\uFEFF/, '').trimStart().slice(0, 2048).toLowerCase();
   return sample.startsWith('<!doctype html') || sample.startsWith('<html') || sample.includes('<html ');
 }
 
-async function validateHtmlResponse(response) {
+const ROUTE_PAGE_TITLES = Object.freeze({
+  '/index.html':'Home', '/day.html':'Day', '/memory.html':'Moments', '/moments.html':'Moments', '/itinerary.html':'Days', '/expenses.html':'Expenses',
+  '/documents.html':'Documents', '/place.html':'Place', '/guide.html':'Guide', '/trip.html':'Trip',
+  '/offline.html':'Offline'
+});
+function normaliseRoutePath(url){
+  let path=new URL(url, self.location.origin).pathname;
+  if(path==='/' || path.endsWith('/')) path=path+'index.html';
+  return '/'+(path.split('/').pop()||'index.html');
+}
+function expectedPageTitle(url){return ROUTE_PAGE_TITLES[normaliseRoutePath(url)]||null;}
+function hasExpectedPageIdentity(text, expectedTitle){
+  if(!expectedTitle) return false;
+  const escaped=expectedTitle.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  return new RegExp(`<title\\s+[^>]*data-trip-page-title=["']${escaped}["'][^>]*>`, 'i').test(String(text||''));
+}
+
+async function validateHtmlResponse(response, expectedTitle) {
   if (!response || !response.ok) return false;
+  const mime=String(response.headers.get('content-type')||'').toLowerCase();
+  if(!mime.includes('text/html') && !mime.includes('application/xhtml+xml')) return false;
   try {
     const body = await response.clone().text();
-    return looksLikeHtmlDocument(body);
+    return looksLikeHtmlDocument(body) && hasExpectedPageIdentity(body, expectedTitle);
   } catch (error) {
     return false;
   }
 }
 
-async function fetchWithTimeout(request, options = {}, timeoutMs = 3500) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    return await fetch(request, { ...options, signal: controller.signal });
-  } finally {
-    clearTimeout(timer);
-  }
-}
-
 async function fetchValidHtml(request) {
   try {
-    const response = await fetchWithTimeout(request, { cache: 'no-store', redirect: 'follow' });
-    return await validateHtmlResponse(response) ? response : null;
+    const response = await fetch(request, { cache: 'no-store', redirect: 'follow' });
+    const requestedPath = normaliseRoutePath(request.url);
+    const responsePath = normaliseRoutePath(response.url || request.url);
+    if (requestedPath !== responsePath) return null;
+    return await validateHtmlResponse(response, expectedPageTitle(request.url)) ? response : null;
   } catch (error) {
     return null;
   }
 }
 
 async function cachedValidHtml(request) {
-  const candidates = [
-    request,
-    new Request('./index.html', { headers: { accept: 'text/html' } }),
-    new Request('./offline.html', { headers: { accept: 'text/html' } })
-  ];
-  for (const candidate of candidates) {
-    const response = await caches.match(candidate, { ignoreSearch: true });
-    if (await validateHtmlResponse(response)) return response;
-  }
+  const offlineRequest=new Request('./offline.html', { headers: { accept: 'text/html' } });
+  const own=await caches.match(request,{ignoreSearch:true});
+  if(await validateHtmlResponse(own,expectedPageTitle(request.url))) return own;
+  const offline=await caches.match(offlineRequest,{ignoreSearch:true});
+  if(await validateHtmlResponse(offline,'Offline')) return offline;
   return null;
 }
 
@@ -142,33 +154,6 @@ async function navigationResponse(request) {
     await cache.put(request, direct.clone());
     return direct;
   }
-
-  /* RC-SW-FIX1: the requested page's own network fetch failed/timed out.
-     This app is a multi-page app (day.html, moments.html, expenses.html,
-     trip.html, etc. are each a distinct document with their own DOM root
-     and inline bootstrap script) — it is NOT a single-page app, so it is
-     never correct to silently substitute a different route's document for
-     the one the user actually asked for. Try THIS EXACT route's own cached
-     copy first (day.html/moments.html/expenses.html are all precached in
-     ASSETS at install time, so this is normally available even offline).
-     Only if there is truly no usable cache entry for this specific route
-     do we fall through to fetching/serving index.html as a last resort. */
-  const ownCached = await caches.match(request, { ignoreSearch: true });
-  if (await validateHtmlResponse(ownCached)) return ownCached;
-
-  const indexRequest = new Request(new URL('./index.html', self.location.href), {
-    method: 'GET',
-    headers: { accept: 'text/html' },
-    cache: 'no-store',
-    credentials: 'same-origin',
-    redirect: 'follow'
-  });
-  const indexResponse = await fetchValidHtml(indexRequest);
-  if (indexResponse) {
-    await cache.put('./index.html', indexResponse.clone());
-    return indexResponse;
-  }
-
   return await cachedValidHtml(request) || new Response(
     '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Offline</title></head><body><p>This page is temporarily unavailable.</p></body></html>',
     { status: 503, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
@@ -178,7 +163,7 @@ async function navigationResponse(request) {
 async function networkFirst(request) {
   const cache = await caches.open(CACHE_NAME);
   try {
-    const response = await fetchWithTimeout(request);
+    const response = await fetch(request);
     if (response && response.ok) cache.put(request, response.clone());
     return response;
   } catch (error) {
@@ -187,7 +172,14 @@ async function networkFirst(request) {
       const url = new URL(request.url);
       cached = await caches.match(url.pathname.split('/').pop() || './index.html', { ignoreSearch: true });
     }
-    return cached || caches.match('./offline.html');
+    if (cached) return cached;
+    // Scripts/styles must never receive an HTML offline document. Returning a
+    // typed 503 makes the failure explicit and prevents partial runtime boot.
+    const url = new URL(request.url);
+    const isJs = /\.js$/i.test(url.pathname);
+    const isCss = /\.css$/i.test(url.pathname);
+    if (isJs || isCss) return new Response('', {status:503,headers:{'Content-Type':isJs?'application/javascript; charset=utf-8':'text/css; charset=utf-8'}});
+    return caches.match('./offline.html');
   }
 }
 
