@@ -1,26 +1,3 @@
-/* FIELD-DIAG2 — capture bottom hit-testing before shared runtime migration. */
-(function(root){
-  'use strict';
-  const KEY='nz_field_diag_v2';
-  function read(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}
-  function push(type,detail){try{const a=read();a.push({time:new Date().toISOString(),page:(location.pathname.split('/').pop()||'index.html'),type,detail});while(a.length>50)a.shift();localStorage.setItem(KEY,JSON.stringify(a));}catch(e){}}
-  function runtime(){try{return root.APP_RUNTIME&&root.APP_RUNTIME.getState?root.APP_RUNTIME.getState():null}catch(e){return null}}
-  function brief(el){if(!el)return null;let cs=null;try{cs=getComputedStyle(el)}catch(e){}return {tag:el.tagName||'',id:el.id||'',class:String(el.className||'').slice(0,180),text:String(el.textContent||'').trim().replace(/\s+/g,' ').slice(0,80),position:cs&&cs.position,zIndex:cs&&cs.zIndex,pointerEvents:cs&&cs.pointerEvents,display:cs&&cs.display,visibility:cs&&cs.visibility,opacity:cs&&cs.opacity};}
-  function overlays(){const out=[];document.querySelectorAll('body *').forEach(el=>{let cs;try{cs=getComputedStyle(el)}catch(e){return}if(cs.position!=='fixed'||cs.display==='none'||cs.visibility==='hidden'||cs.pointerEvents==='none'||Number(cs.opacity)===0)return;const r=el.getBoundingClientRect();if(r.width<1||r.height<1)return;if(r.bottom<innerHeight-190)return;out.push(Object.assign({rect:[Math.round(r.left),Math.round(r.top),Math.round(r.right),Math.round(r.bottom)]},brief(el)));});return out.slice(0,16);}
-  function snap(target,x,y){const ids={trip:'tripMenu',guide:'guideMenu',days:'daysMenu'};const m=target?document.getElementById(ids[target]):null;const r=runtime();let stack=[];try{stack=document.elementsFromPoint(x,y).slice(0,8).map(brief)}catch(e){}return {target,x:Math.round(x),y:Math.round(y),hit:brief(document.elementFromPoint(x,y)),stack,visibleFixedBottom:overlays(),menuExists:!!m,menuClass:m?m.className:'',toggleTrip:typeof root.toggleTripMenu,toggleGuide:typeof root.toggleGuideMenu,toggleDays:typeof root.toggleDays,bodyClass:document.body?document.body.className:'',appReady:r&&r.ready,appValid:r&&r.valid,missing:r&&r.missing,errors:r&&r.errors};}
-  function show(info){let box=document.getElementById('nzFieldDiag');if(!box){box=document.createElement('div');box.id='nzFieldDiag';box.style.cssText='position:fixed;z-index:2147483647;left:8px;right:8px;top:34px;max-height:48vh;overflow:auto;background:#fff3cd;color:#3b2f00;border:2px solid #b7791f;border-radius:12px;padding:10px;font:11px/1.3 monospace;white-space:pre-wrap;box-shadow:0 8px 30px rgba(0,0,0,.25);pointer-events:auto';document.body.appendChild(box);}box.textContent='NZ FIELD DIAG2 — screenshot this\n'+JSON.stringify(info,null,2);}
-  function badge(){if(document.getElementById('nzDiagBadge'))return;const b=document.createElement('div');b.id='nzDiagBadge';b.textContent='DIAG2';b.style.cssText='position:fixed;z-index:2147483646;top:4px;right:6px;background:#111;color:#fff;padding:4px 7px;border-radius:7px;font:700 11px monospace;pointer-events:none';document.body.appendChild(b);}
-  function targetFor(el){const b=el&&el.closest?el.closest('.trip-trigger,.guide-trigger,.days-trigger'):null;return b?(b.classList.contains('trip-trigger')?'trip':b.classList.contains('guide-trigger')?'guide':'days'):null;}
-  function capture(e){const pt=(e.touches&&e.touches[0])||e;const x=Number(pt.clientX||0),y=Number(pt.clientY||0);if(y<innerHeight-190)return;const target=targetFor(e.target);const info=snap(target,x,y);push(e.type,info);if(!target)show(Object.assign({reason:'BOTTOM TAP HIT NON-NAV ELEMENT',eventTarget:brief(e.target)},info));}
-  document.addEventListener('pointerdown',capture,true);
-  document.addEventListener('touchstart',capture,true);
-  document.addEventListener('click',function(e){const target=targetFor(e.target);if(!target)return;const x=Number(e.clientX||0),y=Number(e.clientY||0);push('nav-click-before',snap(target,x,y));setTimeout(function(){const info=snap(target,x,y);push('nav-click-after',info);const id={trip:'tripMenu',guide:'guideMenu',days:'daysMenu'}[target];const m=document.getElementById(id);if(!m||!m.classList.contains('show'))show(Object.assign({reason:'NAV CLICK DID NOT OPEN MENU'},info));},150);},true);
-  root.addEventListener('error',function(e){push('window-error',{message:String(e.message||e.error||'error'),source:e.filename||'',line:e.lineno||0});},true);
-  root.addEventListener('unhandledrejection',function(e){push('unhandled-rejection',{message:String(e.reason&&e.reason.message||e.reason||'rejection')});});
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',badge,{once:true});else badge();
-  root.NZ_FIELD_DIAG={read,clear:function(){try{localStorage.removeItem(KEY)}catch(e){}}};push('core-runtime-enter',{readyState:document.readyState});
-})(window);
-
 /* RC15.1 — Master itinerary authority migration.
    Saved Admin itinerary snapshots remain authoritative only while they belong
    to the same bundled master itinerary. A changed master clears itinerary-only

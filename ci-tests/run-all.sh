@@ -68,6 +68,7 @@ run "FR2 ATOMIC CRITICAL ASSETS" node ci-tests/test-fr2-atomic-critical-assets.j
 run "FR2 FETCH WIRING" node ci-tests/test-fr2-fetch-wiring.js
 run "CF4 SAVE SESSION LOCK" node ci-tests/test-cf4-save-session-lock.js
 run "CF4.1 PRODUCTION WIRING" node ci-tests/test-cf41-production-wiring.js
+run "ROOTFIX1 CUSTOM ITINERARY CLASSIFICATION" node ci-tests/test-rootfix-custom-itinerary-classification.js
 run "RELEASE CHECKSUMS" sh ci-tests/test-checksums.sh
 
 if [ "$failed" -eq 0 ]; then

@@ -192,8 +192,12 @@
     ];
     const applied=[];
     map.forEach(function(entry){
-      const target=targets&&targets[entry[0]],next=select(data,entry[1]);
+      const target=targets&&targets[entry[0]];
+      let next=select(data,entry[1]);
       if(next===undefined)return;
+      if(entry[0]==='ITINERARY_DATA'&&root.ITINERARY_AUTHORITY&&typeof root.ITINERARY_AUTHORITY.normalizeItineraryData==='function'){
+        next=root.ITINERARY_AUTHORITY.normalizeItineraryData(next);
+      }
       const changed=Array.isArray(target)?replaceArray(target,next):replaceObject(target,next);
       if(changed)applied.push(entry[0]);
     });

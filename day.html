@@ -379,7 +379,7 @@
       base=clone(workingItems[duplicateSourceIndex]);
       base.id=createActivityId();
     }else if(adding){
-      base={id:createActivityId(),type:'custom',dayId:'day'+day,placeId:null,bookingId:null,map:null};
+      base={id:createActivityId(),type:'custom',dayId:'day'+day,placeId:null,bookingId:null,map:null,nonPlace:true};
     }else{
       base=workingItems[editingIndex];
     }
